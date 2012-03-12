@@ -1155,4 +1155,10 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String viewParamLbl();
 
+    /**
+     * Localized text for instructions for viewing folder contents.
+     * 
+     * @return a string representing the localized text.
+     */
+    String selectFolderToViewContents();
 }
