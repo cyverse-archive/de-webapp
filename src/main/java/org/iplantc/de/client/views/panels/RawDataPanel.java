@@ -159,4 +159,10 @@ public class RawDataPanel extends ViewerContentPanel implements DataMonitor {
     public void folderMove(Map<String, String> folders) {
         // intentionally do nothing
     }
+
+    @Override
+    public void copyResources(Map<String, String> paths) {
+        // TODO Auto-generated method stub
+
+    }
 }

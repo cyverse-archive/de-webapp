@@ -9,6 +9,8 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
+import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
+import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.utils.PanelHelper;
@@ -38,10 +40,10 @@ public class DataMainToolBar extends ToolBar {
     private Button btnRefresh;
     private Button btnActions;
 
-    public DataMainToolBar(final String tag, final DataContainer container) {
+    public DataMainToolBar(final String tag, final DataContainer container, DataActionsMenu menu) {
         this.tag = tag;
         this.container = container;
-        menuActions = new DataActionsMenu(tag);
+        menuActions = menu;
         setSpacing(4);
         addButtons();
         registerHandlers();
@@ -73,7 +75,8 @@ public class DataMainToolBar extends ToolBar {
         return refresh;
     }
 
-    private void registerHandlers() {
+    // changed from private to public so that i can re-add handlers after refresh.
+    public void registerHandlers() {
         EventBus eventbus = EventBus.getInstance();
 
         handlers.add(eventbus.addHandler(DiskResourceSelectionChangedEvent.TYPE,
@@ -85,6 +88,19 @@ public class DataMainToolBar extends ToolBar {
                         }
                     }
                 }));
+        handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
+                new DiskResourceSelectedEventHandler() {
+
+                    @Override
+                    public void onSelected(DiskResourceSelectedEvent event) {
+                        // update actions on new page
+                        updateActionsButton(null);
+                    }
+
+                }));
+
+        menuActions.cleanup();
+        menuActions.registerHandlers();
     }
 
     private void updateActionsButton(final List<DiskResource> resources) {

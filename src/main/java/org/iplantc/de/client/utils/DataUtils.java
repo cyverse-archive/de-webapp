@@ -16,7 +16,8 @@ public class DataUtils {
         RenameFolder(I18N.DISPLAY.rename()), RenameFile(I18N.DISPLAY.rename()), Delete(I18N.DISPLAY
                 .delete()), View(I18N.DISPLAY.view()), ViewTree(I18N.DISPLAY.viewTreeViewer()), SimpleDownload(
                 I18N.DISPLAY.simpleDownload()), BulkDownload(I18N.DISPLAY.bulkDownload()), Metadata(
-                I18N.DISPLAY.metadata()), Share(I18N.DISPLAY.share());
+                I18N.DISPLAY.metadata()), Share(I18N.DISPLAY.share()), Copy(I18N.DISPLAY.copy()), Paste(
+                I18N.DISPLAY.paste());
 
         private final String displayText;
 
@@ -74,9 +75,14 @@ public class DataUtils {
                 ret.add(Action.BulkDownload);
                 ret.add(Action.Delete);
                 ret.add(Action.Share);
+                ret.add(Action.Copy);
+                ret.add(Action.Paste);
+            } else {
+                ret.add(Action.Paste);
             }
+        } else {
+            ret.add(Action.Paste);
         }
-
         return ret;
     }
 
@@ -118,6 +124,11 @@ public class DataUtils {
         return false;
     }
 
+    public static boolean isCopyable(List<DiskResource> resources) {
+        // for now same logic like isViewable
+        return isViewable(resources);
+    }
+
     public static boolean isSharable(List<DiskResource> resources) {
         // fail even if one of items fails
         if (resources != null && resources.size() > 0) {
@@ -144,6 +155,13 @@ public class DataUtils {
 
         return false;
 
+    }
+
+    public static boolean isWritablbe(DiskResource resource) {
+        if (resource != null) {
+            return resource.getPermissions().isWritable();
+        }
+        return false;
     }
 
     public static boolean isDeletable(List<DiskResource> resources) {

@@ -521,4 +521,11 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return localized error string.
      */
     String defaultPrefError();
+
+    /**
+     * Localized error message displayed when copy fails
+     * 
+     * @return
+     */
+    String diskResourceIncompleteCopy();
 }

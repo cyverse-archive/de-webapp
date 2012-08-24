@@ -498,6 +498,19 @@ public class DiskResourceServiceFacade {
     }
 
     /**
+     * copy selected disk resources to destination folder
+     * 
+     * @param body - Post body in JSONObject format
+     * @param callback callback object
+     */
+    public void copyDiskResource(JSONObject body, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".copy"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        callService(callback, wrapper);
+    }
+
+    /**
      * Performs the actual service call.
      * 
      * @param callback executed when RPC call completes.

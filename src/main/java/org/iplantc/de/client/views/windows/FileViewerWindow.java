@@ -497,4 +497,10 @@ public class FileViewerWindow extends FileWindow implements DataMonitor {
         }
 
     }
+
+    @Override
+    public void copyResources(Map<String, String> paths) {
+        // TODO Auto-generated method stub
+
+    }
 }

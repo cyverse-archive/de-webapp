@@ -16,8 +16,11 @@ import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
+import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
+import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.services.DiskResourceCopyCallback;
 import org.iplantc.de.client.services.FileDeleteCallback;
 import org.iplantc.de.client.services.FolderDeleteCallback;
 import org.iplantc.de.client.utils.DataUtils;
@@ -44,6 +47,9 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -59,12 +65,18 @@ public final class DataActionsMenu extends Menu {
     private static final String MI_DELETE_RESOURCE_ID = "idDataActionsMenuDelete"; //$NON-NLS-1$
     private static final String MI_METADATA_ID = "idDataActionsMenuMetadata"; //$NON-NLS-1$
     private static final String MI_SHARE_RESOURCE_ID = "idDataActionsMenuShare"; //$NON-NLS-1$
+    private static final String MI_COPY_RESOURCE_ID = "idDataActionsMenuCopy"; //$NON-NLS-1$
+    private static final String MI_PASTE_RESOURCE_ID = "idDataActionsMenuPaste"; //$NON-NLS-1$
 
     private final ArrayList<HandlerRegistration> handlers = new ArrayList<HandlerRegistration>();
 
     private final String tag;
 
     private List<DiskResource> resources;
+    private List<DiskResource> copyBuffer;
+
+    private DiskResource currentPage;
+
     private Component maskingParent;
 
     private MenuItem itemAddFolder;
@@ -78,6 +90,8 @@ public final class DataActionsMenu extends Menu {
     private MenuItem itemDeleteResource;
     private MenuItem itemMetaData;
     private MenuItem itemShareResource;
+    private MenuItem itemCopyResource;
+    private MenuItem itemPasteResource;
 
     public DataActionsMenu(final String tag) {
         this.tag = tag;
@@ -103,8 +117,8 @@ public final class DataActionsMenu extends Menu {
                 Resources.ICONS.fileView(), itemViewRawResource, itemViewTree);
 
         itemSimpleDownloadResource = buildLeafMenuItem(MI_SIMPLE_DOWNLOAD_ID,
-                I18N.DISPLAY.simpleDownload(),
-                Resources.ICONS.download(), new SimpleDownloadListenerImpl());
+                I18N.DISPLAY.simpleDownload(), Resources.ICONS.download(),
+                new SimpleDownloadListenerImpl());
         itemBulkDownloadResource = buildLeafMenuItem(MI_BULK_DOWNLOAD_ID, I18N.DISPLAY.bulkDownload(),
                 Resources.ICONS.download(), new BulkDownloadListenerImpl());
         itemDownloadResource = buildMenuMenuItem(MI_DOWNLOAD_RESOURCE_ID, I18N.DISPLAY.download(),
@@ -116,13 +130,20 @@ public final class DataActionsMenu extends Menu {
                 Resources.ICONS.metadata(), new MetadataListenerImpl());
         itemShareResource = buildLeafMenuItem(MI_SHARE_RESOURCE_ID, I18N.DISPLAY.share(),
                 Resources.ICONS.share(), new ShareResourceListenerImpl());
+        itemCopyResource = buildLeafMenuItem(MI_COPY_RESOURCE_ID, I18N.DISPLAY.copy(),
+                Resources.ICONS.copy(), new CopyResourceListenerImpl());
+        itemPasteResource = buildLeafMenuItem(MI_PASTE_RESOURCE_ID, I18N.DISPLAY.paste(),
+                Resources.ICONS.copy(), new PasteResourceListenerImpl());
 
         add(itemAddFolder);
         add(itemRenameResource);
         add(itemViewResource);
+        add(itemCopyResource);
+        add(itemPasteResource);
         add(itemDownloadResource);
         add(itemDeleteResource);
         add(itemMetaData);
+
         // @TODO temp remove sharing action
         // add(itemShareResource);
     }
@@ -150,7 +171,8 @@ public final class DataActionsMenu extends Menu {
         return res;
     }
 
-    private void registerHandlers() {
+    // changed from private to public so that i can re-add handlers after refresh.
+    public void registerHandlers() {
         EventBus eventbus = EventBus.getInstance();
 
         handlers.add(eventbus.addHandler(DiskResourceSelectionChangedEvent.TYPE,
@@ -162,6 +184,17 @@ public final class DataActionsMenu extends Menu {
                         }
                     }
                 }));
+        handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
+                new DiskResourceSelectedEventHandler() {
+
+                    @Override
+                    public void onSelected(DiskResourceSelectedEvent event) {
+                        currentPage = event.getResource();
+                        prepareMenuItems(DataUtils.getSupportedActions(resources));
+                    }
+
+                }));
+
     }
 
     public void cleanup() {
@@ -238,6 +271,15 @@ public final class DataActionsMenu extends Menu {
                 case Share:
                     showMenuItem(itemShareResource);
                     break;
+                case Copy:
+                    showMenuItem(itemCopyResource);
+                    break;
+                case Paste:
+                    showMenuItem(itemPasteResource);
+                    if (copyBuffer == null) {
+                        itemPasteResource.disable();
+                    }
+                    break;
             }
         }
     }
@@ -309,6 +351,45 @@ public final class DataActionsMenu extends Menu {
             }
         }
 
+    }
+
+    private class CopyResourceListenerImpl extends SelectionListener<MenuEvent> {
+        @Override
+        public void componentSelected(MenuEvent ce) {
+            if (DataUtils.isCopyable(resources)) {
+                copyBuffer = resources;
+                itemPasteResource.enable();
+            } else {
+                showErrorMsg();
+            }
+        }
+
+    }
+
+    private class PasteResourceListenerImpl extends SelectionListener<MenuEvent> {
+        @Override
+        public void componentSelected(MenuEvent ce) {
+            if (DataUtils.isWritablbe(currentPage)) {
+                doCopy();
+            } else {
+                showErrorMsg();
+            }
+        }
+
+    }
+
+    private void doCopy() {
+        JSONObject obj = new JSONObject();
+        JSONArray fromArr = new JSONArray();
+        int i = 0;
+        for (DiskResource r : copyBuffer) {
+            fromArr.set(i++, new JSONString(r.getId()));
+        }
+        obj.put("paths", fromArr);
+        obj.put("destination", new JSONString(currentPage.getId()));
+
+        DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+        facade.copyDiskResource(obj, new DiskResourceCopyCallback());
     }
 
     private class BulkDownloadListenerImpl extends SelectionListener<MenuEvent> {

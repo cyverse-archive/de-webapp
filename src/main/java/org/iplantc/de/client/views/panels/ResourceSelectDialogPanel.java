@@ -320,7 +320,7 @@ public class ResourceSelectDialogPanel extends IPlantDialogPanel implements Data
         Folder folder;
         folder = new Folder(jsonFolder);
         if ((pnlNavigation != null) && pnlNavigation.isFolderLoaded(idParentFolder)) {
-            folder = model.createFolder(idParentFolder, jsonFolder);            
+            folder = model.createFolder(idParentFolder, jsonFolder);
         } else {
             parentFolder.setHasSubFolders(true);
         }
@@ -412,6 +412,12 @@ public class ResourceSelectDialogPanel extends IPlantDialogPanel implements Data
             DataController controller = DataController.getInstance();
             controller.handleEvent(ResourceSelectDialogPanel.this, event.getPayload());
         }
+    }
+
+    @Override
+    public void copyResources(Map<String, String> paths) {
+        // TODO Auto-generated method stub
+
     }
 
 }

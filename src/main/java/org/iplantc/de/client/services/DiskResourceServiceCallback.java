@@ -30,7 +30,7 @@ public abstract class DiskResourceServiceCallback implements AsyncCallback<Strin
     protected Component maskedCaller;
 
     protected enum ErrorCode {
-        ERR_DOES_NOT_EXIST, ERR_EXISTS, ERR_NOT_WRITEABLE, ERR_NOT_READABLE, ERR_WRITEABLE, ERR_READABLE, ERR_NOT_A_USER, ERR_NOT_A_FILE, ERR_NOT_A_FOLDER, ERR_IS_A_FILE, ERR_IS_A_FOLDER, ERR_INVALID_JSON, ERR_BAD_OR_MISSING_FIELD, ERR_NOT_AUTHORIZED, ERR_MISSING_QUERY_PARAMETER, ERR_INCOMPLETE_DELETION, ERR_INCOMPLETE_MOVE, ERR_INCOMPLETE_RENAME
+        ERR_DOES_NOT_EXIST, ERR_EXISTS, ERR_NOT_WRITEABLE, ERR_NOT_READABLE, ERR_WRITEABLE, ERR_READABLE, ERR_NOT_A_USER, ERR_NOT_A_FILE, ERR_NOT_A_FOLDER, ERR_IS_A_FILE, ERR_IS_A_FOLDER, ERR_INVALID_JSON, ERR_BAD_OR_MISSING_FIELD, ERR_NOT_AUTHORIZED, ERR_MISSING_QUERY_PARAMETER, ERR_INCOMPLETE_DELETION, ERR_INCOMPLETE_MOVE, ERR_INCOMPLETE_RENAME, ERR_INVALID_COPY
     }
 
     public void setMaskedCaller(Component maskedCaller) {
@@ -162,6 +162,9 @@ public abstract class DiskResourceServiceCallback implements AsyncCallback<Strin
                 return I18N.ERROR.diskResourceIncompleteMove();
             case ERR_INCOMPLETE_RENAME:
                 return I18N.ERROR.diskResourceIncompleteRename();
+            case ERR_INVALID_COPY:
+                return I18N.ERROR.diskResourceIncompleteCopy();
+
         }
 
         return null;

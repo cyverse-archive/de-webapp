@@ -16,6 +16,7 @@ import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.models.ClientDataModel;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
+import org.iplantc.de.client.views.DataActionsMenu;
 import org.iplantc.de.client.views.MyDataGrid;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -45,6 +46,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
     private boolean enableDragAndDrop = true;
 
     private ClientDataModel model;
+    private final DataActionsMenu menuActions;
     private final DataMainToolBar toolbar;
     private MyDataGridDragSource dndSource;
 
@@ -58,8 +60,9 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         this.model = model;
 
         this.setSelectedResource(selectedResourceId);
+        menuActions = new DataActionsMenu(tag);
 
-        toolbar = new DataMainToolBar(tag, this);
+        toolbar = new DataMainToolBar(tag, this, menuActions);
         setTopComponent(toolbar);
     }
 
@@ -114,13 +117,16 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
     public void seed(final ClientDataModel model, String tag, Listener<BaseEvent> selctionChangeListener) {
 
         gridCleanUp();
+        toolbar.cleanup();
+        toolbar.registerHandlers();
+
         if (grid != null) {
             remove(grid);
         }
 
         if (model != null) {
             this.model = model;
-            grid = MyDataGrid.createInstance(model.getRootFolderId(), tag, model);
+            grid = MyDataGrid.createInstance(model.getRootFolderId(), tag, model, menuActions);
 
             if (grid.isRendered()) {
                 grid.setSize(getWidth(), getHeight());

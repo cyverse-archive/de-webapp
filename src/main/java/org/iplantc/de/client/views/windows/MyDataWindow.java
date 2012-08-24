@@ -450,4 +450,13 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
         return dispatcher.getDispatchJson(Constants.CLIENT.myDataTag(), ActionType.DISPLAY_WINDOW);
     }
+
+    @Override
+    public void copyResources(Map<String, String> paths) {
+        // refresh page to update with new resources
+        ManageDataRefreshEvent event = new ManageDataRefreshEvent(tag, pnlMain.getCurrentPath(),
+                pnlMain.getSelectedItems());
+        EventBus.getInstance().fireEvent(event);
+
+    }
 }

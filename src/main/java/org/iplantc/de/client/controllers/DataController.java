@@ -2,6 +2,7 @@ package org.iplantc.de.client.controllers;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.de.client.commands.data.DataCommand;
+import org.iplantc.de.client.commands.data.DiskResourceCopyCommand;
 import org.iplantc.de.client.commands.data.DiskResourceDeletedCommand;
 import org.iplantc.de.client.commands.data.FileImportedCommand;
 import org.iplantc.de.client.commands.data.FileMoveCommand;
@@ -44,6 +45,8 @@ public class DataController {
             ret = new FolderMoveCommand();
         } else if (action.equals("delete")) { //$NON-NLS-1$
             ret = new DiskResourceDeletedCommand();
+        } else if (action.equals("copy")) { //$NON-NLS-1$
+            ret = new DiskResourceCopyCommand();
         }
         return ret;
     }

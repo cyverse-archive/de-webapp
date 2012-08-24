@@ -1121,4 +1121,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return the localized display text
      */
     String saveSettings();
+
+    /**
+     * paste disk resource
+     * 
+     * @return the localized display text
+     */
+    String paste();
 }

@@ -77,12 +77,13 @@ public class MyDataGrid extends Grid<DiskResource> {
      * @param currentFolderId id of the current folder to be displayed
      * @param executor data view context executor called when appropriate grid row is clicked
      * @param callertag the caller tag
+     * @param menu Instance of actions menu
      */
     private MyDataGrid(ListStore<DiskResource> store, ColumnModel colModel, String currentFolderId,
-            DataViewContextExecutor executor, final String callertag) {
+            DataViewContextExecutor executor, final String callertag, DataActionsMenu menu) {
         super(store, colModel);
 
-        menuActions = new DataActionsMenu(callertag);
+        menuActions = menu;
         this.callertag = callertag;
         this.currentFolderId = currentFolderId;
         this.executor = executor;
@@ -118,6 +119,7 @@ public class MyDataGrid extends Grid<DiskResource> {
             executor.execute(builder.build(dr.getId()));
         }
     }
+
     /**
      * Show the Actions menu at the given absolute x, y position. The items displayed in the menu will
      * depend on the resources selected in the grid, according to DataUtils.getSupportedActions.
@@ -171,7 +173,7 @@ public class MyDataGrid extends Grid<DiskResource> {
     }
 
     private static MyDataGrid createInstanceImpl(String currentFolderId, String tag,
-            ClientDataModel controller) {
+            ClientDataModel controller, DataActionsMenu menu) {
         final ListStore<DiskResource> store = new ListStore<DiskResource>();
         final ColumnModel colModel = buildColumnModel(tag);
 
@@ -185,7 +187,7 @@ public class MyDataGrid extends Grid<DiskResource> {
         }
 
         store.setStoreSorter(new DataGridStoreSorter());
-        ret = new MyDataGrid(store, colModel, currentFolderId, executor, tag);
+        ret = new MyDataGrid(store, colModel, currentFolderId, executor, tag, menu);
 
         if (isMyDataWindow) {
             ret.setSelectionModel(sm);
@@ -213,8 +215,8 @@ public class MyDataGrid extends Grid<DiskResource> {
      * @return newly allocated my data grid.
      */
     public static MyDataGrid createInstance(String currentFolderId, String tag,
-            ClientDataModel controller) {
-        return createInstanceImpl(currentFolderId, tag, controller);
+            ClientDataModel controller, DataActionsMenu menu) {
+        return createInstanceImpl(currentFolderId, tag, controller, menu);
     }
 
     /**

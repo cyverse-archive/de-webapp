@@ -72,4 +72,11 @@ public interface DataMonitor {
      * 
      */
     void fileMove(Map<String, String> files);
+
+    /**
+     * copy disk resources by id.
+     * 
+     * @param map of copy paths
+     */
+    void copyResources(Map<String, String> paths);
 }
