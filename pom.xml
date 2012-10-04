@@ -221,6 +221,7 @@
                             <Build-Version>${BUILD_TAG}</Build-Version>
                         </manifestEntries>
                     </archive>
+                    <packagingExcludes>**/log4j.properties</packagingExcludes>
                 </configuration>
             </plugin>
             <plugin>
