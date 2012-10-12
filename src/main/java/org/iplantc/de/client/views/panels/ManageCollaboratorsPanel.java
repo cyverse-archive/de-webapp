@@ -117,6 +117,9 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
             @Override
             public void onKeyUp(FieldEvent fe) {
                 if (fe.getKeyCode() == 13) {
+                    if (showList.isVisible()) {
+                        showList.setVisible(false);
+                    }
                     doSearch();
                 }
             }

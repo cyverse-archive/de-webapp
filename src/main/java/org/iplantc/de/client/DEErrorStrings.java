@@ -528,4 +528,11 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String diskResourceIncompleteCopy();
+
+    /**
+     * localized error message displayed when user tries to add him self as collaborator
+     * 
+     * @return
+     */
+    String selfCollabAddError();
 }

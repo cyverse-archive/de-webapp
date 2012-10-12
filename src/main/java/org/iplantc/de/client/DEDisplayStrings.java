@@ -1144,4 +1144,12 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String newNotificationsAlert();
 
+    /**
+     * confirm remove collaborators
+     * 
+     * @return
+     */
+
+    String confirmRemove();
+
 }

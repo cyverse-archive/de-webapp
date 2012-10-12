@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.JsCollaborators;
@@ -17,6 +18,7 @@ import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.panels.ManageCollaboratorsPanel.MODE;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
@@ -27,6 +29,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -163,8 +166,8 @@ public class CollaboratorsPanel extends ContentPanel {
                 hp.add(ib);
                 ib.setToolTip("Remove");
             }
-            hp.sinkEvents(Events.OnClick.getEventCode());
-            hp.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            hp.sinkEvents(Events.OnMouseDown.getEventCode());
+            hp.addListener(Events.OnMouseDown, new Listener<BaseEvent>() {
 
                 @Override
                 public void handleEvent(BaseEvent be) {
@@ -172,8 +175,22 @@ public class CollaboratorsPanel extends ContentPanel {
 
                 }
             });
+
             hp.add(new Label(model.getName()));
             hp.setSpacing(3);
+            // new DragSource(hp) {
+            // @Override
+            // protected void onDragStart(DNDEvent e) {
+            // // List<Collaborator> list = new ArrayList<Collaborator>();
+            // // list.add(model);
+            // // e.setData(list);
+            // }
+            //
+            // @Override
+            // protected void onDragDrop(DNDEvent e) {
+            // // do nothing intentionally
+            // }
+            // / };
             return hp;
         }
 
@@ -185,20 +202,24 @@ public class CollaboratorsPanel extends ContentPanel {
                     IconButton src = (IconButton)ce.getSource();
                     String existing_style = src.getStyleName();
                     if (existing_style.contains(ADD_BUTTON_STYLE)) {
-                        addCollaborators(model);
-                        if (mode.equals(MODE.SEARCH)) {
-                            src.changeStyle(DONE_BUTTON_STYLE);
-                            src.setToolTip("Added");
+                        if (!checkCurrentUser(model)) {
+                            addCollaborators(model);
+                            if (mode.equals(MODE.SEARCH)) {
+                                src.changeStyle(DONE_BUTTON_STYLE);
+                                src.setToolTip("Added");
+                            } else {
+                                src.changeStyle(REMOVE_BUTTON_STYLE);
+                                src.setToolTip("Remove");
+                            }
+                            return;
                         } else {
-                            src.changeStyle(REMOVE_BUTTON_STYLE);
-                            src.setToolTip("Remove");
+                            MessageBox.alert(I18N.DISPLAY.error(), I18N.ERROR.selfCollabAddError(), null);
                         }
-                        return;
                     }
 
                     if (existing_style.contains(REMOVE_BUTTON_STYLE)) {
                         src.changeStyle(DELETE_BUTTON_STYLE);
-                        src.setToolTip("Confirm Remove");
+                        src.setToolTip(I18N.DISPLAY.confirmRemove());
                         return;
                     }
 
@@ -211,6 +232,14 @@ public class CollaboratorsPanel extends ContentPanel {
             });
             return btn;
         }
+    }
+
+    private boolean checkCurrentUser(Collaborator model) {
+        if (model.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername())) {
+            return true;
+        }
+
+        return false;
     }
 
     private void addCollaborators(final Collaborator model) {
