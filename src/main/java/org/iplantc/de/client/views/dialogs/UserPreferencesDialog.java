@@ -42,8 +42,7 @@ public class UserPreferencesDialog extends Dialog {
         initDialog();
         buildTabPanel();
         buildSettingPanel();
-        // @TODO temp remove collaborators panel
-        // buildCollaboratorsPanel();
+        buildCollaboratorsPanel();
         layout();
         addListener(Events.Hide, new Listener<ComponentEvent>() {
 
@@ -51,8 +50,7 @@ public class UserPreferencesDialog extends Dialog {
             public void handleEvent(ComponentEvent be) {
 
                 settingPanel.saveData();
-                // @TODO temp remove collaborators panel
-                // collabPanel.saveData();
+                collabPanel.saveData();
                 EventBus.getInstance().fireEvent(new SettingsUpdatedEvent());
             }
         });

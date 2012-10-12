@@ -143,9 +143,7 @@ public final class DataActionsMenu extends Menu {
         add(itemDownloadResource);
         add(itemDeleteResource);
         add(itemMetaData);
-
-        // @TODO temp remove sharing action
-        // add(itemShareResource);
+        add(itemShareResource);
     }
 
     private MenuItem buildLeafMenuItem(final String id, final String text,
