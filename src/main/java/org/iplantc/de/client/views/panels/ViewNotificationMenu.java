@@ -5,16 +5,18 @@ package org.iplantc.de.client.views.panels;
 
 import java.util.List;
 
+import org.iplantc.core.client.widgets.MenuHyperlink;
+import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.AnalysisPayloadEvent;
-import org.iplantc.de.client.events.AnalysisPayloadEventHandler;
-import org.iplantc.de.client.events.AnalysisUpdateEvent;
-import org.iplantc.de.client.events.DataPayloadEvent;
-import org.iplantc.de.client.events.DataPayloadEventHandler;
-import org.iplantc.de.client.events.NotificationCountUpdateEvent;
+import org.iplantc.de.client.dispatchers.WindowDispatcher;
+import org.iplantc.de.client.events.DeleteNotificationsUpdateEvent;
+import org.iplantc.de.client.events.DeleteNotificationsUpdateEventHandler;
+import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.models.Notification;
+import org.iplantc.de.client.models.NotificationWindowConfig;
 import org.iplantc.de.client.services.MessageServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotificationHelper.Category;
@@ -23,10 +25,13 @@ import org.iplantc.de.client.utils.NotifyInfo;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ListViewEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.ListViewSelectionModel;
@@ -34,7 +39,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -46,19 +51,27 @@ public class ViewNotificationMenu extends Menu {
 
     private ListStore<Notification> store;
 
-    public static final String TOTAL_NOTIFI_COUNT = "totalNotificationCount";
-
-    private int totalNotificationCount;
-
     private CustomListView<Notification> view;
+
+    public static final int NEW_NOTIFICATIONS_LIMIT = 10;
+
+    private int total_unseen;
+
+    private NotificationHelper helper = NotificationHelper.getInstance();
+
+    private final String linkStyle = "de_header_menu_hyperlink"; //$NON-NLS-1$
+
+    private HorizontalPanel hyperlinkPanel;
 
     public ViewNotificationMenu() {
         setLayout(new FitLayout());
-        registerEventHandlers();
+        initListeners();
         view = initList();
         LayoutContainer lc = buildPanel();
+        hyperlinkPanel = new HorizontalPanel();
         lc.add(view);
         add(lc);
+        add(hyperlinkPanel);
     }
 
     private LayoutContainer buildPanel() {
@@ -67,6 +80,24 @@ public class ViewNotificationMenu extends Menu {
         lc.setSize(250, 270);
         lc.setBorders(false);
         return lc;
+    }
+
+    private void initListeners() {
+        EventBus.getInstance().addHandler(DeleteNotificationsUpdateEvent.TYPE,
+                new DeleteNotificationsUpdateEventHandler() {
+
+                    @Override
+                    public void onDelete(DeleteNotificationsUpdateEvent event) {
+                        for (Notification n : store.getModels()) {
+                            for (Notification deleted : event.getIds()) {
+                                if (n.getId().equals(deleted.getId())) {
+                                    store.remove(n);
+                                }
+                            }
+                        }
+
+                    }
+                });
     }
 
     private CustomListView<Notification> initList() {
@@ -93,143 +124,12 @@ public class ViewNotificationMenu extends Menu {
         return view;
     }
 
-    private void registerEventHandlers() {
-        final EventBus eventbus = EventBus.getInstance();
-
-        // handle data events
-        eventbus.addHandler(DataPayloadEvent.TYPE, new DataPayloadEventHandler() {
-            @Override
-            public void onFire(DataPayloadEvent event) {
-                addFromEventHandler(Category.DATA, I18N.DISPLAY.fileUpload(), event.getMessage(),
-                        NotificationHelper.getInstance().buildDataContext(event.getPayload()),
-                        event.getPayload());
-                highlightNewNotifications();
-            }
-        });
-
-        // handle analysis events
-        eventbus.addHandler(AnalysisPayloadEvent.TYPE, new AnalysisPayloadEventHandler() {
-            @Override
-            public void onFire(AnalysisPayloadEvent event) {
-                addFromEventHandler(Category.ANALYSIS, I18N.CONSTANT.analysis(), event.getMessage(),
-                        NotificationHelper.getInstance().buildAnalysisContext(event.getPayload()),
-                        event.getPayload());
-                highlightNewNotifications();
-            }
-        });
-    }
-
     @Override
     public void showAt(int x, int y) {
-        super.showAt(x, y);
         highlightNewNotifications();
-        markAsSeen();
-    }
-
-    private void markAsSeen() {
-        List<Notification> new_notifications = store.getModels();
-        JSONArray arr = new JSONArray();
-        int i = 0;
-        if (new_notifications.size() > 0) {
-            for (Notification n : new_notifications) {
-                arr.set(i++, new JSONString(n.get("id").toString()));
-                n.set(Notification.SEEN, true);
-            }
-
-            JSONObject obj = new JSONObject();
-            obj.put("uuids", arr);
-
-            MessageServiceFacade facade = new MessageServiceFacade();
-            facade.markAsSeen(obj, new AsyncCallback<String>() {
-
-                @Override
-                public void onSuccess(String result) {
-                    // Do nothing intentionally
-                }
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    ErrorHandler.post(caught);
-                }
-            });
-        }
-
-    }
-
-    /**
-     * 
-     * persist total notification count
-     * 
-     * @param total
-     */
-    public void setTotalNotificationCount(int total) {
-        totalNotificationCount = total;
-    }
-
-    /**
-     * get total notification count
-     * 
-     * @return
-     */
-    public int getTotalNotificationCount() {
-        return totalNotificationCount;
-    }
-
-    private Notification addItemToStore(final Category category, final JSONObject objMessage,
-            final String context, JSONObject payload) {
-        Notification ret = null; // assume failure
-
-        if (objMessage != null) {
-            ret = new Notification(objMessage, context);
-
-            Notification model = store.findModel("id", ret.get("id"));
-
-            if (model == null) {
-                add(category, ret);
-                totalNotificationCount = totalNotificationCount + 1;
-                fireEvents(category, payload);
-            } else {
-                ret = null;
-            }
-        }
-        return ret;
-    }
-
-    private void fireEvents(final Category category, JSONObject payload) {
-        NotificationCountUpdateEvent ncue = new NotificationCountUpdateEvent(getTotalNotificationCount());
-        EventBus instance = EventBus.getInstance();
-        instance.fireEvent(ncue);
-        if (category.equals(NotificationHelper.Category.ANALYSIS)) {
-            AnalysisUpdateEvent aue = new AnalysisUpdateEvent(payload);
-            instance.fireEvent(aue);
-        }
-    }
-
-    /**
-     * reset all notification count
-     * 
-     */
-    public void resetCount() {
-        totalNotificationCount = 0;
-    }
-
-    private void addFromEventHandler(final Category category, final String header,
-            final JSONObject objMessage, final String context, final JSONObject payload) {
-        Notification notification = addItemToStore(category, objMessage, context, payload);
-
-        if (notification != null) {
-            NotifyInfo.display(header, notification.getMessage());
-        }
-    }
-
-    public void add(final Category category, final Notification notification) {
-        // did we get a valid notification?
-        if (category != Category.ALL && notification != null) {
-            notification.setCategory(category);
-            store.add(notification);
-        }
-
-        store.sort(Notification.PROP_TIMESTAMP, SortDir.DESC);
+        helper.markAsSeen(store.getModels());
+        updateNotificationLink();
+        super.showAt(x, y);
     }
 
     private String getTemplate() {
@@ -250,6 +150,155 @@ public class ViewNotificationMenu extends Menu {
                 view.highlight(view.getStore().indexOf(n), false);
             }
 
+        }
+    }
+
+    public void setUnseenCount(int count) {
+        this.total_unseen = count;
+        updateNotificationLink();
+    }
+
+    public void fetchUnseenNotifications() {
+        MessageServiceFacade facadeMessageService = new MessageServiceFacade();
+        facadeMessageService.getRecentMessages(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                processMessages(result);
+            }
+        });
+    }
+
+    private void updateNotificationLink() {
+        hyperlinkPanel.removeAll();
+        hyperlinkPanel.add(buildNotificationHyerlink());
+        hyperlinkPanel.layout(true);
+    }
+
+    private MenuHyperlink buildNotificationHyerlink() {
+        String displayText;
+        if (total_unseen > 0) {
+            displayText = I18N.DISPLAY.newNotifications() + " (" + total_unseen + " )";
+        } else {
+            displayText = I18N.DISPLAY.allNotifications();
+        }
+        return new MenuHyperlink(displayText, linkStyle, "", new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (total_unseen > 0) {
+                    showNotificationWindow(NotificationHelper.Category.NEW);
+                } else {
+                    showNotificationWindow(NotificationHelper.Category.ALL);
+                }
+                hide();
+            }
+        });
+    }
+
+    /** Makes the notification window visible and filters by a category */
+    private void showNotificationWindow(final Category category) {
+        NotificationWindowConfig config = new NotificationWindowConfig();
+        config.setCategory(category);
+
+        // Build window config
+        WindowConfigFactory configFactory = new WindowConfigFactory();
+        JSONObject windowConfig = configFactory
+                .buildWindowConfig(Constants.CLIENT.myNotifyTag(), config);
+        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
+        dispatcher.dispatchAction(Constants.CLIENT.myNotifyTag());
+    }
+
+    /**
+     * Process method takes in a JSON String, breaks out the individual messages, transforms them into
+     * events, finally the event is fired.
+     * 
+     * @param json string to be processed.
+     */
+    public void processMessages(final String json) {
+
+        JSONObject objMessages = JSONParser.parseStrict(json).isObject();
+        int size = 0;
+        // cache before removing
+        List<Notification> temp = store.getModels();
+        store.removeAll();
+        boolean displayInfo = false;
+
+        if (objMessages != null) {
+            JSONArray arr = objMessages.get("messages").isArray(); //$NON-NLS-1$
+            if (arr != null) {
+                JSONObject objItem;
+                size = arr.size();
+                for (int i = 0; i < size; i++) {
+                    if (isVisible() && !isMasked()) {
+                        mask(I18N.DISPLAY.loadingMask());
+                    }
+                    objItem = arr.get(i).isObject();
+                    if (objItem != null) {
+                        Notification n = buildNotification(objItem);
+                        if (n != null && !isExists(n)) {
+                            store.add(n);
+                            if (!isExist(temp, n)) {
+                                displayNotificationPopup(n);
+                                displayInfo = true;
+                            }
+
+                        }
+                    }
+                }
+                if (total_unseen > NEW_NOTIFICATIONS_LIMIT && displayInfo) {
+                    NotifyInfo.display(I18N.DISPLAY.newNotifications(),
+                            I18N.DISPLAY.newNotificationsAlert());
+                }
+                store.sort(Notification.PROP_TIMESTAMP, SortDir.DESC);
+                highlightNewNotifications();
+                unmask();
+            }
+        }
+
+    }
+
+    private boolean isExist(List<Notification> list, Notification n) {
+        for (Notification noti : list) {
+            if (noti.getId().equals(n.getId())) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    private Notification buildNotification(JSONObject objItem) {
+        String type;
+        boolean seen;
+        type = JsonUtil.getString(objItem, "type"); //$NON-NLS-1$
+        seen = JsonUtil.getBoolean(objItem, "seen", false);
+        Notification n = helper.buildNotification(type, seen, objItem);
+        return n;
+    }
+
+    private boolean isExists(Notification n) {
+        Notification temp = store.findModel("id", n.getId());
+        if (temp == null) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    private void displayNotificationPopup(Notification n) {
+        if (!n.isSeen()) {
+            if (n.getCategory().equals(Category.DATA)) {
+                NotifyInfo.display(Category.DATA.toString(), n.getMessage());
+            } else if (n.getCategory().equals(Category.ANALYSIS)) {
+                NotifyInfo.display(Category.ANALYSIS.toString(), n.getMessage());
+            }
         }
     }
 
@@ -274,7 +323,7 @@ public class ViewNotificationMenu extends Menu {
             if (emptyText == null) {
                 emptyText = "&nbsp;";
             }
-            if (store.getModels().size() == 0) {
+            if (store.getModels().size() == 0 && isRendered()) {
                 el().setInnerHtml("<div class='x-grid-empty'>" + emptyText + "</div>");
             }
         }

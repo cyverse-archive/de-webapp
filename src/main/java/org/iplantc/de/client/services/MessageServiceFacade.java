@@ -20,7 +20,7 @@ public class MessageServiceFacade {
      * @param maxNotifications the maximum number of notifications to retrieve.
      * @param callback called on RPC completion.
      */
-    public void getNotifications(int limit, int offset, String filter, String sortDir,
+    public void getNotifications(int limit, int offset, String filter, String sortDir, Boolean seen,
             AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl(); //$NON-NLS-1$
 
@@ -34,6 +34,10 @@ public class MessageServiceFacade {
             builder.append("&sortDir=" + sortDir);
         }
 
+        if (seen != null) {
+            builder.append("&seen=" + seen);
+        }
+
         address = address + builder.toString();
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
@@ -44,9 +48,9 @@ public class MessageServiceFacade {
      * 
      * @param callback called on RPC completion.
      */
-    public void getMessages(AsyncCallback<String> callback) {
+    public void getRecentMessages(AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl()
-                + "notifications/unseen-messages"; //$NON-NLS-1$
+                + "notifications/last-ten-messages"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
 
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
@@ -70,6 +74,15 @@ public class MessageServiceFacade {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "notifications/delete"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 deleteIds.toString());
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    public void getUnSeenMessageCount(AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
+                + "notifications/count-messages?seen=false"; //$NON-NLS-1$
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
 
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
