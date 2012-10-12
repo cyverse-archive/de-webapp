@@ -160,12 +160,14 @@ public class GwtTestDataUtils extends GWTTestCase {
     }
 
     public void testEmptySupportedActions() {
+        // only paste as disabled should returned
         List<DiskResource> list = null;
         List<Action> actions = DataUtils.getSupportedActions(list);
-        assertEquals(0, actions.size());
+        assertEquals(1, actions.size());
         list = new ArrayList<DiskResource>();
         actions = DataUtils.getSupportedActions(list);
-        assertEquals(0, actions.size());
+        // only paste as disabled should returned
+        assertEquals(1, actions.size());
     }
 
     public void testSupportedActions() {
@@ -178,7 +180,9 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.ViewTree));
         assertTrue(actions.contains(Action.Metadata));
         assertTrue(actions.contains(Action.Share));
-        assertEquals(8, actions.size());
+        assertTrue(actions.contains(Action.Copy));
+        assertTrue(actions.contains(Action.Paste));
+        assertEquals(10, actions.size());
 
         actions = DataUtils.getSupportedActions(buildSingleFolderList());
         assertTrue(actions.contains(Action.Delete));
@@ -186,13 +190,17 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.RenameFolder));
         assertTrue(actions.contains(Action.Metadata));
         assertTrue(actions.contains(Action.Share));
-        assertEquals(5, actions.size());
+        assertTrue(actions.contains(Action.Copy));
+        assertTrue(actions.contains(Action.Paste));
+        assertEquals(7, actions.size());
 
         actions = DataUtils.getSupportedActions(buildFileFolderList());
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.Share));
-        assertEquals(3, actions.size());
+        assertTrue(actions.contains(Action.Copy));
+        assertTrue(actions.contains(Action.Paste));
+        assertEquals(5, actions.size());
 
         actions = DataUtils.getSupportedActions(buildMixedPermissionsFilesList());
         assertTrue(actions.contains(Action.Delete));
@@ -200,13 +208,17 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.View));
         assertTrue(actions.contains(Action.Share));
-        assertEquals(5, actions.size());
+        assertTrue(actions.contains(Action.Copy));
+        assertTrue(actions.contains(Action.Paste));
+        assertEquals(7, actions.size());
 
         actions = DataUtils.getSupportedActions(buildReadOnlyFolderList());
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.Share));
-        assertEquals(3, actions.size());
+        assertTrue(actions.contains(Action.Copy));
+        assertTrue(actions.contains(Action.Paste));
+        assertEquals(5, actions.size());
     }
 
     public void testParseParentEmpty() {
