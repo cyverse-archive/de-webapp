@@ -172,7 +172,6 @@ public class CollaboratorsPanel extends ContentPanel {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     grid.getSelectionModel().select(false, model);
-
                 }
             });
 
