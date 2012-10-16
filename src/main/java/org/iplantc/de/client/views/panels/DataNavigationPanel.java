@@ -15,6 +15,8 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
+import org.iplantc.de.client.images.Icons;
+import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.ClientDataModel;
 import org.iplantc.de.client.services.DiskResourceServiceCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
@@ -131,6 +133,10 @@ public class DataNavigationPanel extends AbstractDataPanel {
         pnlTree.setIconProvider(new ModelIconProvider<Folder>() {
             @Override
             public AbstractImagePrototype getIcon(Folder model) {
+                if (model.getName().equalsIgnoreCase("trash")) {
+                    return AbstractImagePrototype.create(Resources.ICONS.trash());
+                }
+
                 return (pnlTree.isExpanded(model)) ? pnlTree.getStyle().getNodeOpenIcon() : pnlTree
                         .getStyle().getNodeCloseIcon();
             }
@@ -160,8 +166,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
         }
         return false;
     }
-
-
 
     private void initTreeListeners(Listener<BaseEvent> selctionChangeListener) {
         pnlTree.getSelectionModel().addListener(Events.SelectionChange, new Listener<BaseEvent>() {
@@ -417,15 +421,18 @@ public class DataNavigationPanel extends AbstractDataPanel {
         public void onDragDrop(DNDEvent event) {
             @SuppressWarnings("rawtypes")
             TreeNode node = pnlTree.findNode(event.getTarget());
-
+            // call service to move files and folders
+            DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
             if (node != null) {
                 // get our dest folder
                 DiskResource res = (DiskResource)node.getModel();
                 String idDestFolder = res.getId();
 
-                // call service to move files and folders
-                DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
-                facade.moveDiskResources((List<DiskResource>)event.getData(), idDestFolder);
+                if (idDestFolder.startsWith("/iplant/trash")) {
+                    // facade.
+                } else {
+                    facade.moveDiskResources((List<DiskResource>)event.getData(), idDestFolder);
+                }
             }
         }
 
@@ -489,7 +496,9 @@ public class DataNavigationPanel extends AbstractDataPanel {
     }
 
     public void removeTreePanel() {
-        remove(pnlTree);
+        if (pnlTree.isAttached()) {
+            remove(pnlTree);
+        }
     }
 
     public void setMaskingParent(Component component) {
@@ -718,6 +727,7 @@ public class DataNavigationPanel extends AbstractDataPanel {
         public void disableCallback() {
             enabled = false;
         }
+
         public void setPaths(final Stack<String> paths) {
             this.paths = paths;
         }

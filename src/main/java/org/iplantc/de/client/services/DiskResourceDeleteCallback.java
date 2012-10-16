@@ -3,7 +3,9 @@ package org.iplantc.de.client.services;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
+import org.iplantc.de.client.utils.NotifyInfo;
 
 import com.google.gwt.json.client.JSONObject;
 
@@ -31,6 +33,13 @@ public abstract class DiskResourceDeleteCallback extends DiskResourceActionCallb
     @Override
     protected ActionType getActionType() {
         return ActionType.DELETE;
+    }
+
+    @Override
+    public void onSuccess(String result) {
+        super.onSuccess(result);
+        NotifyInfo.display(org.iplantc.de.client.I18N.DISPLAY.delete(), I18N.DISPLAY.deleteMsg());
+
     }
 
     /**

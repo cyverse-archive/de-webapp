@@ -511,6 +511,19 @@ public class DiskResourceServiceFacade {
     }
 
     /**
+     * restore a deleted disk resources
+     * 
+     * @param body
+     * @param callback
+     */
+    public void restoreDiskResource(JSONObject body, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".restore"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        callService(callback, wrapper);
+    }
+
+    /**
      * Performs the actual service call.
      * 
      * @param callback executed when RPC call completes.

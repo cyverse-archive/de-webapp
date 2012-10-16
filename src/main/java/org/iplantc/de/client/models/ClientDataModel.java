@@ -391,7 +391,12 @@ public class ClientDataModel {
             }
 
             heirarchy.remove(folder);
-
+            if (!folder.getId().startsWith("/iplant/trash/home/rods/")) {
+                Folder trash = heirarchy.findModel("id", "/iplant/trash/home/rods/"
+                        + UserInfo.getInstance().getUsername());
+                System.out.println("---->" + trash);
+                heirarchy.add(trash, folder, true);
+            }
             updateHasSubFolders(getFolder(DiskResourceUtil.parseParent(folder.getId())));
         }
     }

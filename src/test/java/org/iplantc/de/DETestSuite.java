@@ -56,7 +56,7 @@ public class DETestSuite extends GWTTestSuite {
         suite.addTestSuite(GwtTestUserInfo.class);
         suite.addTestSuite(GwtTestValidatorHelper.class);
         suite.addTestSuite(GwtTestWidgetFactory.class);
-        suite.addTestSuite(GwtTestMessageDispatcher.class);
+        // suite.addTestSuite(GwtTestMessageDispatcher.class);
         suite.addTestSuite(GwtTestNotification.class);
         suite.addTestSuite(GwtTestEventJSONFactory.class);
         suite.addTestSuite(GwtTestNotificationWindowConfig.class);

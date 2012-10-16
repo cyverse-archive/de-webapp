@@ -11,21 +11,25 @@ import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
+import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.images.Resources;
-import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.services.DiskResourceCopyCallback;
+import org.iplantc.de.client.services.DiskResourceServiceCallback;
+import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.services.FileDeleteCallback;
 import org.iplantc.de.client.services.FolderDeleteCallback;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.utils.DataUtils.Action;
 import org.iplantc.de.client.utils.DataViewContextExecutor;
+import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.utils.TreeViewContextExecutor;
 import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 import org.iplantc.de.client.views.dialogs.MetadataEditorDialog;
@@ -36,14 +40,10 @@ import org.iplantc.de.client.views.panels.MetadataEditorPanel;
 import org.iplantc.de.client.views.panels.RenameFileDialogPanel;
 import org.iplantc.de.client.views.panels.RenameFolderDialogPanel;
 
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -67,6 +67,7 @@ public final class DataActionsMenu extends Menu {
     private static final String MI_SHARE_RESOURCE_ID = "idDataActionsMenuShare"; //$NON-NLS-1$
     private static final String MI_COPY_RESOURCE_ID = "idDataActionsMenuCopy"; //$NON-NLS-1$
     private static final String MI_PASTE_RESOURCE_ID = "idDataActionsMenuPaste"; //$NON-NLS-1$
+    private static final String MI_RESTORE_RESOURCE_ID = "idDataActionsMenuRestore"; //$NON-NLS-1$
 
     private final ArrayList<HandlerRegistration> handlers = new ArrayList<HandlerRegistration>();
 
@@ -92,6 +93,7 @@ public final class DataActionsMenu extends Menu {
     private MenuItem itemShareResource;
     private MenuItem itemCopyResource;
     private MenuItem itemPasteResource;
+    private MenuItem itemRestore;
 
     public DataActionsMenu(final String tag) {
         this.tag = tag;
@@ -135,15 +137,19 @@ public final class DataActionsMenu extends Menu {
         itemPasteResource = buildLeafMenuItem(MI_PASTE_RESOURCE_ID, I18N.DISPLAY.paste(),
                 Resources.ICONS.copy(), new PasteResourceListenerImpl());
 
+        itemRestore = buildLeafMenuItem(MI_RESTORE_RESOURCE_ID, I18N.DISPLAY.restore(),
+                Resources.ICONS.goUp(), new RestoreResourceListenerImpl());
+
         add(itemAddFolder);
         add(itemRenameResource);
         add(itemViewResource);
-        add(itemCopyResource);
-        add(itemPasteResource);
+        // add(itemCopyResource);
+        // add(itemPasteResource);
         add(itemDownloadResource);
         add(itemDeleteResource);
         add(itemMetaData);
         add(itemShareResource);
+        add(itemRestore);
     }
 
     private MenuItem buildLeafMenuItem(final String id, final String text,
@@ -188,7 +194,7 @@ public final class DataActionsMenu extends Menu {
                     @Override
                     public void onSelected(DiskResourceSelectedEvent event) {
                         currentPage = event.getResource();
-                        prepareMenuItems(DataUtils.getSupportedActions(resources));
+                        prepareMenuItems(DataUtils.getSupportedActions(resources, currentPage.getId()));
                     }
 
                 }));
@@ -207,7 +213,7 @@ public final class DataActionsMenu extends Menu {
 
     public void update(List<DiskResource> resources) {
         this.resources = resources == null ? Collections.<DiskResource> emptyList() : resources;
-        prepareMenuItems(DataUtils.getSupportedActions(this.resources));
+        prepareMenuItems(DataUtils.getSupportedActions(this.resources, currentPage.getId()));
     }
 
     private void prepareMenuItems(final Iterable<Action> actions) {
@@ -269,15 +275,19 @@ public final class DataActionsMenu extends Menu {
                 case Share:
                     showMenuItem(itemShareResource);
                     break;
-                case Copy:
-                    showMenuItem(itemCopyResource);
+                // case Copy:
+                // showMenuItem(itemCopyResource);
+                // break;
+                // case Paste:
+                // showMenuItem(itemPasteResource);
+                // if (copyBuffer == null) {
+                // itemPasteResource.disable();
+                // }
+                // break;
+                case Restore:
+                    showMenuItem(itemRestore);
                     break;
-                case Paste:
-                    showMenuItem(itemPasteResource);
-                    if (copyBuffer == null) {
-                        itemPasteResource.disable();
-                    }
-                    break;
+
             }
         }
     }
@@ -376,10 +386,48 @@ public final class DataActionsMenu extends Menu {
 
     }
 
+    private class RestoreResourceListenerImpl extends SelectionListener<MenuEvent> {
+        @Override
+        public void componentSelected(MenuEvent ce) {
+            if (DataUtils.isViewable(resources)) {
+                doRestore();
+            }
+        }
+    }
+
+    private void doRestore() {
+        JSONObject obj = new JSONObject();
+        obj.put("path", new JSONString(resources.get(0).getId()));
+        obj.put("name", new JSONString(DiskResourceUtil.parseNameFromPath(resources.get(0).getId())));
+        DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+        facade.restoreDiskResource(obj, new DiskResourceServiceCallback() {
+
+            @Override
+            public void onSuccess(String result) {
+                ManageDataRefreshEvent event = new ManageDataRefreshEvent(tag, currentPage.getId(), null);
+                EventBus.getInstance().fireEvent(event);
+                NotifyInfo.display(I18N.DISPLAY.restore(), I18N.DISPLAY.restoreMsg());
+            }
+
+            @Override
+            protected String getErrorMessageDefault() {
+                return I18N.ERROR.restoreDefaultMsg();
+            }
+
+            @Override
+            protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
+                return getErrorMessage(code, parsePathsToNameList(jsonError));
+            }
+
+        });
+
+    }
+
     private void doCopy() {
         JSONObject obj = new JSONObject();
         JSONArray fromArr = new JSONArray();
         int i = 0;
+        maskingParent.mask("Copying...");
         for (DiskResource r : copyBuffer) {
             fromArr.set(i++, new JSONString(r.getId()));
         }
@@ -387,6 +435,8 @@ public final class DataActionsMenu extends Menu {
         obj.put("destination", new JSONString(currentPage.getId()));
 
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+        DiskResourceCopyCallback callback = new DiskResourceCopyCallback();
+        callback.setMaskedCaller(maskingParent);
         facade.copyDiskResource(obj, new DiskResourceCopyCallback());
     }
 
@@ -426,38 +476,7 @@ public final class DataActionsMenu extends Menu {
     private class DeleteListenerImpl extends SelectionListener<MenuEvent> {
         @Override
         public void componentSelected(MenuEvent ce) {
-            final Listener<MessageBoxEvent> callback = new Listener<MessageBoxEvent>() {
-                @Override
-                public void handleEvent(MessageBoxEvent ce) {
-                    Button btn = ce.getButtonClicked();
-
-                    // did the user click yes?
-                    if (btn.getItemId().equals(Dialog.YES)) {
-                        confirmDelete();
-                    }
-                }
-            };
-
-            // if folders are selected, display a "folder delete" confirmation
-            if (DataUtils.hasFolders(resources)) {
-                MessageBox.confirm(I18N.DISPLAY.warning(), I18N.DISPLAY.folderDeleteWarning(), callback);
-            } else {
-                confirmDelete();
-            }
-        }
-
-        private void confirmDelete() {
-            final Listener<MessageBoxEvent> callback = new Listener<MessageBoxEvent>() {
-                @Override
-                public void handleEvent(MessageBoxEvent ce) {
-                    Button btn = ce.getButtonClicked();
-                    if (btn.getItemId().equals(Dialog.YES)) {
-                        doDelete();
-                    }
-                }
-            };
-
-            MessageBox.confirm(I18N.DISPLAY.deleteFilesTitle(), I18N.DISPLAY.deleteFilesMsg(), callback);
+            doDelete();
         }
 
         private void doDelete() {

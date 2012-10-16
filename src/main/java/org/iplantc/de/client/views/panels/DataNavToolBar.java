@@ -21,14 +21,11 @@ import org.iplantc.de.client.views.panels.DataNavigationPanel.Mode;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -52,6 +49,8 @@ public class DataNavToolBar extends ToolBar {
     private static final String ID_NEW_FOLDER_BTN = "idNewFolderBtn"; //$NON-NLS-1$
     private static final String ID_RENAME_FOLDER_BTN = "idRenameFolderBtn"; //$NON-NLS-1$
     private static final String ID_DELETE_FOLDER_BTN = "idDeleteFolderBtn"; //$NON-NLS-1$
+    private static final String ID_UPLD_MENU = "idUpldMenu";
+
     @SuppressWarnings("unused")
     private final String tag;
     private Folder rootFolder;
@@ -116,7 +115,7 @@ public class DataNavToolBar extends ToolBar {
 
         ret.setIcon(AbstractImagePrototype.create(Resources.ICONS.desktopUpload()));
         ret.setToolTip(I18N.DISPLAY.importLabel());
-        ret.setId("idUpldMenu");
+        ret.setId(ID_UPLD_MENU);
         ret.setMenu(importMenu);
 
         return ret;
@@ -273,32 +272,19 @@ public class DataNavToolBar extends ToolBar {
 
                 @SuppressWarnings("rawtypes")
                 List resources = selectionModel.getSelectedItems();
-                Listener<MessageBoxEvent> callback = new Listener<MessageBoxEvent>() {
-                    @Override
-                    public void handleEvent(MessageBoxEvent ce) {
-                        // did the user click yes?
-                        if (ce.getButtonClicked().getItemId().equals(Dialog.YES)) {
-                            List<String> idFolders = new ArrayList<String>();
-                            for (Folder resource : selectionModel.getSelectedItems()) {
-                                idFolders.add(resource.getId());
-                            }
-
-                            if (idFolders.size() > 0) {
-                                DiskResourceServiceFacade facade = new DiskResourceServiceFacade(
-                                        maskingParent);
-                                facade.deleteFolders(JsonUtil.buildJsonArrayString(idFolders),
-                                        new FolderDeleteCallback(idFolders));
-                            }
-                        }
-                    }
-                };
-
+                List<String> idFolders = new ArrayList<String>();
                 if (!DataUtils.isDeletable(resources)) {
                     showErrorMsg();
                 } else {
-                    MessageBox.confirm(I18N.DISPLAY.warning(), I18N.DISPLAY.folderDeleteWarning(),
-                            callback);
+
+                    idFolders = DataUtils.getDiskResourceIdList(resources);
+                    if (idFolders.size() > 0) {
+                        DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
+                        facade.deleteFolders(JsonUtil.buildJsonArrayString(idFolders),
+                                new FolderDeleteCallback(idFolders));
+                    }
                 }
+
             }
         });
         return deleteFolder;
@@ -345,6 +331,11 @@ public class DataNavToolBar extends ToolBar {
 
                 Folder dest = selectionModel.getSelectedItem();
 
+                // by default create it under user root
+                if (dest == null) {
+                    dest = rootFolder;
+                }
+
                 if (!DataUtils.canCreateFolderInThisFolder(dest)) {
                     showErrorMsg();
 
@@ -372,12 +363,19 @@ public class DataNavToolBar extends ToolBar {
                 // check the selected folder
                 Folder selectedFolder = selectionModel.getSelectedItem();
 
-                if (selectedFolder != null) {
-                    // we can at least add folders to a selected path under the home folder.
-                    addMenuItemsEnabled = true;
+                if (!selectedFolder.getId().startsWith("/iplant/trash/home/rods/")) {
 
-                    // disable editing items for the home folder
-                    editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
+                    if (selectedFolder != null) {
+                        // we can at least add folders to a selected path under the home folder.
+                        addMenuItemsEnabled = true;
+
+                        // disable editing items for the home folder
+                        editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
+                    }
+                } else {
+                    addMenuItemsEnabled = false;
+                    editMenuItemsEnabled = false;
+                    getItemByItemId(ID_UPLD_MENU).disable();
                 }
             }
 

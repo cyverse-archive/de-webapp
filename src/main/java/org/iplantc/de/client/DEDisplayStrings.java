@@ -96,13 +96,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String raw();
 
     /**
-     * Localized display text used as a warning in data management.
-     * 
-     * @return a string representing the localized text.
-     */
-    String folderDeleteWarning();
-
-    /**
      * Localized text for display when asking for search information from the user.
      * 
      * @return a string representing the localized text.
@@ -118,20 +111,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return a string representing the localized text.
      */
     String rootApplicationTitle();
-
-    /**
-     * Localized text for display as the title for a delete files confirmation dialog.
-     * 
-     * @return a string representing the localized text.
-     */
-    String deleteFilesTitle();
-
-    /**
-     * Localized text for display as a confirmation message when user's delete files.
-     * 
-     * @return a string representing the localized text.
-     */
-    String deleteFilesMsg();
 
     /**
      * Localized text for display as button text for the execution of an analysis.
@@ -1151,5 +1130,19 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
 
     String confirmRemove();
+
+    /**
+     * restore message
+     * 
+     * @return
+     */
+    String restoreMsg();
+
+    /**
+     * delete message
+     * 
+     * @return
+     */
+    String deleteMsg();
 
 }

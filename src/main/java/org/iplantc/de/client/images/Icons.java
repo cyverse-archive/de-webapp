@@ -334,4 +334,12 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
     @Source("application_go.png")
     ImageResource applicationLaunch();
 
+    /**
+     * Image resource for data trash bin
+     * 
+     * @return image.
+     */
+    @Source("bin.png")
+    ImageResource trash();
+
 }

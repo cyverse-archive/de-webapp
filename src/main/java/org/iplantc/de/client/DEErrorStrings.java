@@ -535,4 +535,11 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String selfCollabAddError();
+
+    /**
+     * Default error msg to show when restore fails
+     * 
+     * @return
+     */
+    String restoreDefaultMsg();
 }
