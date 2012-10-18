@@ -104,7 +104,8 @@ public class DataMainToolBar extends ToolBar {
     }
 
     private void updateActionsButton(final List<DiskResource> resources) {
-        final List<DataUtils.Action> actions = DataUtils.getSupportedActions(resources);
+        final List<DataUtils.Action> actions = DataUtils.getSupportedActions(resources,
+                container.getCurrentPath());
 
         if (actions.isEmpty()) {
             btnActions.disable();

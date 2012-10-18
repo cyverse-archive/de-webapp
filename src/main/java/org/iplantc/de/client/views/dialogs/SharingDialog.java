@@ -288,15 +288,16 @@ public class SharingDialog extends Dialog {
 
         for (DiskResource dr : resources) {
             view = (SharePanel)sharingPanel.getItemByItemId(dr.getId());
+            if (view.isUpdated()) {
+                JSONObject temp = buildSharingJson(view);
+                if (temp != null) {
+                    sharingArr.set(i++, temp);
+                }
 
-            JSONObject temp = buildSharingJson(view);
-            if (temp != null) {
-                sharingArr.set(i++, temp);
-            }
-
-            temp = buildUnSharingJson(view);
-            if (temp != null) {
-                unsharingArr.set(j++, temp);
+                temp = buildUnSharingJson(view);
+                if (temp != null) {
+                    unsharingArr.set(j++, temp);
+                }
             }
         }
 

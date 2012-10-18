@@ -161,15 +161,15 @@ public class GwtTestDataUtils extends GWTTestCase {
 
     public void testEmptySupportedActions() {
         List<DiskResource> list = null;
-        List<Action> actions = DataUtils.getSupportedActions(list);
+        List<Action> actions = DataUtils.getSupportedActions(list, null);
         assertEquals(0, actions.size());
         list = new ArrayList<DiskResource>();
-        actions = DataUtils.getSupportedActions(list);
+        actions = DataUtils.getSupportedActions(list, null);
         assertEquals(0, actions.size());
     }
 
     public void testSupportedActions() {
-        List<Action> actions = DataUtils.getSupportedActions(buildSingleFileList());
+        List<Action> actions = DataUtils.getSupportedActions(buildSingleFileList(), null);
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.SimpleDownload));
         assertTrue(actions.contains(Action.BulkDownload));
@@ -178,34 +178,44 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.ViewTree));
         assertTrue(actions.contains(Action.Metadata));
         assertTrue(actions.contains(Action.Share));
+        // assertTrue(actions.contains(Action.Copy));
+        // assertTrue(actions.contains(Action.Paste));
         assertEquals(8, actions.size());
 
-        actions = DataUtils.getSupportedActions(buildSingleFolderList());
+        actions = DataUtils.getSupportedActions(buildSingleFolderList(), null);
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.RenameFolder));
         assertTrue(actions.contains(Action.Metadata));
         assertTrue(actions.contains(Action.Share));
+        // assertTrue(actions.contains(Action.Copy));
+        // assertTrue(actions.contains(Action.Paste));
         assertEquals(5, actions.size());
 
-        actions = DataUtils.getSupportedActions(buildFileFolderList());
+        actions = DataUtils.getSupportedActions(buildFileFolderList(), null);
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.Share));
+        // assertTrue(actions.contains(Action.Copy));
+        // assertTrue(actions.contains(Action.Paste));
         assertEquals(3, actions.size());
 
-        actions = DataUtils.getSupportedActions(buildMixedPermissionsFilesList());
+        actions = DataUtils.getSupportedActions(buildMixedPermissionsFilesList(), null);
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.SimpleDownload));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.View));
         assertTrue(actions.contains(Action.Share));
+        // assertTrue(actions.contains(Action.Copy));
+        // assertTrue(actions.contains(Action.Paste));
         assertEquals(5, actions.size());
 
-        actions = DataUtils.getSupportedActions(buildReadOnlyFolderList());
+        actions = DataUtils.getSupportedActions(buildReadOnlyFolderList(), null);
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.Share));
+        // assertTrue(actions.contains(Action.Copy));
+        // assertTrue(actions.contains(Action.Paste));
         assertEquals(3, actions.size());
     }
 

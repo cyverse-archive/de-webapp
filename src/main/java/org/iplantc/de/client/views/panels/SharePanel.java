@@ -25,6 +25,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -60,15 +62,18 @@ public class SharePanel extends ContentPanel {
     private ToolBar toolbar;
     private static final String ID_PERM_PANEL = "idPermPanel";
     private static final String ID_BTN_REMOVE = "idBtnRemove";
+    private boolean updated;
 
     public SharePanel(DiskResource dr) {
         unshareList = new ArrayList<Sharing>();
         this.setResource(dr);
+        updated = false;
         init();
     }
 
     private void init() {
         setSize(385, 225);
+        setCollapsible(true);
         setLayout(new FitLayout());
         ColumnModel cm = buildColumnModel();
         ListStore<Sharing> store = new ListStore<Sharing>();
@@ -87,6 +92,37 @@ public class SharePanel extends ContentPanel {
         addToolBar();
         new SharingGridDropTarget(grid);
         new SharingDropTarget(this);
+    }
+
+    private void initUpdateListeners() {
+        grid.getStore().addListener(Store.Add, new Listener<StoreEvent<Sharing>>() {
+
+            @Override
+            public void handleEvent(StoreEvent<Sharing> be) {
+                updated = true;
+
+            }
+
+        });
+
+        grid.getStore().addListener(Store.Update, new Listener<StoreEvent<Sharing>>() {
+
+            @Override
+            public void handleEvent(StoreEvent<Sharing> be) {
+                updated = true;
+            }
+
+        });
+
+        grid.getStore().addListener(Store.Remove, new Listener<StoreEvent<Sharing>>() {
+
+            @Override
+            public void handleEvent(StoreEvent<Sharing> be) {
+                updated = true;
+            }
+
+        });
+
     }
 
     private void addToolBar() {
@@ -129,8 +165,14 @@ public class SharePanel extends ContentPanel {
 
     }
 
+    public boolean isUpdated() {
+        return updated;
+    }
+
     public void setSharingInfo(List<Sharing> sharingInfoList) {
         grid.getStore().add(sharingInfoList);
+        // init this only after loading existing sharing list
+        initUpdateListeners();
     }
 
     /**

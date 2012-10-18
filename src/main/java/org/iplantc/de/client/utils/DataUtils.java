@@ -17,7 +17,7 @@ public class DataUtils {
                 .delete()), View(I18N.DISPLAY.view()), ViewTree(I18N.DISPLAY.viewTreeViewer()), SimpleDownload(
                 I18N.DISPLAY.simpleDownload()), BulkDownload(I18N.DISPLAY.bulkDownload()), Metadata(
                 I18N.DISPLAY.metadata()), Share(I18N.DISPLAY.share()), Copy(I18N.DISPLAY.copy()), Paste(
-                I18N.DISPLAY.paste());
+                I18N.DISPLAY.paste()), Restore(I18N.DISPLAY.restore());
 
         private final String displayText;
 
@@ -46,7 +46,8 @@ public class DataUtils {
         return ret;
     }
 
-    public static List<Action> getSupportedActions(final List<DiskResource> resources) {
+    public static List<Action> getSupportedActions(final List<DiskResource> resources,
+            final String currentPath) {
         List<Action> ret = new ArrayList<Action>();
         int size = 0;
         boolean hasFolders = false;
@@ -75,13 +76,17 @@ public class DataUtils {
                 ret.add(Action.BulkDownload);
                 ret.add(Action.Delete);
                 ret.add(Action.Share);
-                ret.add(Action.Copy);
-                ret.add(Action.Paste);
+                // ret.add(Action.Copy);
+                // ret.add(Action.Paste);
             } else {
-                ret.add(Action.Paste);
+                // ret.add(Action.Paste);
             }
         } else {
-            ret.add(Action.Paste);
+            // ret.add(Action.Paste);
+        }
+
+        if (currentPath != null && currentPath.startsWith("/iplant/trash")) {
+            ret.add(Action.Restore);
         }
         return ret;
     }
