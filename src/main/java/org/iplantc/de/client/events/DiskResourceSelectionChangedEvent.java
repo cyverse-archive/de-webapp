@@ -17,16 +17,20 @@ public class DiskResourceSelectionChangedEvent extends
 
     private final String tag;
     private final List<DiskResource> selected;
+    private final String currentPath;
 
     /**
      * Instantiated from a tag and a list of selected disk resources.
      * 
      * @param tag tag associated with the firing window.
      * @param selected list of selected disk resources.
+     * @param currentPath current page's path
      */
-    public DiskResourceSelectionChangedEvent(final String tag, final List<DiskResource> selected) {
+    public DiskResourceSelectionChangedEvent(final String tag, final List<DiskResource> selected,
+            final String currentPath) {
         this.tag = tag;
         this.selected = selected;
+        this.currentPath = currentPath;
     }
 
     /**
@@ -61,5 +65,12 @@ public class DiskResourceSelectionChangedEvent extends
      */
     public List<DiskResource> getSelected() {
         return selected;
+    }
+
+    /**
+     * @return the currentPath
+     */
+    public String getCurrentPath() {
+        return currentPath;
     }
 }

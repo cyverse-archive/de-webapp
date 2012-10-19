@@ -11,13 +11,18 @@ import org.iplantc.core.uidiskresource.client.models.FolderData;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
+import org.iplantc.de.client.events.LoadDataSearchResultsEvent;
+import org.iplantc.de.client.events.LoadDataSearchResultsEventHandler;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
+import org.iplantc.de.client.events.disk.mgmt.NavFolderSelectedEvent;
+import org.iplantc.de.client.events.disk.mgmt.NavFolderSelectedEventHandler;
 import org.iplantc.de.client.models.ClientDataModel;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.views.DataActionsMenu;
 import org.iplantc.de.client.views.MyDataGrid;
+import org.iplantc.de.client.views.MyDataSearchGrid;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -49,6 +54,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
     private final DataActionsMenu menuActions;
     private final DataMainToolBar toolbar;
     private MyDataGridDragSource dndSource;
+    private MyDataSearchGrid searchGrid;
 
     public DataMainPanel(final String tag, final ClientDataModel model) {
         this(tag, model, null);
@@ -94,6 +100,14 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
 
         handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
                 new DiskResourceSelectedEventHandlerImpl()));
+
+        handlers.add(eventbus.addHandler(NavFolderSelectedEvent.TYPE,
+                new NavFolderSelectedEventHandlerImpl()));
+
+        handlers.add(eventbus.addHandler(LoadDataSearchResultsEvent.TYPE,
+                new LoadDataSearchResultsEventHandlerImpl()
+
+        ));
     }
 
     private void initDragAndDrop() {
@@ -117,9 +131,14 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
     public void seed(final ClientDataModel model, String tag, Listener<BaseEvent> selctionChangeListener) {
 
         gridCleanUp();
+
         toolbar.cleanup();
         toolbar.registerHandlers();
 
+        if (searchGrid != null && searchGrid.isAttached()) {
+            remove(searchGrid);
+            searchGrid = null;
+        }
         if (grid != null) {
             remove(grid);
         }
@@ -210,6 +229,14 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             return;
         }
 
+        List<Component> items = getItems();
+        if (items.contains(searchGrid)) {
+            remove(searchGrid);
+            add(grid);
+        } else if (!items.contains(grid)) {
+            add(grid);
+        }
+
         ListStore<DiskResource> store = grid.getStore();
 
         // start with an empty grid
@@ -231,9 +258,9 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
                 }
             }
 
-            grid.getView().refresh(false);
+            grid.getView().refresh(true);
 
-            layout();
+            layout(true);
         }
     }
 
@@ -261,7 +288,6 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             public void onSuccess(String json) {
                 model.updatePage(json);
                 updateGrid();
-                toolbar.clearFilters();
 
                 if (maskingParent != null) {
                     maskingParent.unmask();
@@ -406,6 +432,40 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         this.selectedResourceIds = selectedResourceIds;
     }
 
+    private final class NavFolderSelectedEventHandlerImpl implements NavFolderSelectedEventHandler {
+        @Override
+        public void onSelected(NavFolderSelectedEvent event) {
+            DiskResource resource = event.getResource();
+
+            if (resource instanceof Folder && tag.equals(event.getTag())) {
+                buildPage(resource.getId());
+            }
+
+        }
+    }
+
+    private final class LoadDataSearchResultsEventHandlerImpl implements
+            LoadDataSearchResultsEventHandler {
+        @Override
+        public void onLoad(LoadDataSearchResultsEvent event) {
+            mask(I18N.DISPLAY.loadingMask());
+
+            // swap the view
+            if (grid != null && grid.isAttached()) {
+                remove(grid);
+            }
+
+            if (searchGrid != null && searchGrid.isAttached()) {
+                remove(searchGrid);
+            }
+            searchGrid = MyDataSearchGrid.createInstance(event.getResults(), tag);
+
+            add(searchGrid);
+            layout(true);
+            unmask();
+        }
+    }
+
     private class DiskResourceSelectedEventHandlerImpl implements DiskResourceSelectedEventHandler {
         @Override
         public void onSelected(DiskResourceSelectedEvent event) {
@@ -424,7 +484,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             List<DiskResource> selected = grid.getSelectionModel().getSelectedItems();
 
             DiskResourceSelectionChangedEvent event = new DiskResourceSelectionChangedEvent(tag,
-                    selected);
+                    selected, model.getCurrentPath());
             eventbus.fireEvent(event);
         }
     }

@@ -1145,4 +1145,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String deleteMsg();
 
+    /**
+     * data search prompt
+     * 
+     * @return
+     */
+    String dataSearch();
+
 }

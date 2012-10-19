@@ -11,7 +11,6 @@ import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
-import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
@@ -76,7 +75,7 @@ public final class DataActionsMenu extends Menu {
     private List<DiskResource> resources;
     private List<DiskResource> copyBuffer;
 
-    private DiskResource currentPage;
+    private String currentPage;
 
     private Component maskingParent;
 
@@ -184,20 +183,20 @@ public final class DataActionsMenu extends Menu {
                     @Override
                     public void onChange(final DiskResourceSelectionChangedEvent event) {
                         if (event.getTag().equals(tag)) {
-                            update(event.getSelected());
+                            update(event.getSelected(), event.getCurrentPath());
                         }
                     }
                 }));
-        handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
-                new DiskResourceSelectedEventHandler() {
-
-                    @Override
-                    public void onSelected(DiskResourceSelectedEvent event) {
-                        currentPage = event.getResource();
-                        prepareMenuItems(DataUtils.getSupportedActions(resources, currentPage.getId()));
-                    }
-
-                }));
+        // handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
+        // new DiskResourceSelectedEventHandler() {
+        //
+        // @Override
+        // public void onSelected(DiskResourceSelectedEvent event) {
+        // currentPage = event.getResource();
+        // prepareMenuItems(DataUtils.getSupportedActions(resources, currentPage.getId()));
+        // }
+        //
+        // }));
 
     }
 
@@ -211,9 +210,10 @@ public final class DataActionsMenu extends Menu {
         handlers.clear();
     }
 
-    public void update(List<DiskResource> resources) {
+    public void update(List<DiskResource> resources, String currentPath) {
+        currentPage = currentPath;
         this.resources = resources == null ? Collections.<DiskResource> emptyList() : resources;
-        prepareMenuItems(DataUtils.getSupportedActions(this.resources, currentPage.getId()));
+        prepareMenuItems(DataUtils.getSupportedActions(this.resources, currentPage));
     }
 
     private void prepareMenuItems(final Iterable<Action> actions) {
@@ -377,11 +377,11 @@ public final class DataActionsMenu extends Menu {
     private class PasteResourceListenerImpl extends SelectionListener<MenuEvent> {
         @Override
         public void componentSelected(MenuEvent ce) {
-            if (DataUtils.isWritablbe(currentPage)) {
-                doCopy();
-            } else {
-                showErrorMsg();
-            }
+            // if (DataUtils.isWritablbe(currentPage)) {
+            doCopy();
+            // } else {
+            // showErrorMsg();
+            // }
         }
 
     }
@@ -397,14 +397,18 @@ public final class DataActionsMenu extends Menu {
 
     private void doRestore() {
         JSONObject obj = new JSONObject();
-        obj.put("path", new JSONString(resources.get(0).getId()));
-        obj.put("name", new JSONString(DiskResourceUtil.parseNameFromPath(resources.get(0).getId())));
+        JSONArray pathArr = new JSONArray();
+        int i = 0;
+        for (DiskResource r : resources) {
+            pathArr.set(i++, new JSONString(r.getId()));
+        }
+        obj.put("paths", pathArr);
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
         facade.restoreDiskResource(obj, new DiskResourceServiceCallback() {
 
             @Override
             public void onSuccess(String result) {
-                ManageDataRefreshEvent event = new ManageDataRefreshEvent(tag, currentPage.getId(), null);
+                ManageDataRefreshEvent event = new ManageDataRefreshEvent(tag, currentPage, null);
                 EventBus.getInstance().fireEvent(event);
                 NotifyInfo.display(I18N.DISPLAY.restore(), I18N.DISPLAY.restoreMsg());
             }
@@ -432,7 +436,7 @@ public final class DataActionsMenu extends Menu {
             fromArr.set(i++, new JSONString(r.getId()));
         }
         obj.put("paths", fromArr);
-        obj.put("destination", new JSONString(currentPage.getId()));
+        obj.put("destination", new JSONString(currentPage));
 
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
         DiskResourceCopyCallback callback = new DiskResourceCopyCallback();

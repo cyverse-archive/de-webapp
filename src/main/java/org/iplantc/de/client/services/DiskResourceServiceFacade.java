@@ -524,6 +524,28 @@ public class DiskResourceServiceFacade {
     }
 
     /**
+     * search data
+     * 
+     * @param term search termt
+     * @param callback
+     */
+    public void search(String term, AsyncCallback<String> callback) {
+        String fullAddress = DEProperties.getInstance().getMuleServiceBaseUrl()
+                + "simple-search/iplant?search-term=" + URL.encodePathSegment(term) + "&size="
+                + DEProperties.getInstance().getMaxSearchResults();
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    public void getUserTrashPath(String userName, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix
+                + ".user-trash-dir" + "?path=" + URL.encodePathSegment(userName); //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
+        callService(callback, wrapper);
+    }
+
+    /**
      * Performs the actual service call.
      * 
      * @param callback executed when RPC call completes.

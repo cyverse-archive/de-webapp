@@ -34,6 +34,7 @@ import org.iplantc.de.client.views.panels.DataNavigationPanel;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -56,6 +57,10 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         super(tag, config);
 
         initHandlers();
+        if (UserInfo.getInstance().getTrashPath() == null
+                || UserInfo.getInstance().getTrashPath().isEmpty()) {
+            getUserTrashPath();
+        }
     }
 
     private void initHandlers() {
@@ -181,6 +186,25 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
 
         }
 
+    }
+
+    private void getUserTrashPath() {
+        final String userName = UserInfo.getInstance().getUsername();
+        DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+        facade.getUserTrashPath(userName, new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // best guess of user name
+                UserInfo.getInstance().setTrashPath("/iplant/trash/home/rods/" + userName);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                JSONObject obj = JSONParser.parseStrict(result).isObject();
+                UserInfo.getInstance().setTrashPath(JsonUtil.getString(obj, "trash"));
+            }
+        });
     }
 
     /**

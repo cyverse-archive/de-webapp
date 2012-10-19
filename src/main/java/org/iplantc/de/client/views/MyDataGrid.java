@@ -162,12 +162,17 @@ public class MyDataGrid extends Grid<DiskResource> {
         ColumnConfig size = new ColumnConfig(COLUMN_ID_SIZE, I18N.DISPLAY.size(), 100);
         size.setRenderer(new SizeCellRenderer());
 
+        ColumnConfig path = new ColumnConfig("id", "Path", 200);
+        path.setHidden(true);
+        path.setSortable(false);
+        path.setMenuDisabled(true);
+
         ColumnConfig menu = new ColumnConfig(COLUMN_ID_MENU, "", 25); //$NON-NLS-1$
         menu.setSortable(false);
         menu.setMenuDisabled(true);
         menu.setFixed(true);
 
-        columns.addAll(Arrays.asList(name, date, created, size, menu));
+        columns.addAll(Arrays.asList(name, date, created, size, path, menu));
 
         return new ColumnModel(columns);
     }

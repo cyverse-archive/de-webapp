@@ -363,15 +363,13 @@ public class DataNavToolBar extends ToolBar {
                 // check the selected folder
                 Folder selectedFolder = selectionModel.getSelectedItem();
 
-                if (!selectedFolder.getId().startsWith("/iplant/trash/home/rods/")) {
+                if (selectedFolder != null
+                        && !selectedFolder.getId().startsWith("/iplant/trash/home/rods/")) {
+                    // we can at least add folders to a selected path under the home folder.
+                    addMenuItemsEnabled = true;
 
-                    if (selectedFolder != null) {
-                        // we can at least add folders to a selected path under the home folder.
-                        addMenuItemsEnabled = true;
-
-                        // disable editing items for the home folder
-                        editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
-                    }
+                    // disable editing items for the home folder
+                    editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
                 } else {
                     addMenuItemsEnabled = false;
                     editMenuItemsEnabled = false;
