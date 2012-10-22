@@ -204,7 +204,7 @@ public class DataNavToolBar extends ToolBar {
             };
 
             FileUploadDialogPanel pnlUpload = new FileUploadDialogPanel(hiddenFields,
-                    "https://de-2.iplantc.org/scruffian/upload", handler, mode);
+                    Constants.CLIENT.fileUploadServlet(), handler, mode);
 
             dlgUpload = new IPlantSubmittableDialog(I18N.DISPLAY.upload(), 536, pnlUpload);
             dlgUpload.show();
