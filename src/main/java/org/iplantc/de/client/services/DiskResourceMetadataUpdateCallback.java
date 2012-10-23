@@ -14,12 +14,6 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class DiskResourceMetadataUpdateCallback extends DiskResourceServiceCallback {
 
-    public static enum TYPE {
-        FILE, FOLDER
-    };
-
-    private TYPE type;
-
     /**
      * {@inheritDoc}
      */
@@ -35,20 +29,7 @@ public class DiskResourceMetadataUpdateCallback extends DiskResourceServiceCallb
 
     @Override
     protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
-        if (type.equals(TYPE.FILE)) {
-            return getErrorMessageForFiles(code,
-                    DiskResourceUtil.parseNameFromPath(JsonUtil.getString(jsonError, PATH)));
-        } else {
-            return getErrorMessageForFolders(code,
-                    DiskResourceUtil.parseNameFromPath(JsonUtil.getString(jsonError, PATH)));
-        }
-    }
-
-    public void setType(TYPE type) {
-        this.type = type;
-    }
-
-    public TYPE getType() {
-        return type;
+        return getErrorMessage(code,
+                DiskResourceUtil.parseNameFromPath(JsonUtil.getString(jsonError, PATH)));
     }
 }

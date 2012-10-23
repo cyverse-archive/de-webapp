@@ -43,14 +43,16 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
     public static final String COLUMN_ID_DATE_MODIFIED = DiskResource.DATE_MODIFIED;
     public static final String COLUMN_ID_PATH = DiskResource.ID;
 
-    public MyDataSearchGrid(ListStore<DiskResource> store, ColumnModel colModel) {
+    public MyDataSearchGrid(String searchTerm, ListStore<DiskResource> store, ColumnModel colModel) {
         super(store, colModel);
+        getView().setEmptyText(I18N.DISPLAY.noSearchResults(searchTerm));
     }
 
-    private static MyDataSearchGrid createInstanceImpl(List<DiskResource> results, String tag) {
+    private static MyDataSearchGrid createInstanceImpl(String searchTerm, List<DiskResource> results,
+            String tag) {
         ListStore<DiskResource> store = new ListStore<DiskResource>();
         store.add(results);
-        MyDataSearchGrid grid = new MyDataSearchGrid(store, buildColumnModel(tag));
+        MyDataSearchGrid grid = new MyDataSearchGrid(searchTerm, store, buildColumnModel(tag));
         return grid;
     }
 
@@ -59,8 +61,9 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
      * 
      * @return newly allocated my data grid.
      */
-    public static MyDataSearchGrid createInstance(List<DiskResource> results, String tag) {
-        return createInstanceImpl(results, tag);
+    public static MyDataSearchGrid createInstance(String searchTerm, List<DiskResource> results,
+            String tag) {
+        return createInstanceImpl(searchTerm, results, tag);
     }
 
     /*

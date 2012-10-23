@@ -77,7 +77,7 @@ public class DiskresourceMetadataEditorPanel extends MetadataEditorPanel {
     @Override
     protected void retrieveMetaData() {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
-        facade.getMetaData(resource, new RetrieveMetadataCallback());
+        facade.getMetaData(resource.getId(), new RetrieveMetadataCallback());
     }
 
     private void initToolbar() {
@@ -238,7 +238,7 @@ public class DiskresourceMetadataEditorPanel extends MetadataEditorPanel {
         JSONObject obj = new JSONObject();
         obj.put("add", buildToAddArray());
         obj.put("delete", buildToDeleteArray());
-        facade.setMetaData(resource, obj.toString(), new DiskResourceMetadataUpdateCallback());
+        facade.setMetaData(resource.getId(), obj.toString(), new DiskResourceMetadataUpdateCallback());
 
     }
 

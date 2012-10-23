@@ -416,7 +416,7 @@ public class FileViewerWindow extends FileWindow implements DataMonitor {
      * {@inheritDoc}
      */
     @Override
-    public void fileRename(final String id, final String name) {
+    public void rename(final String id, final String name) {
         // has our file been renamed?
         if (file.getFileId().equals(id)) {
             // we need to reset our heading
@@ -428,17 +428,9 @@ public class FileViewerWindow extends FileWindow implements DataMonitor {
      * {@inheritDoc}
      */
     @Override
-    public void folderRename(final String id, final String name) {
-        // intentionally do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deleteResources(List<String> folders, List<String> files) {
+    public void deleteResources(List<String> diskResources) {
         // if this file is deleted, close this window
-        for (String f : files) {
+        for (String f : diskResources) {
             if (f.equals(file.getFileId())) {
                 if (hidden) {
                     show();
@@ -447,7 +439,7 @@ public class FileViewerWindow extends FileWindow implements DataMonitor {
             }
         }
 
-        for (String f : folders) {
+        for (String f : diskResources) {
             if ((f + "/").startsWith(file.getParentId())) {
                 if (hidden) {
                     show();
@@ -464,12 +456,7 @@ public class FileViewerWindow extends FileWindow implements DataMonitor {
     }
 
     @Override
-    public void fileMove(Map<String, String> files) {
-        // intentionally do nothing... for now
-    }
-
-    @Override
-    public void folderMove(Map<String, String> folders) {
+    public void moveResource(Map<String, String> files) {
         // intentionally do nothing... for now
     }
 

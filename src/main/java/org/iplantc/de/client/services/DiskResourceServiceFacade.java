@@ -172,103 +172,48 @@ public class DiskResourceServiceFacade {
      * @param idDestFolder id of the destination folder.
      */
     public void moveDiskResources(final List<DiskResource> diskResources, final String idDestFolder) {
-        ArrayList<String> srcFolders = new ArrayList<String>();
-        ArrayList<String> srcFiles = new ArrayList<String>();
+        ArrayList<String> srcList = new ArrayList<String>();
 
         for (DiskResource src : diskResources) {
             String srcId = src.getId();
             if (!srcId.equals(idDestFolder)) {
-                if (src instanceof Folder) {
-                    srcFolders.add(srcId);
-                } else if (src instanceof File) {
-                    srcFiles.add(srcId);
-                }
+                srcList.add(srcId);
             }
         }
 
-        if (srcFolders.size() > 0) {
-            // call service to move folders
-            moveFolder(srcFolders, idDestFolder, new FolderMoveCallback());
-        }
-
-        if (srcFiles.size() > 0) {
-            // call service to move files
-            moveFile(srcFiles, idDestFolder, new FileMoveCallback());
-        }
+        move(srcList, idDestFolder, new DiskResourceMoveCallback());
     }
 
     /**
-     * Call service to move the given file ids to the given folder.
+     * Call service to move the given ids to the given destination folder.
      * 
-     * @param idSrcFiles list of file ids to move.
+     * @param idSrc list of folder ids to move.
      * @param idDestFolder id of the destination folder.
      * @param callback service success/failure callback
      */
-    public void moveFile(final List<String> idSrcFiles, final String idDestFolder,
-            final AsyncCallback<String> callback) {
-        String address = serviceNamePrefix + ".file-move"; //$NON-NLS-1$
-
-        JSONObject body = new JSONObject();
-        body.put("dest", new JSONString(idDestFolder)); //$NON-NLS-1$
-        body.put("sources", JsonUtil.buildArrayFromStrings(idSrcFiles)); //$NON-NLS-1$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
-                body.toString());
-
-        callService(callback, wrapper);
-    }
-
-    /**
-     * Call service to move the given folder ids to the given destination folder.
-     * 
-     * @param idSrcFolders list of folder ids to move.
-     * @param idDestFolder id of the destination folder.
-     * @param callback service success/failure callback
-     */
-    public void moveFolder(final List<String> idSrcFolders, final String idDestFolder,
-            AsyncCallback<String> callback) {
-        String address = serviceNamePrefix + ".directory-move"; //$NON-NLS-1$
-        String body = "{" + JsonUtil.buildStringArray("sources", idSrcFolders) + ", \"dest\": \"" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public void move(final List<String> idSrc, final String idDestFolder, AsyncCallback<String> callback) {
+        String address = serviceNamePrefix + ".move"; //$NON-NLS-1$
+        String body = "{" + JsonUtil.buildStringArray("sources", idSrc) + ", \"dest\": \"" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + idDestFolder + "\"}"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
         callService(callback, wrapper);
     }
 
     /**
-     * Call service rename a folder.
+     * Call service rename a diskResource.
      * 
      * @param srcName
      * @param destName
      * @param callback service success/failure callback
      */
-    public void renameFolder(final String srcName, final String destName, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix + ".directory-rename"; //$NON-NLS-1$
+    public void rename(final String srcName, final String destName, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".rename"; //$NON-NLS-1$
         JSONObject body = new JSONObject();
         body.put("source", new JSONString(srcName)); //$NON-NLS-1$
         body.put("dest", new JSONString(destName)); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
-    }
-
-    /**
-     * Call service to rename a file.
-     * 
-     * @param srcId
-     * @param destId
-     * @param callback service success/failure callback
-     */
-    public void renameFile(String srcId, String destId, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix + ".file-rename"; //$NON-NLS-1$
-
-        JSONObject body = new JSONObject();
-        body.put("source", new JSONString(srcId)); //$NON-NLS-1$
-        body.put("dest", new JSONString(destId)); //$NON-NLS-1$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body.toString());
-
         callService(callback, wrapper);
     }
 
@@ -341,8 +286,8 @@ public class DiskResourceServiceFacade {
      * @param pathsAsJsonArray
      * @param callback executed when RPC call completes.
      */
-    public void deleteFolders(String pathsAsJsonArray, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix + ".directory-delete"; //$NON-NLS-1$
+    public void delete(String pathsAsJsonArray, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".delete"; //$NON-NLS-1$
         String body = "{\"paths\": " + pathsAsJsonArray + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
@@ -351,102 +296,27 @@ public class DiskResourceServiceFacade {
     }
 
     /**
-     * Call service to delete folders.
-     * 
-     * @param pathsAsJsonArray
-     * @param callback executed when RPC call completes.
-     */
-    public void deleteFiles(String pathsAsJsonArray, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix + ".file-delete"; //$NON-NLS-1$
-        String body = "{\"paths\": " + pathsAsJsonArray + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body);
-        callService(callback, wrapper);
-    }
-
-    /**
-     * call service to get file / folder metadata
+     * call service to get metadata
      * 
      * @param path path of resource
      * @param callback execute when RPC call complete
      */
-    public void getMetaData(DiskResource dr, AsyncCallback<String> callback) {
-        if (dr instanceof Folder) {
-            getFolderMetaData(dr.getId(), callback);
-        } else {
-            getFileMetaData(dr.getId(), callback);
-        }
-    }
-
-    /**
-     * call service to set file / folder metadata
-     * 
-     * @param path path of resource
-     * @param body metadata in json format
-     * @param callback execute when RPC call complete
-     */
-    public void setMetaData(DiskResource dr, String body, DiskResourceMetadataUpdateCallback callback) {
-        if (dr instanceof Folder) {
-            callback.setType(DiskResourceMetadataUpdateCallback.TYPE.FOLDER);
-            setFolderMetaData(dr.getId(), body, callback);
-        } else {
-            callback.setType(DiskResourceMetadataUpdateCallback.TYPE.FILE);
-            setFileMetaData(dr.getId(), body, callback);
-        }
-    }
-
-    /**
-     * call service to get file metadata
-     * 
-     * @param path path of resource
-     * @param callback execute when RPC call complete
-     */
-    private void getFileMetaData(String path, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix
-                + ".file-metadata" + "?path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+    public void getMetaData(String path, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".metadata" + "?path=" + URL.encodePathSegment(path); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         callService(callback, wrapper);
     }
 
     /**
-     * call service to get folder metadata
-     * 
-     * @param path path of resource
-     * @param callback execute when RPC call complete
-     */
-    private void getFolderMetaData(String path, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix
-                + ".folder-metadata" + "?path=" + URL.encodePathSegment(path); //$NON-NLS-1$
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
-        callService(callback, wrapper);
-    }
-
-    /**
-     * call service to set file metadata
+     * call service to set metadata
      * 
      * @param path path of resource
      * @param body metadata in json format
      * @param callback execute when RPC call complete
      */
-    private void setFileMetaData(String path, String body, AsyncCallback<String> callback) {
+    public void setMetaData(String path, String body, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix
-                + ".file-metadata-batch" + "?path=" + URL.encodePathSegment(path); //$NON-NLS-1$
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body);
-        callService(callback, wrapper);
-    }
-
-    /**
-     * call service to set folder metadata
-     * 
-     * @param path path of resource
-     * @param body metadata in json format
-     * @param callback execute when RPC call complete
-     */
-    private void setFolderMetaData(String path, String body, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix
-                + ".folder-metadata-batch" + "?path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+                + ".metadata-batch" + "?path=" + URL.encodePathSegment(path); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body);
         callService(callback, wrapper);
@@ -531,8 +401,8 @@ public class DiskResourceServiceFacade {
      */
     public void search(String term, AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getMuleServiceBaseUrl()
-                + "simple-search/iplant?search-term=" + URL.encodePathSegment(term) + "&size="
-                + DEProperties.getInstance().getMaxSearchResults();
+                + "simple-search/iplant?search-term=" + URL.encodePathSegment("*" + term + "*")
+                + "&size=" + DEProperties.getInstance().getMaxSearchResults();
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);

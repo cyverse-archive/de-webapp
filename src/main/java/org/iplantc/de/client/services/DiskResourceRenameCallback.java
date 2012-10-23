@@ -1,5 +1,8 @@
 package org.iplantc.de.client.services;
 
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
+
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
@@ -9,7 +12,7 @@ import com.google.gwt.json.client.JSONString;
  * @author amuir
  * 
  */
-public abstract class DiskResourceRenameCallback extends DiskResourceActionCallback {
+public class DiskResourceRenameCallback extends DiskResourceActionCallback {
     protected final String id;
     protected final String name;
 
@@ -35,5 +38,20 @@ public abstract class DiskResourceRenameCallback extends DiskResourceActionCallb
         ret.put("name", new JSONString(name)); //$NON-NLS-1$
 
         return ret;
+    }
+
+    @Override
+    protected ActionType getActionType() {
+        return ActionType.DISKRESOURCE_RENAMED;
+    }
+
+    @Override
+    protected String getErrorMessageDefault() {
+        return I18N.ERROR.renameFailed();
+    }
+
+    @Override
+    protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
+        return getErrorMessage(code, parsePathsToNameList(jsonError));
     }
 }

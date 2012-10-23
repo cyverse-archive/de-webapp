@@ -39,39 +39,23 @@ public interface DataMonitor {
      * @param id id of file to re-name.
      * @param name new file name.
      */
-    void fileRename(String id, String name);
-
-    /**
-     * Rename a folder.
-     * 
-     * @param id id of file to re-name.
-     * @param name new file name.
-     */
-    void folderRename(String id, String name);
+    void rename(String id, String name);
 
     /**
      * Delete disk resources by id.
      * 
-     * @param folders list of folder ids to be deleted.
-     * @param files list of file ids to be deleted.
+     * @param diskResources list of ids to be deleted.
+     * 
      */
-    void deleteResources(List<String> folders, List<String> files);
+    void deleteResources(List<String> diskResources);
 
     /**
      * Move disk resource
      * 
-     * @param folders map containing source and destination
+     * @param resources map containing source and destination
      * 
      */
-    void folderMove(Map<String, String> folders);
-
-    /**
-     * Move disk resource
-     * 
-     * @param files map containing source and destination
-     * 
-     */
-    void fileMove(Map<String, String> files);
+    void moveResource(Map<String, String> resource);
 
     /**
      * copy disk resources by id.

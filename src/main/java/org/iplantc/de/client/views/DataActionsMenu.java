@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.views.dialogs.IPlantDialog;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
@@ -17,14 +18,11 @@ import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
-import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
-import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceCopyCallback;
+import org.iplantc.de.client.services.DiskResourceDeleteCallback;
 import org.iplantc.de.client.services.DiskResourceServiceCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
-import org.iplantc.de.client.services.FileDeleteCallback;
-import org.iplantc.de.client.services.FolderDeleteCallback;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.utils.DataUtils.Action;
 import org.iplantc.de.client.utils.DataViewContextExecutor;
@@ -39,9 +37,12 @@ import org.iplantc.de.client.views.panels.MetadataEditorPanel;
 import org.iplantc.de.client.views.panels.RenameFileDialogPanel;
 import org.iplantc.de.client.views.panels.RenameFolderDialogPanel;
 
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
@@ -480,35 +481,38 @@ public final class DataActionsMenu extends Menu {
     private class DeleteListenerImpl extends SelectionListener<MenuEvent> {
         @Override
         public void componentSelected(MenuEvent ce) {
-            doDelete();
+
+            if (currentPage != null && currentPage.startsWith(UserInfo.getInstance().getTrashPath())) {
+                Listener<MessageBoxEvent> callback = new Listener<MessageBoxEvent>() {
+                    @Override
+                    public void handleEvent(MessageBoxEvent ce) {
+                        // did the user click yes?
+                        if (ce.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                            doDelete(false);
+                        }
+                    }
+                };
+
+                MessageBox.confirm(I18N.DISPLAY.warning(), I18N.DISPLAY.emptyTrashWarning(), callback);
+            } else {
+                doDelete(true);
+            }
         }
 
-        private void doDelete() {
+        private void doDelete(boolean notify) {
             // first we need to fill our id lists
-            List<String> idFolders = new ArrayList<String>();
-            List<String> idFiles = new ArrayList<String>();
+            List<String> idSrc = new ArrayList<String>();
 
             if (DataUtils.isDeletable(resources)) {
-
                 for (DiskResource resource : resources) {
-                    if (resource instanceof Folder) {
-                        idFolders.add(resource.getId());
-                    } else if (resource instanceof File) {
-                        idFiles.add(resource.getId());
-                    }
+                    idSrc.add(resource.getId());
                 }
 
                 // call the appropriate delete services
                 DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
-
-                if (idFiles.size() > 0) {
-                    facade.deleteFiles(JsonUtil.buildJsonArrayString(idFiles), new FileDeleteCallback(
-                            idFiles));
-                }
-
-                if (idFolders.size() > 0) {
-                    facade.deleteFolders(JsonUtil.buildJsonArrayString(idFolders),
-                            new FolderDeleteCallback(idFolders));
+                if (idSrc.size() > 0) {
+                    facade.delete(JsonUtil.buildJsonArrayString(idSrc), new DiskResourceDeleteCallback(
+                            idSrc));
                 }
             } else {
                 showErrorMsg();

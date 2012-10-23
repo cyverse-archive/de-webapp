@@ -11,7 +11,7 @@ import com.google.gwt.json.client.JSONObject;
  * @author amuir
  * 
  */
-public class FileRenamedCommand implements DataCommand {
+public class DiskResourceRenamedCommand implements DataCommand {
     /**
      * {@inheritDoc}
      */
@@ -21,7 +21,7 @@ public class FileRenamedCommand implements DataCommand {
             String id = JsonUtil.getString(objData, "id"); //$NON-NLS-1$
             String name = JsonUtil.getString(objData, "name"); //$NON-NLS-1$
 
-            monitor.fileRename(id, name);
+            monitor.rename(id, name);
         }
     }
 }

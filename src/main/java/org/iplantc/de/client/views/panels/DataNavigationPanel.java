@@ -1,5 +1,6 @@
 package org.iplantc.de.client.views.panels;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -7,6 +8,7 @@ import java.util.Stack;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
@@ -22,6 +24,7 @@ import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.events.disk.mgmt.NavFolderSelectedEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.ClientDataModel;
+import org.iplantc.de.client.services.DiskResourceDeleteCallback;
 import org.iplantc.de.client.services.DiskResourceServiceCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
@@ -42,6 +45,7 @@ import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.TreeNode;
@@ -455,8 +459,8 @@ public class DataNavigationPanel extends AbstractDataPanel {
                 DiskResource res = (DiskResource)node.getModel();
                 String idDestFolder = res.getId();
 
-                if (idDestFolder.startsWith("/iplant/trash")) {
-                    // facade.
+                if (idDestFolder.startsWith(UserInfo.getInstance().getTrashPath())) {
+                    doDelete((List<DiskResource>)event.getData());
                 } else {
                     facade.moveDiskResources((List<DiskResource>)event.getData(), idDestFolder);
                 }
@@ -472,6 +476,26 @@ public class DataNavigationPanel extends AbstractDataPanel {
         protected void onDragLeave(DNDEvent e) {
             scrollSupport.stop();
         }
+    }
+
+    private void doDelete(List<DiskResource> resources) {
+        // first we need to fill our id lists
+        List<String> idSrc = new ArrayList<String>();
+
+        if (DataUtils.isDeletable(resources)) {
+
+            for (DiskResource resource : resources) {
+                idSrc.add(resource.getId());
+            }
+
+            // call the appropriate delete services
+            DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
+            facade.delete(JsonUtil.buildJsonArrayString(idSrc), new DiskResourceDeleteCallback(idSrc));
+        } else {
+            MessageBox.alert(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage(),
+                    null);
+        }
+
     }
 
     private class TreePanelDragSourceImpl extends TreePanelDragSource {

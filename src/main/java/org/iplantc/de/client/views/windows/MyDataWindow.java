@@ -279,19 +279,20 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
      * {@inheritDoc}
      */
     @Override
-    public void deleteResources(List<String> folders, List<String> files) {
-        deleteFolders(folders);
-        deleteFiles(files);
+    public void deleteResources(List<String> resources) {
+        deleteFolders(resources);
+        deleteFiles(resources);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void fileRename(String id, String name) {
+    public void rename(String id, String name) {
         if (pnlMain != null) {
-            pnlMain.renameFile(id, name);
+            pnlMain.rename(id, name);
         }
+        model.renameFolder(id, name);
     }
 
     /**
@@ -315,23 +316,7 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         select(folder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void folderRename(String id, String name) {
-        Folder folder = model.renameFolder(id, name);
-
-        if (folder != null) {
-            pnlMain.renameFolder(id, name);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void folderMove(Map<String, String> folders) {
+    private void folderMove(Map<String, String> folders) {
         if (folders != null) {
             // remove from main panel
             pnlMain.deleteDiskResources(new ArrayList<String>(folders.keySet()));
@@ -355,9 +340,10 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
      * {@inheritDoc}
      */
     @Override
-    public void fileMove(Map<String, String> files) {
-        if (files != null) {
-            pnlMain.deleteDiskResources(new ArrayList<String>(files.keySet()));
+    public void moveResource(Map<String, String> resources) {
+        if (resources != null) {
+            pnlMain.deleteDiskResources(new ArrayList<String>(resources.keySet()));
+            folderMove(resources);
         }
     }
 

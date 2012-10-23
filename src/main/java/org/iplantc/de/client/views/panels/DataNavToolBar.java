@@ -14,18 +14,21 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
+import org.iplantc.de.client.services.DiskResourceDeleteCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
-import org.iplantc.de.client.services.FolderDeleteCallback;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.views.panels.DataNavigationPanel.Mode;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -49,6 +52,7 @@ public class DataNavToolBar extends ToolBar {
     private static final String ID_NEW_FOLDER_BTN = "idNewFolderBtn"; //$NON-NLS-1$
     private static final String ID_RENAME_FOLDER_BTN = "idRenameFolderBtn"; //$NON-NLS-1$
     private static final String ID_DELETE_FOLDER_BTN = "idDeleteFolderBtn"; //$NON-NLS-1$
+    private static final String ID_EMPTY_TRASH_BTN = "idEmptyTrashBtn"; //$NON-NLS-1$
     private static final String ID_UPLD_MENU = "idUpldMenu";
 
     @SuppressWarnings("unused")
@@ -59,6 +63,7 @@ public class DataNavToolBar extends ToolBar {
     private Button addFolder;
     private Button deleteFolder;
     private Button renameFolder;
+    private Button emptyTrash;
     private IPlantSubmittableDialog dlgUpload;
 
     /**
@@ -76,6 +81,7 @@ public class DataNavToolBar extends ToolBar {
         add(buildAddFolderButton());
         add(buildRenameFolderButton());
         add(buildDeleteFolderButton());
+        add(buildEmptyTrashButton());
 
     }
 
@@ -119,6 +125,30 @@ public class DataNavToolBar extends ToolBar {
         ret.setMenu(importMenu);
 
         return ret;
+    }
+
+    private Button buildEmptyTrashButton() {
+        emptyTrash = new Button();
+        emptyTrash.setId(ID_EMPTY_TRASH_BTN);
+        emptyTrash.setToolTip(I18N.DISPLAY.emptyTrash());
+        emptyTrash.setIcon(AbstractImagePrototype.create(Resources.ICONS.emptyTrash()));
+        emptyTrash.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Listener<MessageBoxEvent> callback = new Listener<MessageBoxEvent>() {
+                    @Override
+                    public void handleEvent(MessageBoxEvent ce) {
+                        // did the user click yes?
+                        if (ce.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                            // TODO: call empty trash here
+                        }
+                    }
+                };
+
+                MessageBox.confirm(I18N.DISPLAY.emptyTrash(), I18N.DISPLAY.emptyTrashWarning(), callback);
+            }
+        });
+        return emptyTrash;
     }
 
     private MenuItem buildBulkUploadFromDesktopButton() {
@@ -280,8 +310,8 @@ public class DataNavToolBar extends ToolBar {
                     idFolders = DataUtils.getDiskResourceIdList(resources);
                     if (idFolders.size() > 0) {
                         DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
-                        facade.deleteFolders(JsonUtil.buildJsonArrayString(idFolders),
-                                new FolderDeleteCallback(idFolders));
+                        facade.delete(JsonUtil.buildJsonArrayString(idFolders),
+                                new DiskResourceDeleteCallback(idFolders));
                     }
                 }
 
@@ -364,7 +394,7 @@ public class DataNavToolBar extends ToolBar {
                 Folder selectedFolder = selectionModel.getSelectedItem();
 
                 if (selectedFolder != null
-                        && !selectedFolder.getId().startsWith("/iplant/trash/home/rods/")) {
+                        && !selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
                     // we can at least add folders to a selected path under the home folder.
                     addMenuItemsEnabled = true;
 
@@ -383,6 +413,5 @@ public class DataNavToolBar extends ToolBar {
             deleteFolder.setEnabled(editMenuItemsEnabled);
 
         }
-
     }
 }

@@ -87,7 +87,7 @@ public class GwtTestEventJSONFactory extends GWTTestCase {
     public void testBuildFileRenamedJSON() {
         String json = "{\"id\": \"3842\", \"name\": \"Foodles\"}"; //$NON-NLS-1$
 
-        JSONObject test = EventJSONFactory.build(EventJSONFactory.ActionType.FILE_RENAMED,
+        JSONObject test = EventJSONFactory.build(EventJSONFactory.ActionType.DISKRESOURCE_RENAMED,
                 JsonUtil.getObject(json));
 
         validateJSON(test, "data"); //$NON-NLS-1$
@@ -96,7 +96,7 @@ public class GwtTestEventJSONFactory extends GWTTestCase {
     public void testBuildFolderRenamedJSON() {
         String json = "{\"id\": \"3843\", \"name\": \"foo\"}"; //$NON-NLS-1$
 
-        JSONObject test = EventJSONFactory.build(EventJSONFactory.ActionType.FOLDER_RENAMED,
+        JSONObject test = EventJSONFactory.build(EventJSONFactory.ActionType.DISKRESOURCE_RENAMED,
                 JsonUtil.getObject(json));
 
         validateJSON(test, "data"); //$NON-NLS-1$
@@ -105,7 +105,7 @@ public class GwtTestEventJSONFactory extends GWTTestCase {
     public void testBuildDeleteJSON() {
         String json = "{\"files\": [], \"folders\": [\"3328\"]}"; //$NON-NLS-1$
 
-        JSONObject test = EventJSONFactory.build(EventJSONFactory.ActionType.DELETE,
+        JSONObject test = EventJSONFactory.build(EventJSONFactory.ActionType.DISKRESOURCE_DELETE,
                 JsonUtil.getObject(json));
 
         validateJSON(test, "data"); //$NON-NLS-1$
