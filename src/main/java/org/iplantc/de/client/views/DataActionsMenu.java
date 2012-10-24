@@ -512,7 +512,7 @@ public final class DataActionsMenu extends Menu {
                 DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
                 if (idSrc.size() > 0) {
                     facade.delete(JsonUtil.buildJsonArrayString(idSrc), new DiskResourceDeleteCallback(
-                            idSrc));
+                            idSrc, notify));
                 }
             } else {
                 showErrorMsg();

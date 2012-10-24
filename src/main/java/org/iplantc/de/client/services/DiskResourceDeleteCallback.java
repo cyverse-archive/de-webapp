@@ -17,6 +17,7 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class DiskResourceDeleteCallback extends DiskResourceActionCallback {
     protected List<String> listDiskResources;
+    private boolean notify;
 
     /**
      * Instantiate from a list of files and folders.
@@ -24,7 +25,17 @@ public class DiskResourceDeleteCallback extends DiskResourceActionCallback {
      * @param listDiskResources list of folders to delete.
      */
     public DiskResourceDeleteCallback(List<String> listDiskResources) {
+        this(listDiskResources, true);
+    }
+
+    /**
+     * Instantiate from a list of files and folders.
+     * 
+     * @param listDiskResources list of folders to delete.
+     */
+    public DiskResourceDeleteCallback(List<String> listDiskResources, boolean notify) {
         this.listDiskResources = listDiskResources;
+        this.notify = notify;
     }
 
     /**
@@ -38,7 +49,9 @@ public class DiskResourceDeleteCallback extends DiskResourceActionCallback {
     @Override
     public void onSuccess(String result) {
         super.onSuccess(result);
-        NotifyInfo.display(org.iplantc.de.client.I18N.DISPLAY.delete(), I18N.DISPLAY.deleteMsg());
+        if (notify) {
+            NotifyInfo.display(org.iplantc.de.client.I18N.DISPLAY.delete(), I18N.DISPLAY.deleteMsg());
+        }
 
     }
 

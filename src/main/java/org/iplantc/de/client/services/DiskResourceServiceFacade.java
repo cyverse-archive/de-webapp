@@ -393,6 +393,12 @@ public class DiskResourceServiceFacade {
         callService(callback, wrapper);
     }
 
+    public void emptyTrash(String user, AsyncCallback<String> callback) {
+        String address = serviceNamePrefix + ".empty-trash"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.DELETE, address);
+        callService(callback, wrapper);
+    }
+
     /**
      * search data
      * 

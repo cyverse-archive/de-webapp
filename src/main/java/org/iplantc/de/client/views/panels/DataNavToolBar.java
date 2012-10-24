@@ -15,6 +15,7 @@ import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceDeleteCallback;
+import org.iplantc.de.client.services.DiskResourceServiceCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.views.panels.DataNavigationPanel.Mode;
@@ -35,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -140,7 +142,10 @@ public class DataNavToolBar extends ToolBar {
                     public void handleEvent(MessageBoxEvent ce) {
                         // did the user click yes?
                         if (ce.getButtonClicked().getItemId().equals(Dialog.YES)) {
-                            // TODO: call empty trash here
+                            DiskResourceServiceFacade facade = new DiskResourceServiceFacade(
+                                    maskingParent);
+                            facade.emptyTrash(UserInfo.getInstance().getUsername(),
+                                    new EmptyTrashServiceCallback());
                         }
                     }
                 };
@@ -381,6 +386,23 @@ public class DataNavToolBar extends ToolBar {
         return addFolder;
     }
 
+    private final class EmptyTrashServiceCallback extends DiskResourceServiceCallback {
+        @Override
+        public void onSuccess(String result) {
+            maskedCaller.unmask();
+        }
+
+        @Override
+        protected String getErrorMessageDefault() {
+            return I18N.ERROR.emptyTrashError();
+        }
+
+        @Override
+        protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
+            return getErrorMessage(code, parsePathsToNameList(jsonError));
+        }
+    }
+
     private final class ActionsSelectionListener extends SelectionChangedListener<Folder> {
 
         @Override
@@ -397,13 +419,17 @@ public class DataNavToolBar extends ToolBar {
                         && !selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
                     // we can at least add folders to a selected path under the home folder.
                     addMenuItemsEnabled = true;
-
                     // disable editing items for the home folder
                     editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
-                } else {
+                    getItemByItemId(ID_UPLD_MENU).enable();
+                } else if (selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
                     addMenuItemsEnabled = false;
                     editMenuItemsEnabled = false;
                     getItemByItemId(ID_UPLD_MENU).disable();
+                } else {
+                    addMenuItemsEnabled = false;
+                    editMenuItemsEnabled = false;
+                    getItemByItemId(ID_UPLD_MENU).enable();
                 }
             }
 

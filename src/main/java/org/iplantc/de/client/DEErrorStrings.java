@@ -535,4 +535,11 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String searchError();
+
+    /**
+     * Error msg to show when empty trash fails
+     * 
+     * @return
+     */
+    String emptyTrashError();
 }
