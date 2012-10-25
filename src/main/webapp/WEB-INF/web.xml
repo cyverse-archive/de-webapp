@@ -81,6 +81,10 @@
         <servlet-name>toolSubmitServlet</servlet-name>
         <servlet-class>org.iplantc.de.server.NewToolRequestServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>proxyServlet</servlet-name>
+        <servlet-class>org.iplantc.de.server.service.ProxyServlet</servlet-class>
+    </servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -142,6 +146,10 @@
     <servlet-mapping>
         <servlet-name>toolSubmitServlet</servlet-name>
         <url-pattern>/tito/new_tool_request</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>proxyServlet</servlet-name>
+        <url-pattern>/proxy/*</url-pattern>
     </servlet-mapping>
 
     <!-- Filters -->

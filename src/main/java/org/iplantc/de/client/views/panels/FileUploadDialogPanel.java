@@ -65,7 +65,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     private static final String URL_REGEX = "^(?:ftp|FTP|HTTPS?|https?)://[^/]+/.*[^/ ]$"; //$NON-NLS-1$
 
     public static final String HDN_USER_ID_KEY = "user"; //$NON-NLS-1$
-    public static final String HDN_PARENT_ID_KEY = "parentfolderid"; //$NON-NLS-1$
+    public static final String HDN_PARENT_ID_KEY = "dest"; //$NON-NLS-1$
     public static final String FILE_TYPE = "type"; //$NON-NLS-1$
     public static final String URL_FIELD = "url"; //$NON-NLS-1$
 
