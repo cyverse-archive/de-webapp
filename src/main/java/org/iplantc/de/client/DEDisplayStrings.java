@@ -1152,4 +1152,46 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String dataSearch();
 
+    /**
+     * empty trash warning msg
+     * 
+     * @return
+     */
+    String emptyTrashWarning();
+
+    /**
+     * empty trash label
+     * 
+     * @return
+     */
+    String emptyTrash();
+
+    /**
+     * search threshold msg
+     * 
+     * @return
+     */
+    String searchThresholdMsg();
+
+    /**
+     * searching label
+     * 
+     * @return
+     */
+    String searching();
+
+    /**
+     * msg to show when there are no results to display
+     * 
+     * @return
+     */
+    String noSearchResults(String searchTerm);
+
+    /**
+     * display text to a data location
+     * 
+     * @return
+     */
+    String location();
+
 }

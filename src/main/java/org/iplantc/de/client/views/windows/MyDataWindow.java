@@ -19,6 +19,8 @@ import org.iplantc.de.client.controllers.DataMonitor;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.events.DataPayloadEvent;
 import org.iplantc.de.client.events.DataPayloadEventHandler;
+import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
+import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.events.ManageDataRefreshEventHandler;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
@@ -28,6 +30,9 @@ import org.iplantc.de.client.models.ClientDataModel;
 import org.iplantc.de.client.models.DataWindowConfig;
 import org.iplantc.de.client.models.WindowConfig;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.services.UserSessionServiceFacade;
+import org.iplantc.de.client.utils.DataViewContextExecutor;
+import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 import org.iplantc.de.client.views.panels.DataDetailsPanel;
 import org.iplantc.de.client.views.panels.DataMainPanel;
 import org.iplantc.de.client.views.panels.DataNavigationPanel;
@@ -61,6 +66,7 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
                 || UserInfo.getInstance().getTrashPath().isEmpty()) {
             getUserTrashPath();
         }
+        getSearhHistory();
     }
 
     private void initHandlers() {
@@ -71,6 +77,8 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         handlers.add(eventbus.addHandler(DataPayloadEvent.TYPE, new DataPayloadEventHandlerImpl()));
         handlers.add(eventbus.addHandler(ManageDataRefreshEvent.TYPE,
                 new ManageDataRefreshEventHandlerImpl()));
+        handlers.add(eventbus.addHandler(DataSearchResultSelectedEvent.TYPE,
+                new DataSearchResultSelectedEventHandlerImpl()));
     }
 
     /**
@@ -143,6 +151,26 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         }
     }
 
+    @Override
+    protected void doHide() {
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.saveSearchHistory(pnlDetails.getSearchHistory(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.searchHistoryError(), caught);
+
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                // do nothing
+
+            }
+        });
+        super.doHide();
+    }
+
     /**
      * Applies a window configuration to the window.
      * 
@@ -166,6 +194,23 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         mask(I18N.DISPLAY.loadingMask());
 
         facade.getHomeFolder(callback);
+    }
+
+    private final class DataSearchResultSelectedEventHandlerImpl implements
+            DataSearchResultSelectedEventHandler {
+        @Override
+        public void onSelection(DataSearchResultSelectedEvent event) {
+            DiskResource model = event.getModel();
+            if (model != null && model instanceof Folder) {
+                pnlNavigation.selectFolder(model.getId());
+            } else {
+                pnlNavigation.selectFolder(DiskResourceUtil.parseParent(model.getId()));
+                pnlMain.setSelectedResource(event.getSelectedIds());
+                DataViewContextExecutor executor = new DataViewContextExecutor();
+                DataContextBuilder builder = new DataContextBuilder();
+                executor.execute(builder.build(model.getId()));
+            }
+        }
     }
 
     private class RetrieveDataCallback implements AsyncCallback<String> {
@@ -195,7 +240,7 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
 
             @Override
             public void onFailure(Throwable caught) {
-                // best guess of user name
+                // best guess of user name. this is horrible
                 UserInfo.getInstance().setTrashPath("/iplant/trash/home/rods/" + userName);
             }
 
@@ -205,6 +250,25 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
                 UserInfo.getInstance().setTrashPath(JsonUtil.getString(obj, "trash"));
             }
         });
+    }
+
+    private void getSearhHistory() {
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.getSearchHistory(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.retrieveSearchHistoryError(), caught);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                JSONObject obj = JSONParser.parseStrict(result).isObject();
+                pnlDetails.setSearchHistory(obj);
+
+            }
+        });
+
     }
 
     /**
@@ -279,19 +343,20 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
      * {@inheritDoc}
      */
     @Override
-    public void deleteResources(List<String> folders, List<String> files) {
-        deleteFolders(folders);
-        deleteFiles(files);
+    public void deleteResources(List<String> resources) {
+        deleteFolders(resources);
+        deleteFiles(resources);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void fileRename(String id, String name) {
+    public void rename(String id, String name) {
         if (pnlMain != null) {
-            pnlMain.renameFile(id, name);
+            pnlMain.rename(id, name);
         }
+        model.renameFolder(id, name);
     }
 
     /**
@@ -315,23 +380,7 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         select(folder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void folderRename(String id, String name) {
-        Folder folder = model.renameFolder(id, name);
-
-        if (folder != null) {
-            pnlMain.renameFolder(id, name);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void folderMove(Map<String, String> folders) {
+    private void folderMove(Map<String, String> folders) {
         if (folders != null) {
             // remove from main panel
             pnlMain.deleteDiskResources(new ArrayList<String>(folders.keySet()));
@@ -355,9 +404,10 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
      * {@inheritDoc}
      */
     @Override
-    public void fileMove(Map<String, String> files) {
-        if (files != null) {
-            pnlMain.deleteDiskResources(new ArrayList<String>(files.keySet()));
+    public void moveResource(Map<String, String> resources) {
+        if (resources != null) {
+            pnlMain.deleteDiskResources(new ArrayList<String>(resources.keySet()));
+            folderMove(resources);
         }
     }
 

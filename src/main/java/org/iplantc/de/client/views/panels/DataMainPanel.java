@@ -259,7 +259,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             }
 
             grid.getView().refresh(true);
-
+            grid.getView().layout();
             layout(true);
         }
     }
@@ -337,7 +337,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         }
     }
 
-    public void renameFolder(final String pathOrig, final String path) {
+    private void updatePath(final String pathOrig, final String path) {
         if (model == null) {
             return;
         }
@@ -364,7 +364,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         }
     }
 
-    public void renameFile(final String nameOrig, final String nameNew) {
+    public void rename(final String nameOrig, final String nameNew) {
         if (grid != null) {
             DiskResource resource = findDiskResource(nameOrig);
 
@@ -376,7 +376,11 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
                 resource.setId(nameNew);
 
                 grid.getStore().update(resource);
+                if (resource instanceof Folder) {
+                    updatePath(nameOrig, nameNew);
+                }
             }
+
         }
     }
 
@@ -458,7 +462,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             if (searchGrid != null && searchGrid.isAttached()) {
                 remove(searchGrid);
             }
-            searchGrid = MyDataSearchGrid.createInstance(event.getResults(), tag);
+            searchGrid = MyDataSearchGrid.createInstance(event.getSearchTerm(), event.getResults(), tag);
 
             add(searchGrid);
             layout(true);

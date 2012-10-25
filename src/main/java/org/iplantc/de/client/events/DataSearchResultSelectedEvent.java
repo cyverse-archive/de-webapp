@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.client.events;
 
+import java.util.List;
+
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -20,10 +22,14 @@ public class DataSearchResultSelectedEvent extends GwtEvent<DataSearchResultSele
      */
     public static final GwtEvent.Type<DataSearchResultSelectedEventHandler> TYPE = new GwtEvent.Type<DataSearchResultSelectedEventHandler>();
 
+    private List<String> selectedIds;
     private DiskResource model;
+    private String searchTerm;
 
-    public DataSearchResultSelectedEvent(DiskResource model) {
+    public DataSearchResultSelectedEvent(String searchTerm, DiskResource model, List<String> selectedIds) {
         this.setModel(model);
+        this.setSelectedIds(selectedIds);
+        this.setSearchTerm(searchTerm);
     }
 
     @Override
@@ -49,6 +55,34 @@ public class DataSearchResultSelectedEvent extends GwtEvent<DataSearchResultSele
      */
     public void setModel(DiskResource model) {
         this.model = model;
+    }
+
+    /**
+     * @return the selectedIds
+     */
+    public List<String> getSelectedIds() {
+        return selectedIds;
+    }
+
+    /**
+     * @param selectedIds the selectedIds to set
+     */
+    public void setSelectedIds(List<String> selectedIds) {
+        this.selectedIds = selectedIds;
+    }
+
+    /**
+     * @return the searchTerm
+     */
+    public String getSearchTerm() {
+        return searchTerm;
+    }
+
+    /**
+     * @param searchTerm the searchTerm to set
+     */
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
     }
 
 }

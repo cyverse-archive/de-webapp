@@ -20,11 +20,13 @@ import org.iplantc.de.client.utils.DataViewContextExecutor;
 import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 import org.iplantc.de.client.views.dialogs.SaveAsDialog;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -65,6 +67,7 @@ public class AnalysisParameterViewerPanel extends ContentPanel {
 
     private void init(String analysisId) {
         setLayout(new FitLayout());
+        setScrollMode(Scroll.AUTO);
         setHeaderVisible(false);
         retrieveData(analysisId);
         initToolbar();
@@ -203,7 +206,7 @@ public class AnalysisParameterViewerPanel extends ContentPanel {
     }
 
     private ColumnModel buildColumnModel() {
-        ColumnConfig param_name = new ColumnConfig("param_name", I18N.DISPLAY.paramName(), 175); //$NON-NLS-1$
+        ColumnConfig param_name = new ColumnConfig("param_name", I18N.DISPLAY.paramName(), 100); //$NON-NLS-1$
         param_name.setRenderer(new ParamNameCellRenderer());
         ColumnConfig param_type = new ColumnConfig("param_type", I18N.DISPLAY.paramType(), 75); //$NON-NLS-1$
         ColumnConfig param_value = new ColumnConfig("param_value", I18N.DISPLAY.paramValue(), 325); //$NON-NLS-1$
@@ -249,26 +252,36 @@ public class AnalysisParameterViewerPanel extends ContentPanel {
             VerticalPanel pnl = new VerticalPanel();
             pnl.setSpacing(2);
             if (model.get(AnalysisParameter.PARAMETER_TYPE).equals("Input") && valid_info_type) {
-                JSONArray arr = JSONParser.parseStrict(full_text).isArray();
-                if (arr != null) {
-                    for (int i = 0; i < arr.size(); i++) {
-                        final String val = JsonUtil.trim(arr.get(i).toString());
-                        Hyperlink link = new Hyperlink(val, "analysis-param-value");
-                        link.addClickListener(new InputFieldValueClickListener(val));
-                        link.setToolTip(val);
-                        pnl.add(link);
+                try {
+                    JSONArray arr = JSONParser.parseStrict(full_text).isArray();
+                    if (arr != null) {
+                        for (int i = 0; i < arr.size(); i++) {
+                            final String val = JsonUtil.trim(arr.get(i).toString());
+                            Hyperlink link = new Hyperlink(trimValue(val), "analysis-param-value");
+                            link.addClickListener(new InputFieldValueClickListener(val));
+                            link.setToolTip(val);
+                            pnl.add(link);
+                        }
+                        return pnl;
+
+                    } else {
+                        return buildHyperLink(full_text);
                     }
-                    return pnl;
-                } else {
-                    Hyperlink link = new Hyperlink(full_text, "analysis-param-value");
-                    link.addClickListener(new InputFieldValueClickListener(full_text));
-                    link.setToolTip(full_text);
-                    return link;
+                } catch (Exception e) {
+                    return buildHyperLink(full_text);
                 }
+
             } else {
                 Text text = buildValueTextField(full_text);
                 return text;
             }
+        }
+
+        private Object buildHyperLink(final String full_text) {
+            Hyperlink link = new Hyperlink(trimValue(full_text), "analysis-param-value");
+            link.addClickListener(new InputFieldValueClickListener(full_text));
+            link.setToolTip(full_text);
+            return link;
         }
 
         private Text buildValueTextField(final String full_text) {
@@ -277,6 +290,11 @@ public class AnalysisParameterViewerPanel extends ContentPanel {
             text.setTagName("span");
             text.getToolTip().setMaxWidth(Integer.MAX_VALUE);
             return text;
+        }
+
+        private String trimValue(final String full_text) {
+            return (full_text.length() < 50) ? full_text : Format.ellipse(full_text, 50);
+
         }
     }
 

@@ -9,7 +9,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 
-public class FileMoveCommand implements DataCommand {
+public class DiskResourceMoveCommand implements DataCommand {
 
     @Override
     public void execute(DataMonitor monitor, JSONObject objData) {
@@ -26,7 +26,7 @@ public class FileMoveCommand implements DataCommand {
                 }
             }
 
-            monitor.fileMove(files);
+            monitor.moveResource(files);
         }
 
     }

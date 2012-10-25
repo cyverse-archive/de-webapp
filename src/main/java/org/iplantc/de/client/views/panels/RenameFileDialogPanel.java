@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.panels;
 
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.services.FileRenameCallback;
+import org.iplantc.de.client.services.DiskResourceRenameCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 
 import com.extjs.gxt.ui.client.widget.Component;
@@ -25,6 +25,6 @@ public class RenameFileDialogPanel extends RenameDiskResourceDialogPanel {
     @Override
     protected void callRenameService(String srcName, String destName) {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
-        facade.renameFile(srcName, destName, new FileRenameCallback(srcName, destName));
+        facade.rename(srcName, destName, new DiskResourceRenameCallback(srcName, destName));
     }
 }

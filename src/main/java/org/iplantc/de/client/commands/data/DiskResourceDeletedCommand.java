@@ -42,10 +42,9 @@ public class DiskResourceDeletedCommand implements DataCommand {
     @Override
     public void execute(final DataMonitor monitor, final JSONObject objData) {
         if (monitor != null && objData != null) {
-            List<String> folders = parseStringList("folders", objData); //$NON-NLS-1$
-            List<String> files = parseStringList("files", objData); //$NON-NLS-1$
+            List<String> diskResources = parseStringList("diskResources", objData); //$NON-NLS-1$
 
-            monitor.deleteResources(folders, files);
+            monitor.deleteResources(diskResources);
         }
     }
 }

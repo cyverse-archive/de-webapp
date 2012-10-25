@@ -130,7 +130,7 @@ public class RawDataPanel extends ViewerContentPanel implements DataMonitor {
      * {@inheritDoc}
      */
     @Override
-    public void fileRename(String id, String name) {
+    public void rename(String id, String name) {
         // intentionally do nothing
     }
 
@@ -138,25 +138,12 @@ public class RawDataPanel extends ViewerContentPanel implements DataMonitor {
      * {@inheritDoc}
      */
     @Override
-    public void folderRename(String id, String name) {
-        // intentionally do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deleteResources(List<String> folders, List<String> files) {
+    public void deleteResources(List<String> diskResources) {
         // intentionally do nothing
     }
 
     @Override
-    public void fileMove(Map<String, String> files) {
-        // intentionally do nothing
-    }
-
-    @Override
-    public void folderMove(Map<String, String> folders) {
+    public void moveResource(Map<String, String> files) {
         // intentionally do nothing
     }
 

@@ -16,7 +16,7 @@ import com.google.gwt.json.client.JSONString;
  * @author psarando
  * 
  */
-public abstract class DiskResourceMoveCallback extends DiskResourceServiceCallback {
+public class DiskResourceMoveCallback extends DiskResourceServiceCallback {
 
     protected JSONObject buildPayload(JSONObject response) {
         JSONObject payload = new JSONObject();
@@ -63,5 +63,12 @@ public abstract class DiskResourceMoveCallback extends DiskResourceServiceCallba
      * 
      * @return The payload JSON "action" value for this callback.
      */
-    protected abstract String getPayloadAction();
+    protected String getPayloadAction() {
+        return "move"; //$NON-NLS-1$
+    }
+
+    @Override
+    protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
+        return getErrorMessage(code, parsePathsToNameList(jsonError));
+    }
 }

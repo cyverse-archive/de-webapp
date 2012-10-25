@@ -4,13 +4,11 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.de.client.commands.data.DataCommand;
 import org.iplantc.de.client.commands.data.DiskResourceCopyCommand;
 import org.iplantc.de.client.commands.data.DiskResourceDeletedCommand;
+import org.iplantc.de.client.commands.data.DiskResourceMoveCommand;
+import org.iplantc.de.client.commands.data.DiskResourceRenamedCommand;
 import org.iplantc.de.client.commands.data.FileImportedCommand;
-import org.iplantc.de.client.commands.data.FileMoveCommand;
-import org.iplantc.de.client.commands.data.FileRenamedCommand;
 import org.iplantc.de.client.commands.data.FileSaveAsCommand;
 import org.iplantc.de.client.commands.data.FolderCreatedCommand;
-import org.iplantc.de.client.commands.data.FolderMoveCommand;
-import org.iplantc.de.client.commands.data.FolderRenamedCommand;
 
 import com.google.gwt.json.client.JSONObject;
 
@@ -35,15 +33,11 @@ public class DataController {
             ret = new FolderCreatedCommand();
         } else if (action.equals("save_as")) { //$NON-NLS-1$
             ret = new FileSaveAsCommand();
-        } else if (action.equals("file_renamed")) { //$NON-NLS-1$
-            ret = new FileRenamedCommand();
-        } else if (action.equals("folder_renamed")) { //$NON-NLS-1$
-            ret = new FolderRenamedCommand();
-        } else if (action.equals("file_move")) { //$NON-NLS-1$
-            ret = new FileMoveCommand();
-        } else if (action.equals("folder_move")) { //$NON-NLS-1$
-            ret = new FolderMoveCommand();
-        } else if (action.equals("delete")) { //$NON-NLS-1$
+        } else if (action.equals("diskresource_renamed")) { //$NON-NLS-1$
+            ret = new DiskResourceRenamedCommand();
+        } else if (action.equals("move")) { //$NON-NLS-1$
+            ret = new DiskResourceMoveCommand();
+        } else if (action.equals("diskresource_delete")) { //$NON-NLS-1$
             ret = new DiskResourceDeletedCommand();
         } else if (action.equals("copy")) { //$NON-NLS-1$
             ret = new DiskResourceCopyCommand();

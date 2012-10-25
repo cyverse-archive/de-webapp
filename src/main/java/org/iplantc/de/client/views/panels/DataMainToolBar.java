@@ -15,8 +15,6 @@ import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
 import org.iplantc.de.client.events.LoadDataSearchResultsEvent;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
-import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
-import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEventHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.JsSearchResult;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
@@ -159,12 +157,12 @@ public class DataMainToolBar extends ToolBar {
 
     private void doSearch(final String term) {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+
         facade.search(term, new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                ErrorHandler.post(caught.toString());
-
+                ErrorHandler.post(I18N.ERROR.searchError(), caught);
             }
 
             @Override
@@ -175,10 +173,10 @@ public class DataMainToolBar extends ToolBar {
                         .toString());
                 List<DiskResource> resources = buildDataSearchResultset(resultsArr);
                 if (resources.size() < total) {
-                    MessageBox.alert("Searching " + term,
-                            "Your search exceeded the treshold. Plese refine your search.", null);
+                    MessageBox.alert(I18N.DISPLAY.searching() + " " + term,
+                            I18N.DISPLAY.searchThresholdMsg(), null);
                 }
-                LoadDataSearchResultsEvent event = new LoadDataSearchResultsEvent(resources);
+                LoadDataSearchResultsEvent event = new LoadDataSearchResultsEvent(term, resources);
                 EventBus.getInstance().fireEvent(event);
             }
 

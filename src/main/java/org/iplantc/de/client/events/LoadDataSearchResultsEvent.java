@@ -23,9 +23,11 @@ public class LoadDataSearchResultsEvent extends GwtEvent<LoadDataSearchResultsEv
     public static final GwtEvent.Type<LoadDataSearchResultsEventHandler> TYPE = new GwtEvent.Type<LoadDataSearchResultsEventHandler>();
 
     private List<DiskResource> results;
+    private String searchTerm;
 
-    public LoadDataSearchResultsEvent(List<DiskResource> results) {
+    public LoadDataSearchResultsEvent(final String searchTerm, final List<DiskResource> results) {
         this.setResults(results);
+        this.setSearchTerm(searchTerm);
     }
 
     @Override
@@ -51,6 +53,20 @@ public class LoadDataSearchResultsEvent extends GwtEvent<LoadDataSearchResultsEv
      */
     public void setResults(List<DiskResource> results) {
         this.results = results;
+    }
+
+    /**
+     * @return the searchTerm
+     */
+    public String getSearchTerm() {
+        return searchTerm;
+    }
+
+    /**
+     * @param searchTerm the searchTerm to set
+     */
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
     }
 
 }

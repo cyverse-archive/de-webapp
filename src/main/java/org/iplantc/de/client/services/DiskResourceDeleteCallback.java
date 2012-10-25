@@ -15,8 +15,9 @@ import com.google.gwt.json.client.JSONObject;
  * @author amuir
  * 
  */
-public abstract class DiskResourceDeleteCallback extends DiskResourceActionCallback {
+public class DiskResourceDeleteCallback extends DiskResourceActionCallback {
     protected List<String> listDiskResources;
+    private boolean notify;
 
     /**
      * Instantiate from a list of files and folders.
@@ -24,7 +25,17 @@ public abstract class DiskResourceDeleteCallback extends DiskResourceActionCallb
      * @param listDiskResources list of folders to delete.
      */
     public DiskResourceDeleteCallback(List<String> listDiskResources) {
+        this(listDiskResources, true);
+    }
+
+    /**
+     * Instantiate from a list of files and folders.
+     * 
+     * @param listDiskResources list of folders to delete.
+     */
+    public DiskResourceDeleteCallback(List<String> listDiskResources, boolean notify) {
         this.listDiskResources = listDiskResources;
+        this.notify = notify;
     }
 
     /**
@@ -32,13 +43,15 @@ public abstract class DiskResourceDeleteCallback extends DiskResourceActionCallb
      */
     @Override
     protected ActionType getActionType() {
-        return ActionType.DELETE;
+        return ActionType.DISKRESOURCE_DELETE;
     }
 
     @Override
     public void onSuccess(String result) {
         super.onSuccess(result);
-        NotifyInfo.display(org.iplantc.de.client.I18N.DISPLAY.delete(), I18N.DISPLAY.deleteMsg());
+        if (notify) {
+            NotifyInfo.display(org.iplantc.de.client.I18N.DISPLAY.delete(), I18N.DISPLAY.deleteMsg());
+        }
 
     }
 
@@ -49,13 +62,18 @@ public abstract class DiskResourceDeleteCallback extends DiskResourceActionCallb
     protected JSONObject buildPayload(final JSONObject jsonResult) {
         JSONObject ret = new JSONObject();
 
-        ret.put(getResourceListKey(), JsonUtil.buildArrayFromStrings(listDiskResources));
+        ret.put("diskResources", JsonUtil.buildArrayFromStrings(listDiskResources));
 
         return ret;
     }
 
-    /**
-     * @return The payload JSON key for this callback's disk resource list ("files" or "folders").
-     */
-    protected abstract String getResourceListKey();
+    @Override
+    protected String getErrorMessageDefault() {
+        return I18N.ERROR.deleteFailed();
+    }
+
+    @Override
+    protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
+        return getErrorMessage(code, parsePathsToNameList(jsonError));
+    }
 }

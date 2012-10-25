@@ -30,6 +30,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  */
 public class DataDetailListPanel extends ContentPanel {
+
     public DataDetailListPanel() {
         init();
     }
@@ -39,11 +40,12 @@ public class DataDetailListPanel extends ContentPanel {
      */
     private void init() {
         setHeaderVisible(false);
-        setVisible(false);
+        setHeight(150);
         setBodyStyle("background-color: #EDEDED"); //$NON-NLS-1$
 
         TableLayout layout = new TableLayout(2);
         layout.setCellPadding(2);
+
         setLayout(layout);
     }
 
@@ -55,13 +57,14 @@ public class DataDetailListPanel extends ContentPanel {
      */
     public void update(final List<DiskResource> resources) {
         removeAll();
-
         if (resources == null || resources.size() != 1) {
-            hide();
+            Text fieldLabel = new Text("select a file / folder to view details"); //$NON-NLS-1$
+            fieldLabel.addStyleName("data_details_label"); //$NON-NLS-1$
+            add(fieldLabel, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.TOP));
         } else {
             addDetails(resources.get(0));
-            show();
         }
+        layout();
     }
 
     /**
@@ -82,8 +85,6 @@ public class DataDetailListPanel extends ContentPanel {
             Folder folder = (Folder)resource;
             getFolderDetails(folder.getId());
         }
-
-        layout();
     }
 
     /**

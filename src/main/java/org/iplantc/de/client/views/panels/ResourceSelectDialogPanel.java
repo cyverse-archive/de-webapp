@@ -345,25 +345,19 @@ public class ResourceSelectDialogPanel extends IPlantDialogPanel implements Data
     }
 
     @Override
-    public void fileRename(String id, String name) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void folderRename(String id, String name) {
+    public void rename(String id, String name) {
         Folder folder = model.renameFolder(id, name);
 
         if (folder != null && pnlMain != null) {
-            pnlMain.renameFolder(id, name);
+            pnlMain.rename(id, name);
         }
 
     }
 
     @Override
-    public void deleteResources(List<String> folders, List<String> files) {
-        deleteFolders(folders);
-        deleteFiles(files);
+    public void deleteResources(List<String> diskResources) {
+        deleteFolders(diskResources);
+        deleteFiles(diskResources);
 
     }
 
@@ -395,13 +389,7 @@ public class ResourceSelectDialogPanel extends IPlantDialogPanel implements Data
     }
 
     @Override
-    public void folderMove(Map<String, String> folders) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void fileMove(Map<String, String> files) {
+    public void moveResource(Map<String, String> files) {
         // TODO Auto-generated method stub
 
     }

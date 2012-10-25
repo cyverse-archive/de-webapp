@@ -17,32 +17,18 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
     String unableToBuildWorkspace();
 
     /**
-     * Error message displayed when folder rename fails.
+     * Error message displayed when rename fails.
      * 
      * @return localized error string.
      */
-    String renameFolderFailed();
+    String renameFailed();
 
     /**
-     * Error message displayed when file rename fails.
+     * Error message displayed when deletion fails.
      * 
      * @return localized error string.
      */
-    String renameFileFailed();
-
-    /**
-     * Error message displayed when folder deletion fails.
-     * 
-     * @return localized error string.
-     */
-    String deleteFolderFailed();
-
-    /**
-     * Error message displayed when file deletion fails.
-     * 
-     * @return localized error string.
-     */
-    String deleteFileFailed();
+    String deleteFailed();
 
     /**
      * Error message displayed when the application fails to create a folder.
@@ -542,4 +528,32 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String restoreDefaultMsg();
+
+    /**
+     * Error msg to show when search fails
+     * 
+     * @return
+     */
+    String searchError();
+
+    /**
+     * Error msg to show when empty trash fails
+     * 
+     * @return
+     */
+    String emptyTrashError();
+
+    /**
+     * Error msg to show save search history call fails
+     * 
+     * @return
+     */
+    String searchHistoryError();
+
+    /**
+     * Error msg to show get search history fails
+     * 
+     * @return
+     */
+    String retrieveSearchHistoryError();
 }
