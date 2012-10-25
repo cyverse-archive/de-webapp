@@ -1194,4 +1194,17 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String location();
 
+    /**
+     * search history
+     * 
+     * @return
+     */
+    String searchHistory();
+
+    /**
+     * 
+     * data details prompt
+     * 
+     */
+    String dataDetailsPrompt();
 }

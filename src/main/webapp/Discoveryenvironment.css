@@ -454,6 +454,14 @@ ul.ux-taskbuttons-strip li.ux-taskbuttons-edge {
 	font-size: 12px;
 }
 
+.de_search_history {
+	cursor: pointer;
+	color: #0098AA;
+	text-decoration: none;
+	font-size: 12px;
+	padding-left: 3px;
+}
+
 a.x-menu-item {
 	color: black !important;
 }
@@ -475,12 +483,6 @@ a.x-menu-item {
 
 .data_details_value {
 	font-size: 11px;
-}
-
-.de_tnrs_hyperlink {
-	cursor: pointer;
-	text-decoration: underline;
-	color: Navy;
 }
 
 .de_notification_hyperlink {

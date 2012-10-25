@@ -11,6 +11,8 @@ import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.DataSearchHistorySelectedEvent;
+import org.iplantc.de.client.events.DataSearchHistorySelectedEventHandler;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
 import org.iplantc.de.client.events.LoadDataSearchResultsEvent;
@@ -109,6 +111,16 @@ public class DataMainToolBar extends ToolBar {
         // }
         //
         // }));
+        handlers.add(eventbus.addHandler(DataSearchHistorySelectedEvent.TYPE,
+                new DataSearchHistorySelectedEventHandler() {
+
+                    @Override
+                    public void onSelection(DataSearchHistorySelectedEvent event) {
+                        filterField.setValue(event.getSearchHistoryTerm());
+                        doSearch(event.getSearchHistoryTerm());
+
+                    }
+                }));
 
         menuActions.cleanup();
         menuActions.registerHandlers();

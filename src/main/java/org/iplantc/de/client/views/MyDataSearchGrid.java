@@ -10,19 +10,17 @@ import java.util.List;
 import org.iplantc.core.client.widgets.Hyperlink;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
-import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
-import org.iplantc.de.client.utils.DataViewContextExecutor;
-import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 import org.iplantc.de.client.views.panels.DataPreviewPanel;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -110,9 +108,10 @@ class LocationCellRenderer implements GridCellRenderer<DiskResource> {
         Hyperlink link = null;
 
         if (model instanceof Folder) {
-            link = new Hyperlink(model.getId(), "mydata_name"); //$NON-NLS-1$
+            link = new Hyperlink(Format.ellipse(model.getId(), 30), "mydata_name"); //$NON-NLS-1$
         } else {
-            link = new Hyperlink(DiskResourceUtil.parseParent(model.getId()), "mydata_name");
+            link = new Hyperlink(Format.ellipse(DiskResourceUtil.parseParent(model.getId()), 30),
+                    "mydata_name");
         }
         link.setToolTip(model.getId());
         link.addListener(Events.OnClick, new Listener<BaseEvent>() {

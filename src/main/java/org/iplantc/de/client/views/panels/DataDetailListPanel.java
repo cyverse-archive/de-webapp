@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
-import org.iplantc.core.uidiskresource.client.models.File;
-import org.iplantc.core.uidiskresource.client.models.Folder;
+import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
@@ -21,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -47,6 +47,7 @@ public class DataDetailListPanel extends ContentPanel {
         layout.setCellPadding(2);
 
         setLayout(layout);
+        update(null);
     }
 
     /**
@@ -58,7 +59,7 @@ public class DataDetailListPanel extends ContentPanel {
     public void update(final List<DiskResource> resources) {
         removeAll();
         if (resources == null || resources.size() != 1) {
-            Text fieldLabel = new Text("select a file / folder to view details"); //$NON-NLS-1$
+            Text fieldLabel = new Text(I18N.DISPLAY.dataDetailsPrompt()); //$NON-NLS-1$
             fieldLabel.addStyleName("data_details_label"); //$NON-NLS-1$
             add(fieldLabel, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.TOP));
         } else {
@@ -73,18 +74,7 @@ public class DataDetailListPanel extends ContentPanel {
      * @param resource
      */
     private void addDetails(final DiskResource resource) {
-        addDateLabel(I18N.DISPLAY.lastModified(), resource.getLastModified());
-        addDateLabel(I18N.DISPLAY.createdDate(), resource.getDateCreated()); //$NON-NLS-1$
-        addPermissionsLabel(I18N.DISPLAY.permissions(), resource.getPermissions().isReadable(), resource
-                .getPermissions().isWritable(), resource.getPermissions().isOwner());
-
-        if (resource instanceof File) {
-            File file = (File)resource;
-            addSizeLabel(I18N.DISPLAY.size(), file.getSize());
-        } else if (resource instanceof Folder) {
-            Folder folder = (Folder)resource;
-            getFolderDetails(folder.getId());
-        }
+        getDetails(resource.getId());
     }
 
     /**
@@ -140,12 +130,12 @@ public class DataDetailListPanel extends ContentPanel {
      * @param readable boolean true if the resource is readable else false
      * @param writable boolean true if the resource is writable else false
      */
-    private void addPermissionsLabel(String label, boolean readable, boolean writable, boolean owner) {
-        if (owner) {
+    private void addPermissionsLabel(String label, Permissions p) {
+        if (p.isOwner()) {
             addLabel(label, I18N.DISPLAY.owner());
             return;
         }
-        if (!writable) {
+        if (!p.isWritable()) {
             addLabel(label, I18N.DISPLAY.readOnly());
         } else {
             addLabel(label, I18N.DISPLAY.readWrite());
@@ -153,25 +143,40 @@ public class DataDetailListPanel extends ContentPanel {
     }
 
     /**
-     * Gets the folder contents of the given path, then adds details of the results to this panel.
+     * Gets details for given path, then adds details of the results to this panel.
      * 
      * @param path
      */
-    private void getFolderDetails(final String path) {
+    private void getDetails(final String path) {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
-        facade.getFolderContents(path, new AsyncCallback<String>() {
+        JSONObject obj = new JSONObject();
+        JSONArray arr = new JSONArray();
+        arr.set(0, new JSONString(path));
+        obj.put("paths", arr);
+
+        facade.getStat(obj.toString(), new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                JSONObject jsonFolder = JsonUtil.getObject(result);
-
-                JSONArray folders = JsonUtil.getArray(jsonFolder, "folders"); //$NON-NLS-1$
-                if (folders != null) {
-                    addLabel(I18N.DISPLAY.folders(), String.valueOf(folders.size()));
-                }
-
-                JSONArray files = JsonUtil.getArray(jsonFolder, "files"); //$NON-NLS-1$
-                if (files != null) {
-                    addLabel(I18N.DISPLAY.files(), String.valueOf(files.size()));
+                JSONObject json = JsonUtil.getObject(result);
+                if (json != null) {
+                    JSONObject pathsObj = JsonUtil.getObject(json, "paths");
+                    JSONObject details = JsonUtil.getObject(pathsObj, path);
+                    JSONObject perm = JsonUtil.getObject(details, "permissions");
+                    addDateLabel(I18N.DISPLAY.lastModified(),
+                            new Date(Long.parseLong(JsonUtil.getString(details, "modified"))));
+                    addDateLabel(I18N.DISPLAY.createdDate(),
+                            new Date(Long.parseLong(JsonUtil.getString(details, "created"))));
+                    addPermissionsLabel(I18N.DISPLAY.permissions(), new Permissions(perm));
+                    String type = JsonUtil.getString(details, "type");
+                    if (type.equalsIgnoreCase("file")) {
+                        addSizeLabel(I18N.DISPLAY.size(),
+                                (JsonUtil.getNumber(details, "size").longValue()));
+                    } else {
+                        addLabel(I18N.DISPLAY.folders(),
+                                String.valueOf(JsonUtil.getNumber(details, "dir-count").intValue()));
+                        addLabel(I18N.DISPLAY.files(),
+                                String.valueOf(JsonUtil.getNumber(details, "file-count").intValue()));
+                    }
                 }
 
                 layout();
@@ -184,5 +189,4 @@ public class DataDetailListPanel extends ContentPanel {
             }
         });
     }
-
 }

@@ -393,6 +393,12 @@ public class DiskResourceServiceFacade {
         callService(callback, wrapper);
     }
 
+    /**
+     * empty user's trash
+     * 
+     * @param user
+     * @param callback
+     */
     public void emptyTrash(String user, AsyncCallback<String> callback) {
         String address = serviceNamePrefix + ".empty-trash"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.DELETE, address);
@@ -407,17 +413,30 @@ public class DiskResourceServiceFacade {
      */
     public void search(String term, AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getMuleServiceBaseUrl()
-                + "simple-search/iplant?search-term=" + URL.encodePathSegment("*" + term + "*")
-                + "&size=" + DEProperties.getInstance().getMaxSearchResults();
+                + "simple-search/iplant?search-term=" + URL.encodePathSegment(term) + "&size="
+                + DEProperties.getInstance().getMaxSearchResults();
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
+    /**
+     * get users trash path
+     * 
+     * @param userName
+     * @param callback
+     */
     public void getUserTrashPath(String userName, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix
                 + ".user-trash-dir" + "?path=" + URL.encodePathSegment(userName); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
+        callService(callback, wrapper);
+    }
+
+    public void getStat(String body, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".stat"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
         callService(callback, wrapper);
     }
 
