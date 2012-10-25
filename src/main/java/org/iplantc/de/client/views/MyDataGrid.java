@@ -101,6 +101,7 @@ public class MyDataGrid extends Grid<DiskResource> {
         setAutoExpandColumn(COLUMN_ID_NAME);
         setAutoExpandMin(100);
 
+        setLoadMask(true);
         getView().setEmptyText(I18N.DISPLAY.selectFolderToViewContents());
         getView().setShowDirtyCells(false);
         getView().setForceFit(true);

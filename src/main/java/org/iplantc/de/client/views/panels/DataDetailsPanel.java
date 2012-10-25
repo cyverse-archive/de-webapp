@@ -11,10 +11,11 @@ import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.json.client.JSONObject;
 
 public class DataDetailsPanel extends AbstractDataPanel {
     private DataDetailListPanel pnlDetails;
-//    private DataProvenancePanel pnlProvenance;
+    private SearchHistoryPanel searchHistoryPanel;
 
     public DataDetailsPanel(final String tag) {
         super(tag);
@@ -22,6 +23,14 @@ public class DataDetailsPanel extends AbstractDataPanel {
         initListeners();
 
         initPanels();
+    }
+
+    public void setSearchHistory(JSONObject obj) {
+        searchHistoryPanel.setSearchHistory(obj);
+    }
+
+    public JSONObject getSearchHistory() {
+        return searchHistoryPanel.getSearchHistory();
     }
 
     /**
@@ -39,17 +48,16 @@ public class DataDetailsPanel extends AbstractDataPanel {
                 if (pnlDetails != null) {
                     pnlDetails.layout();
                 }
-
-//                if (pnlProvenance != null) {
-//                    pnlProvenance.handleResize();
-//                }
+                if (searchHistoryPanel != null) {
+                    searchHistoryPanel.layout();
+                }
             }
         });
     }
 
     private void initPanels() {
         pnlDetails = new DataDetailListPanel();
-        // pnlProvenance = new DataProvenancePanel();
+        searchHistoryPanel = new SearchHistoryPanel();
     }
 
     @Override
@@ -66,7 +74,6 @@ public class DataDetailsPanel extends AbstractDataPanel {
                             List<DiskResource> resources = event.getSelected();
 
                             pnlDetails.update(resources);
-                            // pnlProvenance.update(resources);
                         }
                     }
                 }));
@@ -78,7 +85,7 @@ public class DataDetailsPanel extends AbstractDataPanel {
     @Override
     protected void compose() {
         add(pnlDetails);
-        // add(pnlProvenance);
+        add(searchHistoryPanel);
     }
 
     /**

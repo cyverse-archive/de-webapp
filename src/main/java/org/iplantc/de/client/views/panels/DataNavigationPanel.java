@@ -14,8 +14,6 @@ import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
-import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 import org.iplantc.de.client.events.LoadDataSearchResultsEvent;
 import org.iplantc.de.client.events.LoadDataSearchResultsEventHandler;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
@@ -234,18 +232,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
                     public void onLoad(LoadDataSearchResultsEvent event) {
                         // de select everything once search results are loaded
                         pnlTree.getSelectionModel().deselectAll();
-                    }
-                }));
-        handlers.add(eventbus.addHandler(DataSearchResultSelectedEvent.TYPE,
-                new DataSearchResultSelectedEventHandler() {
-
-                    @Override
-                    public void onSelection(DataSearchResultSelectedEvent event) {
-                        DiskResource model = event.getModel();
-                        if (model != null && model instanceof Folder) {
-                            selectFolder(model.getId());
-                        }
-
                     }
                 }));
     }

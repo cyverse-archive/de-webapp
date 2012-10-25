@@ -422,7 +422,8 @@ public class DataNavToolBar extends ToolBar {
                     // disable editing items for the home folder
                     editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
                     getItemByItemId(ID_UPLD_MENU).enable();
-                } else if (selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
+                } else if (selectedFolder != null
+                        && selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
                     addMenuItemsEnabled = false;
                     editMenuItemsEnabled = false;
                     getItemByItemId(ID_UPLD_MENU).disable();

@@ -542,4 +542,18 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String emptyTrashError();
+
+    /**
+     * Error msg to show save search history call fails
+     * 
+     * @return
+     */
+    String searchHistoryError();
+
+    /**
+     * Error msg to show get search history fails
+     * 
+     * @return
+     */
+    String retrieveSearchHistoryError();
 }

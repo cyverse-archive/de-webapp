@@ -1187,4 +1187,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String noSearchResults(String searchTerm);
 
+    /**
+     * display text to a data location
+     * 
+     * @return
+     */
+    String location();
+
 }
