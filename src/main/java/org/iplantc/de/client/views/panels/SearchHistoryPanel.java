@@ -14,12 +14,12 @@ import org.iplantc.de.client.events.DataSearchHistorySelectedEvent;
 import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
 import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -30,7 +30,9 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class SearchHistoryPanel extends ContentPanel {
 
-    List<String> searchHistory;
+    private List<String> searchHistory;
+    private VerticalPanel container;
+    private final int RECENT_HISTORY_COUNT = 5;
 
     public SearchHistoryPanel() {
         init();
@@ -51,22 +53,29 @@ public class SearchHistoryPanel extends ContentPanel {
      * Initializes this content panel.
      */
     private void init() {
-        setHeaderVisible(true);
         searchHistory = new ArrayList<String>();
-        setHeading(I18N.DISPLAY.searchHistory());
-        setBodyStyle("background-color: #EDEDED"); //$NON-NLS-1$
+        container = new VerticalPanel();
+        setHeight(200);
+        setHeaderVisible(true);
         setLayout(new FitLayout());
-        setScrollMode(Scroll.AUTOY);
+        setHeading(I18N.DISPLAY.searchHistory());
+        add(container);
+        layout();
     }
 
     private void update(String searchTerm) {
-        searchHistory.add(searchTerm);
-        renderHistory();
+        if (!searchHistory.contains(searchTerm)) {
+            searchHistory.add(searchTerm);
+            renderHistory();
+        }
     }
 
     private void renderHistory() {
-        removeAll();
-        for (String term : searchHistory) {
+        container.removeAll();
+        int i = searchHistory.size() - 1;
+        int count = 0;
+        while (count < RECENT_HISTORY_COUNT && count < searchHistory.size()) {
+            String term = searchHistory.get(i--);
             Hyperlink link = new Hyperlink(term, "de_search_history");
             link.addListener(Events.OnClick, new HistorySelectedListenerImpl(term));
             HorizontalPanel panel = new HorizontalPanel();
@@ -74,13 +83,14 @@ public class SearchHistoryPanel extends ContentPanel {
             Hyperlink linkRmv = buildRemoveLink(term);
             panel.add(link);
             panel.add(linkRmv);
-            add(panel);
+            container.add(panel);
+            count++;
         }
         layout();
     }
 
     private Hyperlink buildRemoveLink(String term) {
-        Hyperlink linkRmv = new Hyperlink("[X]", "de_search_history");
+        Hyperlink linkRmv = new Hyperlink("[ X ]", "de_search_history");
         linkRmv.setToolTip(I18N.DISPLAY.delete());
         linkRmv.addListener(Events.OnClick, new HistoryRemoveListenerImpl(term));
         return linkRmv;
@@ -101,12 +111,12 @@ public class SearchHistoryPanel extends ContentPanel {
             JSONArray arr = JsonUtil.getArray(obj, "data-search");
             if (arr != null) {
                 for (int i = 0; i < arr.size(); i++) {
-                    searchHistory.add(JsonUtil.trim(arr.get(i).isString().toString()));
+                    searchHistory.add((JsonUtil.trim(arr.get(i).isString().toString())));
                 }
             }
         }
-
         renderHistory();
+
     }
 
     private final class HistoryRemoveListenerImpl implements Listener<BaseEvent> {
