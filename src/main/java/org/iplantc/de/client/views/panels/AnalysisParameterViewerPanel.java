@@ -123,7 +123,7 @@ public class AnalysisParameterViewerPanel extends ContentPanel {
 
         @Override
         public void onSuccess(String result) {
-            JSONObject obj = JSONParser.parseStrict(result).isObject();
+            JSONObject obj = JsonUtil.getObject(result);
             UploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
             uch.onCompletion(fileName, JsonUtil.getObject(obj, "file").toString());
 
@@ -158,7 +158,7 @@ public class AnalysisParameterViewerPanel extends ContentPanel {
 
             @Override
             public void onSuccess(String result) {
-                JSONObject obj = JSONParser.parseStrict(result).isObject();
+                JSONObject obj = JsonUtil.getObject(result);
                 JSONArray arr = JsonUtil.getArray(obj, "parameters");
                 List<AnalysisParameter> parameters = new ArrayList<AnalysisParameter>();
                 for (int i = 0; i < arr.size(); i++) {

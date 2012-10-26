@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -179,7 +178,7 @@ public class DataMainToolBar extends ToolBar {
 
             @Override
             public void onSuccess(String result) {
-                JSONObject obj = JSONParser.parseStrict(result).isObject();
+                JSONObject obj = JsonUtil.getObject(result);
                 int total = JsonUtil.getNumber(obj, "total").intValue();
                 JsArray<JsSearchResult> resultsArr = JsonUtil.asArrayOf(JsonUtil.getArray(obj, "hits")
                         .toString());

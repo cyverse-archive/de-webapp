@@ -4,7 +4,6 @@ import org.iplantc.core.jsonutil.JsonUtil;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 
 public class AnalysisParameter extends BaseModelData {
 
@@ -32,7 +31,7 @@ public class AnalysisParameter extends BaseModelData {
 
     public void setParameter(String value) {
         if (value != null && !value.isEmpty()) {
-            JSONObject obj = JSONParser.parseStrict(value).isObject();
+            JSONObject obj = JsonUtil.getObject(value);
             if (obj != null) {
                 set(PARAMETER_VALUE, JsonUtil.trim(obj.get("display").toString()));
             } else {

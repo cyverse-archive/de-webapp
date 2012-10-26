@@ -41,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -195,7 +194,7 @@ public class MyAnalysesPanel extends ContentPanel {
 
             @Override
             public void onSuccess(String result) {
-                JSONObject resultObj = JSONParser.parseStrict(result).isObject();
+                JSONObject resultObj = JsonUtil.getObject(result);
                 if (resultObj != null) {
                     JSONArray arr = JsonUtil.getArray(resultObj, "analyses");
 

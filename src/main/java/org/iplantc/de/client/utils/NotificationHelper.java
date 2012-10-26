@@ -15,7 +15,6 @@ import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -158,7 +157,7 @@ public class NotificationHelper {
 
                     @Override
                     public void onSuccess(String result) {
-                        JSONObject obj = JSONParser.parseStrict(result).isObject();
+                        JSONObject obj = JsonUtil.getObject(result);
                         int new_count = Integer.parseInt(JsonUtil.getString(obj, "count"));
                         // fire update of the new unseen count;
                         NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(new_count);

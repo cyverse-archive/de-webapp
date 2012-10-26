@@ -18,7 +18,6 @@ import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.panels.ManageCollaboratorsPanel.MODE;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
@@ -40,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
@@ -109,7 +107,7 @@ public class CollaboratorsPanel extends ContentPanel {
     }
 
     public List<Collaborator> parseResults(String result) {
-        JSONObject obj = JSONParser.parseStrict(result).isObject();
+        JSONObject obj = JsonUtil.getObject(result);
         String json = obj.get("users").toString();
         JsArray<JsCollaborators> collabs = JsonUtil.asArrayOf(json);
         List<Collaborator> collaborators = new ArrayList<Collaborator>();

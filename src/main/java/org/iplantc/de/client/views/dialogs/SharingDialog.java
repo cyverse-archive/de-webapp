@@ -36,7 +36,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -144,7 +143,7 @@ public class SharingDialog extends Dialog {
 
             @Override
             public void onSuccess(String result) {
-                JSONObject obj = JSONParser.parseStrict(result).isObject();
+                JSONObject obj = JsonUtil.getObject(result);
                 JSONArray permissionsArray = JsonUtil.getArray(obj, "paths");
                 if (permissionsArray != null) {
                     for (int i = 0; i < permissionsArray.size(); i++) {

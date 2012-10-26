@@ -1,6 +1,5 @@
 package org.iplantc.de.client.utils;
 
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.commands.EventDispatchCommand;
 import org.iplantc.de.client.events.MessagePayloadEvent;

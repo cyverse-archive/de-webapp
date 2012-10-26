@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -213,7 +212,7 @@ public class DiskresourceMetadataEditorPanel extends MetadataEditorPanel {
 
         @Override
         public void onSuccess(String result) {
-            JSONObject obj = JSONParser.parseStrict(result).isObject();
+            JSONObject obj = JsonUtil.getObject(result);
             JSONArray arr = obj.get("metadata").isArray();
             List<DiskResourceMetadata> metadata_list = new ArrayList<DiskResourceMetadata>();
             if (arr != null) {

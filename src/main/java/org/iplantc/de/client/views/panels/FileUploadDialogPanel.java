@@ -49,9 +49,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Panel component for uploading files.
- *
+ * 
  * @author lenards
- *
+ * 
  */
 public class FileUploadDialogPanel extends IPlantDialogPanel {
     private static final String ID_WRAP = "idWrap"; //$NON-NLS-1$
@@ -86,7 +86,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     /**
      * Instantiate from hidden fields, URL, and handler.
-     *
+     * 
      * @param hiddenFields collection of hidden form fields.
      * @param servletActionUrl servlet URL for the upload action.
      * @param handler handler to be executed on upload completion.
@@ -424,10 +424,21 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         }
     }
 
+    private String stripXml(String response) {
+        // this is bad. need a generic way to detect and remove xml from response
+        String ret = null;
+        if (response != null && response.contains("<pre>")) {
+            ret = response.replaceAll("<pre>", "");
+            ret = ret.replaceAll("</pre>", "");
+        }
+
+        return ret;
+    }
+
     private class SubmitListener implements Listener<FormEvent> {
         @Override
         public void handleEvent(FormEvent fe) {
-            String response = fe.getResultHtml();
+            String response = stripXml(fe.getResultHtml());
 
             try {
                 JSONObject jsonResponse = JsonUtil.getObject(JsonUtil.formatString(response));

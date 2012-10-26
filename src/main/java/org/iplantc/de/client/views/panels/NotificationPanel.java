@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
@@ -61,13 +62,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.extjs.gxt.ui.client.data.ModelData;
 
 /**
  * Displays user notifications.
@@ -557,7 +556,7 @@ public class NotificationPanel extends ContentPanel {
 
     private void addInitialNotificationsToStore(final String json) {
         storeAll.clear();
-        JSONObject objMessages = JSONParser.parseStrict(json).isObject();
+        JSONObject objMessages = JsonUtil.getObject(json);
 
         if (objMessages != null) {
             JSONArray arr = objMessages.get("messages").isArray(); //$NON-NLS-1$

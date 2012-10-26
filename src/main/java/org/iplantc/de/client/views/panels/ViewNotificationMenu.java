@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -221,7 +220,7 @@ public class ViewNotificationMenu extends Menu {
      */
     public void processMessages(final String json) {
 
-        JSONObject objMessages = JSONParser.parseStrict(json).isObject();
+        JSONObject objMessages = JsonUtil.getObject(json);
         int size = 0;
         // cache before removing
         List<Notification> temp = store.getModels();

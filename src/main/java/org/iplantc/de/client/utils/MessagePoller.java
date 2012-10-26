@@ -1,13 +1,13 @@
 package org.iplantc.de.client.utils;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.services.MessageServiceFacade;
-import org.iplantc.core.uicommons.client.events.EventBus;
+
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -85,7 +85,7 @@ public class MessagePoller {
 
                 @Override
                 public void onSuccess(String result) {
-                    JSONObject obj = JSONParser.parseStrict(result).isObject();
+                    JSONObject obj = JsonUtil.getObject(result);
                     NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(Integer
                             .parseInt(JsonUtil.getString(obj, "total")));
                     EventBus.getInstance().fireEvent(event);

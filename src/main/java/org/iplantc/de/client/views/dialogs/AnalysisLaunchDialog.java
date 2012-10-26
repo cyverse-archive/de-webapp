@@ -43,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -311,7 +310,7 @@ public class AnalysisLaunchDialog extends Dialog {
         AnalysisLaunchedEvent event = new AnalysisLaunchedEvent(tagCaller, fieldName.getValue(), true);
         eventbus.fireEvent(event);
 
-        JSONObject payload = JSONParser.parseStrict(result).isObject();
+        JSONObject payload = JsonUtil.getObject(result);
         AnalysisUpdateEvent aue = new AnalysisUpdateEvent(payload);
         eventbus.fireEvent(aue);
 
