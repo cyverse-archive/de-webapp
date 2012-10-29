@@ -8,36 +8,59 @@ import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
 
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AsyncUploadCompleteHandler extends DefaultUploadCompleteHandler {
+public class AsyncUploadCompleteHandler extends UploadCompleteHandler implements AsyncCallback<String> {
+
+    private String idParentFolder;
 
     /**
-     * {@inheritDoc}
+     * Instantiate from a parent id.
+     * 
+     * @param idParent unique id for parent folder.
      */
-    public AsyncUploadCompleteHandler(String idParent) {
+    public AsyncUploadCompleteHandler(String idParent, String sourceUrl) {
         super(idParent);
+        if (idParent == null || idParent.isEmpty()) {
+            throw new IllegalArgumentException(I18N.DISPLAY.idParentInvalid());
+        }
+
+        this.idParentFolder = idParent;
     }
 
     /**
-     * Notify user that the upload has successfully started.
+     * Retrieve parent id.
      * 
-     * @param sourceUrl
-     * @param response
+     * @return parent folder's unique id.
      */
-    public void onImportSuccess(String sourceUrl, String response) {
-        try {
-            JSONObject payload = buildPayload(sourceUrl, response);
-            // TODO Is it possible to only display file in UI once asynchronous upload is complete?
-            String filename = JsonUtil.getString(payload, DiskResource.LABEL);
-            NotifyInfo.notify(NotificationHelper.Category.DATA, I18N.DISPLAY.urlImport(),
-                    I18N.DISPLAY.importRequestSubmit(filename), null);
-        } catch (Exception e) {
-            ErrorHandler.post(I18N.ERROR.importFailed(sourceUrl), e);
-        } finally {
-            // TODO: consider having onCompletion and onAfterCompletion called by superclass
-            // method to more appropriately confirm w/ Template Method and Command patterns
-            onAfterCompletion();
-        }
+    public String getParentId() {
+        return idParentFolder;
+    }
+
+    @Override
+    public void onFailure(Throwable caught) {
+        ErrorHandler.post(caught);
+    }
+
+    @Override
+    public void onSuccess(String result) {
+        JSONObject obj = JsonUtil.getObject(result);
+        String filename = JsonUtil.getString(obj, DiskResource.LABEL);
+        NotifyInfo.notify(NotificationHelper.Category.DATA, I18N.DISPLAY.urlImport(),
+                I18N.DISPLAY.importRequestSubmit(filename), null);
+        onAfterCompletion();
+    }
+
+    @Override
+    public void onCompletion(String sourceUrl, String response) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onAfterCompletion() {
+        // TODO Auto-generated method stub
+
     }
 
 }

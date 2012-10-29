@@ -10,8 +10,10 @@ import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
+import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResouceDuplicatesCheckCallback;
+import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -24,11 +26,13 @@ import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -38,9 +42,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
@@ -60,7 +62,9 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private static final String ID_BTN_RESET = "idBtnReset"; //$NON-NLS-1$
 
-    private static final int FIELD_WIDTH = 475;
+    private static final String ID_STAT = "idStat";
+
+    private static final int FIELD_WIDTH = 425;
 
     private static final String URL_REGEX = "^(?:ftp|FTP|HTTPS?|https?)://[^/]+/.*[^/ ]$"; //$NON-NLS-1$
 
@@ -71,17 +75,20 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private static final int MAX_UPLOADS = 5;
 
-    private final FormPanel form;
+    private final ArrayList<FormPanel> forms;
     private final ContentPanel pnlLayout;
-    private final AsyncUploadCompleteHandler hdlrUpload;
-    private final Status fileStatus;
+    private final DefaultUploadCompleteHandler hdlrUpload;
     private final List<FileUploadField> fupload;
     private final List<TextArea> urls;
     private final String destFolder;
     private final MODE mode;
+    private final String servletActionUrl;
+
+    private int submitCount;
+    private int responseCount;
 
     public static enum MODE {
-        URL_ONLY, FILE_ONLY, FILE_AND_URL
+        URL_ONLY, FILE_ONLY
     };
 
     /**
@@ -92,80 +99,100 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
      * @param handler handler to be executed on upload completion.
      */
     public FileUploadDialogPanel(FastMap<String> hiddenFields, String servletActionUrl,
-            AsyncUploadCompleteHandler handler, MODE mode) {
+            DefaultUploadCompleteHandler handler, MODE mode) {
         hdlrUpload = handler;
         this.mode = mode;
         destFolder = hiddenFields.get(HDN_PARENT_ID_KEY);
+        this.servletActionUrl = servletActionUrl;
 
-        form = new FormPanel();
+        forms = new ArrayList<FormPanel>();
         fupload = new ArrayList<FileUploadField>();
         urls = new ArrayList<TextArea>();
 
-        fileStatus = buildFileStatus();
-
-        initForm(servletActionUrl);
+        pnlLayout = new ContentPanel();
+        pnlLayout.setHeaderVisible(false);
+        pnlLayout.setScrollMode(Scroll.AUTOY);
+        pnlLayout.setHeight(350);
+        pnlLayout.setStyleAttribute("padding", "5px");
         buildInternalLayout(hiddenFields);
 
-        pnlLayout = new ContentPanel();
-        pnlLayout.setLayoutData(new FitLayout());
-        pnlLayout.setHeaderVisible(false);
-        pnlLayout.setHeight(350);
-        pnlLayout.add(form);
     }
 
-    private void initForm(String servletActionUrl) {
+    private FormPanel initForm() {
+        FormPanel form = new FormPanel();
+        form.setBodyBorder(false);
+        form.setBorders(false);
         form.setStyleName("iplantc-form-layout-panel"); //$NON-NLS-1$
+        form.setHeight(75);
 
         form.setHideLabels(true);
         form.setHeaderVisible(false);
         form.setFieldWidth(FIELD_WIDTH);
+        form.setScrollMode(Scroll.AUTOY);
 
+        return form;
+    }
+
+    private FormPanel initUploadForm(int index) {
+        FormPanel form = initForm();
         form.setAction(servletActionUrl);
         form.setMethod(Method.POST);
         form.setEncoding(Encoding.MULTIPART);
-        form.setHeight(350);
-        form.setScrollMode(Scroll.AUTOY);
-        form.addListener(Events.Submit, new SubmitListener());
+        form.add(buildStatus(ID_STAT + index));
+        form.addListener(Events.Submit, new SubmitListener(index));
+        return form;
     }
 
     private void buildInternalLayout(FastMap<String> hiddenFields) {
-
-        form.add(fileStatus);
-
-        // add any key/value pairs provided as hidden field
-        for (String field : hiddenFields.keySet()) {
-            Hidden hdn = new Hidden(field, hiddenFields.get(field));
-            form.add(hdn);
+        if (mode == MODE.FILE_ONLY) {
+            buildSimpleUploadLayout(hiddenFields);
         }
 
-        if (mode != MODE.URL_ONLY) {
-            // then add the visual widgets
-            form.add(new HTML(I18N.DISPLAY.fileUploadMaxSizeWarning()));
-            for (int i = 0; i < MAX_UPLOADS; i++) {
-                HorizontalPanel uploadFieldPnl = buildFileUpload(i);
-                fupload.add((FileUploadField)uploadFieldPnl.getItemByItemId(ID_FILE_UPLD + i));
-                form.add(uploadFieldPnl);
-            }
-        }
-
-        if (mode == MODE.FILE_AND_URL) {
-            form.add(new HTML("<br/>")); //$NON-NLS-1$
-        }
-
-        if (mode != MODE.FILE_ONLY) {
-            form.add(new HTML(I18N.DISPLAY.urlPrompt()));
-
-            for (int i = 0; i < MAX_UPLOADS; i++) {
-                TextArea url = buildUrlField();
-                urls.add(url);
-                form.add(url);
-            }
+        if (mode == MODE.URL_ONLY) {
+            buildUrlImportLayout();
         }
     }
 
-    private TextArea buildUrlField() {
+    private void buildSimpleUploadLayout(FastMap<String> hiddenFields) {
+        // then add the visual widgets
+        pnlLayout.add(new HTML("&nbsp;" + I18N.DISPLAY.fileUploadFolder(destFolder) + " "
+                + I18N.DISPLAY.fileUploadMaxSizeWarning()));
+        pnlLayout.add(new HTML("<br/>"));
+
+        for (int i = 0; i < MAX_UPLOADS; i++) {
+            FormPanel fp = initUploadForm(i);
+            // add any key/value pairs provided as hidden field
+            for (String field : hiddenFields.keySet()) {
+                Hidden hdn = new Hidden(field, hiddenFields.get(field));
+                fp.add(hdn);
+            }
+            HorizontalPanel uploadFieldPnl = buildFileUpload(i);
+            fupload.add((FileUploadField)uploadFieldPnl.getItemByItemId(ID_FILE_UPLD + i));
+            fp.add(uploadFieldPnl);
+            pnlLayout.add(fp);
+            forms.add(fp);
+        }
+    }
+
+    private void buildUrlImportLayout() {
+        pnlLayout.add(new HTML("&nbsp;" + I18N.DISPLAY.urlPrompt()));
+        pnlLayout.add(new HTML("<br/>"));
+        VerticalPanel vp = new VerticalPanel();
+        vp.setSpacing(3);
+
+        for (int i = 0; i < MAX_UPLOADS; i++) {
+            TextArea url = buildUrlField(URL_FIELD + i);
+            urls.add(url);
+            vp.add(url);
+        }
+
+        pnlLayout.add(vp);
+    }
+
+    private TextArea buildUrlField(String id) {
         TextArea url = new TextArea();
 
+        url.setId(id);
         url.setName(URL_FIELD);
         url.setWidth(FIELD_WIDTH);
 
@@ -206,17 +233,10 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         return url;
     }
 
-    private Status buildFileStatus() {
-        Status ret = new Status();
-
-        ret.setStyleName("iplantc-file-status"); //$NON-NLS-1$
-        ret.setText(I18N.DISPLAY.fileUploadFolder(destFolder));
-        return ret;
-    }
-
     private HorizontalPanel buildFileUpload(int index) {
         HorizontalPanel wrapper = new HorizontalPanel();
         wrapper.setSpacing(5);
+        wrapper.setBorders(false);
         wrapper.setId(ID_WRAP + index);
         FileUploadField ret = new FileUploadField();
         ret.setId(ID_FILE_UPLD + index);
@@ -272,10 +292,14 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         return reset;
     }
 
-    private void validateForm() {
-        boolean fileStatusIsBusy = "x-status-busy".equals(fileStatus.getIconStyle()); //$NON-NLS-1$
+    private Status buildStatus(String id) {
+        Status s = new Status();
+        s.setId(id);
+        return s;
+    }
 
-        getOkButton().setEnabled(isValidUploadForm() && !fileStatusIsBusy);
+    private void validateForm() {
+        getOkButton().setEnabled(isValidUploadForm());
     }
 
     private void initOkButton() {
@@ -286,14 +310,11 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private void doUpload() {
         if (isValidUploadForm()) {
-            fileStatus.setBusy(fileStatus.getText());
-            fileStatus.show();
-
             getOkButton().disable();
 
             // check for duplicate files already on the server, excluding any invalid upload fields
             final FastMap<TextField<String>> destResourceMap = new FastMap<TextField<String>>();
-            if (mode != MODE.URL_ONLY) {
+            if (mode == MODE.FILE_ONLY) {
                 for (FileUploadField uploadField : fupload) {
                     // Remove any path from the filename.
                     if (uploadField.getValue() != null) {
@@ -307,7 +328,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                 }
             }
 
-            if (mode != MODE.FILE_ONLY) {
+            if (mode == MODE.URL_ONLY) {
                 for (TextArea urlField : urls) {
                     String url = urlField.getValue();
                     boolean validUrl = isValidFilename(url);
@@ -338,7 +359,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     }
 
     private boolean isValidUploadForm() {
-        if (mode != MODE.URL_ONLY) {
+        if (mode == MODE.FILE_ONLY) {
             for (FileUploadField uploadField : fupload) {
                 String filename = uploadField.getValue();
                 if (isValidFilename(filename)) {
@@ -347,7 +368,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
             }
         }
 
-        if (mode != MODE.FILE_ONLY) {
+        if (mode == MODE.URL_ONLY) {
             for (TextArea urlField : urls) {
                 if (isValidFilename(urlField.getValue())) {
                     return true;
@@ -409,65 +430,103 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                     Field f = destResourceMap.get(buildResourceId(id));
                     f.markInvalid(I18N.ERROR.fileExist());
                 }
-                fileStatus.clearStatus(fileStatus.getText());
+                if (mode == MODE.FILE_ONLY) {
+                    for (int i = 0; i < MAX_UPLOADS; i++) {
+                        FormPanel formPanel = forms.get(i);
+                        Status st = (Status)formPanel.getItemByItemId(ID_STAT + i);
+                        st.setText("");
+                    }
+                }
+                getOkButton().enable();
                 return;
             } else {
-                if (mode != MODE.URL_ONLY) {
+                if (fupload.size() > 0) {
+                    getOkButton().disable();
                     for (int i = 0; i < MAX_UPLOADS; i++) {
-                        if (!isValidFilename(fupload.get(i).getValue())) {
-                            form.remove(form.getItemByItemId(ID_WRAP + i));
+                        if (isValidFilename(fupload.get(i).getValue())) {
+                            FormPanel formPanel = forms.get(i);
+                            Status st = (Status)formPanel.getItemByItemId(ID_STAT + i);
+                            st.setBusy("");
+                            formPanel.submit();
+                            submitCount++;
                         }
                     }
                 }
-                form.submit();
+
+                if (urls.size() > 0) {
+                    getOkButton().disable();
+                    submitUrlImports();
+                }
+
+            }
+        }
+    }
+
+    private void submitUrlImports() {
+        DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+        for (int i = 0; i < urls.size(); i++) {
+
+            String value = urls.get(i).getValue();
+            if (value != null && !value.isEmpty()) {
+                facade.importFromUrl(value, destFolder,
+                        new AsyncUploadCompleteHandler(destFolder, value) {
+                            @Override
+                            public void onAfterCompletion() {
+                                if (submitCount == responseCount) {
+                                    hdlrUpload.onAfterCompletion();
+                                }
+                            }
+
+                        });
             }
         }
     }
 
     private String stripXml(String response) {
-        // this is bad. need a generic way to detect and remove xml from response
         String ret = null;
-        if (response != null && response.contains("<pre>")) {
-            ret = response.replaceAll("<pre>", "");
-            ret = ret.replaceAll("</pre>", "");
+        if (response != null) {
+            ret = Format.stripTags(response);
         }
 
         return ret;
     }
 
     private class SubmitListener implements Listener<FormEvent> {
+
+        private int index;
+
+        public SubmitListener(int index) {
+            this.index = index;
+        }
+
         @Override
         public void handleEvent(FormEvent fe) {
             String response = stripXml(fe.getResultHtml());
 
             try {
                 JSONObject jsonResponse = JsonUtil.getObject(JsonUtil.formatString(response));
-                JSONArray results = JsonUtil.getArray(jsonResponse, "results"); //$NON-NLS-1$
-                if (results == null) {
+                if (jsonResponse == null) {
                     throw new Exception(response);
                 }
 
-                for (int i = 0; i < results.size(); i++) {
-                    JSONObject jsonFileUploadStatus = JsonUtil.getObjectAt(results, i);
-                    if (jsonFileUploadStatus != null) {
-                        String action = JsonUtil.getString(jsonFileUploadStatus, "action"); //$NON-NLS-1$
+                String action = JsonUtil.getString(jsonResponse, "action"); //$NON-NLS-1$
 
-                        if (action.equals("file-upload")) { //$NON-NLS-1$
-                            JSONObject file = JsonUtil.getObject(jsonFileUploadStatus, "file"); //$NON-NLS-1$
+                responseCount++;
 
-                            if (file != null) {
-                                hdlrUpload.onCompletion(JsonUtil.getString(file, File.LABEL),
-                                        file.toString());
-                            }
-                        } else if (action.equals("url-upload")) { //$NON-NLS-1$
-                            String sourceUrl = JsonUtil.getString(jsonFileUploadStatus, "url"); //$NON-NLS-1$
+                if (action.equals("file-upload")) { //$NON-NLS-1$
+                    JSONObject file = JsonUtil.getObject(jsonResponse, "file"); //$NON-NLS-1$
 
-                            hdlrUpload.onImportSuccess(sourceUrl, jsonFileUploadStatus.toString());
-                        }
+                    if (file != null) {
+                        hdlrUpload.onCompletion(JsonUtil.getString(file, File.LABEL), file.toString());
+                        FormPanel fp = (FormPanel)fe.getSource();
+                        Status st = (Status)fp.getItemByItemId(ID_STAT + index);
+                        st.setText(I18N.DISPLAY.success());
                     }
                 }
+
             } catch (Exception caught) {
                 String firstFileName = ""; //$NON-NLS-1$
+                responseCount++;
 
                 if (!fupload.isEmpty()) {
                     firstFileName = fupload.get(0).getValue();
@@ -476,11 +535,15 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                 }
 
                 ErrorHandler.post(I18N.ERROR.fileUploadFailed(firstFileName), caught);
-                hdlrUpload.onAfterCompletion();
+
+            } finally {
+                if (submitCount == responseCount) {
+                    hdlrUpload.onAfterCompletion();
+                }
             }
 
             // we're done, so clear the busy notification
-            fileStatus.clearStatus(fileStatus.getText());
+            // fileStatus.clearStatus(fileStatus.getText());
         }
     }
 }

@@ -25,11 +25,14 @@ public class DataSearchResultSelectedEvent extends GwtEvent<DataSearchResultSele
     private List<String> selectedIds;
     private DiskResource model;
     private String searchTerm;
+    private String tag;
 
-    public DataSearchResultSelectedEvent(String searchTerm, DiskResource model, List<String> selectedIds) {
+    public DataSearchResultSelectedEvent(String tag, String searchTerm, DiskResource model,
+            List<String> selectedIds) {
         this.setModel(model);
         this.setSelectedIds(selectedIds);
         this.setSearchTerm(searchTerm);
+        this.setTag(tag);
     }
 
     @Override
@@ -83,6 +86,20 @@ public class DataSearchResultSelectedEvent extends GwtEvent<DataSearchResultSele
      */
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
+    }
+
+    /**
+     * @return the tag
+     */
+    public String getTag() {
+        return tag;
+    }
+
+    /**
+     * @param tag the tag to set
+     */
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
 }
