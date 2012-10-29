@@ -9,6 +9,7 @@ import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
+import org.iplantc.de.client.events.DataSearchResultSelectedEvent.Selection;
 import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -35,7 +36,19 @@ public class FileSelectDialogPanel extends ResourceSelectDialogPanel {
                     @Override
                     public void onSelection(DataSearchResultSelectedEvent event) {
                         if (event.getTag().equals(FileSelectDialogPanel.this.tag)) {
-                            setSelection(event.getModel());
+                            DiskResource dr = event.getModel();
+                            if (dr instanceof File) {
+                                if (event.getSelection().equals(Selection.NAME)) {
+                                    setSelection(dr); // name was clicked
+                                } else {
+                                    pnlNavigation.selectFolder(DiskResourceUtil.parseParent(dr.getId())); // location
+                                                                                                          // was
+                                                                                                          // clicked
+                                }
+                            } else {
+                                pnlNavigation.selectFolder(dr.getId());
+                            }
+
                         }
 
                     }

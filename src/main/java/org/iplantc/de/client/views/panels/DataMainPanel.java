@@ -317,6 +317,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             DiskResource exists = findDiskResource(resourceId);
             if (exists != null) {
                 grid.getSelectionModel().select(exists, keepExisting);
+                grid.getView().focusRow(grid.getStore().indexOf(exists));
             }
         }
     }

@@ -406,10 +406,9 @@ public class DiskResourceServiceFacade {
      * @param term search termt
      * @param callback
      */
-    public void search(String term, AsyncCallback<String> callback) {
+    public void search(String term, int size, AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getMuleServiceBaseUrl()
-                + "simple-search/iplant?search-term=" + URL.encodePathSegment(term) + "&size="
-                + DEProperties.getInstance().getMaxSearchResults();
+                + "simple-search/iplant?search-term=" + URL.encodePathSegment(term) + "&size=" + size;
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);

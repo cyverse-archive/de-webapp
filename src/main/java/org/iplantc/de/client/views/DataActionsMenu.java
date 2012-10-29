@@ -188,17 +188,6 @@ public final class DataActionsMenu extends Menu {
                         }
                     }
                 }));
-        // handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
-        // new DiskResourceSelectedEventHandler() {
-        //
-        // @Override
-        // public void onSelected(DiskResourceSelectedEvent event) {
-        // currentPage = event.getResource();
-        // prepareMenuItems(DataUtils.getSupportedActions(resources, currentPage.getId()));
-        // }
-        //
-        // }));
-
     }
 
     public void cleanup() {
@@ -287,6 +276,8 @@ public final class DataActionsMenu extends Menu {
                 // break;
                 case Restore:
                     showMenuItem(itemRestore);
+                    break;
+                default:
                     break;
 
             }

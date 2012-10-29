@@ -20,6 +20,7 @@ import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.events.DataPayloadEvent;
 import org.iplantc.de.client.events.DataPayloadEventHandler;
 import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
+import org.iplantc.de.client.events.DataSearchResultSelectedEvent.Selection;
 import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.events.ManageDataRefreshEventHandler;
@@ -200,8 +201,11 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
                 if (model != null && model instanceof Folder) {
                     pnlNavigation.selectFolder(model.getId());
                 } else {
-                    pnlNavigation.selectFolder(DiskResourceUtil.parseParent(model.getId()));
-                    pnlMain.setSelectedResource(event.getSelectedIds());
+                    if (event.getSelection().equals(Selection.LOCATION)) {
+                        pnlNavigation.selectFolder(DiskResourceUtil.parseParent(model.getId()));
+                        pnlMain.setSelectedResource(event.getSelectedIds());
+                        return;
+                    }
                     DataViewContextExecutor executor = new DataViewContextExecutor();
                     DataContextBuilder builder = new DataContextBuilder();
                     executor.execute(builder.build(model.getId()));

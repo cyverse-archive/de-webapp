@@ -31,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.tips.ToolTip;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.ibm.icu.impl.LocaleDisplayNamesImpl.DataTableType;
 
 /**
  * @author sriram
@@ -125,7 +126,8 @@ class LocationCellRenderer implements GridCellRenderer<DiskResource> {
             @Override
             public void handleEvent(BaseEvent be) {
                 DataSearchResultSelectedEvent e = new DataSearchResultSelectedEvent(tag, searchTerm,
-                        model, Arrays.asList(model.getId()));
+                        model, Arrays.asList(model.getId()),
+                        DataSearchResultSelectedEvent.Selection.LOCATION);
                 EventBus.getInstance().fireEvent(e);
             }
         });
@@ -170,7 +172,8 @@ class SearchNameCellRenderer implements GridCellRenderer<DiskResource> {
             @Override
             public void handleEvent(BaseEvent be) {
                 DataSearchResultSelectedEvent e = new DataSearchResultSelectedEvent(tag, searchTerm,
-                        model, Arrays.asList(model.getId()));
+                        model, Arrays.asList(model.getId()),
+                        DataSearchResultSelectedEvent.Selection.NAME);
                 EventBus.getInstance().fireEvent(e);
             }
         });

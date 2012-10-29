@@ -26,13 +26,25 @@ public class DataSearchResultSelectedEvent extends GwtEvent<DataSearchResultSele
     private DiskResource model;
     private String searchTerm;
     private String tag;
+    private Selection selection;
+
+    /**
+     * classify what was clicked by user from the search result
+     * 
+     * @author sriram
+     * 
+     */
+    public static enum Selection {
+        NAME, LOCATION
+    };
 
     public DataSearchResultSelectedEvent(String tag, String searchTerm, DiskResource model,
-            List<String> selectedIds) {
+            List<String> selectedIds, Selection selection) {
         this.setModel(model);
         this.setSelectedIds(selectedIds);
         this.setSearchTerm(searchTerm);
         this.setTag(tag);
+        this.setSelection(selection);
     }
 
     @Override
@@ -100,6 +112,20 @@ public class DataSearchResultSelectedEvent extends GwtEvent<DataSearchResultSele
      */
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    /**
+     * @return the selection
+     */
+    public Selection getSelection() {
+        return selection;
+    }
+
+    /**
+     * @param selection the selection to set
+     */
+    public void setSelection(Selection selection) {
+        this.selection = selection;
     }
 
 }

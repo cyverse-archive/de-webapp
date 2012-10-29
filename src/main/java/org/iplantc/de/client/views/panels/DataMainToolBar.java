@@ -6,6 +6,7 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
@@ -21,6 +22,7 @@ import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.JsSearchResult;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
+import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.utils.PanelHelper;
 import org.iplantc.de.client.views.DataActionsMenu;
 
@@ -28,7 +30,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -100,16 +101,6 @@ public class DataMainToolBar extends ToolBar {
                         }
                     }
                 }));
-        // handlers.add(eventbus.addHandler(DiskResourceSelectedEvent.TYPE,
-        // new DiskResourceSelectedEventHandler() {
-        //
-        // @Override
-        // public void onSelected(DiskResourceSelectedEvent event) {
-        // // update actions on new page
-        // updateActionsButton(null);
-        // }
-        //
-        // }));
         handlers.add(eventbus.addHandler(DataSearchHistorySelectedEvent.TYPE,
                 new DataSearchHistorySelectedEventHandler() {
 
@@ -169,29 +160,32 @@ public class DataMainToolBar extends ToolBar {
     private void doSearch(final String term) {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
 
-        facade.search(term, new AsyncCallback<String>() {
+        facade.search(term, DEProperties.getInstance().getMaxSearchResults(),
+                new AsyncCallback<String>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.searchError(), caught);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        ErrorHandler.post(I18N.ERROR.searchError(), caught);
+                    }
 
-            @Override
-            public void onSuccess(String result) {
-                JSONObject obj = JsonUtil.getObject(result);
-                int total = JsonUtil.getNumber(obj, "total").intValue();
-                JsArray<JsSearchResult> resultsArr = JsonUtil.asArrayOf(JsonUtil.getArray(obj, "hits")
-                        .toString());
-                List<DiskResource> resources = buildDataSearchResultset(resultsArr);
-                if (resources.size() < total) {
-                    MessageBox.alert(I18N.DISPLAY.searching() + " " + term,
-                            I18N.DISPLAY.searchThresholdMsg(), null);
-                }
-                LoadDataSearchResultsEvent event = new LoadDataSearchResultsEvent(term, resources);
-                EventBus.getInstance().fireEvent(event);
-            }
+                    @Override
+                    public void onSuccess(String result) {
+                        JSONObject obj = JsonUtil.getObject(result);
+                        int total = JsonUtil.getNumber(obj, "total").intValue();
+                        JsArray<JsSearchResult> resultsArr = JsonUtil.asArrayOf(JsonUtil.getArray(obj,
+                                "hits").toString());
+                        List<DiskResource> resources = buildDataSearchResultset(resultsArr);
+                        if (resources.size() < total) {
+                            NotifyInfo.display(I18N.DISPLAY.searching() + " " + term,
+                                    I18N.DISPLAY.searchThresholdMsg(DEProperties.getInstance()
+                                            .getMaxSearchResults()));
+                        }
+                        LoadDataSearchResultsEvent event = new LoadDataSearchResultsEvent(term,
+                                resources);
+                        EventBus.getInstance().fireEvent(event);
+                    }
 
-        });
+                });
     }
 
     private List<DiskResource> buildDataSearchResultset(JsArray<JsSearchResult> results) {
