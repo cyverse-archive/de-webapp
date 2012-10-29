@@ -2,11 +2,14 @@ package org.iplantc.de.client.views.panels;
 
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
+import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -26,6 +29,17 @@ public class FileSelectDialogPanel extends ResourceSelectDialogPanel {
      */
     public FileSelectDialogPanel(File file, String currentFolderId, String tag) {
         super(file, currentFolderId, tag);
+        EventBus.getInstance().addHandler(DataSearchResultSelectedEvent.TYPE,
+                new DataSearchResultSelectedEventHandler() {
+
+                    @Override
+                    public void onSelection(DataSearchResultSelectedEvent event) {
+                        if (event.getTag().equals(FileSelectDialogPanel.this.tag)) {
+                            setSelection(event.getModel());
+                        }
+
+                    }
+                });
 
         mainSelectionChangeListener = new SelectionChangeListenerImpl();
     }
@@ -60,31 +74,27 @@ public class FileSelectDialogPanel extends ResourceSelectDialogPanel {
         selectFolder(parentFolderId);
     }
 
+    private void setSelection(DiskResource dr) {
+        setParentOkButton();
+
+        if (dr instanceof File && dr != null) {
+            txtResourceName.setValue(dr.getName());
+            selectedResource = dr;
+            setCurrentFolderId(DiskResourceUtil.parseParent(dr.getId()));
+            enableParentOkButton();
+            return;
+        }
+
+        // disable OK button if a file is not selected
+        txtResourceName.setValue(""); //$NON-NLS-1$
+        disableParentOkButton();
+    }
+
     private class SelectionChangeListenerImpl implements Listener<BaseEvent> {
         @Override
         public void handleEvent(BaseEvent be) {
-            setParentOkButton();
-
             List<DiskResource> selectedItems = pnlMain.getSelectedItems();
-            if (selectedItems != null && selectedItems.size() > 0) {
-                DiskResource resource = selectedItems.get(0);
-                if (resource instanceof File && resource != null) {
-                    txtResourceName.setValue(resource.getName());
-                    selectedResource = resource;
-                    if (!model.getCurrentPath().equals(model.getRootFolderId())) {
-                        setCurrentFolderId(model.getCurrentPath());
-                    } else {
-                        setCurrentFolderId(null);
-                    }
-                    enableParentOkButton();
-
-                    return;
-                }
-            }
-
-            // disable OK button if a file is not selected
-            txtResourceName.setValue(""); //$NON-NLS-1$
-            disableParentOkButton();
+            setSelection(selectedItems.get(0));
         }
     }
 }

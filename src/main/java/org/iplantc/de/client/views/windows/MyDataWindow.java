@@ -61,10 +61,6 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         super(tag, config);
 
         initHandlers();
-        if (UserInfo.getInstance().getTrashPath() == null
-                || UserInfo.getInstance().getTrashPath().isEmpty()) {
-            getUserTrashPath();
-        }
         getSearhHistory();
     }
 
@@ -199,15 +195,17 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
             DataSearchResultSelectedEventHandler {
         @Override
         public void onSelection(DataSearchResultSelectedEvent event) {
-            DiskResource model = event.getModel();
-            if (model != null && model instanceof Folder) {
-                pnlNavigation.selectFolder(model.getId());
-            } else {
-                pnlNavigation.selectFolder(DiskResourceUtil.parseParent(model.getId()));
-                pnlMain.setSelectedResource(event.getSelectedIds());
-                DataViewContextExecutor executor = new DataViewContextExecutor();
-                DataContextBuilder builder = new DataContextBuilder();
-                executor.execute(builder.build(model.getId()));
+            if (event.getTag().equals(tag)) {
+                DiskResource model = event.getModel();
+                if (model != null && model instanceof Folder) {
+                    pnlNavigation.selectFolder(model.getId());
+                } else {
+                    pnlNavigation.selectFolder(DiskResourceUtil.parseParent(model.getId()));
+                    pnlMain.setSelectedResource(event.getSelectedIds());
+                    DataViewContextExecutor executor = new DataViewContextExecutor();
+                    DataContextBuilder builder = new DataContextBuilder();
+                    executor.execute(builder.build(model.getId()));
+                }
             }
         }
     }
@@ -230,25 +228,6 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
 
         }
 
-    }
-
-    private void getUserTrashPath() {
-        final String userName = UserInfo.getInstance().getUsername();
-        DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
-        facade.getUserTrashPath(userName, new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // best guess of user name. this is horrible
-                UserInfo.getInstance().setTrashPath("/iplant/trash/home/rods/" + userName);
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject obj = JsonUtil.getObject(result);
-                UserInfo.getInstance().setTrashPath(JsonUtil.getString(obj, "trash"));
-            }
-        });
     }
 
     private void getSearhHistory() {

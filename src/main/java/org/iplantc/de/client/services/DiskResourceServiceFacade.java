@@ -220,16 +220,13 @@ public class DiskResourceServiceFacade {
      * 
      * @param url
      * @param dest id of the destination folder.
-     * @param description description of the file to upload.
      * @param callback service success/failure callback
      */
-    public void importFromUrl(final String url, final String dest, final String description,
-            AsyncCallback<String> callback) {
+    public void importFromUrl(final String url, final String dest, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix + ".file-urlupload"; //$NON-NLS-1$
         JSONObject body = new JSONObject();
         body.put("dest", new JSONString(dest)); //$NON-NLS-1$
         body.put("address", new JSONString(url)); //$NON-NLS-1$
-        body.put("description", new JSONString(description)); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());

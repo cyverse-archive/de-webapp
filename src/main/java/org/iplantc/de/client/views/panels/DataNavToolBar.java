@@ -12,7 +12,7 @@ import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
-import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
+import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceDeleteCallback;
 import org.iplantc.de.client.services.DiskResourceServiceCallback;
@@ -226,7 +226,7 @@ public class DataNavToolBar extends ToolBar {
             hiddenFields.put(FileUploadDialogPanel.HDN_USER_ID_KEY, username);
 
             // define a handler for upload completion
-            AsyncUploadCompleteHandler handler = new AsyncUploadCompleteHandler(uploadDestId) {
+            DefaultUploadCompleteHandler handler = new DefaultUploadCompleteHandler(uploadDestId) {
                 /**
                  * {@inheritDoc}
                  */
@@ -415,22 +415,29 @@ public class DataNavToolBar extends ToolBar {
                 // check the selected folder
                 Folder selectedFolder = selectionModel.getSelectedItem();
 
+                Component uploadMenu = getItemByItemId(ID_UPLD_MENU);
                 if (selectedFolder != null
                         && !selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
                     // we can at least add folders to a selected path under the home folder.
                     addMenuItemsEnabled = true;
                     // disable editing items for the home folder
                     editMenuItemsEnabled = !rootFolder.getId().equals(selectedFolder.getId());
-                    getItemByItemId(ID_UPLD_MENU).enable();
+                    if (uploadMenu != null) {
+                        uploadMenu.enable();
+                    }
                 } else if (selectedFolder != null
                         && selectedFolder.getId().startsWith(UserInfo.getInstance().getTrashPath())) {
                     addMenuItemsEnabled = false;
                     editMenuItemsEnabled = false;
-                    getItemByItemId(ID_UPLD_MENU).disable();
+                    if (uploadMenu != null) {
+                        uploadMenu.disable();
+                    }
                 } else {
                     addMenuItemsEnabled = false;
                     editMenuItemsEnabled = false;
-                    getItemByItemId(ID_UPLD_MENU).enable();
+                    if (uploadMenu != null) {
+                        uploadMenu.enable();
+                    }
                 }
             }
 

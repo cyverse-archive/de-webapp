@@ -10,6 +10,7 @@ import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
 import org.iplantc.de.client.ApplicationLayout;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
@@ -84,10 +85,29 @@ public class DefaultWorkspaceView implements View {
                         userInfo.setFullUsername(attributes.get(UserInfo.ATTR_USERNAME));
                         userInfo.setFirstName(attributes.get(UserInfo.ATTR_FIRSTNAME));
                         userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
-
+                        getUserTrashPath();
                         displayView();
                     }
                 });
+    }
+
+    private void getUserTrashPath() {
+        final String userName = UserInfo.getInstance().getUsername();
+        DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
+        facade.getUserTrashPath(userName, new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // best guess of user name. this is horrible
+                UserInfo.getInstance().setTrashPath("/iplant/trash/home/rods/" + userName);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                JSONObject obj = JsonUtil.getObject(result);
+                UserInfo.getInstance().setTrashPath(JsonUtil.getString(obj, "trash"));
+            }
+        });
     }
 
     private void displayView() {
@@ -137,9 +157,9 @@ public class DefaultWorkspaceView implements View {
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
     /*-{
-		$doc.oncontextmenu = function() {
-			return enabled;
-		};
+    	$doc.oncontextmenu = function() {
+    		return enabled;
+    	};
     }-*/;
 
     /**

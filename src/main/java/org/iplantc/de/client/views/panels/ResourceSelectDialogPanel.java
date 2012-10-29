@@ -17,6 +17,8 @@ import org.iplantc.de.client.controllers.DataController;
 import org.iplantc.de.client.controllers.DataMonitor;
 import org.iplantc.de.client.events.DataPayloadEvent;
 import org.iplantc.de.client.events.DataPayloadEventHandler;
+import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
+import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
 import org.iplantc.de.client.events.disk.mgmt.DiskResourceSelectedEvent;
 import org.iplantc.de.client.models.ClientDataModel;
 

@@ -41,9 +41,12 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
     public static final String COLUMN_ID_NAME = DiskResource.NAME;
     public static final String COLUMN_ID_DATE_MODIFIED = DiskResource.DATE_MODIFIED;
     public static final String COLUMN_ID_PATH = DiskResource.ID;
+    private String tag;
 
-    public MyDataSearchGrid(String searchTerm, ListStore<DiskResource> store, ColumnModel colModel) {
+    public MyDataSearchGrid(String searchTerm, ListStore<DiskResource> store, ColumnModel colModel,
+            String tag) {
         super(store, colModel);
+        this.tag = tag;
         setLoadMask(true);
         getView().setEmptyText(I18N.DISPLAY.noSearchResults(searchTerm));
     }
@@ -52,7 +55,8 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
             String tag) {
         ListStore<DiskResource> store = new ListStore<DiskResource>();
         store.add(results);
-        MyDataSearchGrid grid = new MyDataSearchGrid(searchTerm, store, buildColumnModel(searchTerm));
+        MyDataSearchGrid grid = new MyDataSearchGrid(searchTerm, store,
+                buildColumnModel(tag, searchTerm), tag);
         return grid;
     }
 
@@ -71,19 +75,19 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
      * 
      * @return an instance of ColumnModel representing the columns visible in a grid
      */
-    protected static ColumnModel buildColumnModel(String searchTerm) {
+    protected static ColumnModel buildColumnModel(String tag, String searchTerm) {
         // build column configs and add them to a list for the ColumnModel.
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig name = new ColumnConfig(COLUMN_ID_NAME, I18N.DISPLAY.name(), 235);
-        name.setRenderer(new SearchNameCellRenderer(searchTerm));
+        name.setRenderer(new SearchNameCellRenderer(tag, searchTerm));
 
         ColumnConfig date = new ColumnConfig(COLUMN_ID_DATE_MODIFIED, I18N.DISPLAY.lastModified(), 150);
         date.setDateTimeFormat(DateTimeFormat
                 .getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM));
 
         ColumnConfig path = new ColumnConfig(COLUMN_ID_PATH, I18N.DISPLAY.location(), 200);
-        path.setRenderer(new LocationCellRenderer(searchTerm));
+        path.setRenderer(new LocationCellRenderer(tag, searchTerm));
         path.setSortable(false);
         path.setMenuDisabled(true);
 
@@ -97,9 +101,11 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
 class LocationCellRenderer implements GridCellRenderer<DiskResource> {
 
     private String searchTerm;
+    private String tag;
 
-    public LocationCellRenderer(String searchTerm) {
+    public LocationCellRenderer(String tag, String searchTerm) {
         this.searchTerm = searchTerm;
+        this.tag = tag;
     }
 
     @Override
@@ -118,8 +124,8 @@ class LocationCellRenderer implements GridCellRenderer<DiskResource> {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                DataSearchResultSelectedEvent e = new DataSearchResultSelectedEvent(searchTerm, model,
-                        Arrays.asList(model.getId()));
+                DataSearchResultSelectedEvent e = new DataSearchResultSelectedEvent(tag, searchTerm,
+                        model, Arrays.asList(model.getId()));
                 EventBus.getInstance().fireEvent(e);
             }
         });
@@ -138,9 +144,11 @@ class LocationCellRenderer implements GridCellRenderer<DiskResource> {
 class SearchNameCellRenderer implements GridCellRenderer<DiskResource> {
 
     private String searchTerm;
+    private String tag;
 
-    public SearchNameCellRenderer(String searchTerm) {
+    public SearchNameCellRenderer(String tag, String searchTerm) {
         this.searchTerm = searchTerm;
+        this.tag = tag;
     }
 
     @Override
@@ -161,8 +169,8 @@ class SearchNameCellRenderer implements GridCellRenderer<DiskResource> {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                DataSearchResultSelectedEvent e = new DataSearchResultSelectedEvent(searchTerm, model,
-                        Arrays.asList(model.getId()));
+                DataSearchResultSelectedEvent e = new DataSearchResultSelectedEvent(tag, searchTerm,
+                        model, Arrays.asList(model.getId()));
                 EventBus.getInstance().fireEvent(e);
             }
         });

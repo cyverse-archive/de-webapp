@@ -55,7 +55,8 @@ public class SearchHistoryPanel extends ContentPanel {
     private void init() {
         searchHistory = new ArrayList<String>();
         container = new VerticalPanel();
-        setHeight(200);
+        container.setStyleAttribute("background-color", "#EDEDED"); //$NON-NLS-1$
+        container.setHeight(200);
         setHeaderVisible(true);
         setLayout(new FitLayout());
         setHeading(I18N.DISPLAY.searchHistory());

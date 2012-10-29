@@ -9,7 +9,7 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
+import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
 import org.iplantc.de.client.factories.WindowConfigFactory;
@@ -153,7 +153,7 @@ public class IDropLiteAppletWindow extends IPlantWindow {
         hiddenFields.put(FileUploadDialogPanel.HDN_USER_ID_KEY, username);
 
         // define a handler for upload completion
-        AsyncUploadCompleteHandler handler = new AsyncUploadCompleteHandler(uploadDestId) {
+        DefaultUploadCompleteHandler handler = new DefaultUploadCompleteHandler(uploadDestId) {
             /**
              * {@inheritDoc}
              */
@@ -166,7 +166,7 @@ public class IDropLiteAppletWindow extends IPlantWindow {
         };
 
         FileUploadDialogPanel pnlUpload = new FileUploadDialogPanel(hiddenFields,
-                Constants.CLIENT.fileUploadServlet(), handler, FileUploadDialogPanel.MODE.FILE_AND_URL);
+                Constants.CLIENT.fileUploadServlet(), handler, FileUploadDialogPanel.MODE.FILE_ONLY);
 
         dlgUpload = new IPlantSubmittableDialog(I18N.DISPLAY.upload(), 536, pnlUpload);
         dlgUpload.show();
