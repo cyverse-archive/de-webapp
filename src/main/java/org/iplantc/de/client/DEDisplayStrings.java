@@ -1171,7 +1171,7 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      * @return
      */
-    String searchThresholdMsg();
+    String searchThresholdMsg(int limit);
 
     /**
      * searching label

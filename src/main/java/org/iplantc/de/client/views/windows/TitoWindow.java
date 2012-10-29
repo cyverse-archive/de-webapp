@@ -111,8 +111,13 @@ public class TitoWindow extends IPlantWindow {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                MessageBox.confirm(I18N.DISPLAY.confirmAction(), I18N.DISPLAY.navigateWarning(),
-                        listener);
+                MessageBox box = new MessageBox();
+                box.setButtons(MessageBox.YESNOCANCEL);
+                box.setIcon(MessageBox.QUESTION);
+                box.setTitle(I18N.DISPLAY.save());
+                box.addCallback(listener);
+                box.setMessage(I18N.DISPLAY.navigateWarning());
+                box.show();
             }
         });
     }
@@ -150,6 +155,9 @@ public class TitoWindow extends IPlantWindow {
         @Override
         public void handleEvent(MessageBoxEvent be) {
             if (be.getButtonClicked().getText().equals("Yes")) { //$NON-NLS-1$
+                tito.save();
+                hide();
+            } else if (be.getButtonClicked().getText().equals("No")) {
                 hide();
             }
 
@@ -157,7 +165,6 @@ public class TitoWindow extends IPlantWindow {
             box.close();
 
         }
-
     }
 
     /**
