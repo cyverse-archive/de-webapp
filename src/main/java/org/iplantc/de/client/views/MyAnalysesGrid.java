@@ -7,9 +7,7 @@ import java.util.List;
 
 import org.iplantc.core.client.widgets.Hyperlink;
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.util.CommonStoreSorter;
 import org.iplantc.core.uicommons.client.util.DateParser;
 import org.iplantc.de.client.Constants;
@@ -19,8 +17,6 @@ import org.iplantc.de.client.events.AnalysisUpdateEventHandler;
 import org.iplantc.de.client.events.UserEvent;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.DataWindowConfig;
-import org.iplantc.de.client.models.JsAnalysisExecution;
-import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.MyDataViewContextExecutor;
 import org.iplantc.de.client.views.panels.MyAnalysesPanel;
 import org.iplantc.de.client.views.panels.MyAnalysesPanel.EXECUTION_STATUS;
@@ -38,15 +34,11 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.RowExpander;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * A grid that is used to display users Analyses
@@ -246,45 +238,6 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        retrieveData();
-    }
-
-    private void retrieveData() {
-        mask(I18N.DISPLAY.loadingMask());
-
-        AnalysisServiceFacade facade = new AnalysisServiceFacade();
-
-        facade.getAnalyses(UserInfo.getInstance().getWorkspaceId(), new AsyncCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                JSONObject JSON = JsonUtil.getObject(result);
-
-                JSONValue val = JSON.get("analyses"); //$NON-NLS-1$
-                if (val != null) {
-                    JSONArray items = val.isArray();
-
-                    JsArray<JsAnalysisExecution> jsAnalyses = JsonUtil.asArrayOf(items.toString());
-                    List<AnalysisExecution> temp = new ArrayList<AnalysisExecution>();
-
-                    for (int i = 0; i < jsAnalyses.length(); i++) {
-                        temp.add(new AnalysisExecution(jsAnalyses.get(i)));
-                    }
-
-                    ListStore<AnalysisExecution> gstore = getStore();
-                    gstore.add(temp);
-                    sort();
-                }
-
-                selectModel(idCurrentSelection);
-                unmask();
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.DISPLAY.analysesRetrievalFailure(), caught);
-                unmask();
-            }
-        });
     }
 
     // get a list of analyses for which status needs to be updated
@@ -302,6 +255,12 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
 
         return list;
 
+    }
+
+    public void loadData(List<AnalysisExecution> execs) {
+        getStore().add(execs);
+        sort();
+        selectModel(idCurrentSelection);
     }
 
     /**

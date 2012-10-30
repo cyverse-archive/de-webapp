@@ -1,6 +1,7 @@
 package org.iplantc.de.client.views.panels;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.AnalysisUpdateEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
+import org.iplantc.de.client.models.JsAnalysisExecution;
 import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
@@ -32,16 +34,21 @@ import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -76,6 +83,8 @@ public class MyAnalysesPanel extends ContentPanel {
 
     protected static CheckBoxSelectionModel<AnalysisExecution> sm;
     private TextField<String> filter;
+
+    private Status status;
 
     private Timer statusChkTimer;
 
@@ -185,11 +194,13 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private void getStatus(JSONObject obj) {
         AnalysisServiceFacade facade = new AnalysisServiceFacade();
+        status.setBusy(I18N.DISPLAY.updating());
         facade.getAnalysesStatus(idWorkspace, obj.toString(), new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
                 // do nothing intentionally for now
+                status.clearStatus("");
             }
 
             @Override
@@ -205,8 +216,45 @@ public class MyAnalysesPanel extends ContentPanel {
                         }
                     }
 
+                    setStatus(resultObj);
+
                 }
 
+            }
+        });
+    }
+
+    private void retrieveData() {
+        mask(I18N.DISPLAY.loadingMask());
+
+        AnalysisServiceFacade facade = new AnalysisServiceFacade();
+
+        facade.getAnalyses(UserInfo.getInstance().getWorkspaceId(), new AsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JSONObject JSON = JsonUtil.getObject(result);
+
+                JSONValue val = JSON.get("analyses"); //$NON-NLS-1$
+                if (val != null) {
+                    JSONArray items = val.isArray();
+
+                    JsArray<JsAnalysisExecution> jsAnalyses = JsonUtil.asArrayOf(items.toString());
+                    List<AnalysisExecution> temp = new ArrayList<AnalysisExecution>();
+
+                    for (int i = 0; i < jsAnalyses.length(); i++) {
+                        temp.add(new AnalysisExecution(jsAnalyses.get(i)));
+                    }
+
+                    analysisGrid.loadData(temp);
+                }
+                setStatus(JSON);
+                unmask();
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.DISPLAY.analysesRetrievalFailure(), caught);
+                unmask();
             }
         });
     }
@@ -229,11 +277,20 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private void buildTopComponent() {
         topComponentMenu = new ToolBar();
+        topComponentMenu.setHeight(30);
         topComponentMenu.add(buildViewParamsButton());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
         buildFilterField();
         topComponentMenu.add(filter);
+        topComponentMenu.add(new FillToolItem());
+        buildStatusBar();
+        topComponentMenu.add(status);
+    }
+
+    private void buildStatusBar() {
+        status = new Status();
+        status.setBox(true);
     }
 
     private void setButtonState() {
@@ -343,6 +400,7 @@ public class MyAnalysesPanel extends ContentPanel {
         analysisGrid.getView().setEmptyText(I18N.DISPLAY.noAnalyses());
         add(analysisGrid);
         addGridEventListeners();
+        retrieveData();
     }
 
     /**
@@ -508,6 +566,13 @@ public class MyAnalysesPanel extends ContentPanel {
      */
     public String getIdCurrentSelection() {
         return idCurrentSelection;
+    }
+
+    private void setStatus(JSONObject resultObj) {
+        status.clearStatus(I18N.DISPLAY.lastUpdated()
+                + ": "
+                + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(
+                        new Date(Long.parseLong(JsonUtil.getString(resultObj, "timestamp")))));
     }
 
     private final class DeleteSeviceCallback implements AsyncCallback<String> {

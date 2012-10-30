@@ -1207,4 +1207,18 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      */
     String dataDetailsPrompt();
+
+    /**
+     * status text to display while updating a window status
+     * 
+     * @return
+     */
+    String updating();
+
+    /**
+     * last updated text
+     * 
+     * @return
+     */
+    String lastUpdated();
 }
