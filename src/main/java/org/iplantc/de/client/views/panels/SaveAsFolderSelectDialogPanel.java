@@ -1,11 +1,11 @@
 package org.iplantc.de.client.views.panels;
 
+import org.iplantc.core.client.widgets.validator.AnalysisNameValidator;
 import org.iplantc.core.uiapplications.client.I18N;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -53,12 +53,16 @@ public class SaveAsFolderSelectDialogPanel extends FolderSelectDialogPanel {
             }
         };
         txtNewName.setWidth(300);
+        txtNewName.setValidator(new AnalysisNameValidator());
+        txtNewName.setAllowBlank(false);
+        txtNewName.setAutoValidate(true);
     }
 
     private void updateOkButton() {
         DiskResource resource = pnlNavigation.getSelectedItem();
         if (resource instanceof Folder && resource != null && getNewName() != null
-                && !getNewName().isEmpty()) {
+                && !getNewName().isEmpty() && txtNewName.isValid()) {
+            txtNewName.clearInvalid();
             enableParentOkButton();
         } else {
             disableParentOkButton();
