@@ -52,6 +52,7 @@ public class DataMainToolBar extends ToolBar {
     private TextField<String> filterField;
     private Button btnRefresh;
     private Button btnActions;
+    private Component maskingParent;
 
     public DataMainToolBar(final String tag, final DataContainer container, DataActionsMenu menu) {
         this.tag = tag;
@@ -160,12 +161,14 @@ public class DataMainToolBar extends ToolBar {
     private void doSearch(final String term) {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
 
+        maskContainer();
         facade.search(term, DEProperties.getInstance().getMaxSearchResults(),
                 new AsyncCallback<String>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
                         ErrorHandler.post(I18N.ERROR.searchError(), caught);
+                        unmaskContainer();
                     }
 
                     @Override
@@ -183,9 +186,23 @@ public class DataMainToolBar extends ToolBar {
                         LoadDataSearchResultsEvent event = new LoadDataSearchResultsEvent(term,
                                 resources);
                         EventBus.getInstance().fireEvent(event);
+                        unmaskContainer();
+
                     }
 
                 });
+    }
+
+    private void maskContainer() {
+        if (maskingParent != null) {
+            maskingParent.mask(I18N.DISPLAY.searching());
+        }
+    }
+
+    private void unmaskContainer() {
+        if (maskingParent != null) {
+            maskingParent.unmask();
+        }
     }
 
     private List<DiskResource> buildDataSearchResultset(JsArray<JsSearchResult> results) {
@@ -226,6 +243,7 @@ public class DataMainToolBar extends ToolBar {
     }
 
     public final void setMaskingParent(final Component maskingParent) {
+        this.maskingParent = maskingParent;
         menuActions.setMaskingParent(maskingParent);
     }
 }
