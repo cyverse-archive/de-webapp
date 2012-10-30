@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.tips.ToolTip;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.ibm.icu.impl.LocaleDisplayNamesImpl.DataTableType;
 
 /**
  * @author sriram
