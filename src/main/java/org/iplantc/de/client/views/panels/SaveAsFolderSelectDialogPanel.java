@@ -6,6 +6,7 @@ import org.iplantc.core.uidiskresource.client.models.Folder;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -45,14 +46,13 @@ public class SaveAsFolderSelectDialogPanel extends FolderSelectDialogPanel {
     }
 
     private void initNameField() {
-        txtNewName = new TextField<String>();
-        txtNewName.setWidth(300);
-        txtNewName.addListener(Events.OnBlur, new Listener<BaseEvent>() {
+        txtNewName = new TextField<String>() {
             @Override
-            public void handleEvent(final BaseEvent be) {
+            public void onKeyUp(FieldEvent fe) {
                 updateOkButton();
             }
-        });
+        };
+        txtNewName.setWidth(300);
     }
 
     private void updateOkButton() {
