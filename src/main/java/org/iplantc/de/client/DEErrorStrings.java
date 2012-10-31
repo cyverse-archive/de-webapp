@@ -556,4 +556,11 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String retrieveSearchHistoryError();
+
+    /**
+     * Error msg to show when stat service fails
+     * 
+     * @return
+     */
+    String retrieveStatFailed();
 }

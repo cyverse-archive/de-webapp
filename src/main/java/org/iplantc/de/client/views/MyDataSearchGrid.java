@@ -14,11 +14,14 @@ import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
+import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
 import org.iplantc.de.client.views.panels.DataPreviewPanel;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -49,6 +52,16 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
         this.tag = tag;
         setLoadMask(true);
         getView().setEmptyText(I18N.DISPLAY.noSearchResults(searchTerm));
+
+        getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<DiskResource>() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<DiskResource> se) {
+                DiskResourceSelectionChangedEvent event = new DiskResourceSelectionChangedEvent(
+                        MyDataSearchGrid.this.tag, Arrays.asList(se.getSelectedItem()), null);
+                EventBus.getInstance().fireEvent(event);
+            }
+        });
     }
 
     private static MyDataSearchGrid createInstanceImpl(String searchTerm, List<DiskResource> results,

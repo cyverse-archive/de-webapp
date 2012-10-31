@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
@@ -16,7 +17,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -184,8 +184,7 @@ public class DataDetailListPanel extends ContentPanel {
 
             @Override
             public void onFailure(Throwable caught) {
-                // ErrorHandler.post(I18N.ERROR.retrieveFolderInfoFailed(), caught);
-                GWT.log(caught.getMessage(), caught);
+                ErrorHandler.post(I18N.ERROR.retrieveStatFailed(), caught);
             }
         });
     }

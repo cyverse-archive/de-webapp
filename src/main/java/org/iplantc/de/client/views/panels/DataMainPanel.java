@@ -139,7 +139,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             remove(searchGrid);
             searchGrid = null;
         }
-        if (grid != null) {
+        if (grid != null && grid.isAttached()) {
             remove(grid);
         }
 
@@ -170,7 +170,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             if (enableDragAndDrop) {
                 initDragAndDrop();
             }
-
+            toolbar.setRefreshButtonState(true);
             layout();
         }
     }
@@ -252,14 +252,19 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
                 store.add(resource);
             }
 
-            if (selectedResourceIds != null) {
+            if (selectedResourceIds != null && selectedResourceIds.size() > 0) {
                 for (String id : selectedResourceIds) {
                     select(id, true);
                 }
+            } else {
+                DiskResourceSelectionChangedEvent event = new DiskResourceSelectionChangedEvent(tag,
+                        null, getCurrentPath());
+                EventBus.getInstance().fireEvent(event);
             }
 
             grid.getView().refresh(true);
             grid.getView().layout();
+            toolbar.setRefreshButtonState(true);
             layout(true);
         }
     }
@@ -466,6 +471,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             searchGrid = MyDataSearchGrid.createInstance(event.getSearchTerm(), event.getResults(), tag);
 
             add(searchGrid);
+            toolbar.setRefreshButtonState(false);
             layout(true);
             unmask();
         }

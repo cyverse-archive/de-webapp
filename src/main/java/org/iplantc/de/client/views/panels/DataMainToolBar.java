@@ -49,7 +49,7 @@ public class DataMainToolBar extends ToolBar {
     private final DataContainer container;
     private final DataActionsMenu menuActions;
 
-    private TextField<String> filterField;
+    private TextField<String> searchField;
     private Button btnRefresh;
     private Button btnActions;
     private Component maskingParent;
@@ -66,8 +66,8 @@ public class DataMainToolBar extends ToolBar {
     private void addButtons() {
         btnRefresh = buildRefreshButton();
         add(btnRefresh);
-        filterField = buildFilterField();
-        add(filterField);
+        searchField = buildSearchField();
+        add(searchField);
         add(new FillToolItem());
         btnActions = buildActionsButton();
         add(btnActions);
@@ -107,7 +107,7 @@ public class DataMainToolBar extends ToolBar {
 
                     @Override
                     public void onSelection(DataSearchHistorySelectedEvent event) {
-                        filterField.setValue(event.getSearchHistoryTerm());
+                        searchField.setValue(event.getSearchHistoryTerm());
                         doSearch(event.getSearchHistoryTerm());
 
                     }
@@ -143,7 +143,7 @@ public class DataMainToolBar extends ToolBar {
     /**
      * Builds a text field for filtering items displayed in the data container.
      */
-    private TextField<String> buildFilterField() {
+    private TextField<String> buildSearchField() {
         TextField<String> filterField = new TextField<String>() {
             @Override
             public void onKeyUp(FieldEvent fe) {
@@ -245,5 +245,9 @@ public class DataMainToolBar extends ToolBar {
     public final void setMaskingParent(final Component maskingParent) {
         this.maskingParent = maskingParent;
         menuActions.setMaskingParent(maskingParent);
+    }
+
+    public void setRefreshButtonState(boolean enable) {
+        btnRefresh.setEnabled(enable);
     }
 }

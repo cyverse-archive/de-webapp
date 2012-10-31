@@ -197,6 +197,7 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         @Override
         public void onSelection(DataSearchResultSelectedEvent event) {
             if (event.getTag().equals(tag)) {
+                pnlDetails.resetDeatils();
                 DiskResource model = event.getModel();
                 if (model != null && model instanceof Folder) {
                     pnlNavigation.selectFolder(model.getId());
@@ -210,6 +211,7 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
                     DataContextBuilder builder = new DataContextBuilder();
                     executor.execute(builder.build(model.getId()));
                 }
+
             }
         }
     }

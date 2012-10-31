@@ -89,6 +89,14 @@ public class DataDetailsPanel extends AbstractDataPanel {
     }
 
     /**
+     * clear details panel
+     * 
+     */
+    public void resetDeatils() {
+        pnlDetails.update(null);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
