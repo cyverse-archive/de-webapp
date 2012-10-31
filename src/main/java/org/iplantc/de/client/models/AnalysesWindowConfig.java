@@ -12,7 +12,7 @@ import com.google.gwt.json.client.JSONObject;
  * 
  */
 public class AnalysesWindowConfig extends WindowConfig {
-    public static final String ANALYSIS_ID = "analysisId";
+    public static final String ANALYSIS_ID = "id";
 
     public AnalysesWindowConfig(JSONObject json) {
         super(json);
@@ -23,7 +23,7 @@ public class AnalysesWindowConfig extends WindowConfig {
     }
 
     public String getAnalysisId() {
-        return JsonUtil.getRawValueAsString(get(ANALYSIS_ID));
+        return JsonUtil.getString(this, ANALYSIS_ID);
     }
 
 }
