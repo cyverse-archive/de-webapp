@@ -1,8 +1,5 @@
 package org.iplantc.de.server;
 
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
 import javax.servlet.ServletException;
 
 import net.sf.json.JSONObject;
