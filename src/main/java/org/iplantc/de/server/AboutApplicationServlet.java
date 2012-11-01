@@ -25,8 +25,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class AboutApplicationServlet extends RemoteServiceServlet implements AboutApplicationService {
 
     private static final long serialVersionUID          = 6046105023536377635L;
-    private static final String MANIFEST_LOC            = "/META-INF/MANIFEST.MF";
-    private static final String BUILD_NUMBER_ATTRIBUTE  = "Hudson-Build-Number";
     private static final String DEFAULT_RELEASE_VERSION = "unversioned";
 
     /**
@@ -118,26 +116,6 @@ public class AboutApplicationServlet extends RemoteServiceServlet implements Abo
      * @return a string representation of the build number.
      */
     private String getBuildNumber() {
-        String buildNumber = getBuildNumberFromManifest();
-        return StringUtils.isEmpty(buildNumber) ? deProps.getDefaultBuildNumber() : buildNumber;
-    }
-
-    /**
-     * Attempts to obtain the the build number from the manifest file.
-     *
-     * @return the build number or an empty value (null or the empty string) if the build number is not available.
-     */
-    private String getBuildNumberFromManifest() {
-        String buildNumber = null;
-        Manifest manifest;
-        try {
-            manifest = new Manifest(getServletContext().getResourceAsStream(MANIFEST_LOC));
-            Attributes attrs = manifest.getMainAttributes();
-            buildNumber = attrs.getValue(BUILD_NUMBER_ATTRIBUTE);
-        }
-        catch (Exception e) {
-            LOG.error("unable to get the build number", e);
-        }
-        return buildNumber;
+        return deProps.getDefaultBuildNumber();
     }
 }
