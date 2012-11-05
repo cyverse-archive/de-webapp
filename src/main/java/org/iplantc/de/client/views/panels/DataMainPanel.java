@@ -459,7 +459,6 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         @Override
         public void onLoad(LoadDataSearchResultsEvent event) {
             mask(I18N.DISPLAY.loadingMask());
-
             // swap the view
             if (grid != null && grid.isAttached()) {
                 remove(grid);
@@ -472,6 +471,9 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
 
             add(searchGrid);
             toolbar.setRefreshButtonState(false);
+            DiskResourceSelectionChangedEvent dsce = new DiskResourceSelectionChangedEvent(tag, null,
+                    getCurrentPath());
+            EventBus.getInstance().fireEvent(dsce);
             layout(true);
             unmask();
         }

@@ -11,6 +11,7 @@ import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.util.WindowUtil;
 import org.iplantc.de.client.utils.NotificationHelper;
+import org.iplantc.de.client.views.dialogs.CollaboratorsDialog;
 import org.iplantc.de.client.views.dialogs.UserPreferencesDialog;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 
@@ -262,6 +263,14 @@ public class ApplicationLayout extends Viewport {
                         userMenu.hide();
                     }
                 }, null));
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.collaborators(), linkStyle, hoverStyle, //$NON-NLS-1$ //$NON-NLS-2$
+                new Listener<BaseEvent>() {
+                    @Override
+                    public void handleEvent(BaseEvent be) {
+                        buildAndShowCollaboratorsDialog();
+                        userMenu.hide();
+                    }
+                }, null));
 
         return userMenu;
     }
@@ -311,6 +320,12 @@ public class ApplicationLayout extends Viewport {
         UserPreferencesDialog usd = new UserPreferencesDialog();
         usd.setSize(450, 430);
         usd.show();
+    }
+
+    private void buildAndShowCollaboratorsDialog() {
+        CollaboratorsDialog cd = new CollaboratorsDialog();
+        cd.setSize(450, 430);
+        cd.show();
     }
 
     private HorizontalPanel buildNotificationMenu(String menuHeaderText) {

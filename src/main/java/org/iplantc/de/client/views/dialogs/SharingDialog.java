@@ -14,6 +14,7 @@ import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.de.client.events.CollaboratorsLoadedEventHandler;
+import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.Sharing;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
@@ -23,21 +24,25 @@ import org.iplantc.de.client.views.panels.SharePanel;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * @author sriram
@@ -50,8 +55,11 @@ public class SharingDialog extends Dialog {
     private BorderLayout layout;
     private ContentPanel sharingPanel;
     private ManageCollaboratorsPanel collaboratorSearchPanel;
+    private List<Collaborator> newCollabs;
 
     private HandlerRegistration handlerRegCollaboratorsLoadedEvent;
+
+    private Button shareAllBtn;
 
     public SharingDialog(List<DiskResource> resources) {
         this.resources = resources;
@@ -101,8 +109,7 @@ public class SharingDialog extends Dialog {
 
     private void buildCenter() {
         sharingPanel = new ContentPanel();
-        sharingPanel.setHeading(I18N.DISPLAY.share());
-        sharingPanel.setLayout(new FlowLayout());
+        sharingPanel.setHeading(I18N.DISPLAY.shareFileFolders());
         sharingPanel.setScrollMode(Scroll.AUTOY);
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.CENTER);
         data.setSplit(true);
@@ -112,13 +119,40 @@ public class SharingDialog extends Dialog {
 
     private void buildWest() {
         ContentPanel east = new ContentPanel();
-        collaboratorSearchPanel = new ManageCollaboratorsPanel(MODE.SEARCH, 378);
+        collaboratorSearchPanel = new ManageCollaboratorsPanel(MODE.SEARCH, 378, 230);
         east.setHeading(I18N.DISPLAY.searchCollab());
         east.add(collaboratorSearchPanel);
+        buildShareAllButton();
+        east.add(shareAllBtn);
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.WEST, 380, 200, 450);
         data.setSplit(true);
         data.setCollapsible(true);
         add(east, data);
+
+    }
+
+    private void buildShareAllButton() {
+        shareAllBtn = new Button(I18N.DISPLAY.shareAll(), AbstractImagePrototype.create(Resources.ICONS
+                .share()));
+
+        shareAllBtn.setStyleAttribute("padding", "15px");
+
+        shareAllBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                addSharee(collaboratorSearchPanel.getSelectedCollaborator());
+
+            }
+        });
+    }
+
+    private void addSharee(Collaborator c) {
+        SharePanel view;
+        for (DiskResource dr : resources) {
+            view = (SharePanel)sharingPanel.getItemByItemId(dr.getId());
+            view.addSharee(c);
+        }
 
     }
 
@@ -127,7 +161,7 @@ public class SharingDialog extends Dialog {
         for (DiskResource dr : resources) {
             view = new SharePanel(dr);
             view.setId(dr.getId());
-            view.setHeading(dr.getName());
+            view.setHeading("<b>" + dr.getName() + "</b>");
             sharingPanel.add(view);
         }
     }
@@ -182,6 +216,10 @@ public class SharingDialog extends Dialog {
 
     }
 
+    private boolean isCollaborator(Collaborator c) {
+        return collaboratorSearchPanel.isCurrentCollaborator(c);
+    }
+
     private JSONObject buildPermissionsRequestBody() {
         JSONObject obj = new JSONObject();
         JSONArray ids = new JSONArray();
@@ -198,8 +236,30 @@ public class SharingDialog extends Dialog {
 
             @Override
             public void onSuccess(String result) {
-                // Info.display("Sharing", "Sharing completed successfully!!!");
-                // do nothing
+
+                StringBuilder builder = new StringBuilder();
+                if (newCollabs.size() > 0) {
+                    for (Collaborator c : newCollabs) {
+                        builder.append(c.getUserName() + ",");
+                    }
+
+                    if (builder.length() > 0) {
+                        builder.deleteCharAt(builder.length() - 1);
+                    }
+                }
+
+                if (newCollabs.size() > 0) {
+                    MessageBox.confirm("Add Collaborators", "You have shared file(s)/ folder(s) with "
+                            + builder.toString() + ". Do you wish add them as your collaborators ?",
+                            new Listener<MessageBoxEvent>() {
+
+                                @Override
+                                public void handleEvent(MessageBoxEvent be) {
+                                    collaboratorSearchPanel.addCollaborators(newCollabs);
+                                }
+                            });
+                }
+
             }
 
             @Override
@@ -230,6 +290,7 @@ public class SharingDialog extends Dialog {
 
     private JSONObject buildSharingJson(SharePanel view) {
         List<Sharing> sharingList = view.getSharingList();
+        newCollabs = new ArrayList<Collaborator>();
         JSONObject obj = new JSONObject();
         JSONArray users = new JSONArray();
         obj.put("path", new JSONString(view.getId()));
@@ -239,7 +300,8 @@ public class SharingDialog extends Dialog {
                 Sharing sh = sharingList.get(i);
 
                 JSONObject user_permission = new JSONObject();
-                user_permission.put("user", new JSONString(sh.getUserName()));
+                String userName = sh.getUserName();
+                user_permission.put("user", new JSONString(userName));
 
                 JSONObject permission = new JSONObject();
                 permission.put("read", JSONBoolean.getInstance(sh.isReadable()));
@@ -248,6 +310,11 @@ public class SharingDialog extends Dialog {
 
                 user_permission.put("permissions", permission);
                 users.set(i, user_permission);
+
+                Collaborator collaborator = sh.getCollaborator();
+                if (!isCollaborator(collaborator)) {
+                    newCollabs.add(collaborator);
+                }
             }
 
             obj.put("path", new JSONString(view.getId()));

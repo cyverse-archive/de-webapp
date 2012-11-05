@@ -31,6 +31,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class DataDetailListPanel extends ContentPanel {
 
+    private List<DiskResource> selection;
+
     public DataDetailListPanel() {
         init();
     }
@@ -58,23 +60,15 @@ public class DataDetailListPanel extends ContentPanel {
      */
     public void update(final List<DiskResource> resources) {
         removeAll();
-        if (resources == null || resources.size() != 1) {
+        selection = resources;
+        if (selection != null && selection.size() == 1) {
+            getDetails(selection.get(0).getId());
+        } else {
             Text fieldLabel = new Text(I18N.DISPLAY.dataDetailsPrompt()); //$NON-NLS-1$
             fieldLabel.addStyleName("data_details_label"); //$NON-NLS-1$
             add(fieldLabel, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.TOP));
-        } else {
-            addDetails(resources.get(0));
         }
         layout();
-    }
-
-    /**
-     * Adds the details of the given resource to this panel.
-     * 
-     * @param resource
-     */
-    private void addDetails(final DiskResource resource) {
-        getDetails(resource.getId());
     }
 
     /**
@@ -157,25 +151,28 @@ public class DataDetailListPanel extends ContentPanel {
         facade.getStat(obj.toString(), new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                JSONObject json = JsonUtil.getObject(result);
-                if (json != null) {
-                    JSONObject pathsObj = JsonUtil.getObject(json, "paths");
-                    JSONObject details = JsonUtil.getObject(pathsObj, path);
-                    JSONObject perm = JsonUtil.getObject(details, "permissions");
-                    addDateLabel(I18N.DISPLAY.lastModified(),
-                            new Date(Long.parseLong(JsonUtil.getString(details, "modified"))));
-                    addDateLabel(I18N.DISPLAY.createdDate(),
-                            new Date(Long.parseLong(JsonUtil.getString(details, "created"))));
-                    addPermissionsLabel(I18N.DISPLAY.permissions(), new Permissions(perm));
-                    String type = JsonUtil.getString(details, "type");
-                    if (type.equalsIgnoreCase("file")) {
-                        addSizeLabel(I18N.DISPLAY.size(),
-                                (JsonUtil.getNumber(details, "size").longValue()));
-                    } else {
-                        addLabel(I18N.DISPLAY.folders(),
-                                String.valueOf(JsonUtil.getNumber(details, "dir-count").intValue()));
-                        addLabel(I18N.DISPLAY.files(),
-                                String.valueOf(JsonUtil.getNumber(details, "file-count").intValue()));
+                // race condition gaurd
+                if (selection.size() == 1 && selection.get(0).getId().equalsIgnoreCase(path)) {
+                    JSONObject json = JsonUtil.getObject(result);
+                    if (json != null) {
+                        JSONObject pathsObj = JsonUtil.getObject(json, "paths");
+                        JSONObject details = JsonUtil.getObject(pathsObj, path);
+                        JSONObject perm = JsonUtil.getObject(details, "permissions");
+                        addDateLabel(I18N.DISPLAY.lastModified(),
+                                new Date(Long.parseLong(JsonUtil.getString(details, "modified"))));
+                        addDateLabel(I18N.DISPLAY.createdDate(),
+                                new Date(Long.parseLong(JsonUtil.getString(details, "created"))));
+                        addPermissionsLabel(I18N.DISPLAY.permissions(), new Permissions(perm));
+                        String type = JsonUtil.getString(details, "type");
+                        if (type.equalsIgnoreCase("file")) {
+                            addSizeLabel(I18N.DISPLAY.size(),
+                                    (JsonUtil.getNumber(details, "size").longValue()));
+                        } else {
+                            addLabel(I18N.DISPLAY.folders(),
+                                    String.valueOf(JsonUtil.getNumber(details, "dir-count").intValue()));
+                            addLabel(I18N.DISPLAY.files(),
+                                    String.valueOf(JsonUtil.getNumber(details, "file-count").intValue()));
+                        }
                     }
                 }
 

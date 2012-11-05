@@ -3,6 +3,7 @@ package org.iplantc.de.client.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.de.client.I18N;
@@ -85,7 +86,8 @@ public class DataUtils {
             // ret.add(Action.Paste);
         }
 
-        if (currentPath != null && currentPath.startsWith("/iplant/trash")) {
+        if (currentPath != null && currentPath.startsWith(UserInfo.getInstance().getTrashPath())
+                && resources != null && resources.size() > 0) {
             ret.add(Action.Restore);
         }
         return ret;

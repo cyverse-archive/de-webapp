@@ -86,4 +86,13 @@ public class Sharing extends BaseModelData {
         return getUserName().equals(s.getUserName());
     }
 
+    /**
+     * 
+     * get the collaborator object
+     * 
+     * */
+    public Collaborator getCollaborator() {
+        return collaborator;
+    }
+
 }

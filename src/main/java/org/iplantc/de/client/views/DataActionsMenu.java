@@ -138,7 +138,7 @@ public final class DataActionsMenu extends Menu {
                 Resources.ICONS.copy(), new PasteResourceListenerImpl());
 
         itemRestore = buildLeafMenuItem(MI_RESTORE_RESOURCE_ID, I18N.DISPLAY.restore(),
-                Resources.ICONS.goUp(), new RestoreResourceListenerImpl());
+                Resources.ICONS.arrow_undo(), new RestoreResourceListenerImpl());
 
         add(itemAddFolder);
         add(itemRenameResource);

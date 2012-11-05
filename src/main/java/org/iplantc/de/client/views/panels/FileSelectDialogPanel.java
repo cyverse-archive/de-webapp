@@ -107,7 +107,9 @@ public class FileSelectDialogPanel extends ResourceSelectDialogPanel {
         @Override
         public void handleEvent(BaseEvent be) {
             List<DiskResource> selectedItems = pnlMain.getSelectedItems();
-            setSelection(selectedItems.get(0));
+            if (selectedItems.size() > 0) {
+                setSelection(selectedItems.get(0));
+            }
         }
     }
 }

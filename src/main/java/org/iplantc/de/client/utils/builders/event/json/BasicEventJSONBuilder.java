@@ -32,12 +32,6 @@ public class BasicEventJSONBuilder extends AbstractEventJSONBuilder {
 
         if (json != null) {
             ret = new JSONObject();
-            // JSONObject jsonObj = JSONParser.parseStrict(json).isObject();
-
-            // if (jsonObj != null) {
-            //                ret = "{\"type\": " + JsonUtil.quoteString(type) + ", \"payload\": " //$NON-NLS-1$ //$NON-NLS-2$
-            //                        + buildPayload(jsonObj) + "}"; //$NON-NLS-1$
-            // }
             ret.put("type", new JSONString(type));
             ret.put("payload", buildPayload(json));
         }

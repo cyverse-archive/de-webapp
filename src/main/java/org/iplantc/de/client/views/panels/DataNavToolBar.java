@@ -15,8 +15,8 @@ import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceDeleteCallback;
-import org.iplantc.de.client.services.DiskResourceServiceCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.services.EmptyTrashCallback;
 import org.iplantc.de.client.utils.DataUtils;
 import org.iplantc.de.client.views.panels.DataNavigationPanel.Mode;
 
@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -145,7 +144,7 @@ public class DataNavToolBar extends ToolBar {
                             DiskResourceServiceFacade facade = new DiskResourceServiceFacade(
                                     maskingParent);
                             facade.emptyTrash(UserInfo.getInstance().getUsername(),
-                                    new EmptyTrashServiceCallback());
+                                    new EmptyTrashCallback());
                         }
                     }
                 };
@@ -384,23 +383,6 @@ public class DataNavToolBar extends ToolBar {
             }
         });
         return addFolder;
-    }
-
-    private final class EmptyTrashServiceCallback extends DiskResourceServiceCallback {
-        @Override
-        public void onSuccess(String result) {
-            maskedCaller.unmask();
-        }
-
-        @Override
-        protected String getErrorMessageDefault() {
-            return I18N.ERROR.emptyTrashError();
-        }
-
-        @Override
-        protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
-            return getErrorMessage(code, parsePathsToNameList(jsonError));
-        }
     }
 
     private final class ActionsSelectionListener extends SelectionChangedListener<Folder> {

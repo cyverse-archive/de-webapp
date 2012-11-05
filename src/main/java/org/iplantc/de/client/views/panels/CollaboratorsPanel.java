@@ -60,13 +60,12 @@ public class CollaboratorsPanel extends ContentPanel {
         setSize(width, height);
         setLayout(new FitLayout());
         setBodyBorder(false);
-        setBorders(false);
+        setBorders(true);
         this.mode = mode;
         init();
     }
 
     private void init() {
-
         my_collaborators = new ArrayList<Collaborator>();
         ListStore<Collaborator> store = new ListStore<Collaborator>();
         grid = new Grid<Collaborator>(store, buildColumnModel());
@@ -104,6 +103,9 @@ public class CollaboratorsPanel extends ContentPanel {
         store.removeAll();
         store.add(collaborators);
         store.sort(Collaborator.NAME, SortDir.ASC);
+        if (store.getModels().size() > 0) {
+            grid.getSelectionModel().select(0, false);
+        }
     }
 
     public List<Collaborator> parseResults(String result) {
@@ -175,19 +177,6 @@ public class CollaboratorsPanel extends ContentPanel {
 
             hp.add(new Label(model.getName()));
             hp.setSpacing(3);
-            // new DragSource(hp) {
-            // @Override
-            // protected void onDragStart(DNDEvent e) {
-            // // List<Collaborator> list = new ArrayList<Collaborator>();
-            // // list.add(model);
-            // // e.setData(list);
-            // }
-            //
-            // @Override
-            // protected void onDragDrop(DNDEvent e) {
-            // // do nothing intentionally
-            // }
-            // / };
             return hp;
         }
 
@@ -200,7 +189,7 @@ public class CollaboratorsPanel extends ContentPanel {
                     String existing_style = src.getStyleName();
                     if (existing_style.contains(ADD_BUTTON_STYLE)) {
                         if (!checkCurrentUser(model)) {
-                            addCollaborators(model);
+                            addCollaborators(Arrays.asList(model));
                             if (mode.equals(MODE.SEARCH)) {
                                 src.changeStyle(DONE_BUTTON_STYLE);
                                 src.setToolTip("Added");
@@ -221,7 +210,7 @@ public class CollaboratorsPanel extends ContentPanel {
                     }
 
                     if (existing_style.contains(DELETE_BUTTON_STYLE)) {
-                        removeCollaborators(model);
+                        removeCollaborators(Arrays.asList(model));
                         return;
                     }
 
@@ -239,20 +228,25 @@ public class CollaboratorsPanel extends ContentPanel {
         return false;
     }
 
-    private void addCollaborators(final Collaborator model) {
+    public void addCollaborators(final List<Collaborator> models) {
         UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        JSONObject obj = buildJSONModel(model);
+        JSONObject obj = buildJSONModel(models);
         facade.addCollaborators(obj, new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
+                StringBuilder builder = new StringBuilder();
+                for (Collaborator c : models) {
+                    builder.append(c.getUserName() + ",");
+                    my_collaborators.add(c);
+                }
 
-                if (!isCurrentCollaborator(model)) {
-                    my_collaborators.add(model);
+                if (builder.length() > 0) {
+                    builder.deleteCharAt(builder.length() - 1);
                 }
 
                 NotifyInfo.display(I18N.DISPLAY.collaboratorAdded(),
-                        I18N.DISPLAY.collaboratorAddConfirm(model.getName()));
+                        I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
             }
 
             @Override
@@ -263,17 +257,26 @@ public class CollaboratorsPanel extends ContentPanel {
 
     }
 
-    private void removeCollaborators(final Collaborator model) {
+    private void removeCollaborators(final List<Collaborator> models) {
         UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        JSONObject obj = buildJSONModel(model);
+        JSONObject obj = buildJSONModel(models);
         facade.removeCollaborators(obj, new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
-                my_collaborators.remove(model);
-                grid.getStore().remove(model);
+                StringBuilder builder = new StringBuilder();
+                for (Collaborator c : models) {
+                    builder.append(c.getUserName() + ",");
+                    my_collaborators.remove(c);
+                    grid.getStore().remove(c);
+                }
+
+                if (builder.length() > 0) {
+                    builder.deleteCharAt(builder.length() - 1);
+                }
+
                 NotifyInfo.display(I18N.DISPLAY.collaboratorRemoved(),
-                        I18N.DISPLAY.collaboratorRemoveConfirm(model.getName()));
+                        I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
 
             }
 
@@ -285,11 +288,14 @@ public class CollaboratorsPanel extends ContentPanel {
 
     }
 
-    private JSONObject buildJSONModel(final Collaborator model) {
+    private JSONObject buildJSONModel(final List<Collaborator> models) {
         JSONArray arr = new JSONArray();
-        JSONObject user = new JSONObject();
-        user.put("username", new JSONString(model.getUserName()));
-        arr.set(0, user);
+        int count = 0;
+        for (Collaborator model : models) {
+            JSONObject user = new JSONObject();
+            user.put("username", new JSONString(model.getUserName()));
+            arr.set(count++, user);
+        }
 
         JSONObject obj = new JSONObject();
         obj.put("users", arr);
@@ -308,7 +314,7 @@ public class CollaboratorsPanel extends ContentPanel {
         return my_collaborators;
     }
 
-    private boolean isCurrentCollaborator(Collaborator c) {
+    public boolean isCurrentCollaborator(Collaborator c) {
         for (Collaborator current : my_collaborators) {
             if (current.getId().equals(c.getId())) {
                 return true;
@@ -316,6 +322,10 @@ public class CollaboratorsPanel extends ContentPanel {
         }
 
         return false;
+    }
+
+    public Collaborator getSelectedCollaborator() {
+        return grid.getSelectionModel().getSelectedItem();
     }
 
 }

@@ -45,16 +45,16 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
         MANAGE, SEARCH
     };
 
-    public ManageCollaboratorsPanel(MODE mode, int width) {
+    public ManageCollaboratorsPanel(MODE mode, int width, int height) {
         setWidth(width);
         this.mode = mode;
-        init(width);
+        init(width, height);
 
     }
 
-    private void init(int width) {
+    private void init(int width, int height) {
         initSearch();
-        panel = new CollaboratorsPanel(I18N.DISPLAY.currentCollaborators(), MODE.MANAGE, width, 270);
+        panel = new CollaboratorsPanel(I18N.DISPLAY.currentCollaborators(), MODE.MANAGE, width, height);
         add(panel);
         loadCollaborators();
     }
@@ -67,14 +67,14 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
         buildSearchStatus();
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.setBorders(true);
+        hp.setBorders(false);
         hp.setWidth(440);
-        hp.setSpacing(18);
+        hp.setSpacing(15);
         hp.add(searchTerm);
         hp.add(search);
         buildShowListButton();
         hp.add(showList);
-        hp.add(status);
+        add(status);
         add(hp);
 
     }
@@ -131,11 +131,6 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
 
     private void buildSearchStatus() {
         status = new Status();
-    }
-
-    public void saveData() {
-        // TODO Auto-generated method stub
-
     }
 
     private void doSearch() {
@@ -195,5 +190,17 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
 
     public List<Collaborator> getCurrentCollaborators() {
         return panel.getCurrentCollaborators();
+    }
+
+    public boolean isCurrentCollaborator(Collaborator c) {
+        return panel.isCurrentCollaborator(c);
+    }
+
+    public void addCollaborators(List<Collaborator> models) {
+        panel.addCollaborators(models);
+    }
+
+    public Collaborator getSelectedCollaborator() {
+        return panel.getSelectedCollaborator();
     }
 }

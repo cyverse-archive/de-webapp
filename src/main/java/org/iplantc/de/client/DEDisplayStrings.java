@@ -1221,4 +1221,25 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String lastUpdated();
+
+    /**
+     * share panel title
+     * 
+     * @return
+     */
+    String shareFileFolders();
+
+    /**
+     * restore defaults button text
+     * 
+     * @return
+     */
+    String restoreDefaults();
+
+    /**
+     * share all button text
+     * 
+     * @return
+     */
+    String shareAll();
 }

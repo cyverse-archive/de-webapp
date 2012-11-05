@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.iplantc.core.uiapplications.client.I18N;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.images.Resources;
@@ -162,7 +163,6 @@ public class SharePanel extends ContentPanel {
         removeBtn.addSelectionListener(new RemoveButtonSelectionListener());
         removeBtn.disable();
         return removeBtn;
-
     }
 
     public boolean isUpdated() {
@@ -326,16 +326,23 @@ public class SharePanel extends ContentPanel {
         }
     }
 
-    private void addSharee(DNDEvent e) {
-        List<ModelData> list = e.getData();
+    public void addSharee(Collaborator c) {
         ListStore<Sharing> store = grid.getStore();
-        for (ModelData md : list) {
-            Collaborator c = (Collaborator)md;
-            Sharing s = new Sharing(c, new Permissions(true, false, false));
-            if (!store.contains(s)) {
-                store.add(s);
-            }
+        Sharing s = new Sharing(c, new Permissions(true, false, false));
+        if (canShare(c)) {
+            store.add(s);
         }
+    }
+
+    private boolean canShare(Collaborator c) {
+        ListStore<Sharing> store = grid.getStore();
+        Sharing s = new Sharing(c, new Permissions(true, false, false));
+        if (!store.contains(s)
+                && (!c.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername()))) {
+            return true;
+        }
+
+        return false;
     }
 
     private class PermissionsFieldListener implements Listener<FieldEvent> {
@@ -420,8 +427,23 @@ public class SharePanel extends ContentPanel {
         }
 
         @Override
+        protected void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
+            List<ModelData> list = e.getData();
+            Collaborator c = (Collaborator)(list.get(0));
+            if (!canShare(c)) {
+                e.setCancelled(true);
+                e.getStatus().setStatus(false);
+            }
+        }
+
+        @Override
         protected void onDragDrop(DNDEvent e) {
-            addSharee(e);
+            List<ModelData> list = e.getData();
+            for (ModelData md : list) {
+                addSharee((Collaborator)md);
+            }
+
         }
 
     }
@@ -440,8 +462,22 @@ public class SharePanel extends ContentPanel {
         }
 
         @Override
+        protected void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
+            List<ModelData> list = e.getData();
+            Collaborator c = (Collaborator)(list.get(0));
+            if (!canShare(c)) {
+                e.setCancelled(true);
+                e.getStatus().setStatus(false);
+            }
+        }
+
+        @Override
         protected void onDragDrop(DNDEvent e) {
-            addSharee(e);
+            List<ModelData> list = e.getData();
+            for (ModelData md : list) {
+                addSharee((Collaborator)md);
+            }
         }
 
     }
