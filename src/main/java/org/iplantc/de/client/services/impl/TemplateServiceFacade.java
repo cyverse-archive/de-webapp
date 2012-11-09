@@ -22,7 +22,7 @@ import com.sencha.gxt.data.shared.SortDir;
 
 /**
  * Provides access to remote services for operations related to analysis submission templates.
- * 
+ *
  * @author Dennis Roberts
  */
 public class TemplateServiceFacade implements AppUserServiceFacade {
@@ -71,7 +71,7 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
     }
 
     /**
-     * 
+     *
      * @param appId
      * @param callback
      */
@@ -301,15 +301,6 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 body.toString());
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
-
-    @Override
-    public void editApp(String analysisId, AsyncCallback<String> callback) {
-        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "edit-template/"
-                + analysisId;
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
