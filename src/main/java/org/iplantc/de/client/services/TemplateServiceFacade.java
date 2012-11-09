@@ -21,13 +21,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Provides access to remote services for operations related to analysis submission templates.
- * 
+ *
  * @author Dennis Roberts
  */
 public class TemplateServiceFacade implements AppTemplateUserServiceFacade {
     /**
      * Retrieves a template from the database.
-     * 
+     *
      * @param templateId unique identifier for the template.
      * @param callback called when the RPC call is complete.
      */
@@ -60,7 +60,7 @@ public class TemplateServiceFacade implements AppTemplateUserServiceFacade {
     }
 
     /**
-     * 
+     *
      * @param appId
      * @param callback
      */
@@ -85,7 +85,7 @@ public class TemplateServiceFacade implements AppTemplateUserServiceFacade {
 
     /**
      * Adds an app to the given public categories.
-     * 
+     *
      * @param application
      * @param callback
      */
@@ -285,11 +285,11 @@ public class TemplateServiceFacade implements AppTemplateUserServiceFacade {
      * Checks if the given analysisId is able to be exported to TITo via a copy or edit. The service will
      * respond with JSON that contains a boolean "can-export" key, and a "cause" key if "can-export" is
      * false:
-     * 
+     *
      * <code>
      * { "can-export": false, "cause": "Analysis has multiple templates." }
      * </code>
-     * 
+     *
      * @param analysisId
      * @param callback
      */
@@ -302,14 +302,6 @@ public class TemplateServiceFacade implements AppTemplateUserServiceFacade {
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 body.toString());
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
-
-    public void editAnalysis(String analysisId, AsyncCallback<String> callback) {
-        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "edit-template/"
-                + analysisId;
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
