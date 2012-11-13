@@ -1,9 +1,5 @@
 package org.iplantc.de.client.views.panels;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.views.dialogs.IPlantDialog;
 import org.iplantc.core.uicommons.client.views.dialogs.IPlantSubmittableDialog;
@@ -14,7 +10,6 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
-import org.iplantc.de.client.services.DiskResourceDeleteCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.services.EmptyTrashCallback;
 import org.iplantc.de.client.utils.DataUtils;
@@ -52,7 +47,6 @@ public class DataNavToolBar extends ToolBar {
     private static final String ID_DATA_SIMPLE_IMPORT_BTN = "idSimpleImportBtn"; //$NON-NLS-1$
     private static final String ID_NEW_FOLDER_BTN = "idNewFolderBtn"; //$NON-NLS-1$
     private static final String ID_RENAME_FOLDER_BTN = "idRenameFolderBtn"; //$NON-NLS-1$
-    private static final String ID_DELETE_FOLDER_BTN = "idDeleteFolderBtn"; //$NON-NLS-1$
     private static final String ID_EMPTY_TRASH_BTN = "idEmptyTrashBtn"; //$NON-NLS-1$
     private static final String ID_UPLD_MENU = "idUpldMenu";
 
@@ -81,7 +75,6 @@ public class DataNavToolBar extends ToolBar {
 
         add(buildAddFolderButton());
         add(buildRenameFolderButton());
-        add(buildDeleteFolderButton());
         add(buildEmptyTrashButton());
 
     }
@@ -289,39 +282,6 @@ public class DataNavToolBar extends ToolBar {
     private void showErrorMsg() {
         MessageBox.alert(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage(),
                 null);
-    }
-
-    private Button buildDeleteFolderButton() {
-        deleteFolder = new Button();
-        deleteFolder.setId(ID_DELETE_FOLDER_BTN);
-        deleteFolder.setToolTip(I18N.DISPLAY.delete());
-        deleteFolder.setIcon(AbstractImagePrototype.create(Resources.ICONS.folderDelete()));
-        deleteFolder.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (selectionModel == null) {
-                    return;
-                }
-
-                @SuppressWarnings("rawtypes")
-                List resources = selectionModel.getSelectedItems();
-                List<String> idFolders = new ArrayList<String>();
-                if (!DataUtils.isDeletable(resources)) {
-                    showErrorMsg();
-                } else {
-
-                    idFolders = DataUtils.getDiskResourceIdList(resources);
-                    if (idFolders.size() > 0) {
-                        DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
-                        facade.delete(JsonUtil.buildJsonArrayString(idFolders),
-                                new DiskResourceDeleteCallback(idFolders));
-                    }
-                }
-
-            }
-        });
-        return deleteFolder;
     }
 
     private Button buildRenameFolderButton() {
