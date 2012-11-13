@@ -56,7 +56,6 @@ public class DataNavToolBar extends ToolBar {
     private TreePanelSelectionModel<Folder> selectionModel;
     private Component maskingParent;
     private Button addFolder;
-    private Button deleteFolder;
     private Button renameFolder;
     private Button emptyTrash;
     private IPlantSubmittableDialog dlgUpload;
@@ -386,8 +385,6 @@ public class DataNavToolBar extends ToolBar {
             // enable or disable the correct actions
             addFolder.setEnabled(addMenuItemsEnabled);
             renameFolder.setEnabled(editMenuItemsEnabled);
-            deleteFolder.setEnabled(editMenuItemsEnabled);
-
         }
     }
 }
