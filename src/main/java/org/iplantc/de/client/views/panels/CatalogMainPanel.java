@@ -65,11 +65,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
- * 
+ *
  * Displays a list of analyses in grid. Actions to edit, copy and run are supported
- * 
+ *
  * @author sriram
- * 
+ *
  */
 public class CatalogMainPanel extends BaseCatalogMainPanel {
 
@@ -133,7 +133,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
     /**
      * Get the category id for the current seleciton the category tree
-     * 
+     *
      * @return String category id
      */
     public String getCurrentCategoryId() {
@@ -220,17 +220,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
     }
 
     private void editAnalysis(final String id) {
-        getTemplateService().editAnalysis(id, new AsyncCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                openTitoForEdit(id);
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(caught);
-            }
-        });
+        openTitoForEdit(id);
     }
 
     private void openTitoForEdit(final String id) {
@@ -760,7 +750,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
                 /**
                  * Updates the user rating and the average rating
-                 * 
+                 *
                  * @param model
                  * @param json a JSON string containing the new average rating
                  */
