@@ -453,7 +453,6 @@ public class DataSharingDialog extends Dialog {
     private JSONArray buildPathArr(List<Sharing> list) {
         JSONArray pathArr = new JSONArray();
         int index = 0;
-        JSONObject obj;
         for (Sharing s : list) {
             DataSharing ds = (DataSharing)s;
             pathArr.set(index++, new JSONString(ds.getPath()));
