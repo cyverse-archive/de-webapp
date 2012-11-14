@@ -3,18 +3,12 @@
  */
 package org.iplantc.de.client.views.panels;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.Collaborator;
-import org.iplantc.de.client.models.JsCollaborators;
-import org.iplantc.de.client.services.UserSessionServiceFacade;
-import org.iplantc.de.client.utils.NotifyInfo;
+import org.iplantc.de.client.utils.CollaboratorsUtil;
 import org.iplantc.de.client.views.panels.ManageCollaboratorsPanel.MODE;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -36,10 +30,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 
@@ -52,9 +42,6 @@ public class CollaboratorsPanel extends ContentPanel {
     private Grid<Collaborator> grid;
     private ManageCollaboratorsPanel.MODE mode;
 
-    // list that holds user's collaborators
-    private List<Collaborator> my_collaborators;
-
     public CollaboratorsPanel(String title, ManageCollaboratorsPanel.MODE mode, int width, int height) {
         setHeading(title);
         setSize(width, height);
@@ -66,7 +53,6 @@ public class CollaboratorsPanel extends ContentPanel {
     }
 
     private void init() {
-        my_collaborators = new ArrayList<Collaborator>();
         ListStore<Collaborator> store = new ListStore<Collaborator>();
         grid = new Grid<Collaborator>(store, buildColumnModel());
         grid.setAutoExpandColumn(Collaborator.NAME);
@@ -89,6 +75,7 @@ public class CollaboratorsPanel extends ContentPanel {
     }
 
     private ColumnModel buildColumnModel() {
+
         ColumnConfig name = new ColumnConfig(Collaborator.NAME, I18N.DISPLAY.name(), 150);
         name.setRenderer(new NameCellRenderer());
 
@@ -103,29 +90,10 @@ public class CollaboratorsPanel extends ContentPanel {
         store.removeAll();
         store.add(collaborators);
         store.sort(Collaborator.NAME, SortDir.ASC);
-        if (store.getModels().size() > 0) {
-            grid.getSelectionModel().select(0, false);
-        }
-    }
-
-    public List<Collaborator> parseResults(String result) {
-        JSONObject obj = JsonUtil.getObject(result);
-        String json = obj.get("users").toString();
-        JsArray<JsCollaborators> collabs = JsonUtil.asArrayOf(json);
-        List<Collaborator> collaborators = new ArrayList<Collaborator>();
-        for (int i = 0; i < collabs.length(); i++) {
-            Collaborator c = new Collaborator(collabs.get(i));
-            collaborators.add(c);
-        }
-        return collaborators;
     }
 
     public void clearStore() {
         grid.getStore().removeAll();
-    }
-
-    public void parseAndLoad(String result) {
-        loadResults(parseResults(result));
     }
 
     public void setMode(ManageCollaboratorsPanel.MODE mode) {
@@ -152,7 +120,7 @@ public class CollaboratorsPanel extends ContentPanel {
             final HorizontalPanel hp = new HorizontalPanel();
 
             if (mode.equals(MODE.SEARCH)) {
-                if (!isCurrentCollaborator(model)) {
+                if (!CollaboratorsUtil.isCurrentCollaborator(model)) {
                     IconButton ib = buildButton(ADD_BUTTON_STYLE, model);
                     hp.add(ib);
                     ib.setToolTip("Add");
@@ -188,12 +156,12 @@ public class CollaboratorsPanel extends ContentPanel {
                     IconButton src = (IconButton)ce.getSource();
                     String existing_style = src.getStyleName();
                     if (existing_style.contains(ADD_BUTTON_STYLE)) {
-                        if (!checkCurrentUser(model)) {
+                        if (!CollaboratorsUtil.checkCurrentUser(model)) {
                             addCollaborators(Arrays.asList(model));
                             if (mode.equals(MODE.SEARCH)) {
                                 src.changeStyle(DONE_BUTTON_STYLE);
                                 src.setToolTip("Added");
-                            } else {
+                            } else if (mode.equals(MODE.MANAGE)) {
                                 src.changeStyle(REMOVE_BUTTON_STYLE);
                                 src.setToolTip("Remove");
                             }
@@ -220,108 +188,43 @@ public class CollaboratorsPanel extends ContentPanel {
         }
     }
 
-    private boolean checkCurrentUser(Collaborator model) {
-        if (model.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername())) {
-            return true;
-        }
-
-        return false;
-    }
-
     public void addCollaborators(final List<Collaborator> models) {
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        JSONObject obj = buildJSONModel(models);
-        facade.addCollaborators(obj, new AsyncCallback<String>() {
+        CollaboratorsUtil.addCollaborators(models, new AsyncCallback<Void>() {
 
             @Override
-            public void onSuccess(String result) {
-                StringBuilder builder = new StringBuilder();
-                for (Collaborator c : models) {
-                    builder.append(c.getUserName() + ",");
-                    my_collaborators.add(c);
-                }
-
-                if (builder.length() > 0) {
-                    builder.deleteCharAt(builder.length() - 1);
-                }
-
-                NotifyInfo.display(I18N.DISPLAY.collaboratorAdded(),
-                        I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
+            public void onSuccess(Void result) {
+                // do nothing
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.addCollabErrorMsg(), caught);
+                // do nothing
             }
         });
 
     }
 
     private void removeCollaborators(final List<Collaborator> models) {
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        JSONObject obj = buildJSONModel(models);
-        facade.removeCollaborators(obj, new AsyncCallback<String>() {
+        CollaboratorsUtil.removeCollaborators(models, new AsyncCallback<Void>() {
 
             @Override
-            public void onSuccess(String result) {
-                StringBuilder builder = new StringBuilder();
+            public void onSuccess(Void result) {
                 for (Collaborator c : models) {
-                    builder.append(c.getUserName() + ",");
-                    my_collaborators.remove(c);
                     grid.getStore().remove(c);
                 }
-
-                if (builder.length() > 0) {
-                    builder.deleteCharAt(builder.length() - 1);
-                }
-
-                NotifyInfo.display(I18N.DISPLAY.collaboratorRemoved(),
-                        I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
 
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.removeCollabErrorMsg(), caught);
+                // do nothing
             }
         });
 
     }
 
-    private JSONObject buildJSONModel(final List<Collaborator> models) {
-        JSONArray arr = new JSONArray();
-        int count = 0;
-        for (Collaborator model : models) {
-            JSONObject user = new JSONObject();
-            user.put("username", new JSONString(model.getUserName()));
-            arr.set(count++, user);
-        }
-
-        JSONObject obj = new JSONObject();
-        obj.put("users", arr);
-        return obj;
-    }
-
-    public void setCurrentCollaborators(List<Collaborator> collaborators) {
-        my_collaborators = collaborators;
-    }
-
     public void showCurrentCollborators() {
-        loadResults(my_collaborators);
-    }
-
-    public List<Collaborator> getCurrentCollaborators() {
-        return my_collaborators;
-    }
-
-    public boolean isCurrentCollaborator(Collaborator c) {
-        for (Collaborator current : my_collaborators) {
-            if (current.getId().equals(c.getId())) {
-                return true;
-            }
-        }
-
-        return false;
+        loadResults(CollaboratorsUtil.getCurrentCollaborators());
     }
 
     public Collaborator getSelectedCollaborator() {

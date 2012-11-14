@@ -34,7 +34,7 @@ div.iplantc-about-pad-text p {
 	margin: 0px;
 }
 
-.iplantc-select-trait-grid .x-grid3-cell-inner {
+.iplantc-select-grid .x-grid3-cell-inner {
 	cursor: pointer;
 }
 
@@ -780,4 +780,3 @@ img.analysis_remove {
 .unseen_notification {
 	background-color: #EFEFEF;
 	}
-}

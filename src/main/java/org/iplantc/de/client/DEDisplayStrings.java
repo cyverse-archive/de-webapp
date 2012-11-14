@@ -972,7 +972,7 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      * @return a string representing the localized text.
      */
-    String unsharePrompt(String name);
+    String unsharePrompt();
 
     /**
      * Localized display text search collaborators
@@ -1242,4 +1242,18 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String shareAll();
+
+    /**
+     * collaborators add prompt
+     * 
+     * @return
+     */
+    String collaboratorsAddPrompt(String collaborators);
+
+    /**
+     * text advanced
+     * 
+     * @return
+     */
+    String advanced();
 }

@@ -4,49 +4,54 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.iplantc.core.uiapplications.client.I18N;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
+import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.Collaborator;
+import org.iplantc.de.client.models.DataSharing;
+import org.iplantc.de.client.models.DataSharing.TYPE;
 import org.iplantc.de.client.models.Sharing;
 
+import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.dnd.GridDropTarget;
+import com.extjs.gxt.ui.client.dnd.DND.Operation;
+import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
-import com.extjs.gxt.ui.client.widget.form.Radio;
-import com.extjs.gxt.ui.client.widget.form.RadioGroup;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid.TreeNode;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * A panel to display a list of sharee and their permissions
@@ -56,43 +61,103 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class SharePanel extends ContentPanel {
     private static final String ID_PERM_GROUP = "idPermGroup";
-    private DiskResource resource;
-    private Grid<Sharing> grid;
-    private List<Sharing> unshareList;
-    private CheckBoxSelectionModel<Sharing> sm;
+    private EditorTreeGrid<Sharing> grid;
+    private FastMap<List<Sharing>> unshareList;
+    private List<DiskResource> resources;
     private ToolBar toolbar;
-    private static final String ID_PERM_PANEL = "idPermPanel";
     private static final String ID_BTN_REMOVE = "idBtnRemove";
     private boolean updated;
 
-    public SharePanel(DiskResource dr) {
-        unshareList = new ArrayList<Sharing>();
-        this.setResource(dr);
+    public SharePanel(List<DiskResource> resources) {
+        unshareList = new FastMap<List<Sharing>>();
+        this.resources = resources;
         updated = false;
         init();
     }
 
     private void init() {
-        setSize(385, 225);
         setCollapsible(true);
         setLayout(new FitLayout());
-        ColumnModel cm = buildColumnModel();
-        ListStore<Sharing> store = new ListStore<Sharing>();
-        grid = new Grid<Sharing>(store, cm);
+        setHeading(I18N.DISPLAY.share() + " / " + I18N.DISPLAY.unshare());
+        TreeStore<Sharing> store = new TreeStore<Sharing>();
         store.setKeyProvider(new ModelKeyProvider<Sharing>() {
             @Override
             public String getKey(Sharing model) {
-                return model.getUserName();
+                return model.getKey();
             }
         });
-        grid.getView().setEmptyText(org.iplantc.de.client.I18N.DISPLAY.sharePanelEmptyText());
-        grid.setSelectionModel(sm);
-        grid.addPlugin(sm);
-        grid.getSelectionModel().addListener(Events.SelectionChange, new GridSelectionChangeListener());
+        ColumnModel cm = buildColumnModel();
+        initGrid(store, cm);
+
         add(grid);
         addToolBar();
-        new SharingGridDropTarget(grid);
-        new SharingDropTarget(this);
+        TreeGridDropTarget sgdt = new ShareTreeGridDropTargetImpl(grid);
+
+        sgdt.setOperation(Operation.COPY);
+        sgdt.setAllowDropOnLeaf(false);
+        sgdt.setAutoExpand(true);
+    }
+
+    private void initGrid(TreeStore<Sharing> store, ColumnModel cm) {
+        grid = new EditorTreeGrid<Sharing>(store, cm);
+        grid.getView().setEmptyText(org.iplantc.de.client.I18N.DISPLAY.sharePanelEmptyText());
+        grid.setSelectionModel(new TreeGridSelectionModel<Sharing>());
+        grid.setClicksToEdit(ClicksToEdit.ONE);
+        TreeGridSelectionModel<Sharing> sm = (TreeGridSelectionModel<Sharing>)grid.getSelectionModel();
+
+        sm.addListener(Events.SelectionChange, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (grid.getSelectionModel().getSelectedItems().size() > 0) {
+                    toolbar.getItemByItemId(ID_BTN_REMOVE).enable();
+                    toolbar.getItemByItemId(ID_PERM_GROUP).enable();
+                } else {
+                    toolbar.getItemByItemId(ID_BTN_REMOVE).disable();
+                    toolbar.getItemByItemId(ID_PERM_GROUP).disable();
+                }
+
+            }
+        });
+        setIcons();
+    }
+
+    private void setIcons() {
+        grid.setIconProvider(new ModelIconProvider<Sharing>() {
+
+            @Override
+            public AbstractImagePrototype getIcon(Sharing model) {
+                if (model instanceof DataSharing) {
+                    DataSharing ds = (DataSharing)model;
+                    TYPE type = getSharingResourceType(ds.getPath());
+                    if (type == null) {
+                        return AbstractImagePrototype.create(Resources.ICONS.share());
+                    }
+                    if (type.equals(TYPE.FOLDER)) {
+                        return AbstractImagePrototype.create(Resources.ICONS.folder());
+                    } else {
+                        return AbstractImagePrototype.create(Resources.ICONS.file());
+                    }
+
+                } else {
+                    return AbstractImagePrototype.create(Resources.ICONS.share());
+                }
+            }
+        });
+
+    }
+
+    private TYPE getSharingResourceType(String path) {
+        for (DiskResource dr : resources) {
+            if (dr.getId().equalsIgnoreCase(path)) {
+                if (dr instanceof Folder) {
+                    return TYPE.FOLDER;
+                } else {
+                    return TYPE.FILE;
+                }
+            }
+        }
+
+        return null;
     }
 
     private void initUpdateListeners() {
@@ -124,6 +189,24 @@ public class SharePanel extends ContentPanel {
 
         });
 
+        grid.addListener(Events.BeforeEdit, new Listener<GridEvent<Sharing>>() {
+            @Override
+            public void handleEvent(GridEvent<Sharing> be) {
+                if (!(be.getRecord().getModel() instanceof DataSharing)) {
+                    be.setCancelled(true);
+                }
+            }
+        });
+
+        grid.addListener(Events.AfterEdit, new Listener<GridEvent<Sharing>>() {
+            @Override
+            public void handleEvent(GridEvent<Sharing> be) {
+                // be.setCancelled(true);
+                // edited row can only be of instance DataSharing
+                DataSharing ds = (DataSharing)be.getRecord().getModel();
+                updatePermissions(be.getValue().toString(), ds);
+            }
+        });
     }
 
     private void addToolBar() {
@@ -131,28 +214,12 @@ public class SharePanel extends ContentPanel {
         Button removeBtn = buildUnshareButton();
         toolbar.add(removeBtn);
         toolbar.add(new FillToolItem());
+        SimpleComboBox<String> permissionsCombo = buildPermissionsCombo();
+        permissionsCombo.setEmptyText(I18N.DISPLAY.permissions());
+        permissionsCombo.disable();
+        permissionsCombo.addListener(Events.Select, new PermissionsChangeListenerImpl());
+        toolbar.add(permissionsCombo);
 
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.setId(ID_PERM_PANEL);
-
-        final Radio read = buildRadio(org.iplantc.de.client.I18N.DISPLAY.read());
-        read.addListener(Events.OnChange, new BulkPermissionsFieldListener());
-
-        final Radio write = buildRadio(org.iplantc.de.client.I18N.DISPLAY.write());
-        write.addListener(Events.OnChange, new BulkPermissionsFieldListener());
-
-        final Radio own = buildRadio(org.iplantc.de.client.I18N.DISPLAY.own());
-        own.addListener(Events.OnChange, new BulkPermissionsFieldListener());
-
-        RadioGroup group = new RadioGroup();
-        group.setId(ID_PERM_GROUP);
-        group.add(read);
-        group.add(write);
-        group.add(own);
-
-        panel.add(group);
-        panel.disable();
-        toolbar.add(panel);
         setTopComponent(toolbar);
     }
 
@@ -165,136 +232,191 @@ public class SharePanel extends ContentPanel {
         return removeBtn;
     }
 
+    public void loadSharingData(List<Sharing> roots, FastMap<List<Sharing>> sharingMap) {
+        TreeStore<Sharing> treeStore = grid.getTreeStore();
+        for (Sharing s : roots) {
+            treeStore.add(s, false);
+            List<Sharing> list = sharingMap.get(s.getUserName());
+            if (list != null) {
+                for (Sharing item : list) {
+                    treeStore.add(s, item, false);
+                }
+            }
+        }
+
+        initUpdateListeners();
+
+    }
+
+    public void addSharing(Sharing obj) {
+        TreeStore<Sharing> treeStore = grid.getTreeStore();
+        if (!treeStore.contains(obj)) {
+            treeStore.add(obj, false);
+            grid.setLeaf(obj, false);
+        }
+        grid.getSelectionModel().select(false, obj);
+    }
+
     public boolean isUpdated() {
         return updated;
     }
 
-    public void setSharingInfo(List<Sharing> sharingInfoList) {
-        grid.getStore().add(sharingInfoList);
-        // init this only after loading existing sharing list
-        initUpdateListeners();
+    private ColumnModel buildColumnModel() {
+        ColumnConfig sharee = new ColumnConfig(Sharing.NAME, I18N.DISPLAY.name(), 170);
+        sharee.setRenderer(new TreeGridCellRenderer<Sharing>());
+        ColumnConfig permissions = new ColumnConfig(DataSharing.DISPLAY_PERMISSION,
+                org.iplantc.de.client.I18N.DISPLAY.permissions(), 100);
+        permissions.setEditor(buildPermissionsEditor());
+        sharee.setMenuDisabled(true);
+        sharee.setSortable(true);
+        return new ColumnModel(Arrays.asList(sharee, permissions));
+    }
+
+    private CellEditor buildPermissionsEditor() {
+        final SimpleComboBox<String> combo = buildPermissionsCombo();
+
+        CellEditor editor = new CellEditor(combo) {
+            @Override
+            public Object preProcessValue(Object value) {
+                if (value == null) {
+                    return value;
+                }
+                return combo.findModel(value.toString());
+            }
+
+            @Override
+            public Object postProcessValue(Object value) {
+                if (value == null) {
+                    return value;
+                }
+                return ((ModelData)value).get("value");
+            }
+        };
+
+        return editor;
+
+    }
+
+    private SimpleComboBox<String> buildPermissionsCombo() {
+        final SimpleComboBox<String> combo = new SimpleComboBox<String>();
+        combo.setId(ID_PERM_GROUP);
+        combo.setForceSelection(true);
+        combo.add(org.iplantc.de.client.I18N.DISPLAY.read());
+        combo.add(org.iplantc.de.client.I18N.DISPLAY.write());
+        combo.add(org.iplantc.de.client.I18N.DISPLAY.own());
+        combo.setEditable(false);
+
+        combo.setTriggerAction(TriggerAction.ALL);
+        return combo;
+    }
+
+    /**
+     * 
+     * 
+     * @return the sharing list
+     */
+    public FastMap<List<Sharing>> getSharingMap() {
+        FastMap<List<Sharing>> sharingList = new FastMap<List<Sharing>>();
+        for (Sharing s : grid.getTreeStore().getModels()) {
+            if (!(s instanceof DataSharing)) {
+                sharingList.put(s.getUserName(), grid.getTreeStore().getChildren(s));
+            }
+        }
+        return sharingList;
     }
 
     /**
      * @return the unshareList
      */
-    public List<Sharing> getUnshareList() {
+    public FastMap<List<Sharing>> getUnshareList() {
         return unshareList;
     }
 
-    private ColumnModel buildColumnModel() {
-        sm = new CheckBoxSelectionModel<Sharing>();
-        ColumnConfig sharee = new ColumnConfig(Sharing.NAME, I18N.DISPLAY.name(), 170);
-        ColumnConfig premissions = new ColumnConfig("",
-                org.iplantc.de.client.I18N.DISPLAY.permissions(), 170);
-        premissions.setRenderer(new PermissionsReadCellRender());
-        sharee.setMenuDisabled(true);
-        sharee.setSortable(true);
-        sharee.setRenderer(new NameCellRenderer());
-
-        return new ColumnModel(Arrays.asList(sm.getColumn(), sharee, premissions));
-    }
-
-    /**
-     * @param resource the resource to set
-     */
-    public void setResource(DiskResource resource) {
-        this.resource = resource;
-    }
-
-    /**
-     * @return the resource
-     */
-    public DiskResource getResource() {
-        return resource;
-    }
-
-    public List<Sharing> getSharingList() {
-        return grid.getStore().getModels();
-    }
-
-    private final class GridSelectionChangeListener implements Listener<BaseEvent> {
+    private final class PermissionsChangeListenerImpl implements Listener<FieldEvent> {
         @Override
-        public void handleEvent(BaseEvent be) {
-            if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                toolbar.getItemByItemId(ID_BTN_REMOVE).enable();
-                HorizontalPanel hp = (HorizontalPanel)toolbar.getItemByItemId(ID_PERM_PANEL);
-                RadioGroup rg = (RadioGroup)hp.getItemByItemId(ID_PERM_GROUP);
-                rg.clear();
-                hp.enable();
-            } else {
-                toolbar.getItemByItemId(ID_BTN_REMOVE).disable();
-                toolbar.getItemByItemId(ID_PERM_PANEL).disable();
-            }
-        }
-    }
-
-    /**
-     * render radio for permissions
-     * 
-     * @author sriram
-     * 
-     */
-    private class PermissionsReadCellRender implements GridCellRenderer<Sharing> {
-
-        @Override
-        public Object render(final Sharing model, String property, ColumnData config, int rowIndex,
-                int colIndex, ListStore<Sharing> store, final Grid<Sharing> grid) {
-            HorizontalPanel panel = new HorizontalPanel();
-
-            final Radio read = buildRadio(org.iplantc.de.client.I18N.DISPLAY.read());
-            read.addListener(Events.OnChange, new PermissionsFieldListener(model));
-
-            final Radio write = buildRadio(org.iplantc.de.client.I18N.DISPLAY.write());
-            write.addListener(Events.OnChange, new PermissionsFieldListener(model));
-
-            final Radio own = buildRadio(org.iplantc.de.client.I18N.DISPLAY.own());
-            own.addListener(Events.OnChange, new PermissionsFieldListener(model));
-
-            if (!model.isOwner() && !model.isWritable() && model.isReadable()) {
-                read.setValue(model.isReadable());
-            } else if (!model.isOwner() && model.isWritable()) {
-                write.setValue(model.isWritable());
-            } else {
-                own.setValue(model.isOwner());
-            }
-
-            RadioGroup group = new RadioGroup();
-            group.add(read);
-            group.add(write);
-            group.add(own);
-
-            panel.add(group);
-            return panel;
-        }
-    }
-
-    private Radio buildRadio(String label) {
-        final Radio r = new Radio();
-        r.setBoxLabel(label);
-        r.setId("id" + label);
-        return r;
-    }
-
-    private void updatePermissions(Radio r, Sharing model) {
-        if (r.getBoxLabel().equals(org.iplantc.de.client.I18N.DISPLAY.read())) {
-            model.setReadable(r.getValue());
-        } else if (r.getBoxLabel().equals(org.iplantc.de.client.I18N.DISPLAY.write())) {
-            model.setWritable(r.getValue());
-        } else {
-            model.setOwner(r.getValue());
-        }
-        grid.getStore().update(model);
-    }
-
-    private class BulkPermissionsFieldListener implements Listener<FieldEvent> {
         public void handleEvent(FieldEvent be) {
-            Radio r = (Radio)be.getField();
-            List<Sharing> models = grid.getSelectionModel().getSelectedItems();
-            for (Sharing model : models) {
-                updatePermissions(r, model);
+            List<Sharing> items = grid.getSelectionModel().getSelectedItems();
+            if (items != null) {
+                for (Sharing s : items) {
+                    @SuppressWarnings("unchecked")
+                    SimpleComboBox<String> perm = (SimpleComboBox<String>)be.getField();
+                    SimpleComboValue<String> value = perm.getValue();
+                    if (value != null) {
+                        if (s instanceof DataSharing) {
+                            updatePermissions(value.getValue(), (DataSharing)s);
+                        } else {
+                            TreeStore<Sharing> treeStore = grid.getTreeStore();
+                            Sharing sharing = treeStore.findModel(s);
+                            if (sharing != null) {
+                                List<Sharing> models = treeStore.getChildren(sharing);
+                                if (models != null) {
+                                    for (Sharing md : models) {
+                                        updatePermissions(value.getValue(), (DataSharing)md);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    private final class ShareTreeGridDropTargetImpl extends TreeGridDropTarget {
+        private ShareTreeGridDropTargetImpl(@SuppressWarnings("rawtypes") TreeGrid tree) {
+            super(tree);
+        }
+
+        @Override
+        public void onDragMove(DNDEvent e) {
+            super.onDragMove(e);
+            @SuppressWarnings("rawtypes")
+            TreeNode tn = grid.findNode(e.getTarget());
+            setDropFeedback(e, tn);
+        }
+
+        @Override
+        public void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
+            @SuppressWarnings("rawtypes")
+            TreeNode tn = grid.findNode(e.getTarget());
+            setDropFeedback(e, tn);
+
+        }
+
+        @Override
+        public void onDragDrop(DNDEvent e) {
+            List<?> items = e.getData();
+            if (items != null) {
+                if (items.get(0) instanceof Collaborator) {
+                    for (Object coll : items) {
+                        addSharing(new Sharing((Collaborator)coll));
+                    }
+                    return;
+                }
+            }
+
+            @SuppressWarnings("rawtypes")
+            TreeNode tn = grid.findNode(e.getTarget());
+            Sharing s = (Sharing)tn.getModel();
+            for (Object dr : items) {
+                DataSharing ds = new DataSharing(s.getCollaborator(),
+                        new Permissions(true, false, false), ((DiskResource)dr).getId());
+                grid.getTreeStore().add(s, ds, false);
             }
         }
+    }
+
+    private void updatePermissions(String perm, DataSharing model) {
+        if (perm.equals(org.iplantc.de.client.I18N.DISPLAY.read())) {
+            model.setReadable(true);
+        } else if (perm.equals(org.iplantc.de.client.I18N.DISPLAY.write())) {
+            model.setWritable(true);
+        } else {
+            model.setOwner(true);
+        }
+        grid.getTreeStore().update(model);
     }
 
     private class RemoveButtonSelectionListener extends SelectionListener<ButtonEvent> {
@@ -302,15 +424,13 @@ public class SharePanel extends ContentPanel {
         @Override
         public void componentSelected(ButtonEvent ce) {
             MessageBox.confirm(org.iplantc.de.client.I18N.DISPLAY.unshare(),
-                    org.iplantc.de.client.I18N.DISPLAY.unsharePrompt(resource.getName()),
-                    new Listener<MessageBoxEvent>() {
+                    org.iplantc.de.client.I18N.DISPLAY.unsharePrompt(), new Listener<MessageBoxEvent>() {
 
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
                             Button btn = be.getButtonClicked();
                             if (btn.getText().equals("Yes")) {
                                 List<Sharing> models = grid.getSelectionModel().getSelectedItems();
-                                unshareList.addAll(models);
                                 removeModels(models);
                             }
 
@@ -321,22 +441,34 @@ public class SharePanel extends ContentPanel {
     }
 
     private void removeModels(List<Sharing> models) {
+        // prepared unshared list here
+        TreeStore<Sharing> store = grid.getTreeStore();
         for (Sharing model : models) {
-            grid.getStore().remove(model);
+            String userName = model.getUserName();
+            List<Sharing> list = unshareList.get(userName);
+            if (list == null) {
+                list = new ArrayList<Sharing>();
+            }
+            if (model instanceof DataSharing) {
+                list.add(model);
+                store.remove(model);
+            } else {
+                Sharing sharing = store.findModel(model);
+                if (sharing != null) {
+                    List<Sharing> removeList = store.getChildren(sharing);
+                    list.addAll(removeList);
+                    store.removeAll(sharing);
+                    store.remove(sharing);
+                }
+
+            }
+            unshareList.put(userName, list);
         }
     }
 
-    public void addSharee(Collaborator c) {
-        ListStore<Sharing> store = grid.getStore();
-        Sharing s = new Sharing(c, new Permissions(true, false, false));
-        if (canShare(c)) {
-            store.add(s);
-        }
-    }
-
-    private boolean canShare(Collaborator c) {
-        ListStore<Sharing> store = grid.getStore();
-        Sharing s = new Sharing(c, new Permissions(true, false, false));
+    private boolean canShare(Collaborator c, String path) {
+        TreeStore<Sharing> store = grid.getTreeStore();
+        DataSharing s = new DataSharing(c, new Permissions(true, false, false), path);
         if (!store.contains(s)
                 && (!c.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername()))) {
             return true;
@@ -345,140 +477,38 @@ public class SharePanel extends ContentPanel {
         return false;
     }
 
-    private class PermissionsFieldListener implements Listener<FieldEvent> {
-
-        private Sharing model;
-
-        public PermissionsFieldListener(Sharing model) {
-            this.model = model;
-        }
-
-        @Override
-        public void handleEvent(FieldEvent be) {
-            Radio r = (Radio)be.getField();
-            updatePermissions(r, model);
-        }
-
+    private void setDNDFeedback(DNDEvent e, boolean feedback) {
+        e.getStatus().setStatus(feedback);
+        e.setCancelled(!feedback);
     }
 
-    /**
-     * A custom renderer that renders with add / delete icon
-     * 
-     * @author sriram
-     * 
-     */
-    private class NameCellRenderer implements GridCellRenderer<Sharing> {
+    private void setDropFeedback(DNDEvent e, @SuppressWarnings("rawtypes") TreeNode tn) {
+        List<?> items = e.getData();
+        TreeStore<Sharing> store = grid.getTreeStore();
 
-        private static final String REMOVE_BUTTON_STYLE = "remove_button";
-        private static final String DELETE_BUTTON_STYLE = "unshare_button";
-
-        @Override
-        public Object render(final Sharing model, String property, ColumnData config, int rowIndex,
-                int colIndex, ListStore<Sharing> store, final Grid<Sharing> grid) {
-
-            final HorizontalPanel hp = new HorizontalPanel();
-            IconButton ib = buildButton(REMOVE_BUTTON_STYLE, model);
-            hp.add(ib);
-            hp.add(new Label(model.getName()));
-            hp.setSpacing(3);
-            hp.sinkEvents(Events.OnClick.getEventCode());
-            hp.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    grid.getSelectionModel().select(false, model);
-
-                }
-            });
-            return hp;
-        }
-
-        private IconButton buildButton(final String style, final Sharing model) {
-            final IconButton btn = new IconButton(style, new SelectionListener<IconButtonEvent>() {
-
-                @Override
-                public void componentSelected(IconButtonEvent ce) {
-                    IconButton src = (IconButton)ce.getSource();
-                    String existing_style = src.getStyleName();
-
-                    if (existing_style.contains(REMOVE_BUTTON_STYLE)) {
-                        src.changeStyle(DELETE_BUTTON_STYLE);
+        if (items != null && items.size() > 0) {
+            if (items.get(0) instanceof Collaborator) {
+                for (Object obj : items) {
+                    if (store.contains(new Sharing((Collaborator)obj))) {
+                        setDNDFeedback(e, false);
                         return;
                     }
-
-                    if (existing_style.contains(DELETE_BUTTON_STYLE)) {
-                        grid.getStore().remove(model);
-                        unshareList.add(model);
+                }
+                return;
+            } else {
+                if (tn == null) {
+                    e.getStatus().setStatus(false);
+                    e.setCancelled(true);
+                    return;
+                }
+                Sharing s = (Sharing)tn.getModel();
+                for (Object dr : items) {
+                    if (!canShare(s.getCollaborator(), ((DiskResource)dr).getId())) {
+                        setDNDFeedback(e, false);
                         return;
                     }
-
                 }
-            });
-            btn.setToolTip(org.iplantc.de.client.I18N.DISPLAY.unshare());
-            return btn;
-        }
-    }
-
-    private class SharingDropTarget extends DropTarget {
-
-        public SharingDropTarget(Component target) {
-            super(target);
-
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            List<ModelData> list = e.getData();
-            Collaborator c = (Collaborator)(list.get(0));
-            if (!canShare(c)) {
-                e.setCancelled(true);
-                e.getStatus().setStatus(false);
             }
         }
-
-        @Override
-        protected void onDragDrop(DNDEvent e) {
-            List<ModelData> list = e.getData();
-            for (ModelData md : list) {
-                addSharee((Collaborator)md);
-            }
-
-        }
-
-    }
-
-    /**
-     * 
-     * Enable drag n drop
-     * 
-     * @author sriram
-     * 
-     */
-    private class SharingGridDropTarget extends GridDropTarget {
-
-        public SharingGridDropTarget(Grid<Sharing> grid) {
-            super(grid);
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            List<ModelData> list = e.getData();
-            Collaborator c = (Collaborator)(list.get(0));
-            if (!canShare(c)) {
-                e.setCancelled(true);
-                e.getStatus().setStatus(false);
-            }
-        }
-
-        @Override
-        protected void onDragDrop(DNDEvent e) {
-            List<ModelData> list = e.getData();
-            for (ModelData md : list) {
-                addSharee((Collaborator)md);
-            }
-        }
-
     }
 }

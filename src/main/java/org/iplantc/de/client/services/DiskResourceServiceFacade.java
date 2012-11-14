@@ -406,9 +406,13 @@ public class DiskResourceServiceFacade {
      * @param term search termt
      * @param callback
      */
-    public void search(String term, int size, AsyncCallback<String> callback) {
-        String fullAddress = DEProperties.getInstance().getMuleServiceBaseUrl()
-                + "simple-search/iplant?search-term=" + URL.encodePathSegment(term) + "&size=" + size;
+    public void search(String term, int size, String type, AsyncCallback<String> callback) {
+        String fullAddress = DEProperties.getInstance().getMuleServiceBaseUrl() + "search?search-term="
+                + URL.encodePathSegment(term) + "&size=" + size;
+
+        if (type != null && !type.isEmpty()) {
+            fullAddress = fullAddress + "&type=" + type;
+        }
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);

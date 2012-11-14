@@ -30,7 +30,7 @@ import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.utils.TreeViewContextExecutor;
 import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 import org.iplantc.de.client.views.dialogs.MetadataEditorDialog;
-import org.iplantc.de.client.views.dialogs.SharingDialog;
+import org.iplantc.de.client.views.dialogs.DataSharingDialog;
 import org.iplantc.de.client.views.panels.AddFolderDialogPanel;
 import org.iplantc.de.client.views.panels.DiskresourceMetadataEditorPanel;
 import org.iplantc.de.client.views.panels.MetadataEditorPanel;
@@ -130,8 +130,8 @@ public final class DataActionsMenu extends Menu {
                 Resources.ICONS.folderDelete(), new DeleteListenerImpl());
         itemMetaData = buildLeafMenuItem(MI_METADATA_ID, I18N.DISPLAY.metadata(),
                 Resources.ICONS.metadata(), new MetadataListenerImpl());
-        itemShareResource = buildLeafMenuItem(MI_SHARE_RESOURCE_ID, I18N.DISPLAY.share(),
-                Resources.ICONS.share(), new ShareResourceListenerImpl());
+        itemShareResource = buildLeafMenuItem(MI_SHARE_RESOURCE_ID, I18N.DISPLAY.share() + " / "
+                + I18N.DISPLAY.unshare(), Resources.ICONS.share(), new ShareResourceListenerImpl());
         itemCopyResource = buildLeafMenuItem(MI_COPY_RESOURCE_ID, I18N.DISPLAY.copy(),
                 Resources.ICONS.copy(), new CopyResourceListenerImpl());
         itemPasteResource = buildLeafMenuItem(MI_PASTE_RESOURCE_ID, I18N.DISPLAY.paste(),
@@ -344,8 +344,9 @@ public final class DataActionsMenu extends Menu {
         @Override
         public void componentSelected(MenuEvent ce) {
             if (DataUtils.isSharable(resources)) {
-                SharingDialog sd = new SharingDialog(resources);
+                DataSharingDialog sd = new DataSharingDialog(resources);
                 sd.show();
+                sd.initView();
             } else {
                 showErrorMsg();
             }

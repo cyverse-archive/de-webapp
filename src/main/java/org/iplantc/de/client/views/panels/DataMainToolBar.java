@@ -160,9 +160,9 @@ public class DataMainToolBar extends ToolBar {
 
     private void doSearch(final String term) {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
-
         maskContainer();
-        facade.search(term, DEProperties.getInstance().getMaxSearchResults(),
+        String type = (tag.equalsIgnoreCase(I18N.CONSTANT.selectAFile()) ? "file" : null);
+        facade.search(term, DEProperties.getInstance().getMaxSearchResults(), type,
                 new AsyncCallback<String>() {
 
                     @Override

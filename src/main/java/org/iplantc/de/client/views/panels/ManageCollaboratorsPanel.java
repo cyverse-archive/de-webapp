@@ -1,14 +1,9 @@
 package org.iplantc.de.client.views.panels;
 
-import java.util.List;
-
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.Collaborator;
-import org.iplantc.de.client.services.UserSessionServiceFacade;
+import org.iplantc.de.client.utils.CollaboratorsUtil;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -54,7 +49,7 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
 
     private void init(int width, int height) {
         initSearch();
-        panel = new CollaboratorsPanel(I18N.DISPLAY.currentCollaborators(), MODE.MANAGE, width, height);
+        panel = new CollaboratorsPanel(I18N.DISPLAY.currentCollaborators(), mode, width, height);
         add(panel);
         loadCollaborators();
     }
@@ -87,8 +82,7 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 showList.setVisible(false);
-                mode = MODE.MANAGE;
-                panel.setMode(mode);
+                updateCurrentMode(MODE.MANAGE);
                 panel.showCurrentCollborators();
                 panel.setHeading(I18N.DISPLAY.collaborators());
                 searchTerm.clear();
@@ -142,65 +136,55 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
         }
         panel.setHeading(I18N.DISPLAY.search() + ": " + search);
         status.setBusy("");
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        facade.searchCollaborators(search, new AsyncCallback<String>() {
+        panel.mask(I18N.DISPLAY.searching());
+        CollaboratorsUtil.search(search, new AsyncCallback<Void>() {
+
             @Override
             public void onFailure(Throwable caught) {
-                ErrorHandler.post(caught);
+                panel.unmask();
                 status.clearStatus("");
-                showList.setVisible(true);
             }
 
             @Override
-            public void onSuccess(String result) {
-                mode = MODE.SEARCH;
-                panel.setMode(mode);
-                panel.parseAndLoad(result);
+            public void onSuccess(Void result) {
+                updateCurrentMode(MODE.SEARCH);
+                panel.unmask();
                 status.clearStatus("");
+                panel.loadResults(CollaboratorsUtil.getSearchResutls());
                 showList.setVisible(true);
             }
         });
     }
 
     private void loadCollaborators() {
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        status.setBusy("");
-        facade.getCollaborators(new AsyncCallback<String>() {
+        panel.mask(I18N.DISPLAY.loadingMask());
+        CollaboratorsUtil.getCollaborators(new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
                 status.clearStatus("");
-                ErrorHandler.post(caught);
+                panel.unmask();
             }
 
             @Override
-            public void onSuccess(String result) {
-                mode = MODE.MANAGE;
-                panel.setMode(mode);
-                List<Collaborator> list = panel.parseResults(result);
-                panel.loadResults(list);
-                panel.setCurrentCollaborators(list);
+            public void onSuccess(Void result) {
+                updateCurrentMode(MODE.MANAGE);
                 status.clearStatus("");
-                CollaboratorsLoadedEvent event = new CollaboratorsLoadedEvent();
-                EventBus.getInstance().fireEvent(event);
+                panel.unmask();
+                panel.loadResults(CollaboratorsUtil.getCurrentCollaborators());
+                showList.setVisible(false);
             }
 
         });
     }
 
-    public List<Collaborator> getCurrentCollaborators() {
-        return panel.getCurrentCollaborators();
-    }
-
-    public boolean isCurrentCollaborator(Collaborator c) {
-        return panel.isCurrentCollaborator(c);
-    }
-
-    public void addCollaborators(List<Collaborator> models) {
-        panel.addCollaborators(models);
-    }
-
     public Collaborator getSelectedCollaborator() {
         return panel.getSelectedCollaborator();
     }
+
+    private void updateCurrentMode(MODE m) {
+        mode = m;
+        panel.setMode(mode);
+    }
+
 }
