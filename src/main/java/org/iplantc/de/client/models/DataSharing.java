@@ -35,7 +35,6 @@ public class DataSharing extends Sharing {
             setOwner(p.isOwner());
         }
         set(Sharing.NAME, DiskResourceUtil.parseNameFromPath(path));
-
     }
 
     public boolean isReadable() {
@@ -90,6 +89,27 @@ public class DataSharing extends Sharing {
 
     public void setDisplayPermission(String perm) {
         set(DISPLAY_PERMISSION, perm);
+    }
+
+    public String getDisplayPermission() {
+        return get(DISPLAY_PERMISSION).toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof DataSharing)) {
+            return false;
+        }
+        DataSharing s = (DataSharing)o;
+        return getKey().equals(s.getKey()) && s.getDisplayPermission().equals(getDisplayPermission());
+    }
+
+    @Override
+    public DataSharing copy() {
+        Collaborator c = getCollaborator();
+        Permissions p = new Permissions(isReadable(), isWritable(), isOwner());
+        String path = getPath();
+        return new DataSharing(c, p, path);
     }
 
 }

@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
  * @author sriram
  * 
  */
-public class Sharing extends BaseTreeModel {
+public class Sharing extends BaseTreeModel implements Cloneable {
 
     /**
      * 
@@ -51,5 +51,9 @@ public class Sharing extends BaseTreeModel {
 
     public String getKey() {
         return getUserName();
+    }
+
+    public Sharing copy() {
+        return new Sharing(getCollaborator());
     }
 }

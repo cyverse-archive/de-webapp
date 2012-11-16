@@ -1260,20 +1260,30 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
 
     /*
      * Menu text for button to Manage Data Link tickets.
+     * 
      * @return
      */
     String manageDataLinks();
-    
+
     /**
      * Text for the createDataLinks button in {@link DataLinkPanel}
+     * 
      * @return
      */
     String createDataLinks();
-    
+
     /**
      * Text for the deleteDataLinks button in {@link DataLinkPanel}
+     * 
      * @return
      */
     String deleteDataLinks();
+
+    /**
+     * Text to be displayed when share / unshare request is submitted
+     * 
+     * @return
+     */
+    String sharingCompleteMsg();
 
 }

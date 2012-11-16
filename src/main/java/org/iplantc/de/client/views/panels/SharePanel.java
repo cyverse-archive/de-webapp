@@ -29,8 +29,6 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -64,12 +62,11 @@ public class SharePanel extends ContentPanel {
     private List<DiskResource> resources;
     private ToolBar toolbar;
     private static final String ID_BTN_REMOVE = "idBtnRemove";
-    private boolean updated;
+    private FastMap<List<Sharing>> originalList;
 
     public SharePanel(List<DiskResource> resources) {
         unshareList = new FastMap<List<Sharing>>();
         this.resources = resources;
-        updated = false;
         init();
     }
 
@@ -159,34 +156,6 @@ public class SharePanel extends ContentPanel {
     }
 
     private void initUpdateListeners() {
-        grid.getStore().addListener(Store.Add, new Listener<StoreEvent<Sharing>>() {
-
-            @Override
-            public void handleEvent(StoreEvent<Sharing> be) {
-                updated = true;
-
-            }
-
-        });
-
-        grid.getStore().addListener(Store.Update, new Listener<StoreEvent<Sharing>>() {
-
-            @Override
-            public void handleEvent(StoreEvent<Sharing> be) {
-                updated = true;
-            }
-
-        });
-
-        grid.getStore().addListener(Store.Remove, new Listener<StoreEvent<Sharing>>() {
-
-            @Override
-            public void handleEvent(StoreEvent<Sharing> be) {
-                updated = true;
-            }
-
-        });
-
         grid.addListener(Events.BeforeEdit, new Listener<GridEvent<Sharing>>() {
             @Override
             public void handleEvent(GridEvent<Sharing> be) {
@@ -231,14 +200,19 @@ public class SharePanel extends ContentPanel {
     }
 
     public void loadSharingData(List<Sharing> roots, FastMap<List<Sharing>> sharingMap) {
+        originalList = new FastMap<List<Sharing>>();
         TreeStore<Sharing> treeStore = grid.getTreeStore();
         for (Sharing s : roots) {
             treeStore.add(s, false);
-            List<Sharing> list = sharingMap.get(s.getUserName());
+            String userName = s.getUserName();
+            List<Sharing> list = sharingMap.get(userName);
+            List<Sharing> newList = new ArrayList<Sharing>();
             if (list != null) {
                 for (Sharing item : list) {
                     treeStore.add(s, item, false);
+                    newList.add(item.copy());
                 }
+                originalList.put(userName, newList);
             }
         }
 
@@ -253,10 +227,6 @@ public class SharePanel extends ContentPanel {
             grid.setLeaf(obj, false);
         }
         grid.getSelectionModel().select(false, obj);
-    }
-
-    public boolean isUpdated() {
-        return updated;
     }
 
     private ColumnModel buildColumnModel() {
@@ -317,10 +287,57 @@ public class SharePanel extends ContentPanel {
         FastMap<List<Sharing>> sharingList = new FastMap<List<Sharing>>();
         for (Sharing s : grid.getTreeStore().getModels()) {
             if (!(s instanceof DataSharing)) {
-                sharingList.put(s.getUserName(), grid.getTreeStore().getChildren(s));
+                List<Sharing> childrens = grid.getTreeStore().getChildren(s);
+                List<Sharing> updatedSharingList = getUpdatedSharingList(s.getUserName(), childrens);
+                if (updatedSharingList != null && updatedSharingList.size() > 0) {
+                    sharingList.put(s.getUserName(), updatedSharingList);
+                }
             }
         }
         return sharingList;
+    }
+
+    /**
+     * check the list with original to see if things have changed. ignore unchanged records
+     * 
+     * @param userName
+     * @param list
+     * @return
+     */
+    private List<Sharing> getUpdatedSharingList(String userName, List<Sharing> list) {
+        List<Sharing> updateList = new ArrayList<Sharing>();
+        if (list != null && userName != null) {
+            List<Sharing> fromOriginal = originalList.get(userName);
+            if (fromOriginal == null || fromOriginal.isEmpty()) {
+                updateList = list;
+            } else {
+                for (Sharing s : list) {
+                    if (!fromOriginal.contains(s)) {
+                        updateList.add(s);
+                    }
+                }
+
+            }
+
+        }
+
+        return updateList;
+    }
+
+    /**
+     * check if a sharing recored originally existed. Needed to remove false submission of unshare list
+     * 
+     * @return
+     */
+    private boolean isExistedOriginally(Sharing s) {
+        String userName = s.getUserName();
+        List<Sharing> fromOriginal = originalList.get(userName);
+        if (fromOriginal != null && fromOriginal.contains(s)) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -435,20 +452,25 @@ public class SharePanel extends ContentPanel {
             if (list == null) {
                 list = new ArrayList<Sharing>();
             }
-            if (model instanceof DataSharing) {
+            if (model instanceof DataSharing && isExistedOriginally(model)) {
                 list.add(model);
                 store.remove(model);
             } else {
                 Sharing sharing = store.findModel(model);
                 if (sharing != null) {
                     List<Sharing> removeList = store.getChildren(sharing);
-                    list.addAll(removeList);
+                    for (Sharing remItem : removeList) {
+                        if (isExistedOriginally(remItem)) {
+                            list.add(remItem);
+                        }
+                    }
                     store.removeAll(sharing);
                     store.remove(sharing);
                 }
-
             }
-            unshareList.put(userName, list);
+            if (!list.isEmpty()) {
+                unshareList.put(userName, list);
+            }
         }
     }
 

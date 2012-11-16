@@ -29,7 +29,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
@@ -39,6 +38,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
@@ -102,6 +102,10 @@ public class DataSharingDialog extends Dialog {
                 JSONObject unshareRequestBody = buildUnSharingJson();
                 if (unshareRequestBody != null) {
                     callUnshareService(unshareRequestBody);
+                }
+                if (requestBody != null || unshareRequestBody != null) {
+                    MessageBox.info(I18N.DISPLAY.share() + "/ " + I18N.DISPLAY.unshare(),
+                            I18N.DISPLAY.sharingCompleteMsg(), null);
                 }
 
             }
@@ -229,64 +233,64 @@ public class DataSharingDialog extends Dialog {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig name = new ColumnConfig(Collaborator.NAME, I18N.DISPLAY.name(), 150);
-        name.setRenderer(new CollaboratorNameCellRenderer());
+        // name.setRenderer(new CollaboratorNameCellRenderer());
         columns.addAll(Arrays.asList(sm.getColumn(), name));
 
         return new ColumnModel(columns);
     }
 
-    /**
-     * A custom renderer that renders with add / delete icon
-     * 
-     * @author sriram
-     * 
-     */
-    private class CollaboratorNameCellRenderer implements GridCellRenderer<Collaborator> {
-
-        private static final String ADD_BUTTON_STYLE = "add_button";
-        private static final String DONE_BUTTON_STYLE = "done_button";
-
-        @Override
-        public Object render(final Collaborator model, String property, ColumnData config, int rowIndex,
-                int colIndex, ListStore<Collaborator> store, final Grid<Collaborator> grid) {
-
-            final HorizontalPanel hp = new HorizontalPanel();
-            IconButton ib = buildButton(ADD_BUTTON_STYLE, model);
-            hp.add(ib);
-            ib.setToolTip(I18N.DISPLAY.add());
-            hp.add(new Label(model.getName()));
-            hp.setSpacing(3);
-            hp.sinkEvents(Events.OnMouseDown.getEventCode());
-            hp.addListener(Events.OnMouseDown, new Listener<BaseEvent>() {
-
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    grid.getSelectionModel().select(false, model);
-                }
-            });
-
-            return hp;
-        }
-
-        private IconButton buildButton(final String style, final Collaborator model) {
-            final IconButton btn = new IconButton(style, new SelectionListener<IconButtonEvent>() {
-
-                @Override
-                public void componentSelected(IconButtonEvent ce) {
-                    IconButton src = (IconButton)ce.getSource();
-                    String existing_style = src.getStyleName();
-                    if (existing_style.contains(ADD_BUTTON_STYLE)) {
-                        Sharing s = new Sharing(model);
-                        sharePanel.addSharing(s);
-                        src.changeStyle(DONE_BUTTON_STYLE);
-                        return;
-                    }
-                }
-
-            });
-            return btn;
-        }
-    }
+    // /**
+    // * A custom renderer that renders with add / delete icon
+    // *
+    // * @author sriram
+    // *
+    // */
+    // private class CollaboratorNameCellRenderer implements GridCellRenderer<Collaborator> {
+    //
+    // private static final String ADD_BUTTON_STYLE = "add_button";
+    // private static final String DONE_BUTTON_STYLE = "done_button";
+    //
+    // @Override
+    // public Object render(final Collaborator model, String property, ColumnData config, int rowIndex,
+    // int colIndex, ListStore<Collaborator> store, final Grid<Collaborator> grid) {
+    //
+    // final HorizontalPanel hp = new HorizontalPanel();
+    // IconButton ib = buildButton(ADD_BUTTON_STYLE, model);
+    // hp.add(ib);
+    // ib.setToolTip(I18N.DISPLAY.add());
+    // hp.add(new Label(model.getName()));
+    // hp.setSpacing(3);
+    // hp.sinkEvents(Events.OnMouseDown.getEventCode());
+    // hp.addListener(Events.OnMouseDown, new Listener<BaseEvent>() {
+    //
+    // @Override
+    // public void handleEvent(BaseEvent be) {
+    // grid.getSelectionModel().select(false, model);
+    // }
+    // });
+    //
+    // return hp;
+    // }
+    //
+    // private IconButton buildButton(final String style, final Collaborator model) {
+    // final IconButton btn = new IconButton(style, new SelectionListener<IconButtonEvent>() {
+    //
+    // @Override
+    // public void componentSelected(IconButtonEvent ce) {
+    // IconButton src = (IconButton)ce.getSource();
+    // String existing_style = src.getStyleName();
+    // if (existing_style.contains(ADD_BUTTON_STYLE)) {
+    // Sharing s = new Sharing(model);
+    // sharePanel.addSharing(s);
+    // src.changeStyle(DONE_BUTTON_STYLE);
+    // return;
+    // }
+    // }
+    //
+    // });
+    // return btn;
+    // }
+    // }
 
     private void getUserPermissionsInfo() {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
