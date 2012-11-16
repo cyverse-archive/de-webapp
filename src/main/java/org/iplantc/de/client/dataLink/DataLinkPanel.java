@@ -54,9 +54,9 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
 
         private final HasEnabled createBtn;
         private final HasEnabled deleteBtn;
-        private final Tree<M, String> tree;
+        private final Tree<M, M> tree;
 
-        public TreeCheckChangedHandler(HasEnabled deleteBtn, HasEnabled createBtn, Tree<M, String> tree) {
+        public TreeCheckChangedHandler(HasEnabled deleteBtn, HasEnabled createBtn, Tree<M, M> tree) {
             this.deleteBtn = deleteBtn;
             this.createBtn = createBtn;
             this.tree = tree;
@@ -88,7 +88,7 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     TreeStore<M> store;
     
     @UiField
-    Tree<M, String> tree;
+    Tree<M, M> tree;
 
     @UiField
     TextButton createDataLinksBtn;
@@ -115,6 +115,7 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
                 allowedResources.add(m);
             }
         }
+        tree.setCell(new DataLinkPanelCell<M>());
         // Retrieve tickets for root nodes
         getExistingDataLinks(allowedResources);
     }
@@ -160,6 +161,9 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
         });
         // Select all roots automatically
         tree.setCheckedSelection(store.getAll());
+        for(M m : store.getAll()){
+            tree.setExpanded(m, true);
+        }
         
     }
 
