@@ -2,9 +2,12 @@ package org.iplantc.de.client.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
@@ -16,6 +19,7 @@ import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
@@ -32,6 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class DiskResourceServiceFacade {
     private final String serviceNamePrefix = "org.iplantc.services.de-data-mgmt"; //$NON-NLS-1$
     private final Component maskingCaller;
+    private final UUIDServiceAsync uuidService = GWT.create(UUIDService.class);
 
     public DiskResourceServiceFacade() {
         this(null);
@@ -433,7 +438,102 @@ public class DiskResourceServiceFacade {
                 body.toString());
         callService(callback, wrapper);
     }
+    
+    /**
+     * Creates public data links with generated UUIDs as data link id.
+     * 
+     * @param diskResourceIds a list of disk resource ids for which data links will be created
+     * @param callback
+     */
+    public void createDataLinks(final List<String> diskResourceIds, final AsyncCallback<String> callback){
+        uuidService.getUUIDs(diskResourceIds.size(), new AsyncCallback<List<String>>() {
+            
+            @Override
+            public void onSuccess(List<String> uuids) {
+                
+                Map<String, String> resourceIdToDataLinkIdMap = Maps.newHashMap();
+                for(String drId : diskResourceIds){
+                    resourceIdToDataLinkIdMap.put(drId, uuids.get(diskResourceIds.indexOf(drId)));
+                }
+                
+                
+                createDataLinks(resourceIdToDataLinkIdMap, true, callback);
+            }
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
+            }
+        });
+    }
 
+    /**
+     * Creates a set of public data links for the given disk resources.
+     * 
+     * @param resourceIdToDataLinkIdMap the id of the disk resource for which the ticket will be created.
+     * @param isPublicTicket
+     * @param callback
+     */
+    public void createDataLinks(Map<String, String> resourceIdToDataLinkIdMap, boolean isPublicTicket, AsyncCallback<String> callback){
+        String fullAddress = serviceNamePrefix + ".tickets";
+        fullAddress.concat("?user=" + UserInfo.getInstance().getUsername());
+        fullAddress.concat("&public=" + (isPublicTicket ? 1 : 0));
+        
+        JSONObject body = new JSONObject();
+        JSONArray tickets = new JSONArray();
+        int index = 0;
+        for(Entry<String, String> mapEntry : resourceIdToDataLinkIdMap.entrySet()){
+            JSONObject subBody = new JSONObject();
+            subBody.put("path", new JSONString(mapEntry.getKey()));
+            subBody.put("ticket-id", new JSONString(mapEntry.getValue()));
+            tickets.set(index, subBody);
+            index++;
+        }
+        body.put("tickets", tickets);
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        callService(callback, wrapper);
+        
+    }
+    
+    /**
+     * Requests a listing of all the tickets for the given disk resources.
+     * 
+     * @param diskResourceIds the disk resources whose tickets will be listed.
+     * @param callback
+     */
+    public void listDataLinks(List<String> diskResourceIds, AsyncCallback<String> callback){
+        String fullAddress = serviceNamePrefix + ".list-tickets";
+        fullAddress.concat("?user=" + UserInfo.getInstance().getUsername());
+        
+        JSONObject body = new JSONObject();
+        body.put("paths", JsonUtil.buildArrayFromStrings(diskResourceIds));
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        callService(callback, wrapper);
+        
+    }
+    
+    /**
+     * Requests that the given Kif Share tickets will be deleted.
+     * 
+     * @param dataLinkIds the tickets which will be deleted.
+     * @param callback
+     */
+    public void deleteDataLinks(List<String> dataLinkIds, AsyncCallback<String> callback){
+        String fullAddress = serviceNamePrefix + ".delete-tickets"; 
+        fullAddress.concat("?user=" + UserInfo.getInstance().getUsername());
+
+        JSONObject body = new JSONObject();
+        body.put("tickets", JsonUtil.buildArrayFromStrings(dataLinkIds));
+        
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        callService(callback, wrapper);
+    }
+    
     /**
      * Performs the actual service call.
      * 

@@ -85,6 +85,10 @@
         <servlet-name>proxyServlet</servlet-name>
         <servlet-class>org.iplantc.de.server.service.ProxyServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>uuidService</servlet-name>
+        <servlet-class>org.iplantc.de.server.UUIDServiceImpl</servlet-class>
+    </servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -150,6 +154,10 @@
     <servlet-mapping>
         <servlet-name>proxyServlet</servlet-name>
         <url-pattern>/proxy/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+         <servlet-name>uuidService</servlet-name>
+         <url-pattern>/discoveryenvironment/uuidService</url-pattern>
     </servlet-mapping>
 
     <!-- Filters -->

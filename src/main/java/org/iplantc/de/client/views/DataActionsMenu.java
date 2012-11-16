@@ -13,6 +13,7 @@ import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.dataLink.DataLinkPanel;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
 import org.iplantc.de.client.events.DiskResourceSelectionChangedEvent;
@@ -68,6 +69,7 @@ public final class DataActionsMenu extends Menu {
     private static final String MI_COPY_RESOURCE_ID = "idDataActionsMenuCopy"; //$NON-NLS-1$
     private static final String MI_PASTE_RESOURCE_ID = "idDataActionsMenuPaste"; //$NON-NLS-1$
     private static final String MI_RESTORE_RESOURCE_ID = "idDataActionsMenuRestore"; //$NON-NLS-1$
+    private static final String MI_MANAGE_DATA_LINKS_ID = "idDataActionsManageDataLinks";
 
     private final ArrayList<HandlerRegistration> handlers = new ArrayList<HandlerRegistration>();
 
@@ -94,6 +96,7 @@ public final class DataActionsMenu extends Menu {
     private MenuItem itemCopyResource;
     private MenuItem itemPasteResource;
     private MenuItem itemRestore;
+    private MenuItem itemManageDataLinks;
 
     public DataActionsMenu(final String tag) {
         this.tag = tag;
@@ -139,6 +142,9 @@ public final class DataActionsMenu extends Menu {
 
         itemRestore = buildLeafMenuItem(MI_RESTORE_RESOURCE_ID, I18N.DISPLAY.restore(),
                 Resources.ICONS.arrow_undo(), new RestoreResourceListenerImpl());
+        itemManageDataLinks = buildLeafMenuItem(MI_MANAGE_DATA_LINKS_ID,
+                I18N.DISPLAY.manageDataLinks(), Resources.ICONS.share(),
+                new ManageDatalinksListener());
 
         add(itemAddFolder);
         add(itemRenameResource);
@@ -150,6 +156,7 @@ public final class DataActionsMenu extends Menu {
         add(itemMetaData);
         add(itemShareResource);
         add(itemRestore);
+        add(itemManageDataLinks);
     }
 
     private MenuItem buildLeafMenuItem(final String id, final String text,
@@ -264,6 +271,7 @@ public final class DataActionsMenu extends Menu {
                     break;
                 case Share:
                     showMenuItem(itemShareResource);
+                    showMenuItem(itemManageDataLinks);
                     break;
                 // case Copy:
                 // showMenuItem(itemCopyResource);
@@ -298,6 +306,18 @@ public final class DataActionsMenu extends Menu {
 
     public void setMaskingParent(final Component maskingParent) {
         this.maskingParent = maskingParent;
+    }
+
+    private final class ManageDatalinksListener extends SelectionListener<MenuEvent> {
+        
+
+        @Override
+        public void componentSelected(MenuEvent ce) {
+            DataLinkPanel<DiskResource> ksp = new DataLinkPanel<DiskResource>(resources);
+            // TODO JDS Localize dialog title.
+            IPlantDialog dlg = new IPlantDialog("Manage Data Links", 300, ksp);
+            dlg.show();
+        }
     }
 
     private class NewFolderListenerImpl extends SelectionListener<MenuEvent> {

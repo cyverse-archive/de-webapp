@@ -6,6 +6,7 @@
 	<inherits name="com.google.gwt.json.JSON" />
 	<inherits name='com.google.gwt.junit.JUnit'/>
     <inherits name="com.google.gwt.http.HTTP"/>
+    <inherits name="com.google.common.collect.Collect"/>
 	<!--
 		Load dynamically predefined styles in the library when the application
 		starts
@@ -25,6 +26,10 @@
 	<inherits name="gwtupload.GWTUpload" />
 	<inherits name='com.extjs.gxt.ui.GXT'/>
 		
+	<!-- UIBinder -->
+    <inherits name="com.google.web.bindery.autobean.AutoBean"/>
+    <inherits name="com.google.gwt.uibinder.UiBinder" />
+    
 	<!-- I18N -->
 	<inherits name="com.google.gwt.i18n.I18N"/>
 	<inherits name="com.google.gwt.resources.Resources" />

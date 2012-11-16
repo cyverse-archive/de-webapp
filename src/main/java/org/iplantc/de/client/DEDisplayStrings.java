@@ -1,6 +1,7 @@
 package org.iplantc.de.client;
 
 import org.iplantc.core.uicommons.client.CommonUIDisplayStrings;
+import org.iplantc.de.client.dataLink.DataLinkPanel;
 
 /**
  * Constants used by the client as display text.
@@ -1242,4 +1243,23 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String shareAll();
+
+    /**
+     * Menu text for button to Manage Data Link tickets.
+     * @return
+     */
+    String manageDataLinks();
+    
+    /**
+     * Text for the createDataLinks button in {@link DataLinkPanel}
+     * @return
+     */
+    String createDataLinks();
+    
+    /**
+     * Text for the deleteDataLinks button in {@link DataLinkPanel}
+     * @return
+     */
+    String deleteDataLinks();
+
 }
