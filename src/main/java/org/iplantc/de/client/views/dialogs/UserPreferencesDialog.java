@@ -6,9 +6,6 @@ import org.iplantc.de.client.events.SettingsUpdatedEvent;
 import org.iplantc.de.client.views.panels.UserSettingPanel;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -33,14 +30,6 @@ public class UserPreferencesDialog extends Dialog {
         initDialog();
         buildSettingPanel();
         layout();
-        addListener(Events.Hide, new Listener<ComponentEvent>() {
-
-            @Override
-            public void handleEvent(ComponentEvent be) {
-                settingPanel.saveData();
-                EventBus.getInstance().fireEvent(new SettingsUpdatedEvent());
-            }
-        });
     }
 
     private void initDialog() {
@@ -48,8 +37,6 @@ public class UserPreferencesDialog extends Dialog {
         setSize(450, 380);
         setButtons();
         setResizable(false);
-        setHideOnButtonClick(true);
-
     }
 
     private void setButtons() {
@@ -66,6 +53,8 @@ public class UserPreferencesDialog extends Dialog {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                settingPanel.saveData();
+                EventBus.getInstance().fireEvent(new SettingsUpdatedEvent());
                 hide();
             }
         });
