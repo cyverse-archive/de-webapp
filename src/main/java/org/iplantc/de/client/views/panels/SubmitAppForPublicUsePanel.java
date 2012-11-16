@@ -62,6 +62,7 @@ public class SubmitAppForPublicUsePanel extends LayoutContainer {
     private FormPanel form;
     private final Analysis analysis;
     private final AsyncCallback<String> closeCallback;
+    private FormButtonBinding formButtonBinding;
 
     private CategorySelectionDialog dialog;
     private List<AnalysisGroupTreeModel> selectedItems;
@@ -70,7 +71,7 @@ public class SubmitAppForPublicUsePanel extends LayoutContainer {
 
     /**
      * Creates a new instance of PublishToWorldPanel
-     * 
+     *
      * @param analysis the analysis to make public
      * @param closeCallback a command to execute when one of the buttons is clicked. onSuccess is called
      *            when the publish form is successfully submitted, and onFailure is called when the
@@ -165,8 +166,8 @@ public class SubmitAppForPublicUsePanel extends LayoutContainer {
         buildCancelButton();
         form.addButton(btnSubmit);
         form.addButton(btnCancel);
-        FormButtonBinding binding = new FormButtonBinding(form);
-        binding.addButton(btnSubmit);
+        formButtonBinding = new FormButtonBinding(form);
+        formButtonBinding.addButton(btnSubmit);
     }
 
     private LayoutContainer buildLeftLayoutContainer(FormLayout left2Layout) {
@@ -196,7 +197,7 @@ public class SubmitAppForPublicUsePanel extends LayoutContainer {
 
     /**
      * Spacer for non-Field elements
-     * 
+     *
      * @return
      */
     private Component createSpacer() {
@@ -373,12 +374,16 @@ public class SubmitAppForPublicUsePanel extends LayoutContainer {
      * Adds a page to the wiki.
      */
     private void createDocumentationPage() {
+        btnSubmit.disable();
+        formButtonBinding.stopMonitoring();
         ConfluenceServiceFacade.getInstance().createDocumentationPage(analysis.getName(),
                 analysis.getDescription(), new AsyncCallback<String>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         ErrorHandler.post(I18N.ERROR.cantCreateConfluencePage(analysis.getName()),
                                 caught);
+                        btnSubmit.enable();
+                        formButtonBinding.startMonitoring();
                     }
 
                     @Override
