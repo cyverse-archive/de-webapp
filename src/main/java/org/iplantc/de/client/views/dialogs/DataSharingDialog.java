@@ -23,10 +23,14 @@ import org.iplantc.de.client.views.panels.SharePanel;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -85,23 +89,12 @@ public class DataSharingDialog extends Dialog {
     private void setButtons() {
         setButtons(Dialog.OK);
         setButtonAlign(HorizontalAlignment.RIGHT);
-        getOkButton().setText(org.iplantc.de.client.I18N.DISPLAY.done());
-    }
-
-    public void initView() {
-        initLayout();
-        setHideOnButtonClick(true);
-        setModal(true);
-        setResizable(false);
-        initListener();
-        layout();
-    }
-
-    private void initListener() {
-        addListener(Events.Hide, new Listener<ComponentEvent>() {
+        Button okButton = getOkButton();
+        okButton.setText(org.iplantc.de.client.I18N.DISPLAY.done());
+        okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
-            public void handleEvent(ComponentEvent be) {
+            public void componentSelected(ButtonEvent ce) {
                 JSONObject requestBody = buildSharingJson();
                 if (requestBody != null) {
                     callSharingService(requestBody);
@@ -115,11 +108,19 @@ public class DataSharingDialog extends Dialog {
         });
     }
 
+    public void initView() {
+        initLayout();
+        setHideOnButtonClick(true);
+        setModal(true);
+        setResizable(false);
+        layout();
+    }
+
     private void initLayout() {
         layout = new BorderLayout();
         setLayout(layout);
         buildWest();
-        buildEast();
+        buildCenter();
     }
 
     private Button getOkButton() {
@@ -127,34 +128,35 @@ public class DataSharingDialog extends Dialog {
     }
 
     private void buildCenter() {
+        ContentPanel center = new ContentPanel();
+        center.setLayout(new FitLayout());
+        center.setHeading("2. " + I18N.DISPLAY.shareFileFolders());
+        center.add(buildDiskResourceGrid());
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.CENTER);
+        data.setSplit(true);
+        data.setCollapsible(true);
+        add(center, data);
+    }
+
+    private void buildEast() {
+        BorderLayoutData data = new BorderLayoutData(LayoutRegion.EAST, 320, 200, 350);
         sharePanel = new SharePanel(resources);
+        sharePanel.setHeading("3. " + I18N.DISPLAY.share() + " / " + I18N.DISPLAY.unshare());
         getUserPermissionsInfo();
         data.setSplit(true);
         add(sharePanel, data);
         layout();
     }
 
-    private void buildEast() {
+    private void buildWest() {
         ContentPanel west = new ContentPanel();
         west.setLayout(new FitLayout());
-        west.setHeading(I18N.DISPLAY.shareFileFolders());
-        west.add(buildDiskResourceGrid());
-        BorderLayoutData data = new BorderLayoutData(LayoutRegion.EAST, 270, 200, 350);
-        data.setSplit(true);
-        data.setCollapsible(true);
-        add(west, data);
-    }
-
-    private void buildWest() {
-        ContentPanel east = new ContentPanel();
-        east.setLayout(new FitLayout());
-        east.setHeading(I18N.DISPLAY.collaborators());
-        east.add(buildCollaboratorsGrid());
+        west.setHeading("1. " + I18N.DISPLAY.collaborators());
+        west.add(buildCollaboratorsGrid());
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.WEST, 200, 250, 350);
         data.setSplit(true);
         data.setCollapsible(true);
-        add(east, data);
+        add(west, data);
 
     }
 
@@ -162,9 +164,27 @@ public class DataSharingDialog extends Dialog {
         CheckBoxSelectionModel<Collaborator> sm = new CheckBoxSelectionModel<Collaborator>();
         collaboratorsGrid = new Grid<Collaborator>(new ListStore<Collaborator>(),
                 buildCollaboratorColumnModel(sm));
+        sm.setSelectionMode(SelectionMode.MULTI);
         collaboratorsGrid.setSelectionModel(sm);
+
         collaboratorsGrid.addPlugin(sm);
-        new GridDragSource(collaboratorsGrid);
+        new GridDragSource(collaboratorsGrid) {
+            @Override
+            protected void onDragStart(DNDEvent e) {
+                List<Collaborator> list = collaboratorsGrid.getSelectionModel().getSelectedItems();
+                if (list == null || list.size() == 0) {
+                    e.setCancelled(true);
+                } else {
+                    e.setData(list);
+                    e.setCancelled(false);
+                }
+            }
+
+            @Override
+            protected void onDragDrop(DNDEvent e) {
+                // do nothing intentionally
+            }
+        };
         GridView view = collaboratorsGrid.getView();
         view.setViewConfig(buildGridViewConfig());
         view.setForceFit(true);
@@ -199,7 +219,7 @@ public class DataSharingDialog extends Dialog {
                 collaboratorsGrid.unmask();
                 collaboratorsGrid.getStore().add(CollaboratorsUtil.getCurrentCollaborators());
                 // share panel is built after collaborators are ready
-                buildCenter();
+                buildEast();
             }
 
         });
@@ -236,6 +256,15 @@ public class DataSharingDialog extends Dialog {
             ib.setToolTip(I18N.DISPLAY.add());
             hp.add(new Label(model.getName()));
             hp.setSpacing(3);
+            hp.sinkEvents(Events.OnMouseDown.getEventCode());
+            hp.addListener(Events.OnMouseDown, new Listener<BaseEvent>() {
+
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    grid.getSelectionModel().select(false, model);
+                }
+            });
+
             return hp;
         }
 

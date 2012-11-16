@@ -968,13 +968,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String own();
 
     /**
-     * Localized display text for unshare prompt
-     * 
-     * @return a string representing the localized text.
-     */
-    String unsharePrompt();
-
-    /**
      * Localized display text search collaborators
      * 
      * @return a string representing the localized text.
@@ -1256,4 +1249,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String advanced();
+
+    /**
+     * shared with 0 people
+     * 
+     * @return
+     */
+    String nosharing();
 }

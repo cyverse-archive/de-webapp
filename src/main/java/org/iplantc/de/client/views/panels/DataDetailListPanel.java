@@ -1,8 +1,10 @@
 package org.iplantc.de.client.views.panels;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.iplantc.core.client.widgets.Hyperlink;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
@@ -10,9 +12,13 @@ import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
+import org.iplantc.de.client.views.dialogs.DataSharingDialog;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -42,7 +48,7 @@ public class DataDetailListPanel extends ContentPanel {
      */
     private void init() {
         setHeaderVisible(false);
-        setHeight(150);
+        setHeight(170);
         setBodyStyle("background-color: #EDEDED"); //$NON-NLS-1$
 
         TableLayout layout = new TableLayout(2);
@@ -137,6 +143,38 @@ public class DataDetailListPanel extends ContentPanel {
     }
 
     /**
+     * 
+     * Add sharing info
+     * 
+     */
+
+    private void addSharingInfo(String label, int shareCount) {
+        Hyperlink link = null;
+        if (shareCount == 0) {
+            link = new Hyperlink(I18N.DISPLAY.nosharing(), "sharingInfo");
+        } else {
+            link = new Hyperlink("" + shareCount, "sharingInfo");
+        }
+
+        link.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                DataSharingDialog dsd = new DataSharingDialog(Arrays.asList(selection.get(0)));
+                dsd.initView();
+                dsd.show();
+            }
+        });
+
+        Text fieldLabel = new Text(label + ": "); //$NON-NLS-1$
+        fieldLabel.addStyleName("data_details_label"); //$NON-NLS-1$
+
+        add(fieldLabel, new TableData(HorizontalAlignment.LEFT, VerticalAlignment.TOP));
+        add(link, new TableData());
+
+    }
+
+    /**
      * Gets details for given path, then adds details of the results to this panel.
      * 
      * @param path
@@ -162,8 +200,13 @@ public class DataDetailListPanel extends ContentPanel {
                                 new Date(Long.parseLong(JsonUtil.getString(details, "modified"))));
                         addDateLabel(I18N.DISPLAY.createdDate(),
                                 new Date(Long.parseLong(JsonUtil.getString(details, "created"))));
+                        Number n = (JsonUtil.getNumber(details, "share-count"));
                         addPermissionsLabel(I18N.DISPLAY.permissions(), new Permissions(perm));
+                        if (n != null) {
+                            addSharingInfo(I18N.DISPLAY.share(), n.intValue());
+                        }
                         String type = JsonUtil.getString(details, "type");
+
                         if (type.equalsIgnoreCase("file")) {
                             addSizeLabel(I18N.DISPLAY.size(),
                                     (JsonUtil.getNumber(details, "size").longValue()));

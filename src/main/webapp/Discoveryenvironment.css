@@ -780,3 +780,10 @@ img.analysis_remove {
 .unseen_notification {
 	background-color: #EFEFEF;
 	}
+.sharingInfo {
+	cursor: pointer;
+	color: #0098AA;
+	text-decoration: none;
+	font-size: 11px;
+	padding-left: 1px;
+}

@@ -28,13 +28,11 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -78,7 +76,6 @@ public class SharePanel extends ContentPanel {
     private void init() {
         setCollapsible(true);
         setLayout(new FitLayout());
-        setHeading(I18N.DISPLAY.share() + " / " + I18N.DISPLAY.unshare());
         TreeStore<Sharing> store = new TreeStore<Sharing>();
         store.setKeyProvider(new ModelKeyProvider<Sharing>() {
             @Override
@@ -100,6 +97,7 @@ public class SharePanel extends ContentPanel {
 
     private void initGrid(TreeStore<Sharing> store, ColumnModel cm) {
         grid = new EditorTreeGrid<Sharing>(store, cm);
+
         grid.getView().setEmptyText(org.iplantc.de.client.I18N.DISPLAY.sharePanelEmptyText());
         grid.setSelectionModel(new TreeGridSelectionModel<Sharing>());
         grid.setClicksToEdit(ClicksToEdit.ONE);
@@ -245,7 +243,7 @@ public class SharePanel extends ContentPanel {
         }
 
         initUpdateListeners();
-
+        grid.expandAll();
     }
 
     public void addSharing(Sharing obj) {
@@ -423,20 +421,8 @@ public class SharePanel extends ContentPanel {
 
         @Override
         public void componentSelected(ButtonEvent ce) {
-            MessageBox.confirm(org.iplantc.de.client.I18N.DISPLAY.unshare(),
-                    org.iplantc.de.client.I18N.DISPLAY.unsharePrompt(), new Listener<MessageBoxEvent>() {
-
-                        @Override
-                        public void handleEvent(MessageBoxEvent be) {
-                            Button btn = be.getButtonClicked();
-                            if (btn.getText().equals("Yes")) {
-                                List<Sharing> models = grid.getSelectionModel().getSelectedItems();
-                                removeModels(models);
-                            }
-
-                        }
-                    });
-
+            List<Sharing> models = grid.getSelectionModel().getSelectedItems();
+            removeModels(models);
         }
     }
 

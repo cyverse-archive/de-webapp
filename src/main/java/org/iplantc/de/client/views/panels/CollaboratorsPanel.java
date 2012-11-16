@@ -12,6 +12,7 @@ import org.iplantc.de.client.utils.CollaboratorsUtil;
 import org.iplantc.de.client.views.panels.ManageCollaboratorsPanel.MODE;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
@@ -63,7 +64,13 @@ public class CollaboratorsPanel extends ContentPanel {
         new GridDragSource(grid) {
             @Override
             protected void onDragStart(DNDEvent e) {
-                e.setData(grid.getSelectionModel().getSelectedItems());
+                List<ModelData> list = grid.getSelectionModel().getSelectedItems();
+                if (list == null || list.size() == 0) {
+                    e.setCancelled(true);
+                } else {
+                    e.setData(list);
+                    e.setCancelled(false);
+                }
             }
 
             @Override
