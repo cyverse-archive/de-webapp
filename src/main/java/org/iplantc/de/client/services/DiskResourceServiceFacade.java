@@ -479,10 +479,9 @@ public class DiskResourceServiceFacade {
      * @param callback
      */
     public void createDataLinks(Map<String, String> resourceIdToDataLinkIdMap, boolean isPublicTicket, AsyncCallback<String> callback){
-        String fullAddress = serviceNamePrefix + ".tickets";
-        fullAddress.concat("?user=" + UserInfo.getInstance().getUsername());
-        fullAddress.concat("&public=" + (isPublicTicket ? 1 : 0));
-        
+        String fullAddress = serviceNamePrefix + ".add-tickets";
+        String args = "public=" + (isPublicTicket ? 1 : 0);
+
         JSONObject body = new JSONObject();
         JSONArray tickets = new JSONArray();
         int index = 0;
@@ -497,6 +496,7 @@ public class DiskResourceServiceFacade {
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
+        wrapper.setArguments(args);
         callService(callback, wrapper);
         
     }
@@ -509,8 +509,7 @@ public class DiskResourceServiceFacade {
      */
     public void listDataLinks(List<String> diskResourceIds, AsyncCallback<String> callback){
         String fullAddress = serviceNamePrefix + ".list-tickets";
-        fullAddress.concat("?user=" + UserInfo.getInstance().getUsername());
-        
+
         JSONObject body = new JSONObject();
         body.put("paths", JsonUtil.buildArrayFromStrings(diskResourceIds));
 
@@ -528,7 +527,6 @@ public class DiskResourceServiceFacade {
      */
     public void deleteDataLinks(List<String> dataLinkIds, AsyncCallback<String> callback){
         String fullAddress = serviceNamePrefix + ".delete-tickets"; 
-        fullAddress.concat("?user=" + UserInfo.getInstance().getUsername());
 
         JSONObject body = new JSONObject();
         body.put("tickets", JsonUtil.buildArrayFromStrings(dataLinkIds));
