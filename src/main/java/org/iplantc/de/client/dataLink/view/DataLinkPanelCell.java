@@ -2,6 +2,7 @@ package org.iplantc.de.client.dataLink.view;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
+import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.IDiskResource;
 import org.iplantc.de.client.dataLink.models.DataLink;
@@ -37,8 +38,8 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
             imgRenderer = new ImageResourceRenderer();
         }
         
-        // TODO JDS Fetch the configured URL prefix for the DataLink url
-        dataLinkUrlPrefix = "http://sample.com/";
+        // Fetch the configured URL prefix for the DataLink URL.
+        dataLinkUrlPrefix = DEProperties.getInstance().getKifShareTicketBaseUrl();
     }
     
 
