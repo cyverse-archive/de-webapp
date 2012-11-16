@@ -1,4 +1,4 @@
-package org.iplantc.de.client.dataLink;
+package org.iplantc.de.client.dataLink.view;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
@@ -29,7 +29,7 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
 
     private static ImageResourceRenderer imgRenderer;
     private static String dataLinkUrlPrefix;
-    private Templates templates = GWT.create(Templates.class);
+    private final Templates templates = GWT.create(Templates.class);
     
     DataLinkPanelCell() {
         super(CLICK);

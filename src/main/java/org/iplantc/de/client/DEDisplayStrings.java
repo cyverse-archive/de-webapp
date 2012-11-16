@@ -1,7 +1,7 @@
 package org.iplantc.de.client;
 
 import org.iplantc.core.uicommons.client.CommonUIDisplayStrings;
-import org.iplantc.de.client.dataLink.DataLinkPanel;
+import org.iplantc.de.client.dataLink.view.DataLinkPanel;
 
 /**
  * Constants used by the client as display text.
