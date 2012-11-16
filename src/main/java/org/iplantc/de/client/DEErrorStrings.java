@@ -563,4 +563,24 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String retrieveStatFailed();
+
+    /**
+     * Error msg shown when an attempt to list datalinks for a set of <code>DiskResource</code>s fails.
+     * 
+     * @return
+     */
+    String listDataLinksError();
+
+    /**
+     * Error msg shown when an attempt to delete some data links failed.
+     * 
+     * @return
+     */
+    String deleteDataLinksError();
+
+    /**
+     * Error msg shown when an attempt to create some data links goes awry!!
+     * @return
+     */
+    String createDataLinksError();
 }

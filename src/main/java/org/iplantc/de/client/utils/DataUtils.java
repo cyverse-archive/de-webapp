@@ -6,6 +6,7 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
+import org.iplantc.core.uidiskresource.client.models.IDiskResource;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.services.DiskResouceDuplicatesCheckCallback;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
@@ -252,18 +253,18 @@ public class DataUtils {
      * 
      * Get list of ids from list of DiskResources
      * 
-     * @param reources resources list from which id list is created
+     * @param resources resources list from which id list is created
      * @return
      */
-    public static List<String> getDiskResourceIdList(List<DiskResource> reources) {
+    public static List<String> getDiskResourceIdList(List<? extends IDiskResource> resources) {
         List<String> ids = new ArrayList<String>();
 
-        if (reources != null) {
-            for (DiskResource dr : reources) {
+        if (resources != null) {
+            for (IDiskResource dr : resources) {
                 ids.add(dr.getId());
             }
         }
         return ids;
     }
-
+    
 }
