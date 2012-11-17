@@ -5,10 +5,7 @@
  * I'll be your tourguide.
 
  * <h1>Summary of what IS done</h1> 
- * Functionally, the creation and deletion of data links is mostly
- * complete. The only issue is that the response from creating tickets does not reference the disk
- * resource to which it was created. So we have to rely on the assumption that the order of the tickets
- * in the create tickets response matches the order of the disk resources in the initial request.
+ * The creation and deletion of data links is complete.
  * 
  * When you create tickets, they should appear dynamically in the tree. When you delete, they should dissappear.
  * 
@@ -17,8 +14,7 @@
  * 
  * <h1>What Needs to be done</h1>
  * 
- * 1. Fetching the URL prefix must be done. There is a placeholder in the DataLinkPanelCell
- * 2. I did not get to the selection or copying of the links. 
+ * 1. I did not get to the selection or copying of the links. 
  *  a. I think this can be accomplished in the DataLinkPanelCell. 
  *  b. Looking around online, many people reference the following project; 
  *     http://code.google.com/p/zeroclipboard/
@@ -26,7 +22,7 @@
  *     https://github.com/jonrohan/ZeroClipboard
  *  c. Yesterday, someone mentioned that John had used clippy
  *     https://github.com/mojombo/clippy
- * 3. White background in panel.
+ * 2. White background in panel.
  * 
  * ------------------------------------------------
  * There are two sub-packages; models and view
@@ -47,12 +43,11 @@
  * 
  * <h1>View Package</h2>
  * 
- * TODO JDS Fetch configured Data Link URL prefix; --> {@link DataLinkPanelCell} 
  * TODO JDS Insert some copy-to-clipboard button in {@link DataLinkPanelCell}
  * 
  * TODO JDS Error messages which were created are generic standins, they should be revisited.
  * 
- * FIXME JDS Currently, json response is not indicating to which Disk resource each ticket belongs. This
+ * FIXME? JDS Currently, json response is not indicating to which Disk resource each ticket belongs. This
  * is happening in the create data links callback in the DataLinkPanel class
  * 
  * 
