@@ -1,6 +1,7 @@
 package org.iplantc.de.client.dataLink.view;
 
 import java.util.List;
+import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
@@ -12,9 +13,12 @@ import org.iplantc.de.client.dataLink.models.DataLink;
 import org.iplantc.de.client.dataLink.models.DataLinkFactory;
 import org.iplantc.de.client.dataLink.models.DataLinkList;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.services.UUIDService;
+import org.iplantc.de.client.services.UUIDServiceAsync;
 import org.iplantc.de.client.utils.DataUtils;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -67,6 +71,7 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     private final Widget widget;
     
     private final DataLinkFactory dlFactory = GWT.create(DataLinkFactory.class);
+    private final UUIDServiceAsync uuidService = GWT.create(UUIDService.class);
     private final DiskResourceServiceFacade drService = new DiskResourceServiceFacade();
     
     public DataLinkPanel(List<M> sharedResources) {
@@ -119,18 +124,16 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     
     @UiHandler("createDataLinksBtn")
     void onCreateDataLinksSelected(SelectEvent event){
-        List<String> drResourceIds = Lists.newArrayList();
-        List<M> selectedDiskResources = Lists.newArrayList();
+        final List<String> drResourceIds = Lists.newArrayList();
         for(M dr : store.getRootItems()){
             if(tree.isChecked(dr)){
                 drResourceIds.add(dr.getId());
-                selectedDiskResources.add(dr);
             }
         }
-        drService.createDataLinks(drResourceIds, new CreateDataLinksCallback(selectedDiskResources, dlFactory, tree));
-        
+
+        uuidService.getUUIDs(drResourceIds.size(), new CreateDataLinkUuidsCallback(drResourceIds));
     }
-    
+
     @UiHandler("deleteDataLinksBtn")
     void onDeleteDataLinksSelected(SelectEvent event) {
         List<String> dataLinkIds = Lists.newArrayList();
@@ -266,13 +269,38 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     }
 
 
+    private class CreateDataLinkUuidsCallback implements AsyncCallback<List<String>> {
+        private final List<String> drResourceIds;
+
+        public CreateDataLinkUuidsCallback(List<String> drResourceIds) {
+            this.drResourceIds = drResourceIds;
+        }
+
+        @Override
+        public void onSuccess(List<String> uuids) {
+            Map<String, String> ticketIdToResourceIdMap = Maps.newHashMap();
+            for (String drId : drResourceIds) {
+                ticketIdToResourceIdMap.put(uuids.get(drResourceIds.indexOf(drId)), drId);
+            }
+
+            drService.createDataLinks(ticketIdToResourceIdMap, new CreateDataLinksCallback(
+                    ticketIdToResourceIdMap, dlFactory, tree));
+        }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            ErrorHandler.post(caught);
+        }
+
+    }
+
     private class CreateDataLinksCallback implements AsyncCallback<String> {
-        private final List<M> sharedResources;
+        private final Map<String, String> ticketIdToResourceIdMap;
         private final DataLinkFactory factory;
         private final Tree<M, M> tree;
 
-        public CreateDataLinksCallback(List<M> sharedResources, final DataLinkFactory factory, final Tree<M,M> tree) {
-            this.sharedResources = sharedResources;
+        public CreateDataLinksCallback(Map<String, String> ticketIdToResourceIdMap, final DataLinkFactory factory, final Tree<M,M> tree) {
+            this.ticketIdToResourceIdMap = ticketIdToResourceIdMap;
             this.factory = factory;
             this.tree = tree;
         }
@@ -282,14 +310,17 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
         public void onSuccess(String result) {
             AutoBean<DataLinkList> tickets = AutoBeanCodex.decode(factory, DataLinkList.class, result);
             List<DataLink> dlList = tickets.as().getTickets();
-            // FIXME JDS Currently, json response is not indicating to which Disk resource each ticket belongs.
-            // Currently assuming that the tickets are listed in the same order as the disk resource paths were laid out in the initial request.
-            // We need to determine which Disk resources
+
+            TreeStore<M> treeStore = tree.getStore();
             for(DataLink dl : dlList){
-                M parent = sharedResources.get(dlList.indexOf(dl));
-                tree.setExpanded(parent, true);
-                tree.getStore().add(parent, (M)dl);
-                tree.setChecked((M)dl, CheckState.CHECKED);
+                String parentId = ticketIdToResourceIdMap.get(dl.getId());
+
+                M parent = treeStore.findModelWithKey(parentId);
+                if (parent != null) {
+                    treeStore.add(parent, (M)dl);
+                    tree.setExpanded(parent, true);
+                    tree.setChecked((M)dl, CheckState.CHECKED);
+                }
             }
         }
 
