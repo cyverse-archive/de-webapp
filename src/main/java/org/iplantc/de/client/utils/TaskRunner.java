@@ -28,10 +28,17 @@ public class TaskRunner {
     /**
      * The timer to use for repeating tasks.
      */
-    private final Timer timer = new Timer();
+    private final Timer timer;
 
     public TaskRunner(int interval) {
-        this.interval = interval;
+        timer = new Timer() {
+            
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                
+            }
+        };
         
     }
 
