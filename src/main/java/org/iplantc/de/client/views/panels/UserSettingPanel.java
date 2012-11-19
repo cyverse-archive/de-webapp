@@ -72,7 +72,7 @@ public class UserSettingPanel extends LayoutContainer {
         IconButton ib = new IconButton("help");
         ToolTipConfig ttc = getToolTipConfig();
         ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText(I18N.DISPLAY.notifyemailHelp());
+        ttc.setText(I18N.HELP.notifyemailHelp());
         ib.setToolTip(ttc);
         ret.add(ib, td);
 
@@ -94,7 +94,7 @@ public class UserSettingPanel extends LayoutContainer {
         IconButton ib = new IconButton("help");
         ToolTipConfig ttc = getToolTipConfig();
         ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText((I18N.DISPLAY.rememberFileSectorPathHelp()));
+        ttc.setText((I18N.HELP.rememberFileSectorPathHelp()));
         ib.setToolTip(ttc);
         ret.add(ib, td);
 
@@ -116,7 +116,7 @@ public class UserSettingPanel extends LayoutContainer {
         IconButton ib = new IconButton("help");
         ToolTipConfig ttc = getToolTipConfig();
         ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText(I18N.DISPLAY.saveSessionHelp());
+        ttc.setText(I18N.HELP.saveSessionHelp());
         ib.setToolTip(ttc);
         ret.add(ib, td);
 
@@ -139,7 +139,7 @@ public class UserSettingPanel extends LayoutContainer {
         IconButton ib = new IconButton("help");
         ToolTipConfig ttc = getToolTipConfig();
         ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText(I18N.DISPLAY.defaultOutputFolderHelp());
+        ttc.setText(I18N.HELP.defaultOutputFolderHelp());
         ib.setToolTip(ttc);
         hp.add(ib, td);
 

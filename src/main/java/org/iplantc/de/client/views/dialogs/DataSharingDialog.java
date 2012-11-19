@@ -27,20 +27,16 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
-import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.dnd.GridDropTarget;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -52,13 +48,14 @@ import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.dom.client.Element;
 
 /**
  * @author sriram
@@ -134,7 +131,10 @@ public class DataSharingDialog extends Dialog {
     private void buildCenter() {
         ContentPanel center = new ContentPanel();
         center.setLayout(new FitLayout());
-        center.setHeading("2. " + I18N.DISPLAY.shareFileFolders());
+        center.setHeading("2. " + I18N.DISPLAY.selectFilesFolders());
+        ToolButton helpBtn = new ToolButton("x-tool-help");
+        helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.shareDiskResourceHelp()));
+        center.getHeader().addTool(helpBtn);
         center.add(buildDiskResourceGrid());
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.CENTER);
         data.setSplit(true);
@@ -145,7 +145,10 @@ public class DataSharingDialog extends Dialog {
     private void buildEast() {
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.EAST, 320, 200, 350);
         sharePanel = new SharePanel(resources);
-        sharePanel.setHeading("3. " + I18N.DISPLAY.share() + " / " + I18N.DISPLAY.unshare());
+        sharePanel.setHeading("3. " + I18N.DISPLAY.changePermissionss());
+        ToolButton helpBtn = new ToolButton("x-tool-help");
+        helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.sharingPermissionsHelp()));
+        sharePanel.getHeader().addTool(helpBtn);
         getUserPermissionsInfo();
         data.setSplit(true);
         add(sharePanel, data);
@@ -155,13 +158,30 @@ public class DataSharingDialog extends Dialog {
     private void buildWest() {
         ContentPanel west = new ContentPanel();
         west.setLayout(new FitLayout());
-        west.setHeading("1. " + I18N.DISPLAY.collaborators());
+        west.setHeading("1. " + I18N.DISPLAY.selectCollabs());
+        ToolButton helpBtn = new ToolButton("x-tool-help");
+        helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.shareCollaboratorsHelp()));
+        west.getHeader().addTool(helpBtn);
         west.add(buildCollaboratorsGrid());
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.WEST, 200, 250, 350);
         data.setSplit(true);
         data.setCollapsible(true);
         add(west, data);
 
+    }
+
+    private ToolTipConfig buildHelpToolTip(String helpText) {
+        ToolTipConfig ttc = getToolTipConfig();
+        ttc.setTitle(I18N.DISPLAY.help());
+        ttc.setText(helpText);
+        return ttc;
+    }
+
+    private ToolTipConfig getToolTipConfig() {
+        ToolTipConfig config = new ToolTipConfig();
+        config.setMouseOffset(new int[] {0, 0});
+        config.setAnchor("left");
+        return config;
     }
 
     private Widget buildCollaboratorsGrid() {
@@ -233,64 +253,10 @@ public class DataSharingDialog extends Dialog {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig name = new ColumnConfig(Collaborator.NAME, I18N.DISPLAY.name(), 150);
-        // name.setRenderer(new CollaboratorNameCellRenderer());
         columns.addAll(Arrays.asList(sm.getColumn(), name));
 
         return new ColumnModel(columns);
     }
-
-    // /**
-    // * A custom renderer that renders with add / delete icon
-    // *
-    // * @author sriram
-    // *
-    // */
-    // private class CollaboratorNameCellRenderer implements GridCellRenderer<Collaborator> {
-    //
-    // private static final String ADD_BUTTON_STYLE = "add_button";
-    // private static final String DONE_BUTTON_STYLE = "done_button";
-    //
-    // @Override
-    // public Object render(final Collaborator model, String property, ColumnData config, int rowIndex,
-    // int colIndex, ListStore<Collaborator> store, final Grid<Collaborator> grid) {
-    //
-    // final HorizontalPanel hp = new HorizontalPanel();
-    // IconButton ib = buildButton(ADD_BUTTON_STYLE, model);
-    // hp.add(ib);
-    // ib.setToolTip(I18N.DISPLAY.add());
-    // hp.add(new Label(model.getName()));
-    // hp.setSpacing(3);
-    // hp.sinkEvents(Events.OnMouseDown.getEventCode());
-    // hp.addListener(Events.OnMouseDown, new Listener<BaseEvent>() {
-    //
-    // @Override
-    // public void handleEvent(BaseEvent be) {
-    // grid.getSelectionModel().select(false, model);
-    // }
-    // });
-    //
-    // return hp;
-    // }
-    //
-    // private IconButton buildButton(final String style, final Collaborator model) {
-    // final IconButton btn = new IconButton(style, new SelectionListener<IconButtonEvent>() {
-    //
-    // @Override
-    // public void componentSelected(IconButtonEvent ce) {
-    // IconButton src = (IconButton)ce.getSource();
-    // String existing_style = src.getStyleName();
-    // if (existing_style.contains(ADD_BUTTON_STYLE)) {
-    // Sharing s = new Sharing(model);
-    // sharePanel.addSharing(s);
-    // src.changeStyle(DONE_BUTTON_STYLE);
-    // return;
-    // }
-    // }
-    //
-    // });
-    // return btn;
-    // }
-    // }
 
     private void getUserPermissionsInfo() {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
@@ -378,7 +344,28 @@ public class DataSharingDialog extends Dialog {
         view.setViewConfig(buildGridViewConfig());
         view.setForceFit(true);
         new GridDragSource(diskResourceGrid);
+        new DiskResourceDropTarget(diskResourceGrid);
         return diskResourceGrid;
+    }
+
+    private void setDNDFeedback(DNDEvent e, boolean feedback) {
+        e.getStatus().setStatus(feedback);
+        e.setCancelled(!feedback);
+    }
+
+    private boolean setDiskResourcDropFeedback(DNDEvent e, Element data) {
+        if (data == null) {
+            setDNDFeedback(e, false);
+            return false;
+        }
+
+        int row = diskResourceGrid.getView().findRowIndex(data);
+        if (row < 0) {
+            setDNDFeedback(e, false);
+            return false;
+        }
+
+        return true;
     }
 
     private ColumnModel buildDiskResourceColumnModel(CheckBoxSelectionModel<DiskResource> sm) {
@@ -390,6 +377,42 @@ public class DataSharingDialog extends Dialog {
         columns.addAll(Arrays.asList(sm.getColumn(), name));
 
         return new ColumnModel(columns);
+    }
+
+    private final class DiskResourceDropTarget extends GridDropTarget {
+        private DiskResourceDropTarget(@SuppressWarnings("rawtypes") Grid grid) {
+            super(grid);
+        }
+
+        @Override
+        public void onDragMove(DNDEvent e) {
+            super.onDragMove(e);
+            Element data = diskResourceGrid.getView().findRow(e.getTarget());
+            setDiskResourcDropFeedback(e, data);
+        }
+
+        @Override
+        public void onDragEnter(DNDEvent e) {
+            Element data = diskResourceGrid.getView().findRow(e.getTarget());
+            setDiskResourcDropFeedback(e, data);
+        }
+
+        @Override
+        public void onDragDrop(DNDEvent e) {
+            Element data = diskResourceGrid.getView().findRow(e.getTarget());
+            if (setDiskResourcDropFeedback(e, data)) {
+                int row = diskResourceGrid.getView().findRowIndex(data);
+                DiskResource dr = diskResourceGrid.getStore().getAt(row);
+                List<Collaborator> selectedCollabs = e.getData();
+                FastMap<DataSharing> smap = new FastMap<DataSharing>();
+                for (Collaborator c : selectedCollabs) {
+                    DataSharing ds = new DataSharing(c, new Permissions(true, false, false), dr.getId());
+                    smap.put(c.getUserName(), ds);
+                }
+
+                sharePanel.addDataSharing(smap);
+            }
+        }
     }
 
     private final class LoadPermissionsCallback implements AsyncCallback<String> {

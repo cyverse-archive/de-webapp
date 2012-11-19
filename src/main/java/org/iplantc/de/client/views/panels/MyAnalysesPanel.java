@@ -172,6 +172,7 @@ public class MyAnalysesPanel extends ContentPanel {
             }
         };
         statusChkTimer.scheduleRepeating(ANALYSIS_STATUS_CHECK_INTERVAL);
+
     }
 
     private void checkStatus() {

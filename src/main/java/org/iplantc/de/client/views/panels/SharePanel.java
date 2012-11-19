@@ -202,6 +202,7 @@ public class SharePanel extends ContentPanel {
     public void loadSharingData(List<Sharing> roots, FastMap<List<Sharing>> sharingMap) {
         originalList = new FastMap<List<Sharing>>();
         TreeStore<Sharing> treeStore = grid.getTreeStore();
+        treeStore.removeAll();
         for (Sharing s : roots) {
             treeStore.add(s, false);
             String userName = s.getUserName();
@@ -220,10 +221,27 @@ public class SharePanel extends ContentPanel {
         grid.expandAll();
     }
 
-    public void addSharing(Sharing obj) {
+    public void addDataSharing(FastMap<DataSharing> sharingMap) {
+        TreeStore<Sharing> treeStore = grid.getTreeStore();
+        if (sharingMap != null) {
+            for (DataSharing s : sharingMap.values()) {
+                Sharing find = new Sharing(s.getCollaborator());
+                Sharing exits = treeStore.findModel(find);
+                if (exits == null) {
+                    treeStore.add(find, false);
+                    exits = find;
+                }
+                treeStore.add(exits, s, false);
+            }
+            grid.expandAll();
+        }
+
+    }
+
+    private void addSharing(Sharing obj) {
         TreeStore<Sharing> treeStore = grid.getTreeStore();
         if (!treeStore.contains(obj)) {
-            treeStore.add(obj, false);
+            treeStore.add(obj, true);
             grid.setLeaf(obj, false);
         }
         grid.getSelectionModel().select(false, obj);

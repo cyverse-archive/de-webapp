@@ -16,4 +16,9 @@ public class I18N {
             .create(DEDisplayStaticText.class);
     /** Error messages */
     public static final DEErrorStrings ERROR = (DEErrorStrings)GWT.create(DEErrorStrings.class);
+    /**
+     * help messages
+     * 
+     */
+    public static final DEHelpStrings HELP = (DEHelpStrings)GWT.create(DEHelpStrings.class);
 }

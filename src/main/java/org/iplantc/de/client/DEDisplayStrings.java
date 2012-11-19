@@ -1061,34 +1061,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String allNotifications();
 
     /**
-     * help prompt
-     * 
-     * @return the localized display text
-     */
-    String notifyemailHelp();
-
-    /**
-     * help prompt
-     * 
-     * @return the localized display text
-     */
-    String rememberFileSectorPathHelp();
-
-    /**
-     * help prompt
-     * 
-     * @return the localized display text
-     */
-    String saveSessionHelp();
-
-    /**
-     * help prompt
-     * 
-     * @return the localized display text
-     */
-    String defaultOutputFolderHelp();
-
-    /**
      * save setting success
      * 
      * @return the localized display text
@@ -1285,5 +1257,26 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String sharingCompleteMsg();
+
+    /**
+     * select collabs
+     * 
+     * @return
+     */
+    String selectCollabs();
+
+    /**
+     * select files / folders
+     * 
+     * @return
+     */
+    String selectFilesFolders();
+
+    /**
+     * change permissions
+     * 
+     * @return
+     */
+    String changePermissionss();
 
 }
