@@ -174,7 +174,7 @@ public class MyAnalysesPanel extends ContentPanel {
         statusChkTimer.scheduleRepeating(ANALYSIS_STATUS_CHECK_INTERVAL);
     }
 
-    private void checkStatus() {
+    public void checkStatus() {
         if (analysisGrid != null) {
             List<AnalysisExecution> list = analysisGrid.getUpdateList();
             JSONArray arr = new JSONArray();
