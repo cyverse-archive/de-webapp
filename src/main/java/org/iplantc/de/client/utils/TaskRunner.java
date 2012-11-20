@@ -3,6 +3,8 @@ package org.iplantc.de.client.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.models.DEProperties;
+
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -11,9 +13,14 @@ import com.google.gwt.user.client.Timer;
 public class TaskRunner {
 
     /**
-     * The default interval for repeating tasks.
+     * The default interval for repeating tasks, in seconds.
      */
-    private static final int DEFAULT_INTERVAL = 15000;
+    private static final int DEFAULT_INTERVAL = 15;
+
+    /**
+     * The interval for repeating tasks, in milliseconds.
+     */
+    private int interval;
 
     /**
      * The single instance of this class.
@@ -30,16 +37,26 @@ public class TaskRunner {
      */
     private final Timer timer;
 
-    public TaskRunner(int interval) {
+    private TaskRunner() {
+        // get interval in seconds
+        interval = DEProperties.getInstance().getNotificationPollInterval();
+
+        if (interval == 0) {
+            interval = DEFAULT_INTERVAL;
+        }
+
+        interval *= 1000;
+
         timer = new Timer() {
             
             @Override
             public void run() {
-                // TODO Auto-generated method stub
-                
+                runTasks();
+                timer.schedule(interval);
             }
         };
         
+        timer.schedule(interval);
     }
 
     /**
@@ -74,5 +91,11 @@ public class TaskRunner {
             throw new NullPointerException("the task may not be null");
         }
         tasks.remove(task);
+    }
+
+    private void runTasks() {
+        for (Runnable task : tasks) {
+            task.run();
+        }
     }
 }
