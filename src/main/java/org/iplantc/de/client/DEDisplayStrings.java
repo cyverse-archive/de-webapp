@@ -1270,5 +1270,26 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String changePermissionss();
+    
+    /**
+     * Text displayed to expand all nodes in a tree.
+     * 
+     * @return
+     */
+    String expandAll();
+    
+    /**
+     * Text displayed to collapse all nodes in a tree.
+     * 
+     * @return
+     */
+    String collapseAll();
+    
+    /**
+     * Text displayed at top of Manage Data Link window.
+     * 
+     * @return
+     */
+    String dataLinkWarning();
 
 }

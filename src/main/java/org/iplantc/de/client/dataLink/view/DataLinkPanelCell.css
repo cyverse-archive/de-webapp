@@ -8,3 +8,14 @@
 	gwt-image: "file";
 	float: left;
 }
+
+@sprite .pasteIcon {
+	gwt-image: "paste";
+	display: block;
+	float: left;
+}
+
+.dataLinkImfoImg {
+	float: left;
+	vertical-align: text-bottom;
+} 

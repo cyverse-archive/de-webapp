@@ -7,7 +7,6 @@ import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.IDiskResource;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dataLink.models.DataLink;
-import org.iplantc.de.client.images.Icons;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
@@ -15,48 +14,30 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.ImageResourceRenderer;
 
 final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
-    
-    interface DataLinkPanelCellStyle extends CssResource{
-        String dataLinkDelete();
-
-        String dataLinkFileIcon();
-    }
-    
-    interface Resources extends Icons{
-        @Source("DataLinkPanelCell.css")
-        DataLinkPanelCellStyle css(); 
-        
-        @Source("images/link_add.png")
-        ImageResource linkAdd();
-        
-        @Source("images/link_delete.png")
-        ImageResource linkDelete();
-    }
     
     interface Templates extends SafeHtmlTemplates {
         
         // TODO JDS The image which would be clicked on for copy to clipboard would be appended to the following template definition.
-        @SafeHtmlTemplates.Template("<span name=\"del\" class=\"{0}\" qtip=\"{1}\"></span><span>&nbsp; {2}</span>")
+        @SafeHtmlTemplates.Template("<span name=\"del\" class=\"{0}\" qtip=\"{1}\"></span><span style=\"float: left;\">&nbsp; {2} &nbsp;</span> <span id=\"{3}\" class=\"{4}\"></span>")
+        SafeHtml dataLinkCellWithCopyIcon(String delImgClassName, String delImgToolTip, SafeHtml urlText, String copyToClipId, String copyImg);
+
+        @SafeHtmlTemplates.Template("<span name=\"del\" class=\"{0}\" qtip=\"{1}\"></span><span style=\"float: left;\">&nbsp; {2} &nbsp;</span>")
         SafeHtml dataLinkCell(String delImgClassName, String delImgToolTip, SafeHtml urlText);
         
         @SafeHtmlTemplates.Template("<span name=\"fileIcon\" class=\"{0}\"></span> <span>&nbsp; {1}</span>")
         SafeHtml diskResCell(String fileIconImgClass, SafeHtml fileName);
     }
 
-    private static ImageResourceRenderer imgRenderer;
     private static String dataLinkUrlPrefix;
     private final Templates templates = GWT.create(Templates.class);
-    private final Resources res = GWT.create(Resources.class);
+    private final DataLinkResources res = GWT.create(DataLinkResources.class);
     private final DataLinkPanel.Presenter<M> presenter;
     
 
@@ -64,9 +45,6 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
         super(CLICK);
         this.presenter = presenter;
         res.css().ensureInjected();
-        if (imgRenderer == null) {
-            imgRenderer = new ImageResourceRenderer();
-        }
         
         // Fetch the configured URL prefix for the DataLink URL.
         dataLinkUrlPrefix = DEProperties.getInstance().getKifShareTicketBaseUrl();
@@ -78,7 +56,16 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
             SafeHtmlBuilder sb) {
         
         if(value instanceof DataLink){
-            sb.append(templates.dataLinkCell(res.css().dataLinkDelete(), I18N.DISPLAY.deleteDataLinkToolTip(), SafeHtmlUtils.fromString(dataLinkUrlPrefix + value.getId())));
+            String copyToClipId = "clip-id-" + value.getId();
+            SafeHtml dataLinkText = SafeHtmlUtils.fromString(dataLinkUrlPrefix + value.getId());
+            // sb.append(templates.dataLinkCellWithCopyIcon(res.css().dataLinkDelete(),
+            // I18N.DISPLAY.deleteDataLinkToolTip(),
+            // dataLinkText,
+            // copyToClipId,
+            //                      res.css().pasteIcon()));
+            sb.append(templates.dataLinkCell(res.css().dataLinkDelete(), 
+                    I18N.DISPLAY.deleteDataLinkToolTip(), 
+                    dataLinkText));
             
         }else if(value instanceof File){
             sb.append(templates.diskResCell(res.css().dataLinkFileIcon(), SafeHtmlUtils.fromString(value.getName())));
@@ -118,4 +105,5 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
         }
         
     }
+    
 }

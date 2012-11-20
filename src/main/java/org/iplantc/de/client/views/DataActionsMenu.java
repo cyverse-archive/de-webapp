@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -316,8 +317,18 @@ public final class DataActionsMenu extends Menu {
 
         @Override
         public void componentSelected(MenuEvent ce) {
+            // TODO JDS Move the creation of the dialog into the presenter.
             DataLinkPanel.Presenter<DiskResource> dlPresenter = new DataLinkPresenter<DiskResource>(resources);
-            IPlantDialog dlg = new IPlantDialog(I18N.DISPLAY.manageDataLinks(), 500, dlPresenter.getView());
+            Dialog dlg = new Dialog();
+            dlg.setHeading(I18N.DISPLAY.manageDataLinks());
+            dlg.setLayout(new FitLayout());
+            dlg.setResizable(false);
+            dlg.setModal(true);
+            dlg.setHideOnButtonClick(true);
+            dlg.setWidth(520);
+            dlg.getButtonById(Dialog.OK).setText("Done");
+            dlg.add(dlPresenter.getView().getDisplayWidget());
+            
             ToolButton helpBtn = new ToolButton("x-tool-help");
             ToolTipConfig ttc = new ToolTipConfig();
             ttc.setMouseOffset(new int[] {0, 0});

@@ -60,6 +60,12 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     @UiField
     TextButton createDataLinksBtn;
     
+    @UiField
+    TextButton expandAll;
+    
+    @UiField
+    TextButton collapseAll;
+    
     private final Widget widget;
     
     private Presenter<M> presenter;
@@ -109,6 +115,16 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     void onCreateDataLinksSelected(SelectEvent event){
         presenter.createDataLinks(tree.getSelectionModel().getSelectedItems());
         
+    }
+    
+    @UiHandler("expandAll")
+    void onExpandAllSelected(SelectEvent event){
+        tree.expandAll();
+    }
+    
+    @UiHandler("collapseAll")
+    void onCollapseAllSelected(SelectEvent event){
+        tree.collapseAll();
     }
 
     @Override
@@ -164,14 +180,8 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
         }
     }
 
-
     public Tree<M, M> getTree() {
         return tree;
     }
-
-
-    
-
-    
 
 }

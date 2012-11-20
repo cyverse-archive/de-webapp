@@ -10,58 +10,42 @@
       .background {background-color: #ffffff;}
    </ui:style>
    <ui:with type="org.iplantc.de.client.DEDisplayStrings" field="display"/>
-   <ui:with type="org.iplantc.de.client.dataLink.view.DataLinkPanelCell.Resources" field="icons"/>
+   <ui:with type="org.iplantc.de.client.dataLink.view.DataLinkResources" field="res"/>
    <ui:with type="com.sencha.gxt.data.shared.TreeStore" field="store" />
    <ui:with type="com.sencha.gxt.core.client.ValueProvider" field="valueProvider" />
    
-   <ui:with type="com.sencha.gxt.core.client.util.Padding" field="padding5">
-     <ui:attributes top="5" right="5" bottom="5" left="5" />
-   </ui:with>
-   <ui:with type="com.sencha.gxt.core.client.util.Margins" field="margins0500">
-     <ui:attributes top="0" right="5" bottom="0" left="0" />
-   </ui:with>
-   <ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="boxLayoutDataMargins0500">
-    <ui:attributes margins="{margins0500}" />
-   </ui:with>
-   <ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="boxLayoutDataMargins0050Flex3">
-    <ui:attributes margins="{margins0500}" flex="3" />
-  </ui:with>
-  
-  <ui:with field="margins0"
-            type="com.sencha.gxt.core.client.util.Margins">
+   <ui:with type="com.sencha.gxt.core.client.util.Margins"
+            field="margins0500">
       <ui:attributes top="0"
-                     right="0"
+                     right="5"
                      bottom="0"
                      left="0" />
    </ui:with>
-   <ui:with field="boxData"
-            type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData">
-      <ui:attributes margins="{margins0}"
+   <ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData"
+            field="boxLayoutDataMargins0050Flex3">
+      <ui:attributes margins="{margins0500}"
                      flex="3" />
-   </ui:with>
-   <ui:with field="boxDataNoFlex"
-            type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData">
-      <ui:attributes margins="{margins0}" />
    </ui:with>
    
    <container:VBoxLayoutContainer vBoxLayoutAlign="STRETCH" styleName="{style.background}">
       <container:child>
          <toolBar:ToolBar>
-            <toolBar:FillToolItem/>
             <button:TextButton ui:field="createDataLinksBtn"
                                text="{display.create}"
-                               icon="{icons.linkAdd}"
+                               icon="{res.linkAdd}"
                                enabled="false"/>
+            <button:TextButton ui:field="expandAll"
+                               text="{display.expandAll}"
+                               icon="{res.expand}"/>
+            <button:TextButton ui:field="collapseAll"
+                               text="{display.collapseAll}"
+                               icon="{res.collapse}"/>
+            <toolBar:FillToolItem/>
+            <g:HTMLPanel>
+               <img src="{res.error.getSafeUri}" class="{res.css.dataLinkImfoImg}">&nbsp;   <ui:text from="{display.dataLinkWarning}" /> </img>
+            </g:HTMLPanel>
          </toolBar:ToolBar>
       </container:child>
-<!--       <container:child>
-         <container:HBoxLayoutContainer padding="{padding5}" 
-                                        hBoxLayoutAlign="MIDDLE"
-                                        pack="END">
-            <container:child layoutData="{boxLayoutDataMargins0500}">
-            </container:child>
-         </container:HBoxLayoutContainer>
-      </container:child> -->
       <container:child layoutData="{boxLayoutDataMargins0050Flex3}">
          <tree:Tree ui:field="tree"
                     valueProvider="{valueProvider}"
