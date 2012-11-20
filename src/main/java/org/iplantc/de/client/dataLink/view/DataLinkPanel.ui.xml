@@ -3,9 +3,14 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
              xmlns:tree="urn:import:com.sencha.gxt.widget.core.client.tree"
+             xmlns:toolBar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
              xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button">
 
+   <ui:style>
+      .background {background-color: #ffffff;}
+   </ui:style>
    <ui:with type="org.iplantc.de.client.DEDisplayStrings" field="display"/>
+   <ui:with type="org.iplantc.de.client.dataLink.view.DataLinkPanelCell.Resources" field="icons"/>
    <ui:with type="com.sencha.gxt.data.shared.TreeStore" field="store" />
    <ui:with type="com.sencha.gxt.core.client.ValueProvider" field="valueProvider" />
    
@@ -21,24 +26,42 @@
    <ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="boxLayoutDataMargins0050Flex3">
     <ui:attributes margins="{margins0500}" flex="3" />
   </ui:with>
+  
+  <ui:with field="margins0"
+            type="com.sencha.gxt.core.client.util.Margins">
+      <ui:attributes top="0"
+                     right="0"
+                     bottom="0"
+                     left="0" />
+   </ui:with>
+   <ui:with field="boxData"
+            type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData">
+      <ui:attributes margins="{margins0}"
+                     flex="3" />
+   </ui:with>
+   <ui:with field="boxDataNoFlex"
+            type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData">
+      <ui:attributes margins="{margins0}" />
+   </ui:with>
    
-   <container:VBoxLayoutContainer vBoxLayoutAlign="STRETCH">
+   <container:VBoxLayoutContainer vBoxLayoutAlign="STRETCH" styleName="{style.background}">
       <container:child>
+         <toolBar:ToolBar>
+            <toolBar:FillToolItem/>
+            <button:TextButton ui:field="createDataLinksBtn"
+                               text="{display.create}"
+                               icon="{icons.linkAdd}"
+                               enabled="false"/>
+         </toolBar:ToolBar>
+      </container:child>
+<!--       <container:child>
          <container:HBoxLayoutContainer padding="{padding5}" 
                                         hBoxLayoutAlign="MIDDLE"
                                         pack="END">
             <container:child layoutData="{boxLayoutDataMargins0500}">
-               <button:TextButton ui:field="createDataLinksBtn"
-                                  text="{display.createDataLinks}"
-                                  enabled="false"/>
-            </container:child>
-            <container:child layoutData="{boxLayoutDataMargins0500}">
-               <button:TextButton ui:field="deleteDataLinksBtn"
-                                  text="{display.deleteDataLinks}"
-                                  enabled="false"/>
             </container:child>
          </container:HBoxLayoutContainer>
-      </container:child>
+      </container:child> -->
       <container:child layoutData="{boxLayoutDataMargins0050Flex3}">
          <tree:Tree ui:field="tree"
                     valueProvider="{valueProvider}"

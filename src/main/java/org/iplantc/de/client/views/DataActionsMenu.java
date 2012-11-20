@@ -13,6 +13,7 @@ import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.dataLink.presenter.DataLinkPresenter;
 import org.iplantc.de.client.dataLink.view.DataLinkPanel;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
@@ -30,8 +31,8 @@ import org.iplantc.de.client.utils.DataViewContextExecutor;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.utils.TreeViewContextExecutor;
 import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
-import org.iplantc.de.client.views.dialogs.MetadataEditorDialog;
 import org.iplantc.de.client.views.dialogs.DataSharingDialog;
+import org.iplantc.de.client.views.dialogs.MetadataEditorDialog;
 import org.iplantc.de.client.views.panels.AddFolderDialogPanel;
 import org.iplantc.de.client.views.panels.DiskresourceMetadataEditorPanel;
 import org.iplantc.de.client.views.panels.MetadataEditorPanel;
@@ -45,8 +46,10 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -143,7 +146,7 @@ public final class DataActionsMenu extends Menu {
         itemRestore = buildLeafMenuItem(MI_RESTORE_RESOURCE_ID, I18N.DISPLAY.restore(),
                 Resources.ICONS.arrow_undo(), new RestoreResourceListenerImpl());
         itemManageDataLinks = buildLeafMenuItem(MI_MANAGE_DATA_LINKS_ID,
-                I18N.DISPLAY.manageDataLinks(), Resources.ICONS.share(),
+                I18N.DISPLAY.manageDataLinks(), Resources.ICONS.dataLink(),
                 new ManageDatalinksListener());
 
         add(itemAddFolder);
@@ -313,9 +316,16 @@ public final class DataActionsMenu extends Menu {
 
         @Override
         public void componentSelected(MenuEvent ce) {
-            DataLinkPanel<DiskResource> ksp = new DataLinkPanel<DiskResource>(resources);
-            // TODO JDS Localize dialog title.
-            IPlantDialog dlg = new IPlantDialog("Manage Data Links", 300, ksp);
+            DataLinkPanel.Presenter<DiskResource> dlPresenter = new DataLinkPresenter<DiskResource>(resources);
+            IPlantDialog dlg = new IPlantDialog(I18N.DISPLAY.manageDataLinks(), 500, dlPresenter.getView());
+            ToolButton helpBtn = new ToolButton("x-tool-help");
+            ToolTipConfig ttc = new ToolTipConfig();
+            ttc.setMouseOffset(new int[] {0, 0});
+            ttc.setAnchor("left");
+            ttc.setTitle(I18N.DISPLAY.help());
+            ttc.setText(I18N.HELP.manageDataLinksHelp());
+            helpBtn.setToolTip(ttc);
+            dlg.getHeader().addTool(helpBtn);
             dlg.show();
         }
     }

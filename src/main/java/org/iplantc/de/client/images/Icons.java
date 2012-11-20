@@ -27,6 +27,7 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
      * 
      * @return image.
      */
+    @Override
     @Source("new.gif")
     ImageResource add();
 
@@ -349,5 +350,13 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
      */
     @Source("bin_empty.png")
     ImageResource emptyTrash();
+
+    /**
+     * Image resource for the manage data links menu item.
+     * 
+     * @return image.
+     */
+    @Source("link.png")
+    ImageResource dataLink();
 
 }

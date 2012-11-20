@@ -60,4 +60,11 @@ public interface DEHelpStrings extends Messages {
      */
     String sharingPermissionsHelp();
 
+    /**
+     * help for the Manage Data Links window
+     * 
+     * @return the localized display text.
+     */
+    String manageDataLinksHelp();
+
 }

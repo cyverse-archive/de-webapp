@@ -25,6 +25,8 @@
 	<!-- Include GWTUpload library, used by File Upload Servlet -->
 	<inherits name="gwtupload.GWTUpload" />
 	<inherits name='com.extjs.gxt.ui.GXT'/>
+	<inherits name='com.sencha.gxt.ui.GXT' />
+	<inherits name='com.sencha.gxt.theme.gray.Gray'/>
 		
 	<!-- UIBinder -->
     <inherits name="com.google.web.bindery.autobean.AutoBean"/>

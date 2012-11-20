@@ -44,15 +44,7 @@
  * <h1>View Package</h2>
  * 
  * TODO JDS Insert some copy-to-clipboard button in {@link DataLinkPanelCell}
- * 
- * TODO JDS Error messages which were created are generic standins, they should be revisited.
- * 
- * FIXME? JDS Currently, json response is not indicating to which Disk resource each ticket belongs. This
- * is happening in the create data links callback in the DataLinkPanel class
- * 
- * 
- * 
- * 
+ * TODO Ensure that there is only a "Done" button, get rid of "Ok" and "Cancel"
  * 
  * @author jstroot
  * 

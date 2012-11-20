@@ -5,8 +5,9 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.IDiskResource;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dataLink.models.DataLink;
-import org.iplantc.de.client.images.Resources;
+import org.iplantc.de.client.images.Icons;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
@@ -14,26 +15,55 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ImageResourceRenderer;
 
 final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
+    
+    interface DataLinkPanelCellStyle extends CssResource{
+        String dataLinkDelete();
+
+        String dataLinkFileIcon();
+    }
+    
+    interface Resources extends Icons{
+        @Source("DataLinkPanelCell.css")
+        DataLinkPanelCellStyle css(); 
+        
+        @Source("images/link_add.png")
+        ImageResource linkAdd();
+        
+        @Source("images/link_delete.png")
+        ImageResource linkDelete();
+    }
+    
     interface Templates extends SafeHtmlTemplates {
         
         // TODO JDS The image which would be clicked on for copy to clipboard would be appended to the following template definition.
-        @SafeHtmlTemplates.Template("<span qtip=\"{1}\">{0}</span>")
-        SafeHtml dataLinkCell(String urlText, String toolTip);
+        @SafeHtmlTemplates.Template("<span name=\"del\" class=\"{0}\" qtip=\"{1}\"></span><span>&nbsp; {2}</span>")
+        SafeHtml dataLinkCell(String delImgClassName, String delImgToolTip, SafeHtml urlText);
+        
+        @SafeHtmlTemplates.Template("<span name=\"fileIcon\" class=\"{0}\"></span> <span>&nbsp; {1}</span>")
+        SafeHtml diskResCell(String fileIconImgClass, SafeHtml fileName);
     }
 
     private static ImageResourceRenderer imgRenderer;
     private static String dataLinkUrlPrefix;
     private final Templates templates = GWT.create(Templates.class);
+    private final Resources res = GWT.create(Resources.class);
+    private final DataLinkPanel.Presenter<M> presenter;
     
-    DataLinkPanelCell() {
+
+    DataLinkPanelCell(DataLinkPanel.Presenter<M> presenter) {
         super(CLICK);
+        this.presenter = presenter;
+        res.css().ensureInjected();
         if (imgRenderer == null) {
             imgRenderer = new ImageResourceRenderer();
         }
@@ -48,12 +78,10 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
             SafeHtmlBuilder sb) {
         
         if(value instanceof DataLink){
-            sb.append(templates.dataLinkCell(SafeHtmlUtils.fromString(dataLinkUrlPrefix + value.getId()).asString() , ""));
+            sb.append(templates.dataLinkCell(res.css().dataLinkDelete(), I18N.DISPLAY.deleteDataLinkToolTip(), SafeHtmlUtils.fromString(dataLinkUrlPrefix + value.getId())));
             
         }else if(value instanceof File){
-            sb.append(imgRenderer.render(Resources.ICONS.file()));
-            sb.append(SafeHtmlUtils.fromSafeConstant("&nbsp;"));
-            sb.append(SafeHtmlUtils.fromString(value.getName()));
+            sb.append(templates.diskResCell(res.css().dataLinkFileIcon(), SafeHtmlUtils.fromString(value.getName())));
         }else{
             
         }
@@ -63,6 +91,31 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
     @Override
     public void onBrowserEvent(Cell.Context context, Element parent, M value, NativeEvent event,
             ValueUpdater<M> valueUpdater) {
+        
+        if (value == null) {
+            return;
+        }
+
+        Element eventTarget = Element.as(event.getEventTarget());
+        if (parent.isOrHasChild(eventTarget)) {
+
+            switch (Event.as(event).getTypeInt()) {
+                case Event.ONCLICK:
+                    doOnClick(eventTarget, value, valueUpdater);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+    private void doOnClick(Element eventTarget, M value, ValueUpdater<M> valueUpdater) {
+        if(eventTarget.getAttribute("name").equalsIgnoreCase("del")){
+            presenter.deleteDataLink((DataLink)value);
+        } else if(eventTarget.getAttribute("name").equalsIgnoreCase("delAll")){
+            presenter.deleteAllDataLinksFor(value);
+        }
         
     }
 }
