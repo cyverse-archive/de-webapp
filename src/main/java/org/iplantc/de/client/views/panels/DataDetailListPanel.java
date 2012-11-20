@@ -71,7 +71,6 @@ public class DataDetailListPanel extends ContentPanel {
             getDetails(selection.get(0).getId());
         } else {
             Text fieldLabel = new Text(I18N.DISPLAY.dataDetailsPrompt()); //$NON-NLS-1$
-            fieldLabel.addStyleName("data_details_label"); //$NON-NLS-1$
             add(fieldLabel, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.TOP));
         }
         layout();

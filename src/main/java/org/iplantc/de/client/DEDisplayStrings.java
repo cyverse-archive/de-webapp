@@ -1269,6 +1269,13 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      * @return
      */
-    String changePermissionss();
+    String changePermissions();
+
+    /**
+     * Manage sharing
+     * 
+     * @return
+     */
+    String manageSharing();
 
 }

@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 /**
  * A dialog to collect user general settings for the DE
@@ -34,6 +35,7 @@ public class UserPreferencesDialog extends Dialog {
 
     private void initDialog() {
         setHeading(I18N.DISPLAY.preferences());
+        setLayout(new FitLayout());
         setSize(450, 380);
         setButtons();
         setResizable(false);

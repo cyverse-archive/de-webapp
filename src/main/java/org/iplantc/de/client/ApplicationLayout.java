@@ -61,6 +61,8 @@ public class ApplicationLayout extends Viewport {
     private final String hoverStyle = "de_header_menu_hyperlink_hover"; //$NON-NLS-1$
     private final String linkStyle = "de_header_menu_hyperlink"; //$NON-NLS-1$
     private ViewNotificationMenu view;
+    private UserPreferencesDialog usd;
+    private CollaboratorsDialog cd;
 
     /**
      * Default constructor.
@@ -317,15 +319,28 @@ public class ApplicationLayout extends Viewport {
     }
 
     private void buildAndShowPreferencesDialog() {
-        UserPreferencesDialog usd = new UserPreferencesDialog();
-        usd.setSize(450, 430);
-        usd.show();
+        if (usd == null) {
+            usd = new UserPreferencesDialog();
+            usd.setSize(450, 430);
+        }
+
+        if (!usd.isVisible()) {
+            usd.show();
+        } else {
+            usd.toFront();
+        }
     }
 
     private void buildAndShowCollaboratorsDialog() {
-        CollaboratorsDialog cd = new CollaboratorsDialog();
-        cd.setSize(450, 430);
-        cd.show();
+        if (cd == null) {
+            cd = new CollaboratorsDialog();
+            cd.setSize(450, 430);
+        }
+        if (!cd.isVisible()) {
+            cd.show();
+        } else {
+            cd.toFront();
+        }
     }
 
     private HorizontalPanel buildNotificationMenu(String menuHeaderText) {

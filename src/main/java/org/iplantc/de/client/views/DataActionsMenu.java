@@ -136,8 +136,8 @@ public final class DataActionsMenu extends Menu {
                 Resources.ICONS.folderDelete(), new DeleteListenerImpl());
         itemMetaData = buildLeafMenuItem(MI_METADATA_ID, I18N.DISPLAY.metadata(),
                 Resources.ICONS.metadata(), new MetadataListenerImpl());
-        itemShareResource = buildLeafMenuItem(MI_SHARE_RESOURCE_ID, I18N.DISPLAY.share() + " / "
-                + I18N.DISPLAY.unshare(), Resources.ICONS.share(), new ShareResourceListenerImpl());
+        itemShareResource = buildLeafMenuItem(MI_SHARE_RESOURCE_ID, I18N.DISPLAY.manageSharing(),
+                Resources.ICONS.share(), new ShareResourceListenerImpl());
         itemCopyResource = buildLeafMenuItem(MI_COPY_RESOURCE_ID, I18N.DISPLAY.copy(),
                 Resources.ICONS.copy(), new CopyResourceListenerImpl());
         itemPasteResource = buildLeafMenuItem(MI_PASTE_RESOURCE_ID, I18N.DISPLAY.paste(),
@@ -145,9 +145,8 @@ public final class DataActionsMenu extends Menu {
 
         itemRestore = buildLeafMenuItem(MI_RESTORE_RESOURCE_ID, I18N.DISPLAY.restore(),
                 Resources.ICONS.arrow_undo(), new RestoreResourceListenerImpl());
-        itemManageDataLinks = buildLeafMenuItem(MI_MANAGE_DATA_LINKS_ID,
-                I18N.DISPLAY.manageDataLinks(), Resources.ICONS.dataLink(),
-                new ManageDatalinksListener());
+        itemManageDataLinks = buildLeafMenuItem(MI_MANAGE_DATA_LINKS_ID, I18N.DISPLAY.manageDataLinks(),
+                Resources.ICONS.dataLink(), new ManageDatalinksListener());
 
         add(itemAddFolder);
         add(itemRenameResource);
@@ -312,12 +311,13 @@ public final class DataActionsMenu extends Menu {
     }
 
     private final class ManageDatalinksListener extends SelectionListener<MenuEvent> {
-        
 
         @Override
         public void componentSelected(MenuEvent ce) {
-            DataLinkPanel.Presenter<DiskResource> dlPresenter = new DataLinkPresenter<DiskResource>(resources);
-            IPlantDialog dlg = new IPlantDialog(I18N.DISPLAY.manageDataLinks(), 500, dlPresenter.getView());
+            DataLinkPanel.Presenter<DiskResource> dlPresenter = new DataLinkPresenter<DiskResource>(
+                    resources);
+            IPlantDialog dlg = new IPlantDialog(I18N.DISPLAY.manageDataLinks(), 500,
+                    dlPresenter.getView());
             ToolButton helpBtn = new ToolButton("x-tool-help");
             ToolTipConfig ttc = new ToolTipConfig();
             ttc.setMouseOffset(new int[] {0, 0});
