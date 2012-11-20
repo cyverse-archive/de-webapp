@@ -18,6 +18,7 @@ import org.iplantc.de.client.models.JsAnalysisExecution;
 import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
+import org.iplantc.de.client.utils.TaskRunner;
 import org.iplantc.de.client.views.MyAnalysesGrid;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -50,7 +51,6 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -86,9 +86,7 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private Status status;
 
-    private Timer statusChkTimer;
-
-    private int ANALYSIS_STATUS_CHECK_INTERVAL = 15000;
+    private final Runnable statusChkTimer;
 
     /**
      * Indicates the status of an analysis.
@@ -163,7 +161,7 @@ public class MyAnalysesPanel extends ContentPanel {
         initWorkspaceId();
 
         facadeAnalysisService = new AnalysisServiceFacade();
-        statusChkTimer = new Timer() {
+        statusChkTimer = new Runnable() {
 
             @Override
             public void run() {
@@ -171,7 +169,7 @@ public class MyAnalysesPanel extends ContentPanel {
 
             }
         };
-        statusChkTimer.scheduleRepeating(ANALYSIS_STATUS_CHECK_INTERVAL);
+        TaskRunner.getInstance().addTask(statusChkTimer);
     }
 
     public void checkStatus() {
@@ -548,6 +546,7 @@ public class MyAnalysesPanel extends ContentPanel {
         // clear our list
         handlers.clear();
         analysisGrid.cleanup();
+        TaskRunner.getInstance().removeTask(statusChkTimer);
     }
 
     /**
