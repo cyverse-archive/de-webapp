@@ -49,6 +49,7 @@ public class UserSettingPanel extends LayoutContainer {
     private FolderSelector defaultOutputFolder;
 
     public UserSettingPanel() {
+        setStyleAttribute("background-color", "#fff");
         add(buildNotifyField());
         add(buildRememberField());
         add(buildClearSessionPanel());

@@ -2,13 +2,10 @@ package org.iplantc.de.client.utils;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.DEProperties;
-import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.services.MessageServiceFacade;
 
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -16,15 +13,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class MessagePoller {
     private PollingTimer timer;
-    private final int interval;
     private static MessagePoller instance;
 
-    private final int DEFAULT_INTERVAL = 60;
-
     private MessagePoller() {
-        // get interval in seconds and convert to milliseconds
-        int millsec = DEProperties.getInstance().getNotificationPollInterval() * 1000;
-        interval = (millsec == 0) ? (DEFAULT_INTERVAL * 1000) : millsec;
     }
 
     /**
@@ -40,20 +31,14 @@ public class MessagePoller {
         return instance;
     }
 
-    private void initTimer() {
-        if (timer == null) {
-            UserInfo info = UserInfo.getInstance();
-
-            timer = new PollingTimer(info.getEmail());
-            timer.scheduleRepeating(interval);
-        }
-    }
-
     /**
      * Starts polling.
      */
     public void start() {
-        initTimer();
+        if (timer == null) {
+            timer = new PollingTimer();
+            TaskRunner.getInstance().addTask(timer);
+        }
     }
 
     /**
@@ -61,17 +46,12 @@ public class MessagePoller {
      */
     public void stop() {
         if (timer != null) {
-            timer.cancel();
+            TaskRunner.getInstance().removeTask(timer);
             timer = null;
         }
     }
 
-    class PollingTimer extends Timer {
-        final String username;
-
-        PollingTimer(final String username) {
-            this.username = username;
-        }
+    private class PollingTimer implements Runnable {
 
         @Override
         public void run() {

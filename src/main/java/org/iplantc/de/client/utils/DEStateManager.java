@@ -24,7 +24,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -40,9 +39,7 @@ public class DEStateManager {
     // session hash
     private byte[] hash;
 
-    private final int SAVE_INTERVAL = 60000;
-
-    private Timer t;
+    private Runnable t;
 
     public static final String ACTIVE_WINDOWS = "active_windows";
     public static final String NOTIFI_COUNT = "notification_count";
@@ -95,7 +92,8 @@ public class DEStateManager {
     public void stop() {
         instance = null;
         if (t != null) {
-            t.cancel();
+            TaskRunner.getInstance().removeTask(t);
+            t = null;
         }
     }
 
@@ -105,16 +103,17 @@ public class DEStateManager {
      */
     public void start() {
         // kick-off a timer that saves users session at regular intervals
-        t = new Timer() {
+        if (t == null) {
+            t = new Runnable() {
 
-            @Override
-            public void run() {
-                persistUserSession(true, null);
+                @Override
+                public void run() {
+                    persistUserSession(true, null);
+                }
+            };
 
-            }
-        };
-
-        t.scheduleRepeating(SAVE_INTERVAL);
+            TaskRunner.getInstance().addTask(t);
+        }
     }
 
     public static DEStateManager getInstance(DEWindowManager mgrWindow) {

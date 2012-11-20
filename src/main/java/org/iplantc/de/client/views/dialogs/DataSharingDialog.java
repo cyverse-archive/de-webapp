@@ -79,7 +79,7 @@ public class DataSharingDialog extends Dialog {
     public DataSharingDialog(List<DiskResource> resources) {
         this.resources = resources;
         setSize(800, 400);
-        setHeading(I18N.DISPLAY.share() + " / " + I18N.DISPLAY.unshare());
+        setHeading(I18N.DISPLAY.manageSharing());
         setButtons();
     }
 
@@ -145,7 +145,7 @@ public class DataSharingDialog extends Dialog {
     private void buildEast() {
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.EAST, 320, 200, 350);
         sharePanel = new SharePanel(resources);
-        sharePanel.setHeading("3. " + I18N.DISPLAY.changePermissionss());
+        sharePanel.setHeading("3. " + I18N.DISPLAY.changePermissions());
         ToolButton helpBtn = new ToolButton("x-tool-help");
         helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.sharingPermissionsHelp()));
         sharePanel.getHeader().addTool(helpBtn);
