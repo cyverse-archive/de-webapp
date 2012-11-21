@@ -34,11 +34,11 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 
 public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel implements IsWidget {
-    
+
     public interface Presenter<M> {
 
         void deleteDataLink(DataLink dataLink);
-        
+
         void deleteDataLinks(List<DataLink> dataLinks);
 
         IPlantDialogPanel getView();
@@ -48,65 +48,69 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
         String getSelectedDataLinkText();
 
         String getDataLinkUrlPrefix();
-        
+
     }
 
     @UiTemplate("DataLinkPanel.ui.xml")
-    interface DataLinkPanelUiBinder extends UiBinder<Widget, DataLinkPanel<?>> {}
-    
+    interface DataLinkPanelUiBinder extends UiBinder<Widget, DataLinkPanel<?>> {
+    }
+
     private static DataLinkPanelUiBinder uiBinder = GWT.create(DataLinkPanelUiBinder.class);
-    
+
     @UiField
     TreeStore<M> store;
-    
+
     @UiField
     Tree<M, M> tree;
 
     @UiField
     TextButton createDataLinksBtn;
-    
+
     @UiField
     TextButton expandAll;
-    
+
     @UiField
     TextButton collapseAll;
-    
+
     @UiField
     TextButton copyDataLinkButton;
-    
+
     private final Widget widget;
-    
+
     private Presenter<M> presenter;
-    
+
     public DataLinkPanel(List<M> sharedResources) {
         widget = uiBinder.createAndBindUi(this);
         widget.setHeight("300");
-        
-        // Set the tree's node close/open icons to an empty image. Images for our tree will be controlled from the cell.
-        ImageResourcePrototype emptyImgResource = new ImageResourcePrototype("", UriUtils.fromString(""), 0, 0, 0, 0, false, false);
+
+        // Set the tree's node close/open icons to an empty image. Images for our tree will be controlled
+        // from the cell.
+        ImageResourcePrototype emptyImgResource = new ImageResourcePrototype("",
+                UriUtils.fromString(""), 0, 0, 0, 0, false, false);
         tree.getStyle().setNodeCloseIcon(emptyImgResource);
         tree.getStyle().setNodeOpenIcon(emptyImgResource);
-        
-        tree.getSelectionModel().addSelectionHandler(new TreeSelectionHandler(createDataLinksBtn, copyDataLinkButton, tree));
-        
+
+        tree.getSelectionModel().addSelectionHandler(
+                new TreeSelectionHandler(createDataLinksBtn, copyDataLinkButton, tree));
+
         new QuickTip(widget);
 
     }
-    
-    public void setPresenter(Presenter<M> presenter){
+
+    public void setPresenter(Presenter<M> presenter) {
         this.presenter = presenter;
         tree.setCell(new DataLinkPanelCell<M>(this.presenter));
     }
-    
-    public void addRoots(List<M> roots){
+
+    public void addRoots(List<M> roots) {
         store.add(roots);
     }
-    
+
     @UiFactory
     ValueProvider<M, M> createValueProvider() {
         return new IdentityValueProvider<M>();
     }
-    
+
     @UiFactory
     TreeStore<M> createTreeStore() {
         return new TreeStore<M>(new ModelKeyProvider<M>() {
@@ -117,25 +121,25 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
             }
         });
     }
-    
+
     @UiHandler("createDataLinksBtn")
-    void onCreateDataLinksSelected(SelectEvent event){
+    void onCreateDataLinksSelected(SelectEvent event) {
         presenter.createDataLinks(tree.getSelectionModel().getSelectedItems());
-        
+
     }
-    
+
     @UiHandler("expandAll")
-    void onExpandAllSelected(SelectEvent event){
+    void onExpandAllSelected(SelectEvent event) {
         tree.expandAll();
     }
-    
+
     @UiHandler("collapseAll")
-    void onCollapseAllSelected(SelectEvent event){
+    void onCollapseAllSelected(SelectEvent event) {
         tree.collapseAll();
     }
-    
+
     @UiHandler("copyDataLinkButton")
-    void onCopyDataLinkButtonSelected(SelectEvent event){
+    void onCopyDataLinkButtonSelected(SelectEvent event) {
         // Open dialog window with text selected.
         Dialog dlg = new Dialog();
         dlg.setHeading(I18N.DISPLAY.copy());
@@ -144,6 +148,7 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
         dlg.setResizable(false);
         dlg.setWidth(535);
         TextBox textBox = new TextBox();
+        textBox.setReadOnly(true);
         textBox.setText(presenter.getSelectedDataLinkText());
         dlg.add(textBox);
         dlg.add(new Label(I18N.DISPLAY.copyPasteInstructions()));
@@ -169,37 +174,39 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
 
     /**
      * A handler who controls this widgets button visibility based on tree check selection.
+     * 
      * @author jstroot
-     *
+     * 
      */
     private final class TreeSelectionHandler implements SelectionHandler<M> {
-    
+
         private final HasEnabled createBtn;
         private final Tree<M, M> tree;
         private final HasEnabled copyDataLinkButton;
-    
+
         public TreeSelectionHandler(HasEnabled createBtn, HasEnabled copyDataLinkButton, Tree<M, M> tree) {
             this.createBtn = createBtn;
             this.copyDataLinkButton = copyDataLinkButton;
             this.tree = tree;
         }
-    
+
         @Override
         public void onSelection(SelectionEvent<M> event) {
             createBtn.setEnabled(false);
             copyDataLinkButton.setEnabled(false);
-            if((tree.getSelectionModel().getSelectedItems().size() == 1) && (tree.getSelectionModel().getSelectedItems().get(0) instanceof DataLink)){
+            if ((tree.getSelectionModel().getSelectedItems().size() == 1)
+                    && (tree.getSelectionModel().getSelectedItems().get(0) instanceof DataLink)) {
                 copyDataLinkButton.setEnabled(true);
             }
-            for(M item : tree.getSelectionModel().getSelectedItems()){
-                if(!(item instanceof DataLink)){
+            for (M item : tree.getSelectionModel().getSelectedItems()) {
+                if (!(item instanceof DataLink)) {
                     createBtn.setEnabled(true);
-                }else{
+                } else {
                     createBtn.setEnabled(false);
                     break;
                 }
             }
-            
+
         }
 
     }
