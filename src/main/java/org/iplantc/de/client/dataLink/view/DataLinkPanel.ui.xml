@@ -45,9 +45,6 @@
                                icon="{res.paste}"
                                enabled="false"/>
             <toolBar:FillToolItem/>
-            <g:HTMLPanel>
-               <img src="{res.error.getSafeUri}" class="{res.css.dataLinkImfoImg}">&nbsp;   <ui:text from="{display.dataLinkWarning}" /> </img>
-            </g:HTMLPanel>
          </toolBar:ToolBar>
       </container:child>
       <container:child layoutData="{boxLayoutDataMargins0050Flex3}">
@@ -55,7 +52,11 @@
                     valueProvider="{valueProvider}"
                     store="{store}"/>
       </container:child>
-      
+      <container:child>
+           <g:HTMLPanel>
+               <img src="{res.error.getSafeUri}" class="{res.css.dataLinkImfoImg}">&nbsp;   <ui:text from="{display.dataLinkWarning}" /> </img>
+            </g:HTMLPanel>
+            </container:child>
    </container:VBoxLayoutContainer>
 
 </ui:UiBinder> 
