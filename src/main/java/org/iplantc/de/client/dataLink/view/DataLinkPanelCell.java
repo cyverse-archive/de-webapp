@@ -2,7 +2,6 @@ package org.iplantc.de.client.dataLink.view;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 
-import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.IDiskResource;
 import org.iplantc.de.client.I18N;
@@ -47,7 +46,7 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
         res.css().ensureInjected();
         
         // Fetch the configured URL prefix for the DataLink URL.
-        dataLinkUrlPrefix = DEProperties.getInstance().getKifShareTicketBaseUrl();
+        dataLinkUrlPrefix = presenter.getDataLinkUrlPrefix();
     }
     
 
@@ -100,8 +99,6 @@ final class DataLinkPanelCell<M extends IDiskResource> extends AbstractCell<M> {
     private void doOnClick(Element eventTarget, M value, ValueUpdater<M> valueUpdater) {
         if(eventTarget.getAttribute("name").equalsIgnoreCase("del")){
             presenter.deleteDataLink((DataLink)value);
-        } else if(eventTarget.getAttribute("name").equalsIgnoreCase("delAll")){
-            presenter.deleteAllDataLinksFor(value);
         }
         
     }

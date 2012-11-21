@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.models.IDiskResource;
@@ -233,9 +234,17 @@ public class DataLinkPresenter<M extends IDiskResource> implements DataLinkPanel
     }
 
     @Override
-    public void deleteAllDataLinksFor(IDiskResource value) {
-        // TODO Auto-generated method stub
-        
+    public String getSelectedDataLinkText() {
+        M model = view.getTree().getSelectionModel().getSelectedItem();
+        if(model instanceof DataLink){
+            return getDataLinkUrlPrefix() + model.getId();
+        }
+        return null;
+    }
+
+    @Override
+    public String getDataLinkUrlPrefix() {
+        return DEProperties.getInstance().getKifShareTicketBaseUrl();
     }
 
 }

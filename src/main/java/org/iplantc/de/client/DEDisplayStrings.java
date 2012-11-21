@@ -1299,4 +1299,10 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String dataLinkWarning();
 
+    /**
+     * Text to display to user which instructs them how to copy highlighted text from a popup window.
+     * @return
+     */
+    String copyPasteInstructions();
+
 }

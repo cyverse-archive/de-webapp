@@ -40,6 +40,10 @@
             <button:TextButton ui:field="collapseAll"
                                text="{display.collapseAll}"
                                icon="{res.collapse}"/>
+            <button:TextButton ui:field="copyDataLinkButton"
+                               text="{display.copy}"
+                               icon="{res.paste}"
+                               enabled="false"/>
             <toolBar:FillToolItem/>
             <g:HTMLPanel>
                <img src="{res.error.getSafeUri}" class="{res.css.dataLinkImfoImg}">&nbsp;   <ui:text from="{display.dataLinkWarning}" /> </img>
