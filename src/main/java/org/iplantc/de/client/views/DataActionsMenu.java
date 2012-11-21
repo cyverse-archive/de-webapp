@@ -323,7 +323,7 @@ public final class DataActionsMenu extends Menu {
             dlg.setResizable(false);
             dlg.setModal(true);
             dlg.setHideOnButtonClick(true);
-            dlg.setWidth(520);
+            dlg.setWidth(550);
             dlg.getButtonById(Dialog.OK).setText("Done");
             dlg.add(dlPresenter.getView().getDisplayWidget());
             

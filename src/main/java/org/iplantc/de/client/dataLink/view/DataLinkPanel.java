@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
 import org.iplantc.core.uidiskresource.client.models.IDiskResource;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dataLink.models.DataLink;
 
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.impl.ImageResourcePrototype;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -18,6 +21,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -25,8 +30,6 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 
@@ -42,7 +45,9 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
 
         void createDataLinks(List<M> selectedItems);
 
-        void deleteAllDataLinksFor(IDiskResource value);
+        String getSelectedDataLinkText();
+
+        String getDataLinkUrlPrefix();
         
     }
 
@@ -66,6 +71,9 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     @UiField
     TextButton collapseAll;
     
+    @UiField
+    TextButton copyDataLinkButton;
+    
     private final Widget widget;
     
     private Presenter<M> presenter;
@@ -79,8 +87,7 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
         tree.getStyle().setNodeCloseIcon(emptyImgResource);
         tree.getStyle().setNodeOpenIcon(emptyImgResource);
         
-        tree.getSelectionModel().addSelectionChangedHandler(new TreeSelectionHandler(createDataLinksBtn, tree));
-        tree.getSelectionModel().addBeforeSelectionHandler(new TreeSelectionHandler(createDataLinksBtn, tree));
+        tree.getSelectionModel().addSelectionHandler(new TreeSelectionHandler(createDataLinksBtn, copyDataLinkButton, tree));
         
         new QuickTip(widget);
 
@@ -126,6 +133,24 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
     void onCollapseAllSelected(SelectEvent event){
         tree.collapseAll();
     }
+    
+    @UiHandler("copyDataLinkButton")
+    void onCopyDataLinkButtonSelected(SelectEvent event){
+        // Open dialog window with text selected.
+        Dialog dlg = new Dialog();
+        dlg.setHeading(I18N.DISPLAY.copy());
+        dlg.setLayout(new FitLayout());
+        dlg.setHideOnButtonClick(true);
+        dlg.setResizable(false);
+        dlg.setWidth(535);
+        TextBox textBox = new TextBox();
+        textBox.setText(presenter.getSelectedDataLinkText());
+        dlg.add(textBox);
+        dlg.add(new Label(I18N.DISPLAY.copyPasteInstructions()));
+        dlg.setFocusWidget(textBox);
+        dlg.show();
+        textBox.selectAll();
+    }
 
     @Override
     public Widget asWidget() {
@@ -147,37 +172,36 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
      * @author jstroot
      *
      */
-    private final class TreeSelectionHandler implements SelectionChangedHandler<M>, BeforeSelectionHandler<M> {
+    private final class TreeSelectionHandler implements SelectionHandler<M> {
     
         private final HasEnabled createBtn;
         private final Tree<M, M> tree;
+        private final HasEnabled copyDataLinkButton;
     
-        public TreeSelectionHandler(HasEnabled createBtn, Tree<M, M> tree) {
+        public TreeSelectionHandler(HasEnabled createBtn, HasEnabled copyDataLinkButton, Tree<M, M> tree) {
             this.createBtn = createBtn;
+            this.copyDataLinkButton = copyDataLinkButton;
             this.tree = tree;
         }
     
         @Override
-        public void onSelectionChanged(SelectionChangedEvent<M> event) {
+        public void onSelection(SelectionEvent<M> event) {
             createBtn.setEnabled(false);
+            copyDataLinkButton.setEnabled(false);
+            if((tree.getSelectionModel().getSelectedItems().size() == 1) && (tree.getSelectionModel().getSelectedItems().get(0) instanceof DataLink)){
+                copyDataLinkButton.setEnabled(true);
+            }
             for(M item : tree.getSelectionModel().getSelectedItems()){
                 if(!(item instanceof DataLink)){
                     createBtn.setEnabled(true);
                 }else{
-                    tree.getSelectionModel().deselect(item);
+                    createBtn.setEnabled(false);
+                    break;
                 }
             }
             
         }
 
-        @Override
-        public void onBeforeSelection(BeforeSelectionEvent<M> event) {
-            // Not allowing selection of DataLinks
-            if(event.getItem() instanceof DataLink){
-                event.cancel();
-            }
-            
-        }
     }
 
     public Tree<M, M> getTree() {
