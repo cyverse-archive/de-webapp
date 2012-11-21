@@ -8,11 +8,13 @@ import java.util.List;
 
 import org.iplantc.core.client.widgets.Hyperlink;
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DataSearchHistorySelectedEvent;
 import org.iplantc.de.client.events.DataSearchResultSelectedEvent;
 import org.iplantc.de.client.events.DataSearchResultSelectedEventHandler;
+import org.iplantc.de.client.services.UserSessionServiceFacade;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -23,18 +25,19 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author sriram
  * 
  */
-public class SearchHistoryPanel extends ContentPanel {
+public class DataSearchHistoryPanel extends ContentPanel {
 
     private List<String> searchHistory;
     private VerticalPanel container;
     private final int RECENT_HISTORY_COUNT = 5;
 
-    public SearchHistoryPanel() {
+    public DataSearchHistoryPanel() {
         init();
 
         EventBus eventbus = EventBus.getInstance();
@@ -68,7 +71,26 @@ public class SearchHistoryPanel extends ContentPanel {
         if (!searchHistory.contains(searchTerm)) {
             searchHistory.add(searchTerm);
             renderHistory();
+            saveSearchHistory();
         }
+    }
+
+    private void saveSearchHistory() {
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.saveSearchHistory(getSearchHistory(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.searchHistoryError(), caught);
+
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                // do nothing
+
+            }
+        });
     }
 
     private void renderHistory() {
@@ -97,7 +119,7 @@ public class SearchHistoryPanel extends ContentPanel {
         return linkRmv;
     }
 
-    public JSONObject getSearchHistory() {
+    private JSONObject getSearchHistory() {
         JSONObject obj = new JSONObject();
         if (searchHistory.size() > 0) {
             obj.put("data-search", JsonUtil.buildArrayFromStrings(searchHistory));
