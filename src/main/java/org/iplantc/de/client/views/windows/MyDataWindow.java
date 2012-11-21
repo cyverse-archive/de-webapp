@@ -1,6 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -149,21 +150,6 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
 
     @Override
     protected void doHide() {
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        facade.saveSearchHistory(pnlDetails.getSearchHistory(), new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.searchHistoryError(), caught);
-
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                // do nothing
-
-            }
-        });
         super.doHide();
     }
 
@@ -197,19 +183,21 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         @Override
         public void onSelection(DataSearchResultSelectedEvent event) {
             if (event.getTag().equals(tag)) {
-                pnlDetails.resetDeatils();
                 DiskResource model = event.getModel();
                 if (model != null && model instanceof Folder) {
                     pnlNavigation.selectFolder(model.getId());
+                    pnlDetails.resetDeatils();
                 } else {
                     if (event.getSelection().equals(Selection.LOCATION)) {
                         pnlNavigation.selectFolder(DiskResourceUtil.parseParent(model.getId()));
                         pnlMain.setSelectedResource(event.getSelectedIds());
+                        pnlDetails.resetDeatils();
                         return;
                     }
                     DataViewContextExecutor executor = new DataViewContextExecutor();
                     DataContextBuilder builder = new DataContextBuilder();
                     executor.execute(builder.build(model.getId()));
+                    pnlDetails.update(Arrays.asList(event.getModel()));
                 }
 
             }

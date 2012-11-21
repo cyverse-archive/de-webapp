@@ -48,7 +48,7 @@ public class DataDetailListPanel extends ContentPanel {
      */
     private void init() {
         setHeaderVisible(false);
-        setHeight(170);
+        setHeight(195);
         setBodyStyle("background-color: #EDEDED"); //$NON-NLS-1$
 
         TableLayout layout = new TableLayout(2);
@@ -189,7 +189,8 @@ public class DataDetailListPanel extends ContentPanel {
             @Override
             public void onSuccess(String result) {
                 // race condition gaurd
-                if (selection.size() == 1 && selection.get(0).getId().equalsIgnoreCase(path)) {
+                if (selection != null && selection.size() == 1
+                        && selection.get(0).getId().equalsIgnoreCase(path)) {
                     JSONObject json = JsonUtil.getObject(result);
                     if (json != null) {
                         JSONObject pathsObj = JsonUtil.getObject(json, "paths");
