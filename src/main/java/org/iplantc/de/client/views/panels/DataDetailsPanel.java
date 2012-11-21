@@ -15,7 +15,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public class DataDetailsPanel extends AbstractDataPanel {
     private DataDetailListPanel pnlDetails;
-    private SearchHistoryPanel searchHistoryPanel;
+    private DataSearchHistoryPanel searchHistoryPanel;
 
     public DataDetailsPanel(final String tag) {
         super(tag);
@@ -27,10 +27,6 @@ public class DataDetailsPanel extends AbstractDataPanel {
 
     public void setSearchHistory(JSONObject obj) {
         searchHistoryPanel.setSearchHistory(obj);
-    }
-
-    public JSONObject getSearchHistory() {
-        return searchHistoryPanel.getSearchHistory();
     }
 
     /**
@@ -57,7 +53,7 @@ public class DataDetailsPanel extends AbstractDataPanel {
 
     private void initPanels() {
         pnlDetails = new DataDetailListPanel();
-        searchHistoryPanel = new SearchHistoryPanel();
+        searchHistoryPanel = new DataSearchHistoryPanel();
     }
 
     @Override
@@ -104,4 +100,12 @@ public class DataDetailsPanel extends AbstractDataPanel {
         setHeading(I18N.DISPLAY.details());
     }
 
+    /**
+     * update details panel
+     * 
+     * @param resources
+     */
+    public void update(List<DiskResource> resources) {
+        pnlDetails.update(resources);
+    }
 }
