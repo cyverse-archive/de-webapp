@@ -65,11 +65,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
- *
+ * 
  * Displays a list of analyses in grid. Actions to edit, copy and run are supported
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class CatalogMainPanel extends BaseCatalogMainPanel {
 
@@ -133,7 +133,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
     /**
      * Get the category id for the current seleciton the category tree
-     *
+     * 
      * @return String category id
      */
     public String getCurrentCategoryId() {
@@ -633,6 +633,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
                     if (selectedItem.isPublic()) {
                         menuItems.get(ACTION_ID_MAKE_PUBLIC).disable();
                         menuItems.get(ACTION_ID_EDIT).disable();
+                        menuItems.get(ACTION_ID_DELETE).disable();
                     }
                 }
                 checkAndBuildFavMenu(selectedItem.isUser_favourite());
@@ -750,7 +751,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
                 /**
                  * Updates the user rating and the average rating
-                 *
+                 * 
                  * @param model
                  * @param json a JSON string containing the new average rating
                  */
