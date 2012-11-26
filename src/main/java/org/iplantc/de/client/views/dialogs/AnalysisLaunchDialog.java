@@ -107,7 +107,7 @@ public class AnalysisLaunchDialog extends Dialog {
         fieldName.setSelectOnFocus(true);
         fieldName.setAllowBlank(false);
         fieldName.setValidator(new AnalysisNameValidator());
-        fieldName.setValidateOnBlur(true);
+        fieldName.setAutoValidate(true);
         fieldName.setFireChangeEventOnSetValue(true);
 
         fieldName.addListener(Events.OnBlur, new Listener<BaseEvent>() {
