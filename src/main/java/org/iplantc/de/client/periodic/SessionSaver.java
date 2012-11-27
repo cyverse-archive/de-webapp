@@ -20,8 +20,9 @@ public class SessionSaver implements Runnable {
     }
 
     /**
-     * Saves the user's session infomration.
+     * Saves the user's session information.
      */
+    @Override
     public void run() {
         stateManager.persistUserSession(true, null);
     }

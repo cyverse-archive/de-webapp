@@ -9,6 +9,7 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.models.Notification;
+import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.services.MessageServiceFacade;
 import org.iplantc.de.client.utils.builders.context.AnalysisContextBuilder;
 import org.iplantc.de.client.utils.builders.context.DataContextBuilder;

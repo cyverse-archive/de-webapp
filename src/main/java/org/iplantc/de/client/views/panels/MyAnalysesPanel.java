@@ -15,6 +15,7 @@ import org.iplantc.de.client.events.AnalysisUpdateEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.JsAnalysisExecution;
+import org.iplantc.de.client.periodic.AnalysisStatusChecker;
 import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
@@ -86,7 +87,7 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private Status status;
 
-    private final Runnable statusChkTimer;
+    private final AnalysisStatusChecker statusCheckTask;
 
     /**
      * Indicates the status of an analysis.
@@ -161,16 +162,9 @@ public class MyAnalysesPanel extends ContentPanel {
         initWorkspaceId();
 
         facadeAnalysisService = new AnalysisServiceFacade();
-        statusChkTimer = new Runnable() {
+        statusCheckTask = new AnalysisStatusChecker(this);
 
-            @Override
-            public void run() {
-                checkStatus();
-
-            }
-        };
-
-        TaskRunner.getInstance().addTask(statusChkTimer);
+        TaskRunner.getInstance().addTask(statusCheckTask);
     }
 
     public void checkStatus() {
@@ -548,7 +542,7 @@ public class MyAnalysesPanel extends ContentPanel {
         // clear our list
         handlers.clear();
         analysisGrid.cleanup();
-        TaskRunner.getInstance().removeTask(statusChkTimer);
+        TaskRunner.getInstance().removeTask(statusCheckTask);
     }
 
     /**

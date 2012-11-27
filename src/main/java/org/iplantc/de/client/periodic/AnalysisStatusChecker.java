@@ -22,6 +22,7 @@ public class AnalysisStatusChecker implements Runnable {
     /**
      * Updates the analysis status information.
      */
+    @Override
     public void run() {
         myAnalysesPanel.checkStatus();
     }
