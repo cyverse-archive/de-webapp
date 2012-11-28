@@ -181,6 +181,7 @@ public class DataSharingDialog extends Dialog {
         ToolTipConfig config = new ToolTipConfig();
         config.setMouseOffset(new int[] {0, 0});
         config.setAnchor("left");
+        config.setCloseable(true);
         return config;
     }
 
