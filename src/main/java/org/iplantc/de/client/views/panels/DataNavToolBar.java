@@ -1,5 +1,6 @@
 package org.iplantc.de.client.views.panels;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.views.dialogs.IPlantDialog;
 import org.iplantc.core.uicommons.client.views.dialogs.IPlantSubmittableDialog;
@@ -8,6 +9,7 @@ import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
+import org.iplantc.de.client.events.DataNavCollapseAllEvent;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
@@ -31,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
+import com.gargoylesoftware.htmlunit.javascript.host.EventHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -49,6 +52,7 @@ public class DataNavToolBar extends ToolBar {
     private static final String ID_RENAME_FOLDER_BTN = "idRenameFolderBtn"; //$NON-NLS-1$
     private static final String ID_EMPTY_TRASH_BTN = "idEmptyTrashBtn"; //$NON-NLS-1$
     private static final String ID_UPLD_MENU = "idUpldMenu";
+    private static final String ID_COLLAPSE_ALL = "idCollapseAll";
 
     @SuppressWarnings("unused")
     private final String tag;
@@ -58,6 +62,7 @@ public class DataNavToolBar extends ToolBar {
     private Button addFolder;
     private Button renameFolder;
     private Button emptyTrash;
+    private Button collapseAll;
     private IPlantSubmittableDialog dlgUpload;
 
     /**
@@ -75,6 +80,7 @@ public class DataNavToolBar extends ToolBar {
         add(buildAddFolderButton());
         add(buildRenameFolderButton());
         add(buildEmptyTrashButton());
+        add(buildCollapseAllButton());
 
     }
 
@@ -145,6 +151,22 @@ public class DataNavToolBar extends ToolBar {
             }
         });
         return emptyTrash;
+    }
+
+    private Button buildCollapseAllButton() {
+        collapseAll = new Button();
+        collapseAll.setId(ID_COLLAPSE_ALL);
+        collapseAll.setToolTip(I18N.DISPLAY.collapseAll());
+        collapseAll.setIcon(AbstractImagePrototype.create(Resources.ICONS.dataActionMenuIcon()));
+        collapseAll.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                DataNavCollapseAllEvent event = new DataNavCollapseAllEvent();
+                EventBus.getInstance().fireEvent(event);
+            }
+        });
+        return collapseAll;
+
     }
 
     private MenuItem buildBulkUploadFromDesktopButton() {
