@@ -316,7 +316,8 @@ public final class DataActionsMenu extends Menu {
         @Override
         public void componentSelected(MenuEvent ce) {
             // TODO JDS Move the creation of the dialog into the presenter.
-            DataLinkPanel.Presenter<DiskResource> dlPresenter = new DataLinkPresenter<DiskResource>(resources);
+            DataLinkPanel.Presenter<DiskResource> dlPresenter = new DataLinkPresenter<DiskResource>(
+                    resources);
             Dialog dlg = new Dialog();
             dlg.setHeading(I18N.DISPLAY.manageDataLinks());
             dlg.setLayout(new FitLayout());
@@ -326,13 +327,14 @@ public final class DataActionsMenu extends Menu {
             dlg.setWidth(550);
             dlg.getButtonById(Dialog.OK).setText("Done");
             dlg.add(dlPresenter.getView().getDisplayWidget());
-            
+
             ToolButton helpBtn = new ToolButton("x-tool-help");
             ToolTipConfig ttc = new ToolTipConfig();
             ttc.setMouseOffset(new int[] {0, 0});
             ttc.setAnchor("left");
             ttc.setTitle(I18N.DISPLAY.help());
             ttc.setText(I18N.HELP.manageDataLinksHelp());
+            ttc.setCloseable(true);
             helpBtn.setToolTip(ttc);
             dlg.getHeader().addTool(helpBtn);
             dlg.show();

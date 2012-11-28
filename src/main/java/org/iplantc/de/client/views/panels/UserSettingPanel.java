@@ -71,9 +71,7 @@ public class UserSettingPanel extends LayoutContainer {
         ret.add(new Html("<div>" + I18N.DISPLAY.notifyemail() + "</div>"), td);
 
         IconButton ib = new IconButton("help");
-        ToolTipConfig ttc = getToolTipConfig();
-        ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText(I18N.HELP.notifyemailHelp());
+        ToolTipConfig ttc = getToolTipConfig(I18N.DISPLAY.help(), I18N.HELP.notifyemailHelp());
         ib.setToolTip(ttc);
         ret.add(ib, td);
 
@@ -93,9 +91,7 @@ public class UserSettingPanel extends LayoutContainer {
         ret.add(new Html("<div>" + I18N.DISPLAY.rememberFileSectorPath() + "</div>"), td);
 
         IconButton ib = new IconButton("help");
-        ToolTipConfig ttc = getToolTipConfig();
-        ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText((I18N.HELP.rememberFileSectorPathHelp()));
+        ToolTipConfig ttc = getToolTipConfig(I18N.DISPLAY.help(), I18N.HELP.rememberFileSectorPathHelp());
         ib.setToolTip(ttc);
         ret.add(ib, td);
 
@@ -115,9 +111,7 @@ public class UserSettingPanel extends LayoutContainer {
         ret.add(radioGrp, td);
 
         IconButton ib = new IconButton("help");
-        ToolTipConfig ttc = getToolTipConfig();
-        ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText(I18N.HELP.saveSessionHelp());
+        ToolTipConfig ttc = getToolTipConfig(I18N.DISPLAY.help(), I18N.HELP.saveSessionHelp());
         ib.setToolTip(ttc);
         ret.add(ib, td);
 
@@ -138,9 +132,7 @@ public class UserSettingPanel extends LayoutContainer {
 
         hp.add(new Html("<div>" + I18N.DISPLAY.defaultOutputFolder() + ": </div>"), td);
         IconButton ib = new IconButton("help");
-        ToolTipConfig ttc = getToolTipConfig();
-        ttc.setTitle(I18N.DISPLAY.help());
-        ttc.setText(I18N.HELP.defaultOutputFolderHelp());
+        ToolTipConfig ttc = getToolTipConfig(I18N.DISPLAY.help(), I18N.HELP.defaultOutputFolderHelp());
         ib.setToolTip(ttc);
         hp.add(ib, td);
 
@@ -148,6 +140,14 @@ public class UserSettingPanel extends LayoutContainer {
         ret.add(defaultOutputFolder.getWidget());
 
         return ret;
+    }
+
+    private ToolTipConfig getToolTipConfig(String title, String text) {
+        ToolTipConfig ttc = getToolTipConfig();
+        ttc.setTitle(title);
+        ttc.setCloseable(true);
+        ttc.setText(text);
+        return ttc;
     }
 
     private void initSaveOption() {
