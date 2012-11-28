@@ -33,7 +33,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
-import com.gargoylesoftware.htmlunit.javascript.host.EventHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
