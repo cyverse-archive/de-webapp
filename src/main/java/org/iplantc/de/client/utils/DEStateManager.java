@@ -13,6 +13,7 @@ import org.iplantc.core.uicommons.client.util.ByteArrayComparer;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.SettingsUpdatedEvent;
 import org.iplantc.de.client.events.SettingsUpdatedEventHandler;
+import org.iplantc.de.client.periodic.SessionSaver;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 
 import com.extjs.gxt.ui.client.event.Listener;
@@ -39,7 +40,7 @@ public class DEStateManager {
     // session hash
     private byte[] hash;
 
-    private Runnable t;
+    private SessionSaver saverTask;
 
     public static final String ACTIVE_WINDOWS = "active_windows";
     public static final String NOTIFI_COUNT = "notification_count";
@@ -91,9 +92,9 @@ public class DEStateManager {
      */
     public void stop() {
         instance = null;
-        if (t != null) {
-            TaskRunner.getInstance().removeTask(t);
-            t = null;
+        if (saverTask != null) {
+            TaskRunner.getInstance().removeTask(saverTask);
+            saverTask = null;
         }
     }
 
@@ -103,16 +104,9 @@ public class DEStateManager {
      */
     public void start() {
         // kick-off a timer that saves users session at regular intervals
-        if (t == null) {
-            t = new Runnable() {
-
-                @Override
-                public void run() {
-                    persistUserSession(true, null);
-                }
-            };
-
-            TaskRunner.getInstance().addTask(t);
+        if (saverTask == null) {
+            saverTask = new SessionSaver(this);
+            TaskRunner.getInstance().addTask(saverTask);
         }
     }
 

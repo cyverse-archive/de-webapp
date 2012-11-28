@@ -3,7 +3,7 @@ package org.iplantc.de.client;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.events.LogoutEvent;
 import org.iplantc.de.client.events.LogoutEventHandler;
-import org.iplantc.de.client.utils.MessagePoller;
+import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.views.presenters.Presenter;
 import org.iplantc.de.client.views.presenters.WorkspacePresenter;
 
@@ -91,7 +91,7 @@ public class HistoryManager implements ValueChangeHandler<String> {
      */
     @Override
     public void onValueChange(ValueChangeEvent<String> event) {
-        processCommand((String)event.getValue());
+        processCommand(event.getValue());
     }
 
     /**
