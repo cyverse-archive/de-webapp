@@ -156,7 +156,7 @@ public class DataNavToolBar extends ToolBar {
         collapseAll = new Button();
         collapseAll.setId(ID_COLLAPSE_ALL);
         collapseAll.setToolTip(I18N.DISPLAY.collapseAll());
-        collapseAll.setIcon(AbstractImagePrototype.create(Resources.ICONS.dataActionMenuIcon()));
+        collapseAll.setIcon(AbstractImagePrototype.create(Resources.ICONS.collapseAll()));
         collapseAll.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
