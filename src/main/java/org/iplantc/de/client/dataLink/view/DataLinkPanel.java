@@ -29,6 +29,8 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.ExpandItemEvent;
+import com.sencha.gxt.widget.core.client.event.ExpandItemEvent.ExpandItemHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 import com.sencha.gxt.widget.core.client.tree.Tree;
@@ -92,7 +94,6 @@ public class DataLinkPanel<M extends IDiskResource> extends IPlantDialogPanel im
 
         tree.getSelectionModel().addSelectionHandler(
                 new TreeSelectionHandler(createDataLinksBtn, copyDataLinkButton, tree));
-
         new QuickTip(widget);
 
     }

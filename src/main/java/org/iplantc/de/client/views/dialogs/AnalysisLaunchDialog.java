@@ -100,7 +100,7 @@ public class AnalysisLaunchDialog extends Dialog {
                 updateOkButton();
             }
         };
-        fieldName.setMaxLength(75);
+        fieldName.setMaxLength(255);
         fieldName.setWidth(320);
         fieldName.setId("idAnalysisName"); //$NON-NLS-1$
         fieldName.setValue(I18N.DISPLAY.defaultAnalysisName());
