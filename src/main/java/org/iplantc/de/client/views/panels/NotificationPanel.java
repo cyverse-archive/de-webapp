@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.Notification;
@@ -54,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -207,7 +209,7 @@ public class NotificationPanel extends ContentPanel {
     }
 
     private Button buildDeleteButton() {
-        Button b = new Button(I18N.DISPLAY.delete(), new SelectionListener<ButtonEvent>() {
+        Button b = new Button(I18N.DISPLAY.deleteSelected(), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -230,6 +232,37 @@ public class NotificationPanel extends ContentPanel {
         return b;
     }
 
+    private Button buildDeleteAllButton() {
+        Button b = new Button(I18N.DISPLAY.deleteAll(), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                mask(I18N.DISPLAY.loadingMask());
+                MessageServiceFacade facade = new MessageServiceFacade();
+                facade.deleteAll(new AsyncCallback<String>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        ErrorHandler.post(caught);
+                        unmask();
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        unmask();
+                        loader.load();
+
+                    }
+                });
+
+            }
+        });
+
+        b.setId("idBtnDeleteAll");
+        b.setIcon(AbstractImagePrototype.create(Resources.ICONS.cancel()));
+        return b;
+    }
+
     /**
      * Configure and return a toolbar include all necessary buttons.
      * 
@@ -242,6 +275,8 @@ public class NotificationPanel extends ContentPanel {
         toolBar.add(buildFilterDropdown());
         toolBar.add(new SeparatorToolItem());
         toolBar.add(buildDeleteButton());
+        toolBar.add(new FillToolItem());
+        toolBar.add(buildDeleteAllButton());
     }
 
     /**

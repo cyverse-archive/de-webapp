@@ -2,6 +2,7 @@ package org.iplantc.de.client.services;
 
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.json.client.JSONObject;
@@ -86,4 +87,23 @@ public class MessageServiceFacade {
 
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
+
+    public void deleteAll(AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "notifications/delete-all"; //$NON-NLS-1$
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.DELETE, address);
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    public void acknowledgeAll(AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
+                + "notifications/mark-all-seen"; //$NON-NLS-1$
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
+                UserInfo.getInstance().getUsername());
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
 }
