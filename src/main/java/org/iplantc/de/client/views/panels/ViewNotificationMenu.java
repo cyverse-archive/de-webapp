@@ -18,6 +18,7 @@ import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.models.Notification;
 import org.iplantc.de.client.models.NotificationWindowConfig;
 import org.iplantc.de.client.services.MessageServiceFacade;
+import org.iplantc.de.client.utils.DEInfo;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotificationHelper.Category;
 import org.iplantc.de.client.utils.NotifyInfo;
@@ -68,6 +69,7 @@ public class ViewNotificationMenu extends Menu {
         view = initList();
         LayoutContainer lc = buildPanel();
         hyperlinkPanel = new HorizontalPanel();
+        hyperlinkPanel.setSpacing(3);
         lc.add(view);
         add(lc);
         add(hyperlinkPanel);
@@ -76,7 +78,7 @@ public class ViewNotificationMenu extends Menu {
     private LayoutContainer buildPanel() {
         LayoutContainer lc = new LayoutContainer();
         lc.setLayout(new FitLayout());
-        lc.setSize(250, 270);
+        lc.setSize(250, 260);
         lc.setBorders(false);
         return lc;
     }
@@ -176,13 +178,39 @@ public class ViewNotificationMenu extends Menu {
     private void updateNotificationLink() {
         hyperlinkPanel.removeAll();
         hyperlinkPanel.add(buildNotificationHyerlink());
+        if (total_unseen > 0) {
+            hyperlinkPanel.add(buildAckAllHyperlink());
+        }
         hyperlinkPanel.layout(true);
+    }
+
+    private MenuHyperlink buildAckAllHyperlink() {
+        return new MenuHyperlink("Acknowledge All", linkStyle, "", new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                MessageServiceFacade facade = new MessageServiceFacade();
+                facade.acknowledgeAll(new AsyncCallback<String>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        ErrorHandler.post(caught);
+
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        DEInfo.display(I18N.DISPLAY.notifications(),
+                                "All new notifications were acknowleged.");
+                    }
+                });
+            }
+        });
     }
 
     private MenuHyperlink buildNotificationHyerlink() {
         String displayText;
         if (total_unseen > 0) {
-            displayText = I18N.DISPLAY.newNotifications() + " (" + total_unseen + " )";
+            displayText = I18N.DISPLAY.newNotifications() + " (" + total_unseen + ")";
         } else {
             displayText = I18N.DISPLAY.allNotifications();
         }
