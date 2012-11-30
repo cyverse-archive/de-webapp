@@ -1270,28 +1270,28 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String changePermissions();
-    
+
     /**
      * Manage sharing
      * 
      * @return
      */
     String manageSharing();
-    
+
     /**
      * Text displayed to expand all nodes in a tree.
      * 
      * @return
      */
     String expandAll();
-    
+
     /**
      * Text displayed to collapse all nodes in a tree.
      * 
      * @return
      */
     String collapseAll();
-    
+
     /**
      * Text displayed at top of Manage Data Link window.
      * 
@@ -1301,8 +1301,36 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
 
     /**
      * Text to display to user which instructs them how to copy highlighted text from a popup window.
+     * 
      * @return
      */
     String copyPasteInstructions();
+
+    /**
+     * delete selected text
+     * 
+     * @return
+     */
+    String deleteSelected();
+
+    /**
+     * 
+     * delete all text
+     * 
+     * @return
+     */
+    String deleteAll();
+
+    /**
+     * 
+     * @return
+     */
+    String markAllasSeen();
+
+    /**
+     * 
+     * @return
+     */
+    String markAllasSeenSuccess();
 
 }

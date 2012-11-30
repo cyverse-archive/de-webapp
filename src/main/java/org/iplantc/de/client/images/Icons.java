@@ -358,8 +358,14 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
      */
     @Source("link.png")
     ImageResource dataLink();
-    
+
     @Source("error.png")
     ImageResource error();
+
+    @Source("tree_expand.png")
+    ImageResource exapndAll();
+
+    @Source("tree_collapse.png")
+    ImageResource collapseAll();
 
 }

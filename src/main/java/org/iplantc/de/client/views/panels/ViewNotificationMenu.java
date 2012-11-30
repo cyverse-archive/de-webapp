@@ -185,7 +185,7 @@ public class ViewNotificationMenu extends Menu {
     }
 
     private MenuHyperlink buildAckAllHyperlink() {
-        return new MenuHyperlink("Acknowledge All", linkStyle, "", new Listener<BaseEvent>() {
+        return new MenuHyperlink(I18N.DISPLAY.markAllasSeen(), linkStyle, "", new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
                 MessageServiceFacade facade = new MessageServiceFacade();
@@ -199,8 +199,7 @@ public class ViewNotificationMenu extends Menu {
 
                     @Override
                     public void onSuccess(String result) {
-                        DEInfo.display(I18N.DISPLAY.notifications(),
-                                "All new notifications were acknowleged.");
+                        DEInfo.display(I18N.DISPLAY.notifications(), I18N.DISPLAY.markAllasSeenSuccess());
                     }
                 });
             }
