@@ -65,7 +65,7 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private final String DELETE_ITEM_ID = "idDeleteBtn"; //$NON-NLS-1$
     private final String CANCEL_ANALYSIS_ITEM_ID = "idCancelAnalysisBtn"; //$NON-NLS-1$
-    private static final String VIEW_PARAMETER_ITEM_ID = "idViewParameter";
+    private static final String VIEW_PARAMETER_ITEM_ID = "idViewParameter"; //$NON-NLS-1$
 
     private MyAnalysesGrid analysisGrid;
 
@@ -177,7 +177,7 @@ public class MyAnalysesPanel extends ContentPanel {
                     arr.set(i++, new JSONString(ae.getId()));
                 }
                 JSONObject obj = new JSONObject();
-                obj.put("executions", arr);
+                obj.put("executions", arr); //$NON-NLS-1$
 
                 getStatus(obj);
             }
@@ -193,14 +193,14 @@ public class MyAnalysesPanel extends ContentPanel {
             @Override
             public void onFailure(Throwable caught) {
                 // do nothing intentionally for now
-                status.clearStatus("");
+                status.clearStatus(""); //$NON-NLS-1$
             }
 
             @Override
             public void onSuccess(String result) {
                 JSONObject resultObj = JsonUtil.getObject(result);
                 if (resultObj != null) {
-                    JSONArray arr = JsonUtil.getArray(resultObj, "analyses");
+                    JSONArray arr = JsonUtil.getArray(resultObj, "analyses"); //$NON-NLS-1$
 
                     if (arr != null && arr.size() > 0) {
                         for (int i = 0; i < arr.size(); i++) {
@@ -565,9 +565,9 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private void setStatus(JSONObject resultObj) {
         status.clearStatus(I18N.DISPLAY.lastUpdated()
-                + ": "
+                + ": " //$NON-NLS-1$
                 + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM).format(
-                        new Date(Long.parseLong(JsonUtil.getString(resultObj, "timestamp")))));
+                        new Date(Long.parseLong(JsonUtil.getString(resultObj, "timestamp"))))); //$NON-NLS-1$
     }
 
     private final class DeleteSeviceCallback implements AsyncCallback<String> {
