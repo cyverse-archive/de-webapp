@@ -471,13 +471,6 @@ public abstract class IPlantWindow extends Window {
     }
 
     /**
-     * Executes define operations for refreshing the window display.
-     */
-    public void refresh() {
-
-    }
-
-    /**
      * Applies a window configuration to the window. The default implementation does nothing.
      * 
      * @param config

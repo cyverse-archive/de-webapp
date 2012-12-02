@@ -489,7 +489,6 @@ public class DesktopView extends ContentPanel {
                 window.setWindowConfig(config);
                 window.show();
                 window.toFront();
-                window.refresh();
             } else {
                 retrieveFileManifest(tag, file, addTreeTab, config);
             }
