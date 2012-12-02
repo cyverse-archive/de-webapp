@@ -6,7 +6,6 @@ import org.iplantc.de.client.views.windows.IPlantWindow;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.WindowManager;
 import com.google.gwt.json.client.JSONObject;
@@ -19,7 +18,6 @@ public class DEWindowManager extends WindowManager {
     private final WindowListener listener;
     private IPlantWindow activeWindow;
     private final FastMap<IPlantWindow> windows = new FastMap<IPlantWindow>();
-    private Point first_window_postion;
 
     /**
      * Instantiate from a window listener.
@@ -75,6 +73,11 @@ public class DEWindowManager extends WindowManager {
             getDEWindows().put(window.getTag(), window);
             window.addWindowListener(listener);
             register(window);
+            if (getActiveWindow() != null) {
+                int new_x = getActiveWindow().getAbsoluteLeft() + 10;
+                int new_y = getActiveWindow().getAbsoluteTop() + 20;
+                window.setPagePosition(new_x, new_y);
+            }
         }
     }
 
@@ -96,23 +99,6 @@ public class DEWindowManager extends WindowManager {
     public void remove(String tag) {
         IPlantWindow win = getDEWindows().remove(tag);
         unregister(win);
-        if (getDEWindows().size() == 0) {
-            first_window_postion = null;
-        }
-    }
-
-    /**
-     * @param first_window_postion the first_window_postion to set
-     */
-    public void setFirst_window_postion(Point first_window_postion) {
-        this.first_window_postion = first_window_postion;
-    }
-
-    /**
-     * @return the first_window_postion
-     */
-    public Point getFirst_window_postion() {
-        return first_window_postion;
     }
 
     /**
@@ -138,17 +124,8 @@ public class DEWindowManager extends WindowManager {
         if (tag != null) {
             IPlantWindow window = getDEWindows().get(tag);
             if (window != null) {
-                if (getFirst_window_postion() != null) {
-                    int new_x = getFirst_window_postion().x + ((getCount() - 1) * 10);
-                    int new_y = getFirst_window_postion().y + ((getCount() - 1) * 20);
-                    window.setPagePosition(new_x, new_y);
-                }
                 window.show();
-                window.toFront();
-                window.refresh();
-                if (getCount() == 1) {
-                    setFirst_window_postion(window.getPosition(true));
-                }
+                bringToFront(window);
             }
 
         }

@@ -1,6 +1,7 @@
 package org.iplantc.de.client.views.taskbar;
 
 import org.iplantc.de.client.dnd.WindowFocusDropTarget;
+import org.iplantc.de.client.utils.DEWindowManager;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.core.El;
@@ -9,7 +10,6 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.WindowManager;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -62,7 +62,7 @@ public class IPlantTaskButton extends Button {
 
         if (win.getData("minimized") != null || !win.isVisible()) { //$NON-NLS-1$
             win.show();
-        } else if (win == WindowManager.get().getActive()) {
+        } else if (win == DEWindowManager.get().getActive()) {
             win.minimize();
         } else {
             win.toFront();
