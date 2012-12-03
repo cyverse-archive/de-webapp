@@ -23,6 +23,11 @@ import org.iplantc.de.client.utils.TaskRunner;
 import org.iplantc.de.client.views.MyAnalysesGrid;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -43,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -50,7 +56,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -68,6 +73,7 @@ public class MyAnalysesPanel extends ContentPanel {
     private static final String VIEW_PARAMETER_ITEM_ID = "idViewParameter"; //$NON-NLS-1$
 
     private MyAnalysesGrid analysisGrid;
+    private PagingLoader<PagingLoadResult<AnalysisExecution>> remoteLoader;
 
     private final HashMap<String, Button> analyses_buttons;
     private final HashMap<String, Menu> menus;
@@ -217,50 +223,18 @@ public class MyAnalysesPanel extends ContentPanel {
         });
     }
 
-    private void retrieveData() {
-        mask(I18N.DISPLAY.loadingMask());
-
-        AnalysisServiceFacade facade = new AnalysisServiceFacade();
-
-        facade.getAnalyses(UserInfo.getInstance().getWorkspaceId(), new AsyncCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                JSONObject JSON = JsonUtil.getObject(result);
-
-                JSONValue val = JSON.get("analyses"); //$NON-NLS-1$
-                if (val != null) {
-                    JSONArray items = val.isArray();
-
-                    JsArray<JsAnalysisExecution> jsAnalyses = JsonUtil.asArrayOf(items.toString());
-                    List<AnalysisExecution> temp = new ArrayList<AnalysisExecution>();
-
-                    for (int i = 0; i < jsAnalyses.length(); i++) {
-                        temp.add(new AnalysisExecution(jsAnalyses.get(i)));
-                    }
-
-                    analysisGrid.loadData(temp);
-                }
-                setStatus(JSON);
-                unmask();
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.DISPLAY.analysesRetrievalFailure(), caught);
-                unmask();
-            }
-        });
-    }
-
     private void initWorkspaceId() {
         idWorkspace = UserInfo.getInstance().getWorkspaceId();
     }
 
     private void init(String caption) {
-        buildTopComponent();
-        setTopComponent(topComponentMenu);
         setHeading(caption);
         setLayout(new FitLayout());
+
+        buildTopComponent();
+        setTopComponent(topComponentMenu);
+        initRemoteLoader();
+
         registerHandlers();
     }
 
@@ -360,6 +334,35 @@ public class MyAnalysesPanel extends ContentPanel {
 
     }
 
+    /**
+     * Initializes the RpcProxy and BasePagingLoader to support paging for the AnalysesGrid.
+     */
+    private void initRemoteLoader() {
+        RpcProxy<PagingLoadResult<AnalysisExecution>> proxy = new RpcProxy<PagingLoadResult<AnalysisExecution>>() {
+
+            @Override
+            protected void load(Object loadConfig,
+                    final AsyncCallback<PagingLoadResult<AnalysisExecution>> callback) {
+                final PagingLoadConfig pagingConfig = (PagingLoadConfig)loadConfig;
+
+                mask(I18N.DISPLAY.loadingMask());
+
+                AnalysisServiceFacade facade = new AnalysisServiceFacade();
+
+                facade.getAnalyses(UserInfo.getInstance().getWorkspaceId(), pagingConfig,
+                        new GetAnalysesServiceCallback(callback, pagingConfig.getOffset()));
+            }
+        };
+
+        remoteLoader = new BasePagingLoader<PagingLoadResult<AnalysisExecution>>(proxy);
+        remoteLoader.setRemoteSort(true);
+
+        PagingToolBar toolBar = new PagingToolBar(10);
+        toolBar.bind(remoteLoader);
+
+        setBottomComponent(toolBar);
+    }
+
     private class StoreFilterImpl implements StoreFilter<AnalysisExecution> {
         @Override
         public boolean select(Store<AnalysisExecution> store, AnalysisExecution parent,
@@ -384,7 +387,7 @@ public class MyAnalysesPanel extends ContentPanel {
         super.onRender(parent, index);
 
         buildCheckBoxSelectionModel(menus);
-        analysisGrid = MyAnalysesGrid.createInstance(sm);
+        analysisGrid = MyAnalysesGrid.createInstance(sm, remoteLoader);
         if (getIdCurrentSelection() != null && analysisGrid.getStore() != null) {
             analysisGrid.setCurrentSelection(getIdCurrentSelection());
         }
@@ -393,7 +396,8 @@ public class MyAnalysesPanel extends ContentPanel {
         analysisGrid.getView().setEmptyText(I18N.DISPLAY.noAnalyses());
         add(analysisGrid);
         addGridEventListeners();
-        retrieveData();
+
+        remoteLoader.load();
     }
 
     /**
@@ -665,4 +669,93 @@ public class MyAnalysesPanel extends ContentPanel {
         }
     }
 
+    /**
+     * An AsyncCallback for the AnalysisServiceFacade that will load paged results into the AnalysesGrid.
+     * 
+     * @author psarando
+     * 
+     */
+    private final class GetAnalysesServiceCallback implements AsyncCallback<String> {
+        private final AsyncCallback<PagingLoadResult<AnalysisExecution>> pagingCallback;
+        private final int offset;
+
+        public GetAnalysesServiceCallback(
+                AsyncCallback<PagingLoadResult<AnalysisExecution>> pagingCallback, int offset) {
+            this.pagingCallback = pagingCallback;
+            this.offset = offset;
+        }
+
+        @Override
+        public void onSuccess(String result) {
+            JSONObject jsonResult = JsonUtil.getObject(result);
+
+            JSONArray items = JsonUtil.getArray(jsonResult, "analyses"); //$NON-NLS-1$
+            if (items != null) {
+                JsArray<JsAnalysisExecution> jsAnalyses = JsonUtil.asArrayOf(items.toString());
+
+                final List<AnalysisExecution> results = new ArrayList<AnalysisExecution>();
+
+                for (int i = 0; i < jsAnalyses.length(); i++) {
+                    results.add(new AnalysisExecution(jsAnalyses.get(i)));
+                }
+
+                Number totalLength = JsonUtil.getNumber(jsonResult, "total"); //$NON-NLS-1$
+
+                pagingCallback.onSuccess(new AnalysesPagingLoadResult(results, totalLength, offset));
+            }
+
+            setStatus(jsonResult);
+            unmask();
+        }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            ErrorHandler.post(I18N.DISPLAY.analysesRetrievalFailure(), caught);
+            pagingCallback.onFailure(caught);
+            unmask();
+        }
+    }
+
+    /**
+     * A PagingLoadResult for loading paged results into the AnalysesGrid.
+     * 
+     * @author psarando
+     * 
+     */
+    private final class AnalysesPagingLoadResult implements PagingLoadResult<AnalysisExecution> {
+        private final List<AnalysisExecution> results;
+        private Number totalResultsLength;
+        private int offset;
+
+        AnalysesPagingLoadResult(List<AnalysisExecution> results, Number totalResultsLength, int offset) {
+            this.results = results;
+            this.totalResultsLength = totalResultsLength;
+            this.offset = offset;
+        }
+
+        @Override
+        public List<AnalysisExecution> getData() {
+            return results;
+        }
+
+        @Override
+        public void setTotalLength(int totalLength) {
+            this.totalResultsLength = totalLength;
+        }
+
+        @Override
+        public void setOffset(int offset) {
+            this.offset = offset;
+        }
+
+        @Override
+        public int getTotalLength() {
+            return totalResultsLength == null ? results.size() : totalResultsLength.intValue();
+        }
+
+        @Override
+        public int getOffset() {
+            return offset;
+        }
+    }
 }
