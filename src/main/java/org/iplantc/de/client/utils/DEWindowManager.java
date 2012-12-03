@@ -14,7 +14,7 @@ import com.google.gwt.json.client.JSONString;
 /**
  * Manages window widgets in the web "desktop" environment.
  */
-public class DEWindowManager extends WindowManager {
+public class DEWindowManager {
     private final WindowListener listener;
     private IPlantWindow activeWindow;
     private final FastMap<IPlantWindow> windows = new FastMap<IPlantWindow>();
@@ -36,7 +36,7 @@ public class DEWindowManager extends WindowManager {
     public void setActiveWindow(IPlantWindow window) {
         activeWindow = window;
         if (window != null) {
-            bringToFront(window);
+            WindowManager.get().bringToFront(window);
         }
     }
 
@@ -72,7 +72,7 @@ public class DEWindowManager extends WindowManager {
             window.setId(window.getTag());
             getDEWindows().put(window.getTag(), window);
             window.addWindowListener(listener);
-            register(window);
+            WindowManager.get().register(window);
             if (getActiveWindow() != null) {
                 int new_x = getActiveWindow().getAbsoluteLeft() + 10;
                 int new_y = getActiveWindow().getAbsoluteTop() + 20;
@@ -98,7 +98,7 @@ public class DEWindowManager extends WindowManager {
      */
     public void remove(String tag) {
         IPlantWindow win = getDEWindows().remove(tag);
-        unregister(win);
+        WindowManager.get().unregister(win);
     }
 
     /**
@@ -125,7 +125,7 @@ public class DEWindowManager extends WindowManager {
             IPlantWindow window = getDEWindows().get(tag);
             if (window != null) {
                 window.show();
-                bringToFront(window);
+                window.toFront();
             }
 
         }
@@ -141,7 +141,7 @@ public class DEWindowManager extends WindowManager {
     public JSONObject getActiveWindowStates() {
         JSONObject obj = new JSONObject();
         int index = 0;
-        for (Window win : getStack()) {
+        for (Window win : WindowManager.get().getStack()) {
             JSONObject state = ((IPlantWindow)win).getWindowState();
             String tag = ((IPlantWindow)win).getTag();
             state.put("order", new JSONString(index++ + ""));
