@@ -23,6 +23,8 @@ import org.iplantc.de.client.views.panels.MyAnalysesPanel.EXECUTION_STATUS;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -185,13 +187,16 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
      * 
      * @return newly allocated my analysis grid.
      */
-    public static MyAnalysesGrid createInstance(CheckBoxSelectionModel<AnalysisExecution> sm) {
-        return createInstanceImpl(sm);
-    }
-
     @SuppressWarnings("unchecked")
-    private static MyAnalysesGrid createInstanceImpl(CheckBoxSelectionModel<AnalysisExecution> sm) {
-        ListStore<AnalysisExecution> gstore = new ListStore<AnalysisExecution>();
+    public static MyAnalysesGrid createInstance(CheckBoxSelectionModel<AnalysisExecution> sm,
+            PagingLoader<PagingLoadResult<AnalysisExecution>> remoteLoader) {
+        ListStore<AnalysisExecution> gstore;
+        if (remoteLoader != null) {
+            gstore = new ListStore<AnalysisExecution>(remoteLoader);
+        } else {
+            gstore = new ListStore<AnalysisExecution>();
+        }
+
         gstore.setStoreSorter(new CommonStoreSorter());
         final ColumnModel colModel = buildColumnModel(sm);
         MyAnalysesGrid grid = new MyAnalysesGrid(gstore, colModel);

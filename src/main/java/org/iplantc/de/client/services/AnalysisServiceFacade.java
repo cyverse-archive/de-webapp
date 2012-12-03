@@ -4,6 +4,8 @@ import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -14,13 +16,38 @@ public class AnalysisServiceFacade {
      * Get all the analyses for a given workspace.
      * 
      * @param workspaceId unique id for a user's workspace.
+     * @param pagingConfig optional remote paging and sorting configs.
      * @param callback executed when RPC call completes.
      */
-    public void getAnalyses(String workspaceId, AsyncCallback<String> callback) {
-        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "workspaces/" //$NON-NLS-1$
-                + workspaceId + "/executions/list"; //$NON-NLS-1$
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+    public void getAnalyses(String workspaceId, PagingLoadConfig pagingConfig,
+            AsyncCallback<String> callback) {
+        StringBuilder address = new StringBuilder(DEProperties.getInstance().getMuleServiceBaseUrl());
 
+        address.append("workspaces/"); //$NON-NLS-1$
+        address.append(workspaceId);
+        address.append("/executions/list"); //$NON-NLS-1$
+
+        if (pagingConfig != null) {
+            address.append("?limit="); //$NON-NLS-1$
+            address.append(pagingConfig.getLimit());
+
+            address.append("&offset="); //$NON-NLS-1$
+            address.append(pagingConfig.getOffset());
+
+            String sortField = pagingConfig.getSortField();
+            if (sortField != null && !sortField.isEmpty()) {
+                address.append("&sort-field="); //$NON-NLS-1$
+                address.append(sortField);
+            }
+
+            SortDir sortDir = pagingConfig.getSortDir();
+            if (sortDir == SortDir.ASC || sortDir == SortDir.DESC) {
+                address.append("&sort-order="); //$NON-NLS-1$
+                address.append(sortDir.toString());
+            }
+        }
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address.toString());
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
