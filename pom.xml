@@ -13,7 +13,7 @@
 		<!-- Target Java Version -->
         <jdk.version>1.6</jdk.version>
 		<!-- Current GWT Version -->
-        <gwt.version>2.5.0-rc1</gwt.version>
+        <gwt.version>2.5.0</gwt.version>
 		<!-- Current ExtGWT Version -->
         <gxt.version>3.0.1</gxt.version>
         <!-- Define OS/Platform Independent Character Encoding -->
@@ -260,7 +260,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.5.0-rc1</version>
+                <version>${gwt.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -270,7 +270,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <extraJvmArgs>-Xmx2048M -Xms512M -Xss4M</extraJvmArgs>
+                    <extraJvmArgs>-Xmx1024M -Xms512M -Xss4M</extraJvmArgs>
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <mode>htmlunit</mode>
                 </configuration>
