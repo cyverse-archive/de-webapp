@@ -14,7 +14,6 @@ import org.iplantc.de.client.GwtTestIPlantRuleFactory;
 import org.iplantc.de.client.GwtTestIntAboveRule;
 import org.iplantc.de.client.GwtTestIntRangeRule;
 import org.iplantc.de.client.GwtTestJsEvaluate;
-import org.iplantc.de.client.GwtTestMessageDispatcher;
 import org.iplantc.de.client.GwtTestMetaDataContract;
 import org.iplantc.de.client.GwtTestMultiPartServiceWrapper;
 import org.iplantc.de.client.GwtTestNonEmptyArrayRule;
@@ -56,7 +55,6 @@ public class DETestSuite extends GWTTestSuite {
         suite.addTestSuite(GwtTestUserInfo.class);
         suite.addTestSuite(GwtTestValidatorHelper.class);
         suite.addTestSuite(GwtTestWidgetFactory.class);
-        // suite.addTestSuite(GwtTestMessageDispatcher.class);
         suite.addTestSuite(GwtTestNotification.class);
         suite.addTestSuite(GwtTestEventJSONFactory.class);
         suite.addTestSuite(GwtTestNotificationWindowConfig.class);
