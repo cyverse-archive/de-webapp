@@ -248,8 +248,9 @@ public class MyAnalysesPanel extends ContentPanel {
         topComponentMenu.add(buildViewParamsButton());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
-        buildFilterField();
-        topComponentMenu.add(filter);
+        // TODO CORE-3735 temp. remove filtering until remote filtering can be implemented.
+        // buildFilterField();
+        // topComponentMenu.add(filter);
         topComponentMenu.add(new FillToolItem());
         buildStatusBar();
         topComponentMenu.add(status);
@@ -392,7 +393,8 @@ public class MyAnalysesPanel extends ContentPanel {
             analysisGrid.setCurrentSelection(getIdCurrentSelection());
         }
 
-        analysisGrid.getStore().addFilter(new StoreFilterImpl());
+        // TODO CORE-3735 temp. remove filtering until remote filtering can be implemented.
+        // analysisGrid.getStore().addFilter(new StoreFilterImpl());
         analysisGrid.getView().setEmptyText(I18N.DISPLAY.noAnalyses());
         add(analysisGrid);
         addGridEventListeners();
