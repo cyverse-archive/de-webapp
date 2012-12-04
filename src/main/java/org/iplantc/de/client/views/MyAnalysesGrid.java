@@ -95,35 +95,37 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
     }
 
     private void updateStore(JSONObject payload) {
-        MyAnalysesPanel.EXECUTION_STATUS enumStatus = MyAnalysesPanel.EXECUTION_STATUS
-                .fromTypeString(JsonUtil.getString(payload, "status")); //$NON-NLS-1$
+        String analysisId = JsonUtil.getString(payload, "id"); //$NON-NLS-1$
 
-        if (getStore().findModel("id", JsonUtil.getString(payload, "id")) != null) { //$NON-NLS-1$ //$NON-NLS-2$
+        String status = JsonUtil.getString(payload, "status"); //$NON-NLS-1$
+        MyAnalysesPanel.EXECUTION_STATUS enumStatus = MyAnalysesPanel.EXECUTION_STATUS
+                .fromTypeString(status);
+        status = enumStatus.toString();
+
+        if (getStore().findModel("id", analysisId) != null) { //$NON-NLS-1$
+            String endDate = JsonUtil.getString(payload, "enddate"); //$NON-NLS-1$
+            String startDate = JsonUtil.getString(payload, "startdate"); //$NON-NLS-1$
+            String resultFolder = JsonUtil.getString(payload, "resultfolderid"); //$NON-NLS-1$
+
             switch (enumStatus) {
                 case COMPLETED:
-                    updateEndExecStatus(JsonUtil.getString(payload, "id"), enumStatus.toString(), //$NON-NLS-1$
-                            JsonUtil.getString(payload, "resultfolderid"), //$NON-NLS-1$
-                            DateParser.parseDate(JsonUtil.getString(payload, "enddate").toString())); //$NON-NLS-1$
+                    updateEndExecStatus(analysisId, status, resultFolder, DateParser.parseDate(endDate));
                     break;
 
                 case FAILED:
-                    updateEndExecStatus(JsonUtil.getString(payload, "id"), enumStatus.toString(), //$NON-NLS-1$
-                            JsonUtil.getString(payload, "resultfolderid"), //$NON-NLS-1$
-                            DateParser.parseDate(JsonUtil.getString(payload, "enddate").toString())); //$NON-NLS-1$
+                    updateEndExecStatus(analysisId, status, resultFolder, DateParser.parseDate(endDate));
                     break;
 
                 case RUNNING:
-                    updateRunExecStatus(JsonUtil.getString(payload, "id"), enumStatus.toString(), //$NON-NLS-1$
-                            DateParser.parseDate(JsonUtil.getString(payload, "startdate").toString())); //$NON-NLS-1$
+                    updateRunExecStatus(analysisId, status, DateParser.parseDate(startDate));
                     break;
 
                 case SUBMITTED:
-                    updateRunExecStatus(JsonUtil.getString(payload, "id"), enumStatus.toString(), //$NON-NLS-1$
-                            DateParser.parseDate(JsonUtil.getString(payload, "startdate").toString())); //$NON-NLS-1$
+                    updateRunExecStatus(analysisId, status, DateParser.parseDate(startDate));
                     break;
 
                 default:
-                    updateExecStatus(JsonUtil.getString(payload, "id"), enumStatus.toString()); //$NON-NLS-1$
+                    updateExecStatus(analysisId, status);
                     break;
             }
         } else {
