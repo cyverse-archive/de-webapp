@@ -128,9 +128,6 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
                     updateExecStatus(analysisId, status);
                     break;
             }
-        } else {
-            AnalysisExecution exec = buildAnalysisExecution(payload);
-            getStore().insert(exec, 0);
         }
     }
 
