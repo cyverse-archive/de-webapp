@@ -6,7 +6,6 @@ import org.iplantc.de.client.views.windows.IPlantWindow;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.WindowManager;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -141,9 +140,9 @@ public class DEWindowManager {
     public JSONObject getActiveWindowStates() {
         JSONObject obj = new JSONObject();
         int index = 0;
-        for (Window win : WindowManager.get().getStack()) {
-            JSONObject state = ((IPlantWindow)win).getWindowState();
-            String tag = ((IPlantWindow)win).getTag();
+        for (IPlantWindow win : windows.values()) {
+            JSONObject state = win.getWindowState();
+            String tag = win.getTag();
             state.put("order", new JSONString(index++ + ""));
             state.put("tag", new JSONString(tag));
             obj.put(tag, state);
