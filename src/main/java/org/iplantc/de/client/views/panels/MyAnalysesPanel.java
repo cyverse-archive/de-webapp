@@ -15,11 +15,10 @@ import org.iplantc.de.client.events.AnalysisUpdateEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.JsAnalysisExecution;
-import org.iplantc.de.client.periodic.AnalysisStatusChecker;
 import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
-import org.iplantc.de.client.utils.TaskRunner;
+import org.iplantc.de.client.views.DEPagingToolbar;
 import org.iplantc.de.client.views.MyAnalysesGrid;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -31,13 +30,11 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -48,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -93,7 +89,7 @@ public class MyAnalysesPanel extends ContentPanel {
 
     private Status status;
 
-    private final AnalysisStatusChecker statusCheckTask;
+    private DEPagingToolbar pagingToolbar;
 
     /**
      * Indicates the status of an analysis.
@@ -168,9 +164,6 @@ public class MyAnalysesPanel extends ContentPanel {
         initWorkspaceId();
 
         facadeAnalysisService = new AnalysisServiceFacade();
-        statusCheckTask = new AnalysisStatusChecker(this);
-
-        TaskRunner.getInstance().addTask(statusCheckTask);
     }
 
     public void checkStatus() {
@@ -231,9 +224,9 @@ public class MyAnalysesPanel extends ContentPanel {
         setHeading(caption);
         setLayout(new FitLayout());
 
+        initRemoteLoader();
         buildTopComponent();
         setTopComponent(topComponentMenu);
-        initRemoteLoader();
 
         registerHandlers();
     }
@@ -245,6 +238,9 @@ public class MyAnalysesPanel extends ContentPanel {
     private void buildTopComponent() {
         topComponentMenu = new ToolBar();
         topComponentMenu.setHeight(30);
+        Button refreshBtn = pagingToolbar.getRefreshButton();
+        refreshBtn.setText(I18N.DISPLAY.refresh());
+        topComponentMenu.add(refreshBtn);
         topComponentMenu.add(buildViewParamsButton());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
@@ -320,20 +316,20 @@ public class MyAnalysesPanel extends ContentPanel {
         return b;
     }
 
-    /**
-     * Builds a text field for filtering items displayed in the data container.
-     */
-    private void buildFilterField() {
-        filter = new TextField<String>() {
-            @Override
-            public void onKeyUp(FieldEvent fe) {
-                analysisGrid.getStore().applyFilters(null);
-            }
-        };
-
-        filter.setEmptyText(I18N.DISPLAY.filterAnalysesList());
-
-    }
+    // /**
+    // * Builds a text field for filtering items displayed in the data container.
+    // */
+    // private void buildFilterField() {
+    // filter = new TextField<String>() {
+    // @Override
+    // public void onKeyUp(FieldEvent fe) {
+    // analysisGrid.getStore().applyFilters(null);
+    // }
+    // };
+    //
+    // filter.setEmptyText(I18N.DISPLAY.filterAnalysesList());
+    //
+    // }
 
     /**
      * Initializes the RpcProxy and BasePagingLoader to support paging for the AnalysesGrid.
@@ -358,27 +354,27 @@ public class MyAnalysesPanel extends ContentPanel {
         remoteLoader = new BasePagingLoader<PagingLoadResult<AnalysisExecution>>(proxy);
         remoteLoader.setRemoteSort(true);
 
-        PagingToolBar toolBar = new PagingToolBar(10);
-        toolBar.bind(remoteLoader);
+        pagingToolbar = new DEPagingToolbar(10);
+        pagingToolbar.bind(remoteLoader);
 
-        setBottomComponent(toolBar);
+        setBottomComponent(pagingToolbar);
     }
 
-    private class StoreFilterImpl implements StoreFilter<AnalysisExecution> {
-        @Override
-        public boolean select(Store<AnalysisExecution> store, AnalysisExecution parent,
-                AnalysisExecution item, String property) {
-            if (filter != null && filter.getValue() != null && !filter.getValue().isEmpty()) {
-                return item.getName().toLowerCase().startsWith(filter.getValue().toLowerCase())
-                        || item.getAnalysisName().toLowerCase()
-                                .startsWith(filter.getValue().toLowerCase());
-            }
-
-            return true;
-
-        }
-
-    }
+    // private class StoreFilterImpl implements StoreFilter<AnalysisExecution> {
+    // @Override
+    // public boolean select(Store<AnalysisExecution> store, AnalysisExecution parent,
+    // AnalysisExecution item, String property) {
+    // if (filter != null && filter.getValue() != null && !filter.getValue().isEmpty()) {
+    // return item.getName().toLowerCase().startsWith(filter.getValue().toLowerCase())
+    // || item.getAnalysisName().toLowerCase()
+    // .startsWith(filter.getValue().toLowerCase());
+    // }
+    //
+    // return true;
+    //
+    // }
+    //
+    // }
 
     /**
      * {@inheritDoc}
@@ -548,7 +544,7 @@ public class MyAnalysesPanel extends ContentPanel {
         // clear our list
         handlers.clear();
         analysisGrid.cleanup();
-        TaskRunner.getInstance().removeTask(statusCheckTask);
+        // TaskRunner.getInstance().removeTask(statusCheckTask);
     }
 
     /**

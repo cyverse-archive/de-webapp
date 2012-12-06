@@ -18,6 +18,7 @@ import org.iplantc.de.client.models.Notification;
 import org.iplantc.de.client.services.MessageServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotificationHelper.Category;
+import org.iplantc.de.client.views.DEPagingToolbar;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -56,7 +57,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -98,6 +98,7 @@ public class NotificationPanel extends ContentPanel {
     private int total;
 
     private NotificationHelper helper = NotificationHelper.getInstance();
+    private DEPagingToolbar pagingToolBar;
 
     /**
      * Creates a new NotificationPanel with config.
@@ -194,18 +195,17 @@ public class NotificationPanel extends ContentPanel {
         loader = new BasePagingLoader<PagingLoadResult<Notification>>(proxy);
         loader.setRemoteSort(true);
 
-        final PagingToolBar toolBar = new PagingToolBar(10);
-        toolBar.bind(loader);
-        setBottomComponent(toolBar);
-
+        pagingToolBar = new DEPagingToolbar(10);
+        pagingToolBar.bind(loader);
+        setBottomComponent(pagingToolBar);
     }
 
     private void compose() {
         setHeaderVisible(false);
         setLayout(new FitLayout());
-        add(grdNotifications);
         buildButtonBar();
         setTopComponent(toolBar);
+        add(grdNotifications);
     }
 
     private Button buildDeleteButton() {
@@ -273,6 +273,9 @@ public class NotificationPanel extends ContentPanel {
 
         toolBar.add(new Label(I18N.CONSTANT.filterBy() + "&nbsp;"));
         toolBar.add(buildFilterDropdown());
+        Button refreshButton = pagingToolBar.getRefreshButton();
+        refreshButton.setText(I18N.DISPLAY.refresh());
+        toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(buildDeleteButton());
         toolBar.add(new FillToolItem());
