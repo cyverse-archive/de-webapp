@@ -221,7 +221,7 @@ public class SubmitAppForPublicUsePanel extends LayoutContainer {
         integratorNameField.setEnabled(false);
         emailField.setEnabled(false);
 
-        refPanel = new ReferenceEditorGridPanel(525, 90);
+        refPanel = new ReferenceEditorGridPanel(app.getId(), 525, 90);
     }
 
     private void setDefaultValues() {
