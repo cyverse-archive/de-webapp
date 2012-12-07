@@ -583,4 +583,11 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * @return
      */
     String createDataLinksError();
+
+    /**
+     * Error msg shown when an attempt to load App references goes awry!!
+     * 
+     * @return
+     */
+    String loadReferencesError();
 }
