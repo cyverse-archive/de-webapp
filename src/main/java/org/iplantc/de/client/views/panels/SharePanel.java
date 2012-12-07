@@ -226,12 +226,21 @@ public class SharePanel extends ContentPanel {
         if (sharingMap != null) {
             for (DataSharing s : sharingMap.values()) {
                 Sharing find = new Sharing(s.getCollaborator());
-                Sharing exits = treeStore.findModel(find);
-                if (exits == null) {
+                Sharing exists = treeStore.findModel(find);
+                if (exists == null) {
                     treeStore.add(find, false);
-                    exits = find;
+                    exists = find;
                 }
-                treeStore.add(exits, s, false);
+                List<Sharing> childerens = treeStore.getChildren(exists);
+                if (childerens != null) {
+                    for (Sharing temp : childerens) {
+                        DataSharing tempDs = (DataSharing)temp;
+                        if (tempDs.equals(s)) {
+                            return;
+                        }
+                    }
+                }
+                treeStore.add(exists, s, false);
             }
             grid.expandAll();
         }
@@ -415,7 +424,6 @@ public class SharePanel extends ContentPanel {
             @SuppressWarnings("rawtypes")
             TreeNode tn = grid.findNode(e.getTarget());
             setDropFeedback(e, tn);
-
         }
 
         @Override
@@ -470,9 +478,16 @@ public class SharePanel extends ContentPanel {
             if (list == null) {
                 list = new ArrayList<Sharing>();
             }
-            if (model instanceof DataSharing && isExistedOriginally(model)) {
-                list.add(model);
+            if (model instanceof DataSharing) {
+                if (isExistedOriginally(model)) {
+                    list.add(model);
+                }
+                Sharing parent = store.getParent(model);
                 store.remove(model);
+                // prevent parent turning into a leaf
+                if (parent != null && parent.isLeaf()) {
+                    grid.setLeaf(parent, false);
+                }
             } else {
                 Sharing sharing = store.findModel(model);
                 if (sharing != null) {
