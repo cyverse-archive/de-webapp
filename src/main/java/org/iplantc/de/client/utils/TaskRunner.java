@@ -2,6 +2,8 @@ package org.iplantc.de.client.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.iplantc.core.uicommons.client.models.DEProperties;
 
@@ -36,6 +38,11 @@ public class TaskRunner {
      * The timer to use for repeating tasks.
      */
     private final Timer timer;
+
+    /**
+     * Used to log failed tasks.
+     */
+    private final Logger logger = Logger.getLogger("TaskRunner");
 
     private TaskRunner() {
         // get interval in seconds
@@ -95,7 +102,12 @@ public class TaskRunner {
 
     private void runTasks() {
         for (Runnable task : tasks) {
-            task.run();
+            try {
+                task.run();
+            }
+            catch (RuntimeException e) {
+                logger.log(Level.SEVERE, "timed task failed", e);
+            }
         }
     }
 }
