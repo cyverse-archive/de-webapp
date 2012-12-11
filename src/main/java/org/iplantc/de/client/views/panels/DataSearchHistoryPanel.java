@@ -72,6 +72,13 @@ public class DataSearchHistoryPanel extends ContentPanel {
             searchHistory.add(searchTerm);
             renderHistory();
             saveSearchHistory();
+        } else {
+            // move item to the top
+            if (searchHistory.remove(searchTerm)) {
+                searchHistory.add(searchTerm);
+                renderHistory();
+            }
+
         }
     }
 
@@ -153,6 +160,7 @@ public class DataSearchHistoryPanel extends ContentPanel {
         public void handleEvent(BaseEvent be) {
             searchHistory.remove(history);
             renderHistory();
+            saveSearchHistory();
         }
     }
 

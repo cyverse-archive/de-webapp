@@ -19,6 +19,7 @@ import org.iplantc.de.client.views.panels.DataPreviewPanel;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -60,6 +61,17 @@ public class MyDataSearchGrid extends Grid<DiskResource> {
                 DiskResourceSelectionChangedEvent event = new DiskResourceSelectionChangedEvent(
                         MyDataSearchGrid.this.tag, Arrays.asList(se.getSelectedItem()), null);
                 EventBus.getInstance().fireEvent(event);
+            }
+        });
+        addListener(Events.ColumnResize, new Listener<GridEvent>() {
+            @Override
+            public void handleEvent(GridEvent be) {
+                int ind = be.getColIndex();
+                // if (ind == 1) {
+                // ColumnConfig cc = getColumnModel().getColumn(1);
+                // LocationCellRenderer lcr = (LocationCellRenderer<? extends ModelData>)cc
+                // .getRenderer();
+                // }
             }
         });
     }
@@ -127,10 +139,9 @@ class LocationCellRenderer implements GridCellRenderer<DiskResource> {
         Hyperlink link = null;
 
         if (model instanceof Folder) {
-            link = new Hyperlink(Format.ellipse(model.getId(), 30), "mydata_name"); //$NON-NLS-1$
+            link = new Hyperlink(model.getId(), "mydata_name"); //$NON-NLS-1$
         } else {
-            link = new Hyperlink(Format.ellipse(DiskResourceUtil.parseParent(model.getId()), 30),
-                    "mydata_name");
+            link = new Hyperlink(DiskResourceUtil.parseParent(model.getId()), "mydata_name");
         }
         link.setToolTip(model.getId());
         link.addListener(Events.OnClick, new Listener<BaseEvent>() {
