@@ -188,6 +188,7 @@ public class DataDetailListPanel extends ContentPanel {
         facade.getStat(obj.toString(), new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
+                removeAll();
                 // race condition gaurd
                 if (selection != null && selection.size() == 1
                         && selection.get(0).getId().equalsIgnoreCase(path)) {
