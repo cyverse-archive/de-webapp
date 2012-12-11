@@ -10,14 +10,11 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.de.client.Constants;
+import org.iplantc.core.uicommons.client.widgets.SearchField;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.JsAnalysisExecution;
-import org.iplantc.de.client.models.WizardWindowConfig;
 import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
@@ -25,14 +22,16 @@ import org.iplantc.de.client.views.DEPagingToolbar;
 import org.iplantc.de.client.views.MyAnalysesGrid;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.BaseFilterPagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.FilterPagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -43,7 +42,10 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
+import com.extjs.gxt.ui.client.widget.grid.filters.GridFilters;
+import com.extjs.gxt.ui.client.widget.grid.filters.StringFilter;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -66,7 +68,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * 
  */
 public class MyAnalysesPanel extends ContentPanel {
-
     private final String DELETE_ITEM_ID = "idDeleteBtn"; //$NON-NLS-1$
     private final String CANCEL_ANALYSIS_ITEM_ID = "idCancelAnalysisBtn"; //$NON-NLS-1$
     private static final String VIEW_PARAMETER_ITEM_ID = "idViewParameter"; //$NON-NLS-1$
@@ -88,6 +89,7 @@ public class MyAnalysesPanel extends ContentPanel {
     private final AnalysisServiceFacade facadeAnalysisService;
 
     protected static CheckBoxSelectionModel<AnalysisExecution> sm;
+    private SearchField filterField;
 
     private Status status;
 
@@ -190,17 +192,15 @@ public class MyAnalysesPanel extends ContentPanel {
     private void buildTopComponent() {
         topComponentMenu = new ToolBar();
         topComponentMenu.setHeight(30);
-        Button refreshBtn = pagingToolbar.getRefreshButton();
-        refreshBtn.setText(I18N.DISPLAY.refresh());
-        topComponentMenu.add(refreshBtn);
         topComponentMenu.add(buildViewParamsButton());
         topComponentMenu.add(new SeparatorToolItem());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
-        // TODO CORE-3735 temp. remove filtering until remote filtering can be implemented.
-        // buildFilterField();
-        // topComponentMenu.add(filter);
+        topComponentMenu.add(buildFilterField());
         topComponentMenu.add(new FillToolItem());
+        Button refreshBtn = pagingToolbar.getRefreshButton();
+        refreshBtn.setText(I18N.DISPLAY.refresh());
+        topComponentMenu.add(refreshBtn);
         buildStatusBar();
         topComponentMenu.add(status);
     }
@@ -270,6 +270,17 @@ public class MyAnalysesPanel extends ContentPanel {
     }
 
     /**
+     * Builds a text field for filtering items displayed in the data container.
+     */
+    private TextField<String> buildFilterField() {
+        filterField = new SearchField("name"); //$NON-NLS-1$
+        filterField.setEmptyText(I18N.DISPLAY.filterAnalysesList());
+        filterField.setMaxLength(255);
+
+        return filterField;
+    }
+
+    /**
      * Initializes the RpcProxy and BasePagingLoader to support paging for the AnalysesGrid.
      */
     private void initRemoteLoader() {
@@ -278,7 +289,7 @@ public class MyAnalysesPanel extends ContentPanel {
             @Override
             protected void load(Object loadConfig,
                     final AsyncCallback<PagingLoadResult<AnalysisExecution>> callback) {
-                final PagingLoadConfig pagingConfig = (PagingLoadConfig)loadConfig;
+                final FilterPagingLoadConfig pagingConfig = (FilterPagingLoadConfig)loadConfig;
 
                 mask(I18N.DISPLAY.loadingMask());
 
@@ -289,7 +300,14 @@ public class MyAnalysesPanel extends ContentPanel {
             }
         };
 
-        remoteLoader = new BasePagingLoader<PagingLoadResult<AnalysisExecution>>(proxy);
+        remoteLoader = new BasePagingLoader<PagingLoadResult<AnalysisExecution>>(proxy) {
+
+            @Override
+            protected Object newLoadConfig() {
+                return new BaseFilterPagingLoadConfig();
+            }
+        };
+
         remoteLoader.setRemoteSort(true);
 
         pagingToolbar = new DEPagingToolbar(10);
@@ -311,13 +329,40 @@ public class MyAnalysesPanel extends ContentPanel {
             analysisGrid.setCurrentSelection(getIdCurrentSelection());
         }
 
-        // TODO CORE-3735 temp. remove filtering until remote filtering can be implemented.
-        // analysisGrid.getStore().addFilter(new StoreFilterImpl());
+        analysisGrid.addPlugin(buildGridFilters());
+
         analysisGrid.getView().setEmptyText(I18N.DISPLAY.noAnalyses());
         add(analysisGrid);
         addGridEventListeners();
 
         remoteLoader.load();
+    }
+
+    private GridFilters buildGridFilters() {
+        GridFilters filters = new GridFilters() {
+            @Override
+            protected void onContextMenu(GridEvent<?> be) {
+                // intentionally do nothing in order to hide the filter fields from the column menus.
+            }
+        };
+
+        final StringFilter appFilter = new StringFilter("analysis_name"); //$NON-NLS-1$
+        final StringFilter nameFilter = filterField.getFilter();
+
+        Listener<BaseEvent> filterListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                appFilter.setValue(nameFilter.getValue());
+            }
+        };
+        nameFilter.addListener(Events.Update, filterListener);
+        nameFilter.addListener(Events.Activate, filterListener);
+
+        filters.addFilter(nameFilter);
+        filters.addFilter(appFilter);
+
+        return filters;
     }
 
     /**
