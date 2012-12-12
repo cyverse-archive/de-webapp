@@ -1340,4 +1340,10 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String relaunch();
 
+    /**
+     * 
+     * @return
+     */
+    String noCollaboratorsSearchResult();
+
 }

@@ -58,7 +58,6 @@ public class CollaboratorsPanel extends ContentPanel {
         grid = new Grid<Collaborator>(store, buildColumnModel());
         grid.setAutoExpandColumn(Collaborator.NAME);
         grid.setBorders(false);
-        grid.getView().setEmptyText(I18N.DISPLAY.noCollaborators());
 
         add(grid);
         new GridDragSource(grid) {
@@ -105,6 +104,12 @@ public class CollaboratorsPanel extends ContentPanel {
 
     public void setMode(ManageCollaboratorsPanel.MODE mode) {
         this.mode = mode;
+        if (mode.equals(MODE.MANAGE)) {
+            grid.getView().setEmptyText(I18N.DISPLAY.noCollaborators());
+        } else if (mode.equals(MODE.SEARCH)) {
+            grid.getView().setEmptyText(I18N.DISPLAY.noCollaboratorsSearchResult());
+        }
+
     }
 
     /**
