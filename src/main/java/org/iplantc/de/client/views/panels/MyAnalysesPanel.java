@@ -12,7 +12,6 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.widgets.SearchField;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.AnalysisUpdateEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.JsAnalysisExecution;
@@ -50,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.grid.filters.StringFilter;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -170,56 +170,6 @@ public class MyAnalysesPanel extends ContentPanel {
         facadeAnalysisService = new AnalysisServiceFacade();
     }
 
-    public void checkStatus() {
-        if (analysisGrid != null) {
-            List<AnalysisExecution> list = analysisGrid.getUpdateList();
-            JSONArray arr = new JSONArray();
-            int i = 0;
-            if (list != null && list.size() > 0) {
-                for (AnalysisExecution ae : list) {
-                    arr.set(i++, new JSONString(ae.getId()));
-                }
-                JSONObject obj = new JSONObject();
-                obj.put("executions", arr); //$NON-NLS-1$
-
-                getStatus(obj);
-            }
-
-        }
-    }
-
-    private void getStatus(JSONObject obj) {
-        AnalysisServiceFacade facade = new AnalysisServiceFacade();
-        status.setBusy(I18N.DISPLAY.updating());
-        facade.getAnalysesStatus(idWorkspace, obj.toString(), new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // do nothing intentionally for now
-                status.clearStatus(""); //$NON-NLS-1$
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject resultObj = JsonUtil.getObject(result);
-                if (resultObj != null) {
-                    JSONArray arr = JsonUtil.getArray(resultObj, "analyses"); //$NON-NLS-1$
-
-                    if (arr != null && arr.size() > 0) {
-                        for (int i = 0; i < arr.size(); i++) {
-                            AnalysisUpdateEvent event = new AnalysisUpdateEvent(arr.get(i).isObject());
-                            EventBus.getInstance().fireEvent(event);
-                        }
-                    }
-
-                    setStatus(resultObj);
-
-                }
-
-            }
-        });
-    }
-
     private void initWorkspaceId() {
         idWorkspace = UserInfo.getInstance().getWorkspaceId();
     }
@@ -243,6 +193,7 @@ public class MyAnalysesPanel extends ContentPanel {
         topComponentMenu = new ToolBar();
         topComponentMenu.setHeight(30);
         topComponentMenu.add(buildViewParamsButton());
+        topComponentMenu.add(new SeparatorToolItem());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
         topComponentMenu.add(buildFilterField());
@@ -560,7 +511,6 @@ public class MyAnalysesPanel extends ContentPanel {
         // clear our list
         handlers.clear();
         analysisGrid.cleanup();
-        // TaskRunner.getInstance().removeTask(statusCheckTask);
     }
 
     /**
