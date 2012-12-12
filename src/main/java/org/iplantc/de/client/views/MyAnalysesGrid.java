@@ -7,16 +7,20 @@ import java.util.List;
 
 import org.iplantc.core.client.widgets.Hyperlink;
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.util.CommonStoreSorter;
 import org.iplantc.core.uicommons.client.util.DateParser;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.events.AnalysisUpdateEvent;
 import org.iplantc.de.client.events.AnalysisUpdateEventHandler;
-import org.iplantc.de.client.events.UserEvent;
+import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.DataWindowConfig;
+import org.iplantc.de.client.models.WizardWindowConfig;
+import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.MyDataViewContextExecutor;
 import org.iplantc.de.client.views.panels.MyAnalysesPanel;
 import org.iplantc.de.client.views.panels.MyAnalysesPanel.EXECUTION_STATUS;
@@ -41,6 +45,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * A grid that is used to display users Analyses
@@ -176,11 +181,6 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
         }
     }
 
-    private AnalysisExecution buildAnalysisExecution(JSONObject payload) {
-        AnalysisExecution exec = new AnalysisExecution(payload);
-        return exec;
-    }
-
     /**
      * Allocate default instance.
      * 
@@ -294,6 +294,7 @@ public class MyAnalysesGrid extends Grid<AnalysisExecution> {
             }
         }
     }
+
 }
 
 class AppNameCellRenderer implements GridCellRenderer<AnalysisExecution> {
@@ -306,13 +307,33 @@ class AppNameCellRenderer implements GridCellRenderer<AnalysisExecution> {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                EventBus bus = EventBus.getInstance();
-                UserEvent e = new UserEvent(Constants.CLIENT.windowTag(), model.getAnalysisId());
-                bus.fireEvent(e);
+                relaunchAnalysis(model.getId());
             }
         });
 
         return link;
+    }
+
+    private void relaunchAnalysis(final String id) {
+        AnalysisServiceFacade asf = new AnalysisServiceFacade();
+        asf.relaunchAnalysis(id, new AsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                WizardWindowConfig config = new WizardWindowConfig(null);
+                config.setWizardConfig(JsonUtil.getObject(result));
+                WindowConfigFactory configFactory = new WindowConfigFactory();
+                JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.wizardTag(), //$NON-NLS-1$
+                        config);
+                WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
+                dispatcher.dispatchAction(id);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.analysisRelaunchError(), caught);
+            }
+        });
     }
 }
 

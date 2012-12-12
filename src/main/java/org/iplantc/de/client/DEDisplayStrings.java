@@ -1333,4 +1333,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String markAllasSeenSuccess();
 
+    /**
+     * 
+     * 
+     * @return
+     */
+    String relaunch();
+
 }

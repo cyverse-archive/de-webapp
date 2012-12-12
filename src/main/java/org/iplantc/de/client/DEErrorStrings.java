@@ -580,7 +580,14 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
 
     /**
      * Error msg shown when an attempt to create some data links goes awry!!
+     * 
      * @return
      */
     String createDataLinksError();
+
+    /**
+     * 
+     * Error msg shown when an attempt to relaunch analysis fails
+     */
+    String analysisRelaunchError();
 }

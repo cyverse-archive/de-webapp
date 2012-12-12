@@ -120,4 +120,18 @@ public class AnalysisServiceFacade {
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
+    /**
+     * get json to relaunch an analysis
+     * 
+     * @param analyisId
+     */
+    public void relaunchAnalysis(String analyisId, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl()
+                + "analysis-rerun-info/" + analyisId;
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
 }

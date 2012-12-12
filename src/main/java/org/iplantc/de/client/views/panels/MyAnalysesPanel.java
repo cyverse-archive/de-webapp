@@ -10,11 +10,14 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.AnalysisUpdateEvent;
+import org.iplantc.de.client.dispatchers.WindowDispatcher;
+import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
 import org.iplantc.de.client.models.JsAnalysisExecution;
+import org.iplantc.de.client.models.WizardWindowConfig;
 import org.iplantc.de.client.services.AnalysisServiceFacade;
 import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
@@ -40,11 +43,11 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -85,7 +88,6 @@ public class MyAnalysesPanel extends ContentPanel {
     private final AnalysisServiceFacade facadeAnalysisService;
 
     protected static CheckBoxSelectionModel<AnalysisExecution> sm;
-    private TextField<String> filter;
 
     private Status status;
 
@@ -166,56 +168,6 @@ public class MyAnalysesPanel extends ContentPanel {
         facadeAnalysisService = new AnalysisServiceFacade();
     }
 
-    public void checkStatus() {
-        if (analysisGrid != null) {
-            List<AnalysisExecution> list = analysisGrid.getUpdateList();
-            JSONArray arr = new JSONArray();
-            int i = 0;
-            if (list != null && list.size() > 0) {
-                for (AnalysisExecution ae : list) {
-                    arr.set(i++, new JSONString(ae.getId()));
-                }
-                JSONObject obj = new JSONObject();
-                obj.put("executions", arr); //$NON-NLS-1$
-
-                getStatus(obj);
-            }
-
-        }
-    }
-
-    private void getStatus(JSONObject obj) {
-        AnalysisServiceFacade facade = new AnalysisServiceFacade();
-        status.setBusy(I18N.DISPLAY.updating());
-        facade.getAnalysesStatus(idWorkspace, obj.toString(), new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // do nothing intentionally for now
-                status.clearStatus(""); //$NON-NLS-1$
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject resultObj = JsonUtil.getObject(result);
-                if (resultObj != null) {
-                    JSONArray arr = JsonUtil.getArray(resultObj, "analyses"); //$NON-NLS-1$
-
-                    if (arr != null && arr.size() > 0) {
-                        for (int i = 0; i < arr.size(); i++) {
-                            AnalysisUpdateEvent event = new AnalysisUpdateEvent(arr.get(i).isObject());
-                            EventBus.getInstance().fireEvent(event);
-                        }
-                    }
-
-                    setStatus(resultObj);
-
-                }
-
-            }
-        });
-    }
-
     private void initWorkspaceId() {
         idWorkspace = UserInfo.getInstance().getWorkspaceId();
     }
@@ -242,6 +194,7 @@ public class MyAnalysesPanel extends ContentPanel {
         refreshBtn.setText(I18N.DISPLAY.refresh());
         topComponentMenu.add(refreshBtn);
         topComponentMenu.add(buildViewParamsButton());
+        topComponentMenu.add(new SeparatorToolItem());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
         // TODO CORE-3735 temp. remove filtering until remote filtering can be implemented.
@@ -316,21 +269,6 @@ public class MyAnalysesPanel extends ContentPanel {
         return b;
     }
 
-    // /**
-    // * Builds a text field for filtering items displayed in the data container.
-    // */
-    // private void buildFilterField() {
-    // filter = new TextField<String>() {
-    // @Override
-    // public void onKeyUp(FieldEvent fe) {
-    // analysisGrid.getStore().applyFilters(null);
-    // }
-    // };
-    //
-    // filter.setEmptyText(I18N.DISPLAY.filterAnalysesList());
-    //
-    // }
-
     /**
      * Initializes the RpcProxy and BasePagingLoader to support paging for the AnalysesGrid.
      */
@@ -359,22 +297,6 @@ public class MyAnalysesPanel extends ContentPanel {
 
         setBottomComponent(pagingToolbar);
     }
-
-    // private class StoreFilterImpl implements StoreFilter<AnalysisExecution> {
-    // @Override
-    // public boolean select(Store<AnalysisExecution> store, AnalysisExecution parent,
-    // AnalysisExecution item, String property) {
-    // if (filter != null && filter.getValue() != null && !filter.getValue().isEmpty()) {
-    // return item.getName().toLowerCase().startsWith(filter.getValue().toLowerCase())
-    // || item.getAnalysisName().toLowerCase()
-    // .startsWith(filter.getValue().toLowerCase());
-    // }
-    //
-    // return true;
-    //
-    // }
-    //
-    // }
 
     /**
      * {@inheritDoc}
@@ -544,7 +466,6 @@ public class MyAnalysesPanel extends ContentPanel {
         // clear our list
         handlers.clear();
         analysisGrid.cleanup();
-        // TaskRunner.getInstance().removeTask(statusCheckTask);
     }
 
     /**
