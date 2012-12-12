@@ -192,15 +192,15 @@ public class MyAnalysesPanel extends ContentPanel {
     private void buildTopComponent() {
         topComponentMenu = new ToolBar();
         topComponentMenu.setHeight(30);
+        topComponentMenu.add(buildFilterField());
+        Button refreshBtn = pagingToolbar.getRefreshButton();
+        refreshBtn.setText(I18N.DISPLAY.refresh());
+        topComponentMenu.add(refreshBtn);
         topComponentMenu.add(buildViewParamsButton());
         topComponentMenu.add(new SeparatorToolItem());
         topComponentMenu.add(buildDeleteButton());
         topComponentMenu.add(buildCancelAnalysisButton());
-        topComponentMenu.add(buildFilterField());
         topComponentMenu.add(new FillToolItem());
-        Button refreshBtn = pagingToolbar.getRefreshButton();
-        refreshBtn.setText(I18N.DISPLAY.refresh());
-        topComponentMenu.add(refreshBtn);
         buildStatusBar();
         topComponentMenu.add(status);
     }
