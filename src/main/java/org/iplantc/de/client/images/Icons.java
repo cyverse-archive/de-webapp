@@ -52,7 +52,7 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
      * 
      * @return image.
      */
-    @Source("refreshicon.png")
+    @Source("refresh.gif")
     ImageResource refresh();
 
     /**
