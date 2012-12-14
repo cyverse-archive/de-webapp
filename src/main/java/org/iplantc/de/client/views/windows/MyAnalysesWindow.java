@@ -79,13 +79,13 @@ public class MyAnalysesWindow extends IPlantWindow {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
-        String idCurrentSelection = (config == null) ? null : ((AnalysesWindowConfig)config)
-                .getAnalysisId();
+        AnalysesWindowConfig analysesConfig = (AnalysesWindowConfig)config;
+        String idCurrentSelection = (analysesConfig == null) ? null : analysesConfig.getAnalysisId();
 
         pnlAnlys = new MyAnalysesPanel(I18N.DISPLAY.analysisOverview(), idCurrentSelection);
 
-        if (config != null) {
-            pnlAnlys.updateSelection(idCurrentSelection);
+        if (analysesConfig != null) {
+            pnlAnlys.updateSelection(idCurrentSelection, analysesConfig.getAnalysisName());
         }
 
         add(pnlAnlys, centerData);
@@ -97,7 +97,7 @@ public class MyAnalysesWindow extends IPlantWindow {
     @Override
     public void setWindowConfig(WindowConfig config) {
         if (config != null) {
-            this.config = (AnalysesWindowConfig)config;
+            this.config = config;
         }
     }
 
@@ -109,7 +109,8 @@ public class MyAnalysesWindow extends IPlantWindow {
         super.show();
 
         if (pnlAnlys != null && config != null) {
-            pnlAnlys.updateSelection(((AnalysesWindowConfig)config).getAnalysisId());
+            AnalysesWindowConfig analysesConfig = (AnalysesWindowConfig)config;
+            pnlAnlys.updateSelection(analysesConfig.getAnalysisId(), analysesConfig.getAnalysisName());
             setWindowViewState();
             config = null;
         }

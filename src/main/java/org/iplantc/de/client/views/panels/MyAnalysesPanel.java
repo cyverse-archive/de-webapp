@@ -10,7 +10,6 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.widgets.SearchField;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AnalysisExecution;
@@ -20,6 +19,7 @@ import org.iplantc.de.client.utils.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.DEPagingToolbar;
 import org.iplantc.de.client.views.MyAnalysesGrid;
+import org.iplantc.de.client.views.form.AnalysisSearchField;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseFilterPagingLoadConfig;
@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -45,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.filters.GridFilters;
-import com.extjs.gxt.ui.client.widget.grid.filters.StringFilter;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -89,7 +87,7 @@ public class MyAnalysesPanel extends ContentPanel {
     private final AnalysisServiceFacade facadeAnalysisService;
 
     protected static CheckBoxSelectionModel<AnalysisExecution> sm;
-    private SearchField filterField;
+    private AnalysisSearchField filterField;
 
     private Status status;
 
@@ -273,8 +271,7 @@ public class MyAnalysesPanel extends ContentPanel {
      * Builds a text field for filtering items displayed in the data container.
      */
     private TextField<String> buildFilterField() {
-        filterField = new SearchField("name"); //$NON-NLS-1$
-        filterField.setEmptyText(I18N.DISPLAY.filterAnalysesList());
+        filterField = new AnalysisSearchField();
         filterField.setMaxLength(255);
 
         return filterField;
@@ -339,28 +336,11 @@ public class MyAnalysesPanel extends ContentPanel {
     }
 
     private GridFilters buildGridFilters() {
-        GridFilters filters = new GridFilters() {
-            @Override
-            protected void onContextMenu(GridEvent<?> be) {
-                // intentionally do nothing in order to hide the filter fields from the column menus.
-            }
-        };
+        GridFilters filters = new GridFilters();
 
-        final StringFilter appFilter = new StringFilter("analysis_name"); //$NON-NLS-1$
-        final StringFilter nameFilter = filterField.getFilter();
-
-        Listener<BaseEvent> filterListener = new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent be) {
-                appFilter.setValue(nameFilter.getValue());
-            }
-        };
-        nameFilter.addListener(Events.Update, filterListener);
-        nameFilter.addListener(Events.Activate, filterListener);
-
-        filters.addFilter(nameFilter);
-        filters.addFilter(appFilter);
+        filters.addFilter(filterField.getNameFilter());
+        filters.addFilter(filterField.getAppFilter());
+        filters.addFilter(filterField.getAnalysisIdFilter());
 
         return filters;
     }
@@ -517,10 +497,19 @@ public class MyAnalysesPanel extends ContentPanel {
      * update id of the execution that needs to selected
      * 
      * @param id id of the analysis execution that needs to selected
+     * @param analysisName name of the analysis to be selected, for display in the filter field.
      */
-    public void updateSelection(String idCurrentSelection) {
+    public void updateSelection(String analysisId, String analysisName) {
         if (analysisGrid != null) {
-            analysisGrid.selectModel(idCurrentSelection);
+            if (analysisId != null) {
+                AnalysisExecution exec = analysisGrid.getStore().findModel("id", analysisId); //$NON-NLS-1$
+
+                if (exec != null) {
+                    analysisGrid.selectModel(analysisId);
+                } else {
+                    filterField.filterByAnalysisId(analysisId, analysisName);
+                }
+            }
         }
     }
 
