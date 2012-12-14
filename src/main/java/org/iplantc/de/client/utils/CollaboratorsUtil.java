@@ -16,6 +16,7 @@ import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.JsCollaborators;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -35,6 +36,11 @@ public class CollaboratorsUtil {
         List<Collaborator> collabsList = new ArrayList<Collaborator>();
         JSONObject obj = JsonUtil.getObject(result);
         String json = obj.get("users").toString();
+        boolean truncated = JsonUtil.getBoolean(obj, "truncated", false);
+        if (truncated) {
+            MessageBox.alert(I18N.DISPLAY.searchCollab(), I18N.DISPLAY.collaboratorSearchTruncated(),
+                    null);
+        }
         JsArray<JsCollaborators> collabs = JsonUtil.asArrayOf(json);
         for (int i = 0; i < collabs.length(); i++) {
             Collaborator c = new Collaborator(collabs.get(i));
