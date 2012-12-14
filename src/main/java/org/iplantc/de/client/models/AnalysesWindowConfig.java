@@ -11,8 +11,10 @@ import com.google.gwt.json.client.JSONObject;
  * @author sriram
  * 
  */
+@SuppressWarnings("nls")
 public class AnalysesWindowConfig extends WindowConfig {
     public static final String ANALYSIS_ID = "id";
+    public static final String ANALYSIS_NAME = "name";
 
     public AnalysesWindowConfig(JSONObject json) {
         super(json);
@@ -26,4 +28,7 @@ public class AnalysesWindowConfig extends WindowConfig {
         return JsonUtil.getString(this, ANALYSIS_ID);
     }
 
+    public String getAnalysisName() {
+        return JsonUtil.getString(this, ANALYSIS_NAME);
+    }
 }
