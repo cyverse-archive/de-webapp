@@ -590,4 +590,5 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      * Error msg shown when an attempt to relaunch analysis fails
      */
     String analysisRelaunchError();
+
 }

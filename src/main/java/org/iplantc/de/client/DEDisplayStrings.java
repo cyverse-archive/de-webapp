@@ -1209,13 +1209,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String shareAll();
 
     /**
-     * collaborators add prompt
-     * 
-     * @return
-     */
-    String collaboratorsAddPrompt(String collaborators);
-
-    /**
      * text advanced
      * 
      * @return
@@ -1346,4 +1339,16 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String noCollaboratorsSearchResult();
 
+    /**
+     * 
+     * @return
+     */
+    String collaboratorSearchTruncated();
+
+    /**
+     * Error msg when app cannot be run because there is no binary associated with the app
+     * 
+     * @return
+     */
+    String cannotRunApp();
 }

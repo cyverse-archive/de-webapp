@@ -191,26 +191,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
         edit.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
-                final String id = selectedItem.getId();
-
-                // first check if this app can be exported to TITo
-                getTemplateService().analysisExportable(id, new AsyncCallback<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        JSONObject exportable = JsonUtil.getObject(result);
-
-                        if (JsonUtil.getBoolean(exportable, "can-export", false)) { //$NON-NLS-1$
-                            editAnalysis(id);
-                        } else {
-                            ErrorHandler.post(JsonUtil.getString(exportable, "cause")); //$NON-NLS-1$
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        ErrorHandler.post(caught);
-                    }
-                });
+                doEdit();
             }
         });
 
@@ -246,7 +227,20 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
             @Override
             public void componentSelected(MenuEvent ce) {
-                showPublishToWorldDialog(analysisGrid.getSelectionModel().getSelectedItem());
+                if (analysisGrid.getSelectionModel().getSelectedItem().isRunnable()) {
+                    showPublishToWorldDialog(analysisGrid.getSelectionModel().getSelectedItem());
+                } else {
+                    MessageBox.confirm(I18N.DISPLAY.error(), I18N.DISPLAY.cannotRunApp(),
+                            new Listener<MessageBoxEvent>() {
+
+                                @Override
+                                public void handleEvent(MessageBoxEvent be) {
+                                    if (be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
+                                        doEdit();
+                                    }
+                                }
+                            });
+                }
             }
         });
         menuItems.put(ACTION_ID_MAKE_PUBLIC, submit);
@@ -527,6 +521,29 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
         }
     }
 
+    private void doEdit() {
+        final String id = selectedItem.getId();
+
+        // first check if this app can be exported to TITo
+        getTemplateService().analysisExportable(id, new AsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                JSONObject exportable = JsonUtil.getObject(result);
+
+                if (JsonUtil.getBoolean(exportable, "can-export", false)) { //$NON-NLS-1$
+                    editAnalysis(id);
+                } else {
+                    ErrorHandler.post(JsonUtil.getString(exportable, "cause")); //$NON-NLS-1$
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
+            }
+        });
+    }
+
     private class RunButtonSelectionListener extends SelectionListener<ButtonEvent> {
         @Override
         public void componentSelected(ButtonEvent ce) {
@@ -672,9 +689,22 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
                     @Override
                     public void handleEvent(BaseEvent be) {
-                        EventBus bus = EventBus.getInstance();
-                        UserEvent e = new UserEvent(Constants.CLIENT.windowTag(), model.getId());
-                        bus.fireEvent(e);
+                        if (!model.isRunnable()) {
+                            MessageBox.confirm(I18N.DISPLAY.error(), I18N.DISPLAY.cannotRunApp(),
+                                    new Listener<MessageBoxEvent>() {
+
+                                        @Override
+                                        public void handleEvent(MessageBoxEvent be) {
+                                            if (be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
+                                                doEdit();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            EventBus bus = EventBus.getInstance();
+                            UserEvent e = new UserEvent(Constants.CLIENT.windowTag(), model.getId());
+                            bus.fireEvent(e);
+                        }
                     }
                 });
                 link.setWidth(model.getName().length());
