@@ -1,11 +1,18 @@
 package org.iplantc.de.client.services;
 
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.FilterConfig;
+import com.extjs.gxt.ui.client.data.FilterPagingLoadConfig;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -19,7 +26,7 @@ public class AnalysisServiceFacade {
      * @param pagingConfig optional remote paging and sorting configs.
      * @param callback executed when RPC call completes.
      */
-    public void getAnalyses(String workspaceId, PagingLoadConfig pagingConfig,
+    public void getAnalyses(String workspaceId, FilterPagingLoadConfig pagingConfig,
             AsyncCallback<String> callback) {
         StringBuilder address = new StringBuilder(DEProperties.getInstance().getMuleServiceBaseUrl());
 
@@ -44,6 +51,24 @@ public class AnalysisServiceFacade {
             if (sortDir == SortDir.ASC || sortDir == SortDir.DESC) {
                 address.append("&sort-order="); //$NON-NLS-1$
                 address.append(sortDir.toString());
+            }
+
+            List<FilterConfig> filters = pagingConfig.getFilterConfigs();
+            if (filters != null && !filters.isEmpty()) {
+                address.append("&filter="); //$NON-NLS-1$
+
+                JSONArray jsonFilters = new JSONArray();
+                int filterIndex = 0;
+                for (FilterConfig filter : filters) {
+                    JSONObject jsonFilter = new JSONObject();
+
+                    jsonFilter.put("field", new JSONString(filter.getField()));
+                    jsonFilter.put("value", new JSONString((String)filter.getValue()));
+
+                    jsonFilters.set(filterIndex++, jsonFilter);
+                }
+
+                address.append(URL.encodeQueryString(jsonFilters.toString()));
             }
         }
 

@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.iplantc.core.client.widgets.BoundedTextArea;
+import org.iplantc.core.uiapplications.client.models.autobeans.App;
+import org.iplantc.core.uiapplications.client.models.autobeans.AppAutoBeanFactory;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.services.TemplateServiceFacade;
 import org.iplantc.de.client.utils.PanelHelper;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -25,8 +28,12 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * A Panel with an EditorGrid for adding and removing bounded, multi-line text fields, and a toJson
@@ -38,11 +45,11 @@ import com.google.gwt.json.client.JSONString;
 public class ReferenceEditorGridPanel extends ContentPanel {
     private static final String REFERENCE_PROPERTY = "reference"; //$NON-NLS-1$
 
-    private EditorGrid<BaseModelData> grid;
+    private final EditorGrid<BaseModelData> grid;
     private Button btnDelete;
     private Button btnAdd;
 
-    public ReferenceEditorGridPanel(int width, int height) {
+    public ReferenceEditorGridPanel(String appId, int width, int height) {
         ListStore<BaseModelData> store = new ListStore<BaseModelData>();
 
         CheckBoxSelectionModel<BaseModelData> checkboxModel = buildCheckboxModel();
@@ -63,6 +70,48 @@ public class ReferenceEditorGridPanel extends ContentPanel {
 
         setTopComponent(buildToolbar());
         add(grid);
+
+        loadReferences(appId);
+    }
+
+    private void loadReferences(String appId) {
+        final AppAutoBeanFactory factory = GWT.create(AppAutoBeanFactory.class);
+
+        mask(I18N.DISPLAY.loadingMask());
+
+        TemplateServiceFacade service = new TemplateServiceFacade();
+        service.getAppDetails(appId, new AsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                AutoBean<App> appBean = AutoBeanCodex.decode(factory, App.class, result);
+
+                if (appBean != null) {
+                    App app = appBean.as();
+                    List<String> references = app.getReferences();
+
+                    if (references != null) {
+                        ListStore<BaseModelData> store = grid.getStore();
+                        for (String ref : references) {
+                            if (ref != null) {
+                                BaseModelData row = new BaseModelData();
+                                row.set(REFERENCE_PROPERTY, ref);
+                                store.add(row);
+                            }
+                        }
+                    }
+                }
+
+                unmask();
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // silently log error and continue
+                GWT.log(I18N.ERROR.loadReferencesError(), caught);
+                unmask();
+            }
+        });
     }
 
     /**
@@ -168,7 +217,7 @@ public class ReferenceEditorGridPanel extends ContentPanel {
             ListStore<BaseModelData> store = grid.getStore();
             grid.stopEditing();
 
-            store.insert(row, store.getCount());
+            store.add(row);
 
             grid.startEditing(store.indexOf(row), 1);
         }

@@ -26,6 +26,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class TemplateServiceFacade implements AppTemplateUserServiceFacade {
     /**
+     * Retrieves an App's high-level details (not groups or properties) from the database.
+     * 
+     * @param appId
+     * @param callback
+     */
+    public void getAppDetails(String appId, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl()
+                + "analysis-details/" + appId; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    /**
      * Retrieves a template from the database.
      *
      * @param templateId unique identifier for the template.
