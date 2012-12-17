@@ -544,13 +544,30 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
         });
     }
 
+    private void runApp(final Analysis model) {
+        if (!model.isRunnable()) {
+            MessageBox.confirm(I18N.DISPLAY.error(), I18N.DISPLAY.cannotRunApp(),
+                    new Listener<MessageBoxEvent>() {
+
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
+                                doEdit();
+                            }
+                        }
+                    });
+        } else {
+            EventBus bus = EventBus.getInstance();
+            UserEvent e = new UserEvent(Constants.CLIENT.windowTag(), model.getId());
+            bus.fireEvent(e);
+        }
+    }
+
     private class RunButtonSelectionListener extends SelectionListener<ButtonEvent> {
         @Override
         public void componentSelected(ButtonEvent ce) {
             Analysis analysis = analysisGrid.getSelectionModel().getSelectedItem();
-            EventBus bus = EventBus.getInstance();
-            UserEvent e = new UserEvent(Constants.CLIENT.windowTag(), analysis.getId());
-            bus.fireEvent(e);
+            runApp(analysis);
         }
     }
 
@@ -689,22 +706,7 @@ public class CatalogMainPanel extends BaseCatalogMainPanel {
 
                     @Override
                     public void handleEvent(BaseEvent be) {
-                        if (!model.isRunnable()) {
-                            MessageBox.confirm(I18N.DISPLAY.error(), I18N.DISPLAY.cannotRunApp(),
-                                    new Listener<MessageBoxEvent>() {
-
-                                        @Override
-                                        public void handleEvent(MessageBoxEvent be) {
-                                            if (be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
-                                                doEdit();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            EventBus bus = EventBus.getInstance();
-                            UserEvent e = new UserEvent(Constants.CLIENT.windowTag(), model.getId());
-                            bus.fireEvent(e);
-                        }
+                        runApp(model);
                     }
                 });
                 link.setWidth(model.getName().length());
