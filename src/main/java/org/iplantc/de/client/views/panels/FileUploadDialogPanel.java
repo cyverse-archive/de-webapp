@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -62,7 +61,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private static final String ID_BTN_RESET = "idBtnReset"; //$NON-NLS-1$
 
-    private static final String ID_STAT = "idStat";
+    private static final String ID_STAT = "idStat"; //$NON-NLS-1$
 
     private static final int FIELD_WIDTH = 425;
 
@@ -80,6 +79,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     private final DefaultUploadCompleteHandler hdlrUpload;
     private final List<FileUploadField> fupload;
     private final List<TextArea> urls;
+    private final FastMap<Status> fileStatusMap;
     private final String destFolder;
     private final MODE mode;
     private final String servletActionUrl;
@@ -108,14 +108,16 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         forms = new ArrayList<FormPanel>();
         fupload = new ArrayList<FileUploadField>();
         urls = new ArrayList<TextArea>();
+        fileStatusMap = new FastMap<Status>();
 
         pnlLayout = new ContentPanel();
         pnlLayout.setHeaderVisible(false);
+        pnlLayout.setBodyBorder(false);
         pnlLayout.setScrollMode(Scroll.AUTOY);
-        pnlLayout.setHeight(350);
         pnlLayout.setStyleAttribute("padding", "5px");
-        buildInternalLayout(hiddenFields);
 
+        pnlLayout.add(new Html("&nbsp;" + I18N.DISPLAY.fileUploadFolder(destFolder))); //$NON-NLS-1$
+        buildInternalLayout(hiddenFields);
     }
 
     private FormPanel initForm() {
@@ -123,7 +125,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         form.setBodyBorder(false);
         form.setBorders(false);
         form.setStyleName("iplantc-form-layout-panel"); //$NON-NLS-1$
-        form.setHeight(75);
 
         form.setHideLabels(true);
         form.setHeaderVisible(false);
@@ -138,7 +139,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         form.setAction(servletActionUrl);
         form.setMethod(Method.POST);
         form.setEncoding(Encoding.MULTIPART);
-        form.add(buildStatus(ID_STAT + index));
         form.addListener(Events.Submit, new SubmitListener(index));
         return form;
     }
@@ -154,10 +154,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     }
 
     private void buildSimpleUploadLayout(FastMap<String> hiddenFields) {
-        // then add the visual widgets
-        pnlLayout.add(new HTML("&nbsp;" + I18N.DISPLAY.fileUploadFolder(destFolder) + " "
-                + I18N.DISPLAY.fileUploadMaxSizeWarning()));
-        pnlLayout.add(new HTML("<br/>"));
+        pnlLayout.setHeight(270);
+        pnlLayout.add(new Html("&nbsp;" + I18N.DISPLAY.fileUploadMaxSizeWarning())); //$NON-NLS-1$
 
         for (int i = 0; i < MAX_UPLOADS; i++) {
             FormPanel fp = initUploadForm(i);
@@ -175,8 +173,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     }
 
     private void buildUrlImportLayout() {
-        pnlLayout.add(new HTML("&nbsp;" + I18N.DISPLAY.urlPrompt()));
-        pnlLayout.add(new HTML("<br/>"));
+        pnlLayout.setHeight(360);
+        pnlLayout.add(new Html("&nbsp;" + I18N.DISPLAY.urlPrompt())); //$NON-NLS-1$
         VerticalPanel vp = new VerticalPanel();
         vp.setSpacing(3);
 
@@ -235,7 +233,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private HorizontalPanel buildFileUpload(int index) {
         HorizontalPanel wrapper = new HorizontalPanel();
-        wrapper.setSpacing(5);
         wrapper.setBorders(false);
         wrapper.setId(ID_WRAP + index);
         FileUploadField ret = new FileUploadField();
@@ -270,8 +267,9 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         ret.setWidth(275);
 
         wrapper.add(ret);
-        wrapper.add(new Html("&nbsp;&nbsp;&nbsp;")); //$NON-NLS-1$
+        wrapper.add(new Html("&nbsp;&nbsp;")); //$NON-NLS-1$
         wrapper.add(buildResetButton(ret));
+        wrapper.add(buildStatus(ID_STAT + index));
 
         return wrapper;
     }
@@ -295,6 +293,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     private Status buildStatus(String id) {
         Status s = new Status();
         s.setId(id);
+        fileStatusMap.put(id, s);
+
         return s;
     }
 
@@ -432,9 +432,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                 }
                 if (mode == MODE.FILE_ONLY) {
                     for (int i = 0; i < MAX_UPLOADS; i++) {
-                        FormPanel formPanel = forms.get(i);
-                        Status st = (Status)formPanel.getItemByItemId(ID_STAT + i);
-                        st.setText("");
+                        Status st = fileStatusMap.get(ID_STAT + i);
+                        st.setText(""); //$NON-NLS-1$
                     }
                 }
                 getOkButton().enable();
@@ -445,8 +444,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                     for (int i = 0; i < MAX_UPLOADS; i++) {
                         if (isValidFilename(fupload.get(i).getValue())) {
                             FormPanel formPanel = forms.get(i);
-                            Status st = (Status)formPanel.getItemByItemId(ID_STAT + i);
-                            st.setBusy("");
+                            Status st = fileStatusMap.get(ID_STAT + i);
+                            st.setBusy(""); //$NON-NLS-1$
                             formPanel.submit();
                             submitCount++;
                         }
@@ -493,7 +492,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private class SubmitListener implements Listener<FormEvent> {
 
-        private int index;
+        private final int index;
 
         public SubmitListener(int index) {
             this.index = index;
@@ -518,9 +517,10 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
                     if (file != null) {
                         hdlrUpload.onCompletion(JsonUtil.getString(file, File.LABEL), file.toString());
-                        FormPanel fp = (FormPanel)fe.getSource();
-                        Status st = (Status)fp.getItemByItemId(ID_STAT + index);
-                        st.setText(I18N.DISPLAY.success());
+
+                        // Clear the busy notification with a Success message
+                        Status st = fileStatusMap.get(ID_STAT + index);
+                        st.clearStatus(I18N.DISPLAY.success());
                     }
                 }
 
@@ -541,9 +541,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                     hdlrUpload.onAfterCompletion();
                 }
             }
-
-            // we're done, so clear the busy notification
-            // fileStatus.clearStatus(fileStatus.getText());
         }
     }
 }
