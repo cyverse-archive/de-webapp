@@ -244,24 +244,14 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         ret.addListener(Events.OnChange, new Listener<FieldEvent>() {
             @Override
             public void handleEvent(FieldEvent be) {
+                // KLUDGE remove the C:\fakepath\ string from the filename that Chrome prepends before
+                // validating. Other browsers still reserve the right to prepend their own fake paths
+                // (though I don't know of any others that do), but we don't want to remove all
+                // characters up to a "\" or "/", since an invalid filename my contain those characters,
+                // which would pass validation if all the following characters were valid.
                 FileUploadField fileUploadField = (FileUploadField)be.getBoxComponent();
-                fileUploadField.setValue(fileUploadField.getValue().replaceAll(".*[\\\\/]", ""));
-            }
+                fileUploadField.setValue(fileUploadField.getValue().replace("C:\\fakepath\\", "")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        });
-        ret.addListener(Events.Valid, new Listener<FieldEvent>() {
-
-            @Override
-            public void handleEvent(FieldEvent be) {
-                validateForm();
-            }
-
-        });
-
-        ret.addListener(Events.Invalid, new Listener<FieldEvent>() {
-
-            @Override
-            public void handleEvent(FieldEvent be) {
                 validateForm();
             }
 
@@ -288,6 +278,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 field.reset();
+                validateForm();
             }
         });
 
@@ -322,8 +313,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                 for (FileUploadField uploadField : fupload) {
                     // Remove any path from the filename.
                     if (isValidUploadField(uploadField)) {
-                        String filename = uploadField.getValue().replaceAll(".*[\\\\/]", ""); //$NON-NLS-1$//$NON-NLS-2$
-                        destResourceMap.put(buildResourceId(filename), uploadField);
+                        destResourceMap.put(buildResourceId(uploadField.getValue()), uploadField);
                     }
                 }
             }
@@ -391,8 +381,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         if (filename == null) {
             return false;
         }
-
-        filename = filename.replaceAll(".*[\\\\/]", ""); //$NON-NLS-1$//$NON-NLS-2$
 
         return uploadField.isValid() && !filename.trim().isEmpty() && !filename.equalsIgnoreCase("null"); //$NON-NLS-1$
     }
