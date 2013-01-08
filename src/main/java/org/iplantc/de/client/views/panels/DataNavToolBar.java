@@ -11,6 +11,7 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
 import org.iplantc.de.client.events.DataNavCollapseAllEvent;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
+import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.services.EmptyTrashCallback;
@@ -221,7 +222,7 @@ public class DataNavToolBar extends ToolBar {
         promptUploadImportForm(FileUploadDialogPanel.MODE.URL_ONLY);
     }
 
-    private void promptUploadImportForm(FileUploadDialogPanel.MODE mode) {
+    private void promptUploadImportForm(final FileUploadDialogPanel.MODE mode) {
         if (selectionModel == null) {
             return;
         }
@@ -229,7 +230,7 @@ public class DataNavToolBar extends ToolBar {
         final Folder uploadDest = getUploadDestination();
 
         if (canUpload(uploadDest)) {
-            String uploadDestId = uploadDest.getId();
+            final String uploadDestId = uploadDest.getId();
             String username = UserInfo.getInstance().getUsername();
 
             // provide key/value pairs for hidden fields
@@ -246,6 +247,11 @@ public class DataNavToolBar extends ToolBar {
                 public void onAfterCompletion() {
                     if (dlgUpload != null) {
                         dlgUpload.hide();
+
+                        if (mode == FileUploadDialogPanel.MODE.FILE_ONLY) {
+                            EventBus.getInstance().fireEvent(
+                                    new ManageDataRefreshEvent(tag, uploadDestId, null));
+                        }
                     }
                 }
             };
