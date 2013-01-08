@@ -3,6 +3,7 @@ package org.iplantc.de.client.views.panels;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplantc.core.client.widgets.validator.AnalysisNameValidator;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
@@ -235,7 +236,9 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         HorizontalPanel wrapper = new HorizontalPanel();
         wrapper.setBorders(false);
         wrapper.setId(ID_WRAP + index);
+
         FileUploadField ret = new FileUploadField();
+        ret.setValidator(new AnalysisNameValidator());
         ret.setId(ID_FILE_UPLD + index);
         ret.setName("file"); //$NON-NLS-1$
         ret.addListener(Events.OnChange, new Listener<FieldEvent>() {
@@ -259,7 +262,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
             @Override
             public void handleEvent(FieldEvent be) {
-                getOkButton().setEnabled(false);
+                validateForm();
             }
 
         });
@@ -267,7 +270,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         ret.setWidth(275);
 
         wrapper.add(ret);
-        wrapper.add(new Html("&nbsp;&nbsp;")); //$NON-NLS-1$
+        // Reserve some space for the FileUploadField validation icon.
+        wrapper.add(new Html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")); //$NON-NLS-1$
         wrapper.add(buildResetButton(ret));
         wrapper.add(buildStatus(ID_STAT + index));
 
@@ -317,26 +321,20 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
             if (mode == MODE.FILE_ONLY) {
                 for (FileUploadField uploadField : fupload) {
                     // Remove any path from the filename.
-                    if (uploadField.getValue() != null) {
+                    if (isValidUploadField(uploadField)) {
                         String filename = uploadField.getValue().replaceAll(".*[\\\\/]", ""); //$NON-NLS-1$//$NON-NLS-2$
-                        boolean validFilename = isValidFilename(filename);
-                        uploadField.setEnabled(validFilename);
-                        if (validFilename) {
-                            destResourceMap.put(buildResourceId(filename), uploadField);
-                        }
+                        destResourceMap.put(buildResourceId(filename), uploadField);
                     }
                 }
             }
 
             if (mode == MODE.URL_ONLY) {
                 for (TextArea urlField : urls) {
-                    String url = urlField.getValue();
-                    boolean validUrl = isValidFilename(url);
-
-                    urlField.setEnabled(validUrl);
+                    boolean validUrl = isValidUploadField(urlField);
 
                     if (validUrl) {
-                        urlField.setValue(url.trim());
+                        String url = urlField.getValue().trim();
+                        urlField.setValue(url);
                         destResourceMap.put(buildResourceId(DiskResourceUtil.parseNameFromPath(url)),
                                 urlField);
                     }
@@ -361,8 +359,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     private boolean isValidUploadForm() {
         if (mode == MODE.FILE_ONLY) {
             for (FileUploadField uploadField : fupload) {
-                String filename = uploadField.getValue();
-                if (isValidFilename(filename)) {
+                if (isValidUploadField(uploadField)) {
                     return true;
                 }
             }
@@ -370,7 +367,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
         if (mode == MODE.URL_ONLY) {
             for (TextArea urlField : urls) {
-                if (isValidFilename(urlField.getValue())) {
+                if (isValidUploadField(urlField)) {
                     return true;
                 }
             }
@@ -379,8 +376,25 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         return false;
     }
 
-    private boolean isValidFilename(String filename) {
-        return filename != null && !filename.trim().isEmpty() && !filename.equalsIgnoreCase("null"); //$NON-NLS-1$
+    /**
+     * Checks if the given TextField is valid, but returns false if its filename is also null or empty.
+     * 
+     * @param uploadField
+     * @return true if the given TextField is valid and has a non-empty filename.
+     */
+    private boolean isValidUploadField(TextField<String> uploadField) {
+        if (uploadField == null) {
+            return false;
+        }
+
+        String filename = uploadField.getValue();
+        if (filename == null) {
+            return false;
+        }
+
+        filename = filename.replaceAll(".*[\\\\/]", ""); //$NON-NLS-1$//$NON-NLS-2$
+
+        return uploadField.isValid() && !filename.trim().isEmpty() && !filename.equalsIgnoreCase("null"); //$NON-NLS-1$
     }
 
     private Button getOkButton() {
@@ -442,7 +456,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                 if (fupload.size() > 0) {
                     getOkButton().disable();
                     for (int i = 0; i < MAX_UPLOADS; i++) {
-                        if (isValidFilename(fupload.get(i).getValue())) {
+                        if (isValidUploadField(fupload.get(i))) {
                             FormPanel formPanel = forms.get(i);
                             Status st = fileStatusMap.get(ID_STAT + i);
                             st.setBusy(""); //$NON-NLS-1$
@@ -463,10 +477,10 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
 
     private void submitUrlImports() {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
-        for (int i = 0; i < urls.size(); i++) {
+        for (TextArea urlField : urls) {
+            if (isValidUploadField(urlField)) {
+                String value = urlField.getValue();
 
-            String value = urls.get(i).getValue();
-            if (value != null && !value.isEmpty()) {
                 facade.importFromUrl(value, destFolder,
                         new AsyncUploadCompleteHandler(destFolder, value) {
                             @Override
