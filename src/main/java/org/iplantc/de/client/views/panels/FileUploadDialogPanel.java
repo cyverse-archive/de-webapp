@@ -200,29 +200,11 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         url.setRegex(URL_REGEX);
         url.getMessages().setRegexText(I18N.DISPLAY.invalidImportUrl());
 
-        url.addListener(Events.Valid, new Listener<FieldEvent>() {
-
-            @Override
-            public void handleEvent(FieldEvent be) {
-                validateForm();
-
-            }
-
-        });
-
-        url.addListener(Events.Invalid, new Listener<FieldEvent>() {
-
-            @Override
-            public void handleEvent(FieldEvent be) {
-                getOkButton().setEnabled(false);
-
-            }
-
-        });
-
         url.addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
+                validateForm();
+
                 if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
                     handleOkClick();
                 }
