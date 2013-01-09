@@ -180,7 +180,9 @@ public class DiskResourceServiceFacade {
             }
         }
 
-        move(srcList, idDestFolder, new DiskResourceMoveCallback());
+        if (!srcList.isEmpty()) {
+            move(srcList, idDestFolder, new DiskResourceMoveCallback());
+        }
     }
 
     /**

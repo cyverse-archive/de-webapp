@@ -565,7 +565,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
 
     private class GridDropTargetImpl extends GridDropTarget {
         private ScrollSupport scrollSupport;
-        private int dropIndex;
+        private int dropIndex = -1;
 
         public GridDropTargetImpl(Grid<DiskResource> grid) {
             super(grid);
@@ -574,6 +574,7 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         @Override
         protected void onDragCancelled(DNDEvent event) {
             scrollSupport.stop();
+            dropIndex = -1;
         }
 
         @Override
@@ -585,24 +586,35 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             }
 
             scrollSupport.start();
+            dropIndex = -1;
+
+            // Drag events may go directly from onDragEnter to onDragDrop, without going to onDragMove in
+            // between (at least in Firefox).
+            validateTarget(event);
         }
 
         @Override
         protected void onDragFail(DNDEvent event) {
             scrollSupport.stop();
+            dropIndex = -1;
         }
 
         @Override
         protected void onDragLeave(DNDEvent e) {
             scrollSupport.stop();
+            dropIndex = -1;
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void onDragMove(DNDEvent event) {
+            dropIndex = -1;
             super.onDragMove(event);
 
-            // super may have cancelled the event
+            validateTarget(event);
+        }
+
+        @SuppressWarnings("unchecked")
+        protected void validateTarget(DNDEvent event) {
             if (event.isCancelled()) {
                 return;
             }
@@ -651,12 +663,15 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
             scrollSupport.stop();
 
             // get our dest folder
-            DiskResource res = (DiskResource)(grid.getStore().getAt(dropIndex));
-            String idDestFolder = res.getId();
+            DiskResource dest = (DiskResource)(grid.getStore().getAt(dropIndex));
+            if (dest != null) {
+                String idDestFolder = dest.getId();
+                List<DiskResource> diskResources = (List<DiskResource>)event.getData();
 
-            // call service to move files and folders
-            DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
-            facade.moveDiskResources((List<DiskResource>)event.getData(), idDestFolder);
+                // call service to move files and folders
+                DiskResourceServiceFacade facade = new DiskResourceServiceFacade(maskingParent);
+                facade.moveDiskResources(diskResources, idDestFolder);
+            }
 
             dropIndex = -1;
         }
