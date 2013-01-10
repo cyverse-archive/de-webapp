@@ -3,7 +3,7 @@ package org.iplantc.de.client.views.panels;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.client.widgets.validator.AnalysisNameValidator;
+import org.iplantc.core.client.widgets.validator.DiskResourceNameValidator;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
@@ -220,7 +220,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
         wrapper.setId(ID_WRAP + index);
 
         FileUploadField ret = new FileUploadField();
-        ret.setValidator(new AnalysisNameValidator());
+        ret.setValidator(new DiskResourceNameValidator());
         ret.setId(ID_FILE_UPLD + index);
         ret.setName("file"); //$NON-NLS-1$
         ret.addListener(Events.OnChange, new Listener<FieldEvent>() {

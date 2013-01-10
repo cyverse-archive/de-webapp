@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.panels;
 
-import org.iplantc.core.client.widgets.validator.AnalysisNameValidator;
+import org.iplantc.core.client.widgets.validator.DiskResourceNameValidator;
 import org.iplantc.core.uiapplications.client.I18N;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
@@ -53,7 +53,7 @@ public class SaveAsFolderSelectDialogPanel extends FolderSelectDialogPanel {
             }
         };
         txtNewName.setWidth(300);
-        txtNewName.setValidator(new AnalysisNameValidator());
+        txtNewName.setValidator(new DiskResourceNameValidator());
         txtNewName.setAllowBlank(false);
         txtNewName.setAutoValidate(true);
     }

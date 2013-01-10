@@ -2,7 +2,7 @@ package org.iplantc.de.client.views.dialogs;
 
 import org.iplantc.core.client.widgets.BoundedTextField;
 import org.iplantc.core.client.widgets.utils.ComponentValueTable;
-import org.iplantc.core.client.widgets.validator.AnalysisNameValidator;
+import org.iplantc.core.client.widgets.validator.DiskResourceNameValidator;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -106,7 +106,7 @@ public class AnalysisLaunchDialog extends Dialog {
         fieldName.setValue(I18N.DISPLAY.defaultAnalysisName());
         fieldName.setSelectOnFocus(true);
         fieldName.setAllowBlank(false);
-        fieldName.setValidator(new AnalysisNameValidator());
+        fieldName.setValidator(new DiskResourceNameValidator());
         fieldName.setAutoValidate(true);
         fieldName.setFireChangeEventOnSetValue(true);
 
