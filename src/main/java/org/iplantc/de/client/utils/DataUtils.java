@@ -158,7 +158,7 @@ public class DataUtils {
 
     public static boolean isRenamable(DiskResource resource) {
         if (resource != null) {
-            return resource.getPermissions().isOwner();
+            return resource.getPermissions().isWritable();
         }
 
         return false;
@@ -177,7 +177,7 @@ public class DataUtils {
         if (resources != null && resources.size() > 0) {
             for (int i = 0; i < resources.size(); i++) {
                 DiskResource dr = resources.get(i);
-                if (!dr.getPermissions().isOwner()) {
+                if (!dr.getPermissions().isWritable()) {
                     return false;
                 }
             }
