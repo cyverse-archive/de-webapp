@@ -3,7 +3,6 @@ package org.iplantc.de.client.views.windows;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.tito.client.TitoPanel;
 import org.iplantc.core.uiapplications.client.events.AppDeleteEvent;
 import org.iplantc.core.uiapplications.client.events.AppDeleteEvent.AppDeleteEventHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -24,6 +23,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * 
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.Element;
  */
 public class TitoWindow extends IPlantWindow {
     private TitoWindowConfig config;
-    private TitoPanel tito;
+    // private TitoPanel tito;
 
     protected List<HandlerRegistration> handlers;
 
@@ -55,9 +55,9 @@ public class TitoWindow extends IPlantWindow {
         handlers.add(eventbus.addHandler(AppDeleteEvent.TYPE, new AppDeleteEventHandler() {
             @Override
             public void onDelete(AppDeleteEvent ade) {
-                if (tito != null && ade.getId() != null && ade.getId().equals(tito.getId())) {
-                    hide();
-                }
+                // if (tito != null && ade.getId() != null && ade.getId().equals(tito.getId())) {
+                // hide();
+                // }
             }
         }));
 
@@ -70,18 +70,22 @@ public class TitoWindow extends IPlantWindow {
     }
 
     private void compose() {
-        tito = new TitoPanel(tag);
+        // tito = new TitoPanel(tag);
 
-        add(tito);
+        TextBox tb = new TextBox();
+        tb.setText("Work in progress. The \"Tito\" library is being refactored.");
+        add(tb);
+
+        // add(tito);
     }
 
     @Override
     public void cleanup() {
         removeEventHandlers();
 
-        if (tito != null) {
-            tito.cleanup();
-        }
+        // if (tito != null) {
+        // tito.cleanup();
+        // }
 
         super.cleanup();
     }
@@ -100,11 +104,11 @@ public class TitoWindow extends IPlantWindow {
 
     @Override
     protected void doHide() {
-        if (tito.isDirty()) {
-            confirmNavigation(new CloseWarningMsgBoxListener());
-        } else {
-            super.doHide();
-        }
+        // if (tito.isDirty()) {
+        // confirmNavigation(new CloseWarningMsgBoxListener());
+        // } else {
+        // super.doHide();
+        // }
     }
 
     private void confirmNavigation(final Listener<MessageBoxEvent> listener) {
@@ -122,13 +126,13 @@ public class TitoWindow extends IPlantWindow {
         if (config instanceof TitoWindowConfig) {
             this.config = (TitoWindowConfig)config;
 
-            if (isRendered()) {
-                if (tito.isDirty()) {
-                    confirmNavigation(new EditWarningMsgBoxListener());
-                } else {
-                    updateViewFromConfig();
-                }
-            }
+            // if (isRendered()) {
+            // if (tito.isDirty()) {
+            // confirmNavigation(new EditWarningMsgBoxListener());
+            // } else {
+            // updateViewFromConfig();
+            // }
+            // }
         }
     }
 
@@ -178,13 +182,13 @@ public class TitoWindow extends IPlantWindow {
 
         String viewMode = config.getView();
 
-        if (TitoWindowConfig.VIEW_APP_EDIT.equals(viewMode)) {
-            tito.load(config.getAppId());
-        } else if (TitoWindowConfig.VIEW_NEW_TOOL.equals(viewMode)) {
-            tito.newTool();
-        } else if (TitoWindowConfig.VIEW_APP_EDIT_FROM_JSON.equals(viewMode)) {
-            tito.loadFromJson(config.getAppJson());
-        }
+        // if (TitoWindowConfig.VIEW_APP_EDIT.equals(viewMode)) {
+        // tito.load(config.getAppId());
+        // } else if (TitoWindowConfig.VIEW_NEW_TOOL.equals(viewMode)) {
+        // tito.newTool();
+        // } else if (TitoWindowConfig.VIEW_APP_EDIT_FROM_JSON.equals(viewMode)) {
+        // tito.loadFromJson(config.getAppJson());
+        // }
     }
 
     @Override
@@ -192,7 +196,7 @@ public class TitoWindow extends IPlantWindow {
         TitoWindowConfig configData = new TitoWindowConfig(getWindowViewState());
 
         configData.setView(TitoWindowConfig.VIEW_APP_EDIT_FROM_JSON);
-        configData.setAppJson(tito.getTitoConfig());
+        // configData.setAppJson(tito.getTitoConfig());
 
         WindowConfigFactory configFactory = new WindowConfigFactory();
         JSONObject windowConfig = configFactory

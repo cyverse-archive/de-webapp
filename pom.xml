@@ -103,11 +103,6 @@
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>tito</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
          <artifactId>ui-commons</artifactId>
          <version>gxt3Sandbox-SNAPSHOT</version>
       </dependency>

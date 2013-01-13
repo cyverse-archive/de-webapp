@@ -7,8 +7,6 @@ import org.iplantc.de.client.I18N;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Format;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 
 /**
@@ -109,11 +107,6 @@ public class IDropLiteUtil {
 
     private static String buildAppletParam(String name, String value) {
         return Format.substitute("<param name=\"{0}\" value=\"{1}\"/>", name, value);
-    }
-
-    public interface HtmlLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<div><div class='cell1'></div></div>")
-        SafeHtml getTemplate();
     }
 
 }

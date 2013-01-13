@@ -27,6 +27,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * A dialog to get new name for the resource being saved and its destination folder
  * 
+ * FIXME JDS This needs to be refactored into the ui-diskresources module.
+ * 
  * @author sriram
  * 
  */
