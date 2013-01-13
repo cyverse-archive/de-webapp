@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.panels;
 
-import org.iplantc.core.client.widgets.validator.AnalysisNameValidator;
+import org.iplantc.core.uicommons.client.validators.AnalysisNameValidator;
 import org.iplantc.core.uicommons.client.views.panels.IPlantPromptPanel;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 
