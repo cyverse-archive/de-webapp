@@ -159,8 +159,7 @@ public final class DataActionsMenu extends Menu {
         add(itemMetaData);
         add(itemShareResource);
         add(itemRestore);
-        // TODO temp. remove data-links action
-        // add(itemManageDataLinks);
+        add(itemManageDataLinks);
     }
 
     private MenuItem buildLeafMenuItem(final String id, final String text,
@@ -275,8 +274,7 @@ public final class DataActionsMenu extends Menu {
                     break;
                 case Share:
                     showMenuItem(itemShareResource);
-                    // TODO temp. remove data-links action
-                    // showMenuItem(itemManageDataLinks);
+                    showMenuItem(itemManageDataLinks);
                     break;
                 // case Copy:
                 // showMenuItem(itemCopyResource);
