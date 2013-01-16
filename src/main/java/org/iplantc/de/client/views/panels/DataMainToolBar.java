@@ -148,8 +148,14 @@ public class DataMainToolBar extends ToolBar {
             @Override
             public void onKeyUp(FieldEvent fe) {
                 String filter = getValue();
-                if (filter != null && filter.length() >= 3) {
-                    doSearch(filter);
+                // TODO temp. remove data search
+                // if (filter != null && filter.length() >= 3) {
+                // doSearch(filter);
+                // }
+                if (filter != null && !filter.isEmpty()) {
+                    container.getDataStore().filter("name", filter); //$NON-NLS-1$
+                } else {
+                    container.getDataStore().clearFilters();
                 }
             }
         };

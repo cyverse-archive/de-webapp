@@ -48,7 +48,8 @@ public class DataDetailsPanel extends AbstractDataPanel {
 
     private void initPanels() {
         pnlDetails = new DataDetailListPanel();
-        searchHistoryPanel = new DataSearchHistoryPanel();
+        // TODO temp. remove data search
+        // searchHistoryPanel = new DataSearchHistoryPanel();
     }
 
     @Override
@@ -76,7 +77,8 @@ public class DataDetailsPanel extends AbstractDataPanel {
     @Override
     protected void compose() {
         add(pnlDetails);
-        add(searchHistoryPanel);
+        // TODO temp. remove data search
+        // add(searchHistoryPanel);
     }
 
     /**
