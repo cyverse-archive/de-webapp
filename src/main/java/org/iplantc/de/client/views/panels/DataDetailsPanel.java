@@ -11,7 +11,6 @@ import org.iplantc.de.client.events.DiskResourceSelectionChangedEventHandler;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.json.client.JSONObject;
 
 public class DataDetailsPanel extends AbstractDataPanel {
     private DataDetailListPanel pnlDetails;
@@ -23,10 +22,6 @@ public class DataDetailsPanel extends AbstractDataPanel {
         initListeners();
 
         initPanels();
-    }
-
-    public void setSearchHistory(JSONObject obj) {
-        searchHistoryPanel.setSearchHistory(obj);
     }
 
     /**

@@ -32,7 +32,6 @@ import org.iplantc.de.client.models.ClientDataModel;
 import org.iplantc.de.client.models.DataWindowConfig;
 import org.iplantc.de.client.models.WindowConfig;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
-import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.utils.DataViewContextExecutor;
 import org.iplantc.de.client.utils.builders.context.DataContextBuilder;
 import org.iplantc.de.client.views.panels.DataDetailsPanel;
@@ -63,7 +62,6 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
         super(tag, config);
 
         initHandlers();
-        getSearhHistory();
     }
 
     private void initHandlers() {
@@ -221,26 +219,6 @@ public class MyDataWindow extends IPlantThreePanelWindow implements DataMonitor 
             config = null;
 
         }
-
-    }
-
-    private void getSearhHistory() {
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        facade.getSearchHistory(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.retrieveSearchHistoryError(), caught);
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject obj = JsonUtil.getObject(result);
-                pnlDetails.setSearchHistory(obj);
-
-            }
-
-        });
 
     }
 
