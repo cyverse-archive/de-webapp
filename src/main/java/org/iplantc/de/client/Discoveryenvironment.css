@@ -275,14 +275,6 @@ ul.ux-taskbuttons-strip li.ux-taskbuttons-edge {
 	height: 0px !important;
 }
 
-.x-resizable-proxy {
-	background: #C7DFFC;
-	opacity: .5;
-	-moz-opacity: .5;
-	filter: alpha(opacity =                     50);
-	border: 1px solid #3b5a82;
-}
-
 /* Desktop Shortcuts */
 #x-shortcuts dt {
 	margin: 15px 0 0 15px;
@@ -476,7 +468,7 @@ a.x-menu-item {
 	height: 15px;
 	padding-top: 2px;
 	padding-bottom: 2px;
-	color: #black;
+	color: black;
 }
 
 .data_details_label {
@@ -497,7 +489,7 @@ a.x-menu-item {
 .de_notification_hyperlink {
 	cursor: pointer;
 	text-decoration: none;
-	color: #black;
+	color: black;
 }
 
 .analysis_name {

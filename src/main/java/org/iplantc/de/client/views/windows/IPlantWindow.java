@@ -2,6 +2,7 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.models.WindowConfig;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dnd.WindowFocusDropTarget;
 import org.iplantc.de.client.images.Resources;
@@ -19,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
@@ -37,8 +39,6 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  * Provides a base class for windows in the application desktop.
  */
 public abstract class IPlantWindow extends Window implements IPlantWindowInterface {
-    private final String BUTTON_STYLE_MAXIMIZE = "x-tool-maximizewindow"; //$NON-NLS-1$
-    private final String BUTTON_STYLE_RESTORE = "x-tool-restorewindow"; //$NON-NLS-1$
     private final String WINDOW_STYLE_MAXIMIZED = "x-window-maximized"; //$NON-NLS-1$
     private final String WINDOW_STYLE_DRAGGABLE = "x-window-draggable"; //$NON-NLS-1$
 
@@ -55,6 +55,7 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
     private ToolButton btnMaximize;
     private ToolButton btnRestore;
     private ToolButton btnClose;
+    private final DeResources res = GWT.create(DeResources.class);
 
     /**
      * Constructs an instance of the window.
@@ -80,6 +81,7 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
     protected IPlantWindow(String tag, boolean haveStatus, boolean isMinimizable, boolean isMaximizable,
             boolean isClosable) {
         this.tag = tag;
+        res.css().ensureInjected();
 
         if (haveStatus) {
             initStatus();
@@ -108,9 +110,11 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
         setClosable(false);
         setFrame(false);
 
-        header.addStyleName("windowLayoutTitle"); //$NON-NLS-1$
+        header.addStyleName(res.css().windowLayoutTitle());
+        //        header.addStyleName("windowLayoutTitle"); //$NON-NLS-1$
         header.setIcon(AbstractImagePrototype.create(Resources.ICONS.whitelogoSmall()));
-        setBodyStyleName("windowBody"); //$NON-NLS-1$
+        setBodyStyleName(res.css().windowBody());
+        //        setBodyStyleName("windowBody"); //$NON-NLS-1$
         setShadow(false);
         setStyleAttribute("outline", "none"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -261,7 +265,7 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
     }
 
     private void buildMaximizeButton() {
-        btnMaximize = new ToolButton(BUTTON_STYLE_MAXIMIZE);
+        btnMaximize = new ToolButton(res.css().xToolMaximizewindow());
         btnMaximize.setId("idmaximize-" + tag); //$NON-NLS-1$
         btnMaximize.sinkEvents(Events.OnMouseOut.getEventCode());
         btnMaximize.setToolTip(I18N.DISPLAY.maximize());
@@ -279,20 +283,20 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
         btnMaximize.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                btnMaximize.addStyleName("x-tool-maximizewindow-hover"); //$NON-NLS-1$
+                btnMaximize.addStyleName(res.css().xToolMaximizewindowHover());
             }
         });
 
         btnMaximize.addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                btnMaximize.removeStyleName("x-tool-maximizewindow-hover"); //$NON-NLS-1$
+                btnMaximize.removeStyleName(res.css().xToolMaximizewindowHover());
             }
         });
     }
 
     private void buildMinimizeButton() {
-        btnMinimize = new ToolButton("x-tool-minimizewindow"); //$NON-NLS-1$
+        btnMinimize = new ToolButton(res.css().xToolMinimizewindow());
         btnMinimize.setId("idminimize-" + tag); //$NON-NLS-1$
         btnMinimize.sinkEvents(Events.OnMouseOut.getEventCode());
         btnMinimize.setToolTip(I18N.DISPLAY.minimize());
@@ -302,27 +306,27 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
             public void componentSelected(IconButtonEvent ce) {
                 minimize();
                 minimized = true;
-                btnMinimize.removeStyleName("x-tool-minimizewindow-hover"); //$NON-NLS-1$
+                btnMinimize.removeStyleName(res.css().xToolMinimizewindowHover());
             }
         });
 
         btnMinimize.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                btnMinimize.addStyleName("x-tool-minimizewindow-hover"); //$NON-NLS-1$
+                btnMinimize.addStyleName(res.css().xToolMinimizewindowHover());
             }
         });
 
         btnMinimize.addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                btnMinimize.removeStyleName("x-tool-minimizewindow-hover"); //$NON-NLS-1$
+                btnMinimize.removeStyleName(res.css().xToolMinimizewindowHover());
             }
         });
     }
 
     private ToolButton buildRestoreButton() {
-        btnRestore = new ToolButton(BUTTON_STYLE_RESTORE);
+        btnRestore = new ToolButton(res.css().xToolRestorewindow());
         btnRestore.setId("idrestore-" + tag); //$NON-NLS-1$
         btnRestore.sinkEvents(Events.OnMouseOut.getEventCode());
         btnRestore.setToolTip(I18N.DISPLAY.restore());
@@ -337,14 +341,14 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
         btnRestore.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                btnRestore.addStyleName("x-tool-restorewindow-hover"); //$NON-NLS-1$
+                btnRestore.addStyleName(res.css().xToolRestorewindowHover());
             }
         });
 
         btnRestore.addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                btnRestore.removeStyleName("x-tool-restorewindow-hover"); //$NON-NLS-1$
+                btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
             }
         });
 
@@ -458,11 +462,11 @@ public abstract class IPlantWindow extends Window implements IPlantWindowInterfa
     }
 
     private int findRestoreButtonIndex() {
-        return findToolButtonIndex(BUTTON_STYLE_RESTORE);
+        return findToolButtonIndex(res.css().xToolRestorewindow());
     }
 
     private int findMaximizeButtonIndex() {
-        return findToolButtonIndex(BUTTON_STYLE_MAXIMIZE);
+        return findToolButtonIndex(res.css().xToolMaximizewindow());
     }
 
     /**

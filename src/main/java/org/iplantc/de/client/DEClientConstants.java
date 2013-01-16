@@ -21,20 +21,6 @@ public interface DEClientConstants extends CommonUiConstants {
     String fileDownloadServlet();
 
     /**
-     * The path to the iPlant logo used in heading of web application.
-     * 
-     * @return a string representation of the path to iPlant logo
-     */
-    String iplantLogo();
-
-    /**
-     * The path to the iPlant image used in the "About Discovery Environment" window.
-     * 
-     * @return a string representation of the path to iPlant image used in "About."
-     */
-    String iplantAboutImage();
-
-    /**
      * The tag used by the window manager to identify the My Data window.
      * 
      * @return a string representing the handle for the My Data window

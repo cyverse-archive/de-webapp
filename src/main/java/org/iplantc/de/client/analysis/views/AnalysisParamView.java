@@ -3,17 +3,15 @@ package org.iplantc.de.client.analysis.views;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.views.dialogs.IPlantDialog.DialogOkClickHandler;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
+import org.iplantc.core.uidiskresource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.events.UploadCompleteHandler;
 import org.iplantc.de.client.services.callbacks.DiskResourceServiceCallback;
-import org.iplantc.de.client.views.dialogs.SaveAsDialog;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -28,6 +26,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
@@ -91,14 +90,14 @@ public class AnalysisParamView implements IsWidget {
 
     @UiHandler("btnSave")
     void onSaveClick(SelectEvent event) {
-        final SaveAsDialog saveDialog = new SaveAsDialog(I18N.DISPLAY.saveAs(), I18N.DISPLAY.saveAs(),
-                null, null);
-        saveDialog.addOkClickHandler(new DialogOkClickHandler() {
+        final SaveAsDialog saveDialog = new SaveAsDialog();
+        saveDialog.addOkButtonSelectHandler(new SelectHandler() {
+
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 String fileContents = writeTabFile();
-                saveFile(saveDialog.getSelectedFolder().getId() + "/" + saveDialog.getNewName(),
-                        fileContents);
+                saveFile(saveDialog.getSelectedFolder().getId() + "/" + saveDialog.getFileName(), fileContents);
+
             }
         });
         saveDialog.show();

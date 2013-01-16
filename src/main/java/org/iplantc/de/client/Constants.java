@@ -9,6 +9,5 @@ import com.google.gwt.core.client.GWT;
  * 
  */
 public class Constants {
-    public static final DEClientConstants CLIENT = (DEClientConstants)GWT
-            .create(DEClientConstants.class);
+    public static final DEClientConstants CLIENT = GWT.create(DEClientConstants.class);
 }

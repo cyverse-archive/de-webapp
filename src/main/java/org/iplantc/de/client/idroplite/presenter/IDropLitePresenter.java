@@ -5,21 +5,17 @@ package org.iplantc.de.client.idroplite.presenter;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.views.dialogs.IPlantSubmittableDialog;
-import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.I18N;
+import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
+import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
-import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.models.IDropLiteWindowConfig;
-import org.iplantc.de.client.views.panels.FileUploadDialogPanel;
 
-import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.google.common.collect.Sets;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -55,7 +51,7 @@ public class IDropLitePresenter implements Presenter {
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
                 int adjustSize = CONTENT_PADDING * 2;
 
-                appletData.put("uploadDest", new JSONString(config.getUploadDest())); //$NON-NLS-1$
+                appletData.put("uploadDest", new JSONString(config.getUploadFolderDest().getId())); //$NON-NLS-1$
 
                 return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth()
                         - CONTENT_PADDING, view.getViewHeight() - adjustSize);
@@ -120,33 +116,7 @@ public class IDropLitePresenter implements Presenter {
      */
     @Override
     public void onSimpleUploadClick() {
-        String uploadDestId = config.getUploadDest();
-        String username = UserInfo.getInstance().getUsername();
-
-        // provide key/value pairs for hidden fields
-        FastMap<String> hiddenFields = new FastMap<String>();
-        hiddenFields.put(FileUploadDialogPanel.HDN_PARENT_ID_KEY, uploadDestId);
-        hiddenFields.put(FileUploadDialogPanel.HDN_USER_ID_KEY, username);
-
-        // define a handler for upload completion
-        AsyncUploadCompleteHandler handler = new AsyncUploadCompleteHandler(uploadDestId) {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void onAfterCompletion() {
-                if (dlgUpload != null) {
-                    dlgUpload.hide();
-                }
-            }
-        };
-
-        FileUploadDialogPanel pnlUpload = new FileUploadDialogPanel(hiddenFields,
-                Constants.CLIENT.fileUploadServlet(), handler, FileUploadDialogPanel.MODE.FILE_AND_URL);
-
-        dlgUpload = new IPlantSubmittableDialog(I18N.DISPLAY.upload(), 536, pnlUpload);
-        dlgUpload.show();
-
+        EventBus.getInstance().fireEvent(new RequestSimpleUploadEvent(this, config.getUploadFolderDest()));
     }
 
     /*
@@ -156,8 +126,7 @@ public class IDropLitePresenter implements Presenter {
      */
     @Override
     public void onSimpleDownloadClick() {
-        SimpleDownloadWindowDispatcher dispatcher = new SimpleDownloadWindowDispatcher();
-        dispatcher.launchDownloadWindow(config.getFileDownloadPaths());
+        EventBus.getInstance().fireEvent(new RequestSimpleDownloadEvent(this, Sets.newHashSet(config.getResourcesToDownload()), config.getCurrentFolder()));
     }
 
     @Override

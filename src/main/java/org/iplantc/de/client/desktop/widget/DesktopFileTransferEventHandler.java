@@ -18,24 +18,30 @@ import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent.Re
 import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.core.uidiskresource.client.models.autobeans.Folder;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.dispatchers.IDropLiteWindowDispatcher;
-import org.iplantc.de.client.dispatchers.SimpleDownloadWindowDispatcher;
 import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
-import org.iplantc.de.client.utils.DataUtils;
+import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
+import org.iplantc.de.client.models.IDropLiteWindowConfig;
+import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
 import org.iplantc.de.client.views.panels.FileUploadDialogPanel;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.common.collect.Lists;
 
-public class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler,
+class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler,
         RequestBulkUploadEventHandler, RequestImportFromUrlEventHandler,
         RequestSimpleDownloadEventHandler, RequestSimpleUploadEventHandler {
 
     private IPlantSubmittableDialog dlgUpload;
+    private final Desktop desktop;
+
+    DesktopFileTransferEventHandler(Desktop desktop) {
+        this.desktop = desktop;
+    }
 
     @Override
     public void onRequestSimpleUpload(RequestSimpleUploadEvent event) {
@@ -53,8 +59,13 @@ public class DesktopFileTransferEventHandler implements RequestBulkDownloadEvent
     public void onRequestBulkUpload(RequestBulkUploadEvent event) {
         Folder uploadDest = event.getDestinationFolder();
         if (canUpload(uploadDest)) {
-            IDropLiteWindowDispatcher dispatcher = new IDropLiteWindowDispatcher();
-            dispatcher.launchUploadWindow(uploadDest.getId(), uploadDest.getId());
+            // Build window config
+            IDropLiteWindowConfig configData = new IDropLiteWindowConfig();
+            configData.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_UPLOAD);
+            configData.setUploadFolderDest(uploadDest);
+            configData.setCurrentFolder(uploadDest);
+
+            desktop.showWindow(Constants.CLIENT.iDropLiteTag(), configData);
         }
     }
 
@@ -74,8 +85,10 @@ public class DesktopFileTransferEventHandler implements RequestBulkDownloadEvent
                     }
                 }
 
-                SimpleDownloadWindowDispatcher dispatcher = new SimpleDownloadWindowDispatcher();
-                dispatcher.launchDownloadWindow(paths);
+                SimpleDownloadWindowConfig configData = new SimpleDownloadWindowConfig();
+                configData.setDownloadPaths(paths);
+
+                desktop.showWindow(Constants.CLIENT.simpleDownloadTag(), configData);
             }
         } else {
             showErrorMsg();
@@ -88,8 +101,14 @@ public class DesktopFileTransferEventHandler implements RequestBulkDownloadEvent
         List<DiskResource> resources = Lists.newArrayList(event.getRequestedResources());
         if (isDownloadable(resources)) {
 
-            IDropLiteWindowDispatcher dispatcher = new IDropLiteWindowDispatcher();
-            dispatcher.launchDownloadWindow(resources);
+            // Build window config
+            IDropLiteWindowConfig configData = new IDropLiteWindowConfig();
+            configData.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_DOWNLOAD);
+            configData.setDownloadPaths(resources);
+            configData.setCurrentFolder(event.getCurrentFolder());
+
+            desktop.showWindow(Constants.CLIENT.iDropLiteTag(), configData);
+
         } else {
             showErrorMsg();
         }
@@ -109,7 +128,7 @@ public class DesktopFileTransferEventHandler implements RequestBulkDownloadEvent
     }
 
     private boolean canUpload(Folder uploadDest) {
-        if (uploadDest != null && DataUtils.canUploadToThisFolder(uploadDest)) {
+        if (uploadDest != null && DiskResourceUtil.canUploadTo(uploadDest)) {
             return true;
         } else {
             showErrorMsg();

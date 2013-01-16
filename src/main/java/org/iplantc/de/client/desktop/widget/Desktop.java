@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uiapplications.client.events.AppLoadEvent;
+import org.iplantc.core.uiapplications.client.events.CreateNewAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.events.UserEvent;
 import org.iplantc.core.uicommons.client.events.UserEventHandler;
@@ -19,8 +21,8 @@ import org.iplantc.core.uidiskresource.client.events.RequestImportFromUrlEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
-import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.CascadeDesktopLayout;
 import org.iplantc.de.client.desktop.layout.CenterDesktopLayout;
@@ -28,9 +30,8 @@ import org.iplantc.de.client.desktop.layout.DesktopLayout;
 import org.iplantc.de.client.desktop.layout.DesktopLayout.RequestType;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
-import org.iplantc.de.client.dispatchers.ViewerWindowDispatcher;
 import org.iplantc.de.client.events.WindowPayloadEvent;
-import org.iplantc.de.client.events.WindowPayloadEventHandler;
+import org.iplantc.de.client.events.WindowPayloadEvent.WindowPayloadEventHandler;
 import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.utils.ShortcutManager;
@@ -39,7 +40,6 @@ import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.extjs.gxt.desktop.client.StartMenu;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -76,40 +76,22 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  * Rather than adding content directly to the root panel, content should be wrapped in windows. Windows
  * can be opened via shortcuts and the start menu.
  * 
+ * FIXME JDS Need move functional/non-ui stuff from this class to its p
+ * 
  * @see TaskBar
  * @see StartMenu
  * @see Shortcut
  */
 public class Desktop implements IsWidget {
 
-    private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>,
-            MinimizeHandler, HideHandler, ShowHandler {
+    public interface CopyRightLayoutContainerTemplate extends XTemplates {
+        @XTemplate("<div style='float:left;'><div class='cell1'></div></div>")
+        SafeHtml getTemplate();
+    }
 
-        @Override
-        public void onActivate(ActivateEvent<Window> event) {
-            markActive((IPlantWindowInterface)event.getSource());
-        }
-
-        @Override
-        public void onDeactivate(DeactivateEvent<Window> event) {
-            markInactive((IPlantWindowInterface)event.getSource());
-        }
-
-        @Override
-        public void onHide(HideEvent event) {
-            hideWindow((IPlantWindowInterface)event.getSource());
-        }
-
-        @Override
-        public void onMinimize(MinimizeEvent event) {
-            minimizeWindow((IPlantWindowInterface)event.getSource());
-        }
-
-        @Override
-        public void onShow(ShowEvent event) {
-            showWindow((IPlantWindowInterface)event.getSource());
-        }
-
+    public interface NsfLayoutContainerTemplate extends XTemplates {
+        @XTemplate("<div style='float:right;'><div class='cell1'></div></div>")
+        SafeHtml getTemplate();
     }
 
     /**
@@ -128,14 +110,19 @@ public class Desktop implements IsWidget {
     private FastMap<DesktopLayout> desktopLayouts;
     private DEWindowManager windowManager;
     private final WindowConfigFactory factoryWindowConfig;
+    private final DeResources resources;
 
     /**
      * Creates a new Desktop window.
      */
-    public Desktop() {
+    public Desktop(final DeResources resources) {
+        this.resources = resources;
         factoryWindowConfig = new WindowConfigFactory();
         initShortcuts();
-        initEventHandlers();
+        EventBus eventbus = EventBus.getInstance();
+        initEventHandlers(eventbus);
+
+        initWindowEventHandlers(eventbus);
     }
 
     /**
@@ -148,8 +135,21 @@ public class Desktop implements IsWidget {
         getDesktop().add(shortcut, new BoxLayoutData(new Margins(5)));
     }
 
-    private void initEventHandlers() {
-        EventBus eventbus = EventBus.getInstance();
+    /**
+     * Initialize handlers related to launching windows
+     * 
+     * @param eventbus
+     */
+    private void initWindowEventHandlers(final EventBus eventbus) {
+        // Launching Tito and App windows
+        eventbus.addHandler(AppLoadEvent.TYPE, new AppLoadEventHandlerImpl(this));
+        eventbus.addHandler(CreateNewAppEvent.TYPE, new CreateNewAppEventHandlerImpl(this));
+
+        // Launching File Preview windows
+        eventbus.addHandler(ShowFilePreviewEvent.TYPE, new ShowFilePreviewEventHandlerImpl(this));
+    }
+
+    private void initEventHandlers(final EventBus eventbus) {
 
         // user action
         eventbus.addHandler(UserEvent.TYPE, new UserEventHandler() {
@@ -162,23 +162,15 @@ public class Desktop implements IsWidget {
         // window payload events
         eventbus.addHandler(WindowPayloadEvent.TYPE, new WindowPayloadEventHandlerImpl());
 
-        eventbus.addHandler(ShowFilePreviewEvent.TYPE, new ShowFilePreviewEventHandler() {
-
-            @Override
-            public void showFilePreview(ShowFilePreviewEvent event) {
-                ViewerWindowDispatcher dispatcher = new ViewerWindowDispatcher();
-                dispatcher.launchViewerWindow(Lists.newArrayList(event.getFile().getId()), false);
-            }
-        });
-        eventbus.addHandler(RequestBulkDownloadEvent.TYPE, new DesktopFileTransferEventHandler());
-        eventbus.addHandler(RequestBulkUploadEvent.TYPE, new DesktopFileTransferEventHandler());
-        eventbus.addHandler(RequestImportFromUrlEvent.TYPE, new DesktopFileTransferEventHandler());
-        eventbus.addHandler(RequestSimpleDownloadEvent.TYPE, new DesktopFileTransferEventHandler());
-        eventbus.addHandler(RequestSimpleUploadEvent.TYPE, new DesktopFileTransferEventHandler());
+        eventbus.addHandler(RequestBulkDownloadEvent.TYPE, new DesktopFileTransferEventHandler(this));
+        eventbus.addHandler(RequestBulkUploadEvent.TYPE, new DesktopFileTransferEventHandler(this));
+        eventbus.addHandler(RequestImportFromUrlEvent.TYPE, new DesktopFileTransferEventHandler(this));
+        eventbus.addHandler(RequestSimpleDownloadEvent.TYPE, new DesktopFileTransferEventHandler(this));
+        eventbus.addHandler(RequestSimpleUploadEvent.TYPE, new DesktopFileTransferEventHandler(this));
 
     }
 
-    private void showWindow(final String type, final WindowConfig config) {
+    protected void showWindow(final String type, final WindowConfig config) {
         String tag = type;
         // if we have params, the unique window identifier will be type + params
 
@@ -241,6 +233,7 @@ public class Desktop implements IsWidget {
     }
 
     private HorizontalLayoutContainer buildFooterPanel() {
+
         HorizontalLayoutContainer pnlFooter = new HorizontalLayoutContainer();
         pnlFooter.setWidth("100%"); //$NON-NLS-1$
 
@@ -248,26 +241,17 @@ public class Desktop implements IsWidget {
                 .create(CopyRightLayoutContainerTemplate.class);
         HtmlLayoutContainer copyright = new HtmlLayoutContainer(copy_template.getTemplate());
         copyright.add(new LabelField(I18N.DISPLAY.projectCopyrightStatement()), new HtmlData(".cell1"));
-        copyright.setStyleName("copyright"); //$NON-NLS-1$
+        copyright.setStyleName(resources.css().copyright());
         pnlFooter.add(copyright);
 
         NsfLayoutContainerTemplate nsf_template = GWT.create(NsfLayoutContainerTemplate.class);
         HtmlLayoutContainer nsftext = new HtmlLayoutContainer(nsf_template.getTemplate());
         nsftext.add(new LabelField(I18N.DISPLAY.nsfProjectText()), new HtmlData(".cell1"));
-        nsftext.setStyleName("nsf-text"); //$NON-NLS-1$
+        nsftext.getElement().addClassName(resources.css().nsfText());
+
         pnlFooter.add(nsftext);
 
         return pnlFooter;
-    }
-
-    public interface CopyRightLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<div style='float:left;'><div class='cell1'></div></div>")
-        SafeHtml getTemplate();
-    }
-
-    public interface NsfLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<div style='float:right;'><div class='cell1'></div></div>")
-        SafeHtml getTemplate();
     }
 
     /**
@@ -289,8 +273,7 @@ public class Desktop implements IsWidget {
      */
     public DEWindowManager getWindowManager() {
         if (windowManager == null) {
-            windowManager = new DEWindowManager(null, getHandler(), getHandler(), getHandler(),
-                    getHandler(), getHandler());
+            windowManager = new DEWindowManager(null, getHandler(), getHandler(), getHandler(), getHandler(), getHandler());
         }
         return windowManager;
     }
@@ -551,6 +534,35 @@ public class Desktop implements IsWidget {
                     }
                 }
             }
+        }
+
+    }
+
+    private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>, MinimizeHandler, HideHandler, ShowHandler {
+
+        @Override
+        public void onActivate(ActivateEvent<Window> event) {
+            markActive((IPlantWindowInterface)event.getSource());
+        }
+
+        @Override
+        public void onDeactivate(DeactivateEvent<Window> event) {
+            markInactive((IPlantWindowInterface)event.getSource());
+        }
+
+        @Override
+        public void onHide(HideEvent event) {
+            hideWindow((IPlantWindowInterface)event.getSource());
+        }
+
+        @Override
+        public void onMinimize(MinimizeEvent event) {
+            minimizeWindow((IPlantWindowInterface)event.getSource());
+        }
+
+        @Override
+        public void onShow(ShowEvent event) {
+            showWindow((IPlantWindowInterface)event.getSource());
         }
 
     }

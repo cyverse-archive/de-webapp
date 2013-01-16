@@ -36,11 +36,10 @@ public class Gxt3WizardWindow extends Gxt3IplantWindow {
     private void init(final AppWizardView.Presenter presenter, WizardWindowConfig config) {
         
         if (config != null) {
-            presenter.setAppTemplateFromJsonString(config.getWizardConfig().toString());
-            this.setHeadingText(presenter.getAppTemplate().getLabel());
-            presenter.go(this);
+            presenter.go(this, config.getWizardConfig().toString());
+            setHeadingText(presenter.getAppTemplate().getLabel());
             // KLUDGE JDS This call to forceLayout should not be necessary.
-            this.forceLayout();
+            forceLayout();
         } else {
             templateService.getTemplate(tag, new AsyncCallback<String>() {
                 @Override
@@ -50,9 +49,8 @@ public class Gxt3WizardWindow extends Gxt3IplantWindow {
 
                 @Override
                 public void onSuccess(String json) {
-                    presenter.setAppTemplateFromJsonString(json);
+                    presenter.go(Gxt3WizardWindow.this, json);
                     Gxt3WizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
-                    presenter.go(Gxt3WizardWindow.this);
                     // KLUDGE JDS This call to forceLayout should not be necessary.
                     Gxt3WizardWindow.this.forceLayout();
                 }

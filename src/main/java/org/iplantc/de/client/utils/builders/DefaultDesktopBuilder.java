@@ -1,6 +1,9 @@
 package org.iplantc.de.client.utils.builders;
 
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * Initializes all desktop shortcuts.
@@ -9,18 +12,17 @@ import org.iplantc.de.client.Constants;
  * 
  */
 public class DefaultDesktopBuilder extends DesktopBuilder {
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void buildShortcuts() {
-        addShortcut("iplantc-mydata-shortcut", "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        DeResources res = GWT.create(DeResources.class);
+        res.css().ensureInjected();
+        addShortcut(res.css().iplantcMydataShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 Constants.CLIENT.myDataTag());
 
-        addShortcut("iplantc-myanalysis-shortcut", "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        addShortcut(res.css().iplantcMyanalysisShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 Constants.CLIENT.myAnalysisTag());
 
-        addShortcut("iplantc-catalog-shortcut", "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        addShortcut(res.css().iplantcCatalogShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 Constants.CLIENT.deCatalog());
     }
 }

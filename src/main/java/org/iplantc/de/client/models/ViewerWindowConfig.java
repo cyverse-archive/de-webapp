@@ -5,7 +5,7 @@ package org.iplantc.de.client.models;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.models.WindowConfig;
-import org.iplantc.core.uidiskresource.client.models.FileIdentifier;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
@@ -21,6 +21,8 @@ public class ViewerWindowConfig extends WindowConfig {
     public static String FILE_NAME = "fileName";
     public static String FILE_PARENT = "fileParent";
 
+    private File file;
+
     public ViewerWindowConfig() {
         super();
     }
@@ -29,17 +31,12 @@ public class ViewerWindowConfig extends WindowConfig {
         super(config);
     }
 
-    public void setFileIdentifier(FileIdentifier fd) {
-        setString(FILE_ID, fd.getFileId());
-        setString(FILE_NAME, fd.getFilename());
-        setString(FILE_PARENT, fd.getParentId());
+    public void setFile(File file) {
+        this.file = file;
     }
 
-    public FileIdentifier getFileIdentifier() {
-        FileIdentifier fd = new FileIdentifier(JsonUtil.getRawValueAsString(get(FILE_NAME)),
-                JsonUtil.getRawValueAsString(get(FILE_PARENT)),
-                JsonUtil.getRawValueAsString(get(FILE_ID)));
-        return fd;
+    public File getFile() {
+        return file;
     }
 
     public void setShowTreeTab(boolean treetab) {

@@ -1,9 +1,6 @@
-/**
- * 
- */
 package org.iplantc.de.client.viewer.commands;
 
-import org.iplantc.core.uidiskresource.client.models.FileIdentifier;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.util.WindowUtil;
 import org.iplantc.de.client.viewer.views.FileViewer;
@@ -14,16 +11,9 @@ import org.iplantc.de.client.viewer.views.FileViewer;
  */
 public class HtmlDataViewCommand implements ViewCommand {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.iplantc.de.client.viewer.commands.ViewCommand#execute(org.iplantc.core.uidiskresource.client
-     * .models.FileIdentifier)
-     */
     @Override
-    public FileViewer execute(FileIdentifier file) {
-        WindowUtil.open(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(file.getFileId())
+    public FileViewer execute(File file) {
+        WindowUtil.open(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(file.getId())
                 + "&attachment=0");
         return null;
     }

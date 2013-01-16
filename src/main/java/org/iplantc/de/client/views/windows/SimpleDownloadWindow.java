@@ -26,6 +26,8 @@ import com.google.gwt.user.client.Element;
 /**
  * An iPlant window for displaying simple download links.
  * 
+ * FIXME JDS Needs to be updated
+ * 
  * @author psarando
  * 
  */
@@ -51,7 +53,6 @@ public class SimpleDownloadWindow extends IPlantWindow {
         // Add window contents container for the simple download links
         contents = new LayoutContainer();
 
-        // TODO use a CSS class instead of hard-coding?
         contents.setStyleAttribute("padding", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
 
         add(new Label("&nbsp;" + I18N.DISPLAY.simpleDownloadNotice()));

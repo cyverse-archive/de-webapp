@@ -2,10 +2,12 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
 import org.iplantc.de.client.factories.WindowConfigFactory;
+import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AboutApplicationData;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
@@ -13,6 +15,7 @@ import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,6 +30,7 @@ public class AboutApplicationWindow extends IPlantWindow {
     private AboutApplicationData model;
 
     private Label lblNSFStatement;
+    private final DeResources res;
 
     /**
      * Constructs an instance given a unique identifier.
@@ -36,6 +40,8 @@ public class AboutApplicationWindow extends IPlantWindow {
     public AboutApplicationWindow(String tag) {
         super(tag);
 
+        res = GWT.create(DeResources.class);
+        res.css().ensureInjected();
         setLayout(new RowLayout());
         setId(tag);
         setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
@@ -65,7 +71,7 @@ public class AboutApplicationWindow extends IPlantWindow {
     }
 
     private void compose() {
-        Image logo = new Image(Constants.CLIENT.iplantAboutImage());
+        Image logo = new Image(Resources.ICONS.iplantAbout().getSafeUri());
 
         add(logo);
         add(lblNSFStatement);
@@ -84,7 +90,7 @@ public class AboutApplicationWindow extends IPlantWindow {
     private ContentPanel buildDetailsContainer() {
         ContentPanel pnlDetails = new ContentPanel();
         pnlDetails.setHeaderVisible(false);
-        pnlDetails.setBodyStyleName("iplantc-about-pad-text"); //$NON-NLS-1$
+        pnlDetails.setBodyStyleName(res.css().iplantcAboutPadText());
 
         HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
                 model.getBuildNumber(), model.getUserAgent()));

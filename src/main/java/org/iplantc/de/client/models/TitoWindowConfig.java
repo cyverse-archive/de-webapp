@@ -7,7 +7,6 @@ import com.google.gwt.json.client.JSONObject;
 
 @SuppressWarnings("nls")
 public class TitoWindowConfig extends WindowConfig {
-    private static final long serialVersionUID = 2475114222792415666L;
 
     public static final String APP_ID = "appID";
     public static final String VIEW = "view";

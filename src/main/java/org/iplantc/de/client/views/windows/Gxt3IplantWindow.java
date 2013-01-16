@@ -8,9 +8,11 @@ import java.util.Map;
 import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.images.Resources;
 import org.iplantc.core.uicommons.client.models.WindowConfig;
+import org.iplantc.de.client.DeResources;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.WindowListener;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -43,17 +45,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * 
  */
 public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInterface {
-    private static final String BUTTON_STYLE_RESTORE_HOVER = "x-tool-restorewindow-hover";
-    private static final String HEADER_STYLE = "windowLayoutTitle3"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_CLOSE = "x-tool-closewindow"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_CLOSE_HOVER = "x-tool-closewindow-hover"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_MAXIMIZE = "x-tool-maximizewindow"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_MAXIMIZED_HOVER = "x-tool-maximizewindow-hover"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_MINIMIZED = "x-tool-minimizewindow"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_MINIMIZED_HOVER = "x-tool-minimizewindow-hover"; //$NON-NLS-1$
-    private static final String BUTTON_STYLE_RESTORE = "x-tool-restorewindow"; //$NON-NLS-1$
-    private static final String WINDOW_STYLE_BODY = "windowBody3"; //$NON-NLS-1$
-
     protected String tag;
     protected WindowConfig config;
     protected Status status;
@@ -71,6 +62,8 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
      * Used to store the <code>HandlerRegistration</code>s of widgets when needed.
      */
     private final Map<Widget, List<HandlerRegistration>> handlerRegMap = new HashMap<Widget, List<HandlerRegistration>>();
+
+    private final DeResources res = GWT.create(DeResources.class);
 
     /**
      * Constructs an instance of the window.
@@ -98,6 +91,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
     public Gxt3IplantWindow(String tag, boolean haveStatus, boolean isMinimizable,
             boolean isMaximizable, boolean isClosable) {
         super(new GrayWindowAppearance());
+        res.css().ensureInjected();
         this.tag = tag;
 
         if (haveStatus) {
@@ -126,10 +120,10 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
         setMinimizable(false);
         setClosable(false);
 
-        getHeader().addStyleName(HEADER_STYLE);
+        getHeader().addStyleName(res.css().windowLayoutTitle3());
         getHeader().setIcon(Resources.ICONS.whitelogoSmall());
 
-        setStyleName(WINDOW_STYLE_BODY);
+        setStyleName(res.css().windowBody3());
         setShadow(false);
         setBodyBorder(false);
         setBorders(false);
@@ -154,7 +148,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
     }
 
     private ToolButton createMaximizeButton() {
-        final ToolButton newMaxBtn = new ToolButton(BUTTON_STYLE_MAXIMIZE);
+        final ToolButton newMaxBtn = new ToolButton(res.css().xToolMaximizewindow());
         newMaxBtn.setId("idmaximize-" + tag); //$NON-NLS-1$
         newMaxBtn.sinkEvents(Event.ONMOUSEOUT);
         newMaxBtn.setToolTip(I18N.DISPLAY.maximize());
@@ -179,7 +173,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
         reg = newMaxBtn.addHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                newMaxBtn.addStyleName(BUTTON_STYLE_MAXIMIZED_HOVER);
+                newMaxBtn.addStyleName(res.css().xToolMaximizewindowHover());
             }
         }, MouseOverEvent.getType());
         hrList.add(reg);
@@ -187,7 +181,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
         reg = newMaxBtn.addHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                newMaxBtn.removeStyleName(BUTTON_STYLE_MAXIMIZED_HOVER);
+                newMaxBtn.removeStyleName(res.css().xToolMaximizewindowHover());
             }
         }, MouseOutEvent.getType());
         hrList.add(reg);
@@ -197,7 +191,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
     }
 
     private ToolButton createRestoreButton() {
-        final ToolButton btnRestore = new ToolButton(BUTTON_STYLE_RESTORE);
+        final ToolButton btnRestore = new ToolButton(res.css().xToolRestorewindow());
         btnRestore.setId("idrestore-" + tag); //$NON-NLS-1$
         btnRestore.sinkEvents(Events.OnMouseOut.getEventCode());
         btnRestore.setToolTip(I18N.DISPLAY.restore());
@@ -215,7 +209,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
         reg = btnRestore.addHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                btnRestore.addStyleName(BUTTON_STYLE_RESTORE_HOVER);
+                btnRestore.addStyleName(res.css().xToolRestorewindowHover());
             }
         }, MouseOverEvent.getType());
         hrList.add(reg);
@@ -223,7 +217,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
         reg = btnRestore.addHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                btnRestore.removeStyleName(BUTTON_STYLE_RESTORE_HOVER);
+                btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
             }
         }, MouseOutEvent.getType());
         hrList.add(reg);
@@ -233,7 +227,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
     }
 
     private ToolButton createMinimizeButton() {
-        final ToolButton newMinBtn = new ToolButton(BUTTON_STYLE_MINIMIZED);
+        final ToolButton newMinBtn = new ToolButton(res.css().xToolMinimizewindow());
         newMinBtn.setId("idminimize-" + tag); //$NON-NLS-1$
         newMinBtn.sinkEvents(Events.OnMouseOut.getEventCode());
         newMinBtn.setToolTip(I18N.DISPLAY.minimize());
@@ -243,21 +237,21 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
             public void onSelect(SelectEvent event) {
                 minimize();
                 minimized = true;
-                newMinBtn.removeStyleName(BUTTON_STYLE_MINIMIZED_HOVER);
+                newMinBtn.removeStyleName(res.css().xToolMinimizewindowHover());
             }
         });
 
         newMinBtn.addHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                newMinBtn.addStyleName(BUTTON_STYLE_MINIMIZED_HOVER);
+                newMinBtn.addStyleName(res.css().xToolMinimizewindowHover());
             }
         }, MouseOverEvent.getType());
 
         newMinBtn.addHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                newMinBtn.removeStyleName(BUTTON_STYLE_MINIMIZED_HOVER);
+                newMinBtn.removeStyleName(res.css().xToolMinimizewindowHover());
             }
         }, MouseOutEvent.getType());
 
@@ -265,7 +259,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
     }
 
     private ToolButton createCloseButton() {
-        final ToolButton newCloseBtn = new ToolButton(BUTTON_STYLE_CLOSE);
+        final ToolButton newCloseBtn = new ToolButton(res.css().xToolClosewindow());
         newCloseBtn.setId("idclose-" + tag); //$NON-NLS-1$
         newCloseBtn.sinkEvents(Events.OnMouseOut.getEventCode());
         newCloseBtn.setToolTip(I18N.DISPLAY.close());
@@ -280,14 +274,14 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
         newCloseBtn.addHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                newCloseBtn.removeStyleName(BUTTON_STYLE_CLOSE_HOVER);
+                newCloseBtn.removeStyleName(res.css().xToolClosewindowHover());
             }
         }, MouseOutEvent.getType());
 
         newCloseBtn.addHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                newCloseBtn.addStyleName(BUTTON_STYLE_CLOSE_HOVER);
+                newCloseBtn.addStyleName(res.css().xToolClosewindowHover());
             }
         }, MouseOverEvent.getType());
 
@@ -316,7 +310,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
      * The restore icon is only visible to the user when a window is in maximized state.
      */
     private void replaceMaximizeIcon() {
-        int index = findToolButtonIndex(BUTTON_STYLE_MAXIMIZE);
+        int index = findToolButtonIndex(res.css().xToolMaximizewindow());
         if (index > -1) {
             getHeader().removeTool(btnMaximize);
             btnMaximize.removeFromParent();
@@ -332,7 +326,7 @@ public abstract class Gxt3IplantWindow extends Window implements IPlantWindowInt
      * Replaces the restore icon with the maximize icon.
      */
     private void replaceRestoreIcon() {
-        int index = findToolButtonIndex(BUTTON_STYLE_RESTORE);
+        int index = findToolButtonIndex(res.css().xToolRestorewindow());
         if (index > -1) {
             getHeader().removeTool(btnRestore);
             removeButtonListeners(btnRestore);

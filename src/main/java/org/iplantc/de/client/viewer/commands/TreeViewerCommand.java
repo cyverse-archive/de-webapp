@@ -1,12 +1,9 @@
-/**
- * 
- */
 package org.iplantc.de.client.viewer.commands;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.iplantc.core.uidiskresource.client.models.FileIdentifier;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.models.TreeUrl;
 import org.iplantc.de.client.viewer.models.TreeUrlProperties;
@@ -27,15 +24,8 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
  */
 public class TreeViewerCommand implements ViewCommand {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.iplantc.de.client.viewer.commands.ViewCommand#execute(org.iplantc.core.uidiskresource.client
-     * .models.FileIdentifier)
-     */
     @Override
-    public FileViewer execute(FileIdentifier file) {
+    public FileViewer execute(File file) {
         FileViewer viewer = new TreeViwerImpl(buildColumnModel(), new ListStore<TreeUrl>(
                 new TreeUrlKeyProvider()));
         return viewer;

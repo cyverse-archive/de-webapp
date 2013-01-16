@@ -1,19 +1,13 @@
-/**
- * 
- */
 package org.iplantc.de.client.viewer.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uidiskresource.client.models.File;
-import org.iplantc.core.uidiskresource.client.models.FileIdentifier;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.controllers.DataMonitor;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
 import org.iplantc.de.client.viewer.factory.MimeTypeViewerResolverFactory;
 import org.iplantc.de.client.viewer.models.MimeType;
@@ -38,7 +32,7 @@ import com.sencha.gxt.widget.core.client.event.ActivateEvent.ActivateHandler;
  * @author sriram
  * 
  */
-public class FileViewerPresenter implements Presenter, DataMonitor {
+public class FileViewerPresenter implements Presenter {
 
     // A presenter can handle more than one view of the same data at a time
     private final List<FileViewer> viewers;
@@ -46,9 +40,9 @@ public class FileViewerPresenter implements Presenter, DataMonitor {
     private FileViewerWindow container;
 
     /**
-     * The identifier of the file shown in the window.
+     * The file shown in the window.
      */
-    private final FileIdentifier file;
+    private final File file;
 
     /**
      * The manifest of file contents
@@ -59,7 +53,7 @@ public class FileViewerPresenter implements Presenter, DataMonitor {
 
     private final TreeUrlAutoBeanFactory factory = GWT.create(TreeUrlAutoBeanFactory.class);
 
-    public FileViewerPresenter(FileIdentifier file, JSONObject manifest, boolean treeViewer) {
+    public FileViewerPresenter(File file, JSONObject manifest, boolean treeViewer) {
         this.manifest = manifest;
         viewers = new ArrayList<FileViewer>();
         this.file = file;
@@ -89,7 +83,7 @@ public class FileViewerPresenter implements Presenter, DataMonitor {
 
         if (viewer != null) {
             viewers.add(viewer);
-            container.getWidget().add(viewer.asWidget(), file.getFilename());
+            container.getWidget().add(viewer.asWidget(), file.getName());
             container.unmask();
         }
 
@@ -145,7 +139,7 @@ public class FileViewerPresenter implements Presenter, DataMonitor {
     public void callTreeCreateService(final FileViewer viewer) {
         container.mask(I18N.DISPLAY.loadingMask());
 
-        Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getFileId(), new AsyncCallback<String>() {
+        Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 if (result != null && !result.isEmpty()) {
@@ -170,58 +164,10 @@ public class FileViewerPresenter implements Presenter, DataMonitor {
             public void onFailure(Throwable caught) {
                 container.unmask();
 
-                String errMsg = I18N.ERROR.unableToRetrieveTreeUrls(file.getFilename());
+                String errMsg = I18N.ERROR.unableToRetrieveTreeUrls(file.getName());
                 ErrorHandler.post(errMsg, caught);
             }
         });
-    }
-
-    @Override
-    public void folderCreated(String idParentFolder, JSONObject jsonFolder) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void addFile(String path, File info) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void fileSavedAs(String idOrig, String idParentFolder, File info) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void fileRename(String id, String name) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void folderRename(String id, String name) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void deleteResources(List<String> folders, List<String> files) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void folderMove(Map<String, String> folders) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void fileMove(Map<String, String> files) {
-        // TODO Auto-generated method stub
-
     }
 
 }

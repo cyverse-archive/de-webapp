@@ -8,11 +8,12 @@ import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.widgets.MenuHyperlink;
 import org.iplantc.core.uicommons.client.widgets.PushButton;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.collaborators.views.ManageCollaboratorsDailog;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
-import org.iplantc.de.client.events.NotificationCountUpdateEventHandler;
+import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.NotificationWindowConfig;
@@ -71,20 +72,18 @@ public class DEViewImpl implements DEView {
     private NotificationIndicator lblNotifications;
     private ViewNotificationMenu notificationsView;
 
-    // TODO JDS Reimplement these styles in CssResource
-    private final String linkStyle = "de_header_menu_hyperlink"; //$NON-NLS-1$
-    private final String hoverStyle = "de_header_menu_hyperlink_hover"; //$NON-NLS-1$
-
     private final Widget widget;
+
+    private final DeResources resources;
 
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
     }
 
-    public DEViewImpl() {
+    public DEViewImpl(final DeResources resources) {
+        this.resources = resources;
         widget = uiBinder.createAndBindUi(this);
-        // TODO JDS Reimplement with CssResource
-        con.setStyleName("iplantc-background"); //$NON-NLS-1$)
+        con.setStyleName(resources.css().iplantcBackground());
         initEventHandlers();
     }
 
@@ -130,8 +129,9 @@ public class DEViewImpl implements DEView {
         VerticalLayoutContainer panel = new VerticalLayoutContainer();
         panel.setWidth("33%");
 
-        Image logo = new Image(Constants.CLIENT.iplantLogo());
-        logo.addStyleName("iplantc-logo"); //$NON-NLS-1$
+        Resources.ICONS.headerLogo();
+        Image logo = new Image(Resources.ICONS.headerLogo().getSafeUri());
+        logo.addStyleName(resources.css().iplantcLogo());
         logo.addClickHandler(new ClickHandler() {
 
             @Override
@@ -174,13 +174,13 @@ public class DEViewImpl implements DEView {
         final PushButton button = new PushButton(menuHeaderText, headerWidth);
         notificationsView = new ViewNotificationMenu();
         notificationsView.setBorders(false);
-        notificationsView.setStyleName("de_header_menu_body"); //$NON-NLS-1$
+        notificationsView.setStyleName(resources.css().de_header_menu_body());
         notificationsView.setShadow(false);
         notificationsView.addShowHandler(new ShowHandler() {
 
             @Override
             public void onShow(ShowEvent event) {
-                button.addStyleName("de_header_menu_selected");
+                button.addStyleName(resources.css().de_header_menu_selected());
 
             }
         });
@@ -189,8 +189,7 @@ public class DEViewImpl implements DEView {
 
             @Override
             public void onHide(HideEvent event) {
-                button.removeStyleName("de_header_menu_selected");
-
+                button.removeStyleName(resources.css().de_header_menu_selected());
             }
         });
         button.addClickHandler(new ClickHandler() {
@@ -229,8 +228,7 @@ public class DEViewImpl implements DEView {
 
             @Override
             public void onShow(ShowEvent event) {
-                button.addStyleName("de_header_menu_selected");
-
+                button.addStyleName(resources.css().de_header_menu_selected());
             }
         });
 
@@ -238,8 +236,7 @@ public class DEViewImpl implements DEView {
 
             @Override
             public void onHide(HideEvent event) {
-                button.removeStyleName("de_header_menu_selected");
-
+                button.removeStyleName(resources.css().de_header_menu_selected());
             }
         });
 
@@ -252,7 +249,7 @@ public class DEViewImpl implements DEView {
     private Menu buildUserMenu() {
         final Menu userMenu = buildMenu();
 
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.logout(), linkStyle, hoverStyle,
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.logout(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -260,7 +257,7 @@ public class DEViewImpl implements DEView {
                         userMenu.hide();
                     }
                 }, null));
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.preferences(), linkStyle, hoverStyle,
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.preferences(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -268,7 +265,7 @@ public class DEViewImpl implements DEView {
                         userMenu.hide();
                     }
                 }, null));
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.collaborators(), linkStyle, hoverStyle,
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.collaborators(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -288,7 +285,7 @@ public class DEViewImpl implements DEView {
 
     private Menu buildHelpMenu() {
         final Menu helpMenu = buildMenu();
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.documentation(), linkStyle, hoverStyle,
+        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.documentation(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -297,7 +294,7 @@ public class DEViewImpl implements DEView {
                     }
                 }));
 
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.forums(), linkStyle, hoverStyle,
+        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.forums(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -306,7 +303,7 @@ public class DEViewImpl implements DEView {
                     }
                 }));
 
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.contactSupport(), linkStyle, hoverStyle,
+        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.contactSupport(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -315,7 +312,7 @@ public class DEViewImpl implements DEView {
                     }
                 }));
 
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.about(), linkStyle, hoverStyle,
+        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.about(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -332,7 +329,7 @@ public class DEViewImpl implements DEView {
 
         d.setSize("110px", "90px");
         d.setBorders(true);
-        d.setStyleName("de_header_menu_body"); //$NON-NLS-1$
+        d.setStyleName(resources.css().de_header_menu_body());
         d.setShadow(false);
 
         return d;
@@ -379,7 +376,7 @@ public class DEViewImpl implements DEView {
         public NotificationIndicator(int initialCount) {
             super();
 
-            setStyleName("de_notification_indicator"); //$NON-NLS-1$
+            setStyleName(resources.css().de_notification_indicator());
             setCount(initialCount);
         }
 
@@ -391,11 +388,11 @@ public class DEViewImpl implements DEView {
             this.count = count;
             if (count > 0) {
                 setText(String.valueOf(count));
-                addStyleName("de_notification_indicator_highlight"); //$NON-NLS-1$
+                addStyleName(resources.css().de_notification_indicator_highlight());
                 Window.setTitle("(" + count + ") " + I18N.DISPLAY.rootApplicationTitle());
             } else {
                 setText("&nbsp;&nbsp;"); //$NON-NLS-1$
-                removeStyleName("de_notification_indicator_highlight"); //$NON-NLS-1$
+                removeStyleName(resources.css().de_notification_indicator_highlight());
                 Window.setTitle(I18N.DISPLAY.rootApplicationTitle());
             }
         }

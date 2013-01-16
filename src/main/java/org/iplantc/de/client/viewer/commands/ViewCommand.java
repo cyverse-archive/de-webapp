@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.commands;
 
-import org.iplantc.core.uidiskresource.client.models.FileIdentifier;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.de.client.viewer.views.FileViewer;
 
 /**
@@ -13,5 +13,5 @@ public interface ViewCommand {
     /**
      * Execute command.
      */
-    FileViewer execute(FileIdentifier file);
+    FileViewer execute(File file);
 }

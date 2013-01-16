@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.event.WindowListener;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.sencha.gxt.core.client.util.Point;
+import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.event.ActivateEvent.ActivateHandler;
 import com.sencha.gxt.widget.core.client.event.DeactivateEvent.DeactivateHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
@@ -28,8 +29,8 @@ public class DEWindowManager extends IplantWindowManager {
     private IPlantWindowInterface activeWindow;
     private final FastMap<IPlantWindowInterface> windows = new FastMap<IPlantWindowInterface>();
     private Point first_window_postion;
-    private final ActivateHandler<com.sencha.gxt.widget.core.client.Window> activateHandler;
-    private final DeactivateHandler<com.sencha.gxt.widget.core.client.Window> deactivateHandler;
+    private final ActivateHandler<Window> activateHandler;
+    private final DeactivateHandler<Window> deactivateHandler;
     private final HideHandler hideHandler;
     private final MinimizeHandler minimizeHandler;
     private final ShowHandler showHandler;
@@ -41,8 +42,7 @@ public class DEWindowManager extends IplantWindowManager {
      * @param listener window listener.
      */
     public DEWindowManager(WindowListener listener,
-            ActivateHandler<com.sencha.gxt.widget.core.client.Window> activateHandler,
-            DeactivateHandler<com.sencha.gxt.widget.core.client.Window> deactivateHandler,
+ ActivateHandler<Window> activateHandler, DeactivateHandler<Window> deactivateHandler,
             HideHandler hideHandler, MinimizeHandler minimizeHandler, ShowHandler showHandler) {
         this.listener = listener;
         this.activateHandler = activateHandler;
@@ -99,7 +99,7 @@ public class DEWindowManager extends IplantWindowManager {
             getDEWindows().put(window.getTag(), window);
             if (window instanceof com.extjs.gxt.ui.client.widget.Window) {
                 window.addWindowListener(listener);
-            } else if (window instanceof com.sencha.gxt.widget.core.client.Window) {
+            } else if (window instanceof Window) {
                 window.addActivateHandler(activateHandler);
                 window.addDeactivateHandler(deactivateHandler);
                 window.addHideHandler(hideHandler);

@@ -9,10 +9,10 @@ import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.controllers.PipelineController;
-import org.iplantc.de.client.controllers.TitoController;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.periodic.MessagePoller;
@@ -33,21 +33,22 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class DEPresenter implements DEView.Presenter {
 
     private final DEView view;
+    private final DeResources res;
 
     /**
      * Constructs a default instance of the object.
      */
-    public DEPresenter(DEView view) {
+    public DEPresenter(final DEView view, final DeResources resources) {
         this.view = view;
+        this.res = resources;
         initializeDEProperties();
         // Initialize Controllers
-        TitoController.getInstance();
         PipelineController.getInstance();
 
     }
 
     private void doWorkspaceDisplay() {
-        Desktop widget = new Desktop();
+        Desktop widget = new Desktop(res);
         view.drawHeader();
         view.replaceCenterPanel(widget);
         RootPanel.get().add(view.asWidget());

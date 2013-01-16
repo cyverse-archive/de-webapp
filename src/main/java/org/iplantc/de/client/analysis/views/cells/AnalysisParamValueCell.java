@@ -3,19 +3,21 @@
  */
 package org.iplantc.de.client.analysis.views.cells;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
+import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
-import org.iplantc.de.client.dispatchers.ViewerWindowDispatcher;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * @author sriram
@@ -69,15 +71,10 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
     }
 
     private void launchViewer(AnalysisParameter value) {
-        final List<String> contexts = new ArrayList<String>();
-        contexts.add(value.getValue());
-        final ViewerWindowDispatcher dispatcher = new ViewerWindowDispatcher();
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                dispatcher.launchViewerWindow(contexts, false);
-            }
-        });
+        DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
+        AutoBean<File> bean = AutoBeanCodex.decode(factory, File.class, "{\"id\": \"" + value.getValue() + "\"}");
+        bean.as().setName(DiskResourceUtil.parseNameFromPath(value.getValue()));
+        EventBus.getInstance().fireEvent(new ShowFilePreviewEvent(bean.as(), this));
     }
 
 }

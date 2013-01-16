@@ -6,13 +6,15 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.services.callbacks.DiskResouceDuplicatesCheckCallback;
-import org.iplantc.de.client.utils.DataUtils;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.core.FastMap;
@@ -39,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -46,6 +49,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * Panel component for uploading files.
@@ -79,6 +84,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     private final List<TextArea> urls;
     private final String destFolder;
     private final MODE mode;
+    private final DiskResourceServiceFacade diskResourceService = Services.DISK_RESOURCE_SERVICE;
+    private final DeResources res;
 
     public static enum MODE {
         URL_ONLY, FILE_ONLY, FILE_AND_URL
@@ -93,6 +100,8 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
      */
     public FileUploadDialogPanel(FastMap<String> hiddenFields, String servletActionUrl,
             AsyncUploadCompleteHandler handler, MODE mode) {
+        res = GWT.create(DeResources.class);
+        res.css().ensureInjected();
         hdlrUpload = handler;
         this.mode = mode;
         destFolder = hiddenFields.get(HDN_PARENT_ID_KEY);
@@ -114,8 +123,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     }
 
     private void initForm(String servletActionUrl) {
-        form.setStyleName("iplantc-form-layout-panel"); //$NON-NLS-1$
-
         form.setHideLabels(true);
         form.setHeaderVisible(false);
         form.setFieldWidth(FIELD_WIDTH);
@@ -209,7 +216,6 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
     private Status buildFileStatus() {
         Status ret = new Status();
 
-        ret.setStyleName("iplantc-file-status"); //$NON-NLS-1$
         ret.setText(I18N.DISPLAY.fileUploadFolder(destFolder));
         return ret;
     }
@@ -325,7 +331,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
             if (!destResourceMap.isEmpty()) {
                 List<String> ids = new ArrayList<String>();
                 ids.addAll(destResourceMap.keySet());
-                DataUtils.checkListForDuplicateFilenames(ids, new CheckDuplicatesCallback(ids,
+                diskResourceService.diskResourcesExist(ids, new CheckDuplicatesCallback(ids,
                         destResourceMap));
             }
         } else {
@@ -444,9 +450,12 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                         if (action.equals("file-upload")) { //$NON-NLS-1$
                             JSONObject file = JsonUtil.getObject(jsonFileUploadStatus, "file"); //$NON-NLS-1$
 
-                            if (file != null) {
-                                hdlrUpload.onCompletion(JsonUtil.getString(file, File.LABEL),
-                                        file.toString());
+                            DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
+                            AutoBean<org.iplantc.core.uidiskresource.client.models.autobeans.File> fileAb = AutoBeanCodex.decode(factory,
+                                    org.iplantc.core.uidiskresource.client.models.autobeans.File.class, file.toString());
+
+                            if (fileAb != null) {
+                                hdlrUpload.onCompletion(fileAb.as().getName(), file.toString());
                             }
                         } else if (action.equals("url-upload")) { //$NON-NLS-1$
                             String sourceUrl = JsonUtil.getString(jsonFileUploadStatus, "url"); //$NON-NLS-1$

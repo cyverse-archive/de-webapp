@@ -361,4 +361,10 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
     @Source("arrow.gif")
     ImageResource menuAnchor();
 
+    @Source("headerlogo_85h.png")
+    ImageResource headerLogo();
+
+    @Source("iplant_about.gif")
+    ImageResource iplantAbout();
+
 }

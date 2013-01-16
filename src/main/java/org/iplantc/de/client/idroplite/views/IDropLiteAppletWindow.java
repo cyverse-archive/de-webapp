@@ -4,9 +4,9 @@
 package org.iplantc.de.client.idroplite.views;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uidiskresource.client.events.DiskResourceRefreshEvent;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.ManageDataRefreshEvent;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
@@ -63,9 +63,9 @@ public class IDropLiteAppletWindow extends Gxt3IplantWindow {
         super.doHide();
 
         // refresh manage data window
-        String refreshPath = ((IDropLiteWindowConfig)config).getCurrentPath();
+        String refreshPath = ((IDropLiteWindowConfig)config).getCurrentFolder().getId();
         if (refreshPath != null && !refreshPath.isEmpty()) {
-            ManageDataRefreshEvent event = new ManageDataRefreshEvent(Constants.CLIENT.myDataTag(),
+            DiskResourceRefreshEvent event = new DiskResourceRefreshEvent(Constants.CLIENT.myDataTag(),
                     refreshPath, null);
             EventBus.getInstance().fireEvent(event);
         }

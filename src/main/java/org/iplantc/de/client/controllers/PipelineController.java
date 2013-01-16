@@ -10,10 +10,22 @@ import org.iplantc.de.client.dispatchers.WindowDispatcher;
  * This class is responsible for listening to the event bus for events related to launching the Pipeline
  * Editor.
  * 
+ * FIXME JDS This class will be deleted soon.
+ * 
  * @author jstroot
  * 
  */
 public class PipelineController {
+    private final class CreateNewWorkflowEventHandlerImpl implements CreateNewWorkflowEventHandler {
+        @Override
+        public void createNewWorkflow() {
+            // Dispatch window display action
+            WindowDispatcher dispatcher = new WindowDispatcher();
+            dispatcher.dispatchAction(Constants.CLIENT.pipelineEditorTag());
+
+        }
+    }
+
     private static PipelineController instance;
 
     private PipelineController() {
@@ -29,16 +41,7 @@ public class PipelineController {
 
     private void initListeners() {
         EventBus.getInstance().addHandler(CreateNewWorkflowEvent.TYPE,
-                new CreateNewWorkflowEventHandler() {
-
-                    @Override
-                    public void createNewWorkflow() {
-                        // Dispatch window display action
-                        WindowDispatcher dispatcher = new WindowDispatcher();
-                        dispatcher.dispatchAction(Constants.CLIENT.pipelineEditorTag());
-
-                    }
-                });
+                new CreateNewWorkflowEventHandlerImpl());
 
     }
 

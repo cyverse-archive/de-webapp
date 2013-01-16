@@ -8,6 +8,7 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.factories.WindowConfigFactory;
@@ -65,13 +66,14 @@ public class NotificationListView implements IsWidget {
     private ListView<NotificationMessage, NotificationMessage> view;
     private ListStore<NotificationMessage> store;
     private int total_unseen;
-    private HorizontalPanel hyperlinkPanel;
+    private final HorizontalPanel hyperlinkPanel;
 
     private final NotificationAutoBeanFactory factory = GWT.create(NotificationAutoBeanFactory.class);
 
     public static final int NEW_NOTIFICATIONS_LIMIT = 10;
 
     final Resources resources = GWT.create(Resources.class);
+    final DeResources deRes = GWT.create(DeResources.class);
     final Style style = resources.css();
     final Renderer r = GWT.create(Renderer.class);
 
@@ -124,6 +126,7 @@ public class NotificationListView implements IsWidget {
 
     public NotificationListView() {
         resources.css().ensureInjected();
+        deRes.css().ensureInjected();
         initListeners();
         hyperlinkPanel = new HorizontalPanel();
         hyperlinkPanel.setSpacing(2);
@@ -295,7 +298,7 @@ public class NotificationListView implements IsWidget {
             }
         });
 
-        link.setStyleName("de_hyperlink");
+        link.setStyleName(deRes.css().de_hyperlink());
         return link;
 
     }
@@ -322,7 +325,7 @@ public class NotificationListView implements IsWidget {
             }
         });
 
-        link.setStyleName("de_hyperlink");
+        link.setStyleName(deRes.css().de_hyperlink());
         return link;
     }
 

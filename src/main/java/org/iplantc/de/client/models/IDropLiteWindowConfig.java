@@ -6,11 +6,13 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.models.WindowConfig;
-import org.iplantc.core.uidiskresource.client.models.DiskResource;
-import org.iplantc.core.uidiskresource.client.models.File;
-import org.iplantc.core.uidiskresource.client.models.Folder;
+import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
+import org.iplantc.core.uidiskresource.client.models.autobeans.Folder;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -18,19 +20,24 @@ import com.google.gwt.json.client.JSONObject;
 /**
  * A Window config for the idrop-lite applet window.
  * 
+ * TODO JDS Create two derived configs, one for download and one for upload
+ * 
  * @author psarando
  * 
  */
 public class IDropLiteWindowConfig extends WindowConfig {
 
-    public static String DISPLAY_MODE = "displayMode"; //$NON-NLS-1$
-    public static String UPLOAD_DEST = "uploadDest"; //$NON-NLS-1$
-    public static String DOWNLOAD_PATHS_FOLDERS = "folder_paths"; //$NON-NLS-1$
-    public static String DOWNLOAD_PATHS_FILES = "file_paths"; //$NON-NLS-1$
-    public static String MANAGE_DATA_CURRENT_PATH = "currentPath"; //$NON-NLS-1$
-    public static String TAG_SUFFIX = "tag_suffix"; //$NON-NLS-1$
-    public static String TAG_SUFFIX_UPLOAD = "_upload"; //$NON-NLS-1$
-    public static String TAG_SUFFIX_DOWNLOAD = "_download"; //$NON-NLS-1$
+    private static final String DISPLAY_MODE = "displayMode"; //$NON-NLS-1$
+    private static final String UPLOAD_DEST = "uploadDest"; //$NON-NLS-1$
+    private static final String DOWNLOAD_PATHS_FOLDERS = "folder_paths"; //$NON-NLS-1$
+    private static final String DOWNLOAD_PATHS_FILES = "file_paths"; //$NON-NLS-1$
+    private static final String MANAGE_DATA_CURRENT_PATH = "currentPath"; //$NON-NLS-1$
+    private static final String TAG_SUFFIX = "tag_suffix"; //$NON-NLS-1$
+    private static final String TAG_SUFFIX_UPLOAD = "_upload"; //$NON-NLS-1$
+    private static final String TAG_SUFFIX_DOWNLOAD = "_download"; //$NON-NLS-1$
+    private List<DiskResource> resourcesToDownload;
+    private Folder uploadDest;
+    private Folder currentFolder;
 
     public IDropLiteWindowConfig() {
         super();
@@ -73,20 +80,22 @@ public class IDropLiteWindowConfig extends WindowConfig {
         }
     }
 
-    public String getUploadDest() {
-        return JsonUtil.getRawValueAsString(get(UPLOAD_DEST));
+    public Folder getUploadFolderDest() {
+        return uploadDest;
     }
 
-    public void setUploadDest(String uploadDest) {
-        setString(UPLOAD_DEST, uploadDest);
+    public void setUploadFolderDest(Folder uploadDest) {
+        this.uploadDest = uploadDest;
+        setString(UPLOAD_DEST, uploadDest.getId());
     }
 
-    public String getCurrentPath() {
-        return JsonUtil.getRawValueAsString(get(MANAGE_DATA_CURRENT_PATH));
+    public Folder getCurrentFolder() {
+        return currentFolder;
     }
 
-    public void setCurrentPath(String currentPath) {
-        setString(MANAGE_DATA_CURRENT_PATH, currentPath);
+    public void setCurrentFolder(Folder currentFolder) {
+        this.currentFolder = currentFolder;
+        setString(MANAGE_DATA_CURRENT_PATH, currentFolder.getId());
     }
 
     public JSONArray getDownloadPaths() {
@@ -110,38 +119,12 @@ public class IDropLiteWindowConfig extends WindowConfig {
         return ret;
     }
 
-    /**
-     * Stores the list of folder paths.
-     * 
-     * @param paths
-     */
-    public void setFolderDownloadPaths(List<String> paths) {
-        put(DOWNLOAD_PATHS_FOLDERS, JsonUtil.buildArrayFromStrings(paths));
+    public List<DiskResource> getResourcesToDownload() {
+        return resourcesToDownload;
     }
 
-    public List<String> getFolderDownloadPaths() {
-        return JsonUtil.buildStringList(JsonUtil.getArray(this, DOWNLOAD_PATHS_FOLDERS));
-    }
-
-    /**
-     * Stores the list of file paths.
-     * 
-     * @param paths
-     */
-    public void setFileDownloadPaths(List<String> paths) {
-        put(DOWNLOAD_PATHS_FILES, JsonUtil.buildArrayFromStrings(paths));
-    }
-
-    public List<String> getFileDownloadPaths() {
-        return JsonUtil.buildStringList(JsonUtil.getArray(this, DOWNLOAD_PATHS_FILES));
-    }
-
-    /**
-     * Stores the IDs (paths) from the given DiskResource list as a JSON array.
-     * 
-     * @param resources
-     */
-    public void setDownloadPaths(List<DiskResource> resources) {
+    public void setDownloadPaths(Collection<DiskResource> resources) {
+        resourcesToDownload = Lists.newArrayList(resources);
         List<String> folderPaths = null;
         List<String> filePaths = null;
 
@@ -162,30 +145,32 @@ public class IDropLiteWindowConfig extends WindowConfig {
 
         setFolderDownloadPaths(folderPaths);
         setFileDownloadPaths(filePaths);
+
     }
 
-    public void setDownloadPaths(
-            Collection<org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource> resources) {
-        List<String> folderPaths = null;
-        List<String> filePaths = null;
+    /**
+     * Stores the list of folder paths.
+     * 
+     * @param paths
+     */
+    private void setFolderDownloadPaths(List<String> paths) {
+        put(DOWNLOAD_PATHS_FOLDERS, JsonUtil.buildArrayFromStrings(paths));
+    }
 
-        if (resources != null) {
-            folderPaths = new ArrayList<String>();
-            filePaths = new ArrayList<String>();
+    private List<String> getFolderDownloadPaths() {
+        return DiskResourceUtil.asStringIdList(DiskResourceUtil.extractFolders(resourcesToDownload));
+    }
 
-            for (org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource resource : resources) {
-                if (resource instanceof org.iplantc.core.uidiskresource.client.models.autobeans.Folder) {
-                    folderPaths.add(resource.getId());
-                }
-                if (resource instanceof org.iplantc.core.uidiskresource.client.models.autobeans.File) {
-                    filePaths.add(resource.getId());
-                }
-            }
+    /**
+     * Stores the list of file paths.
+     * 
+     * @param paths
+     */
+    private void setFileDownloadPaths(List<String> paths) {
+        put(DOWNLOAD_PATHS_FILES, JsonUtil.buildArrayFromStrings(paths));
+    }
 
-        }
-
-        setFolderDownloadPaths(folderPaths);
-        setFileDownloadPaths(filePaths);
-
+    private List<String> getFileDownloadPaths() {
+        return DiskResourceUtil.asStringIdList(DiskResourceUtil.extractFiles(resourcesToDownload));
     }
 }
