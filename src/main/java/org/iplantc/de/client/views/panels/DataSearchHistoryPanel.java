@@ -39,6 +39,7 @@ public class DataSearchHistoryPanel extends ContentPanel {
 
     public DataSearchHistoryPanel() {
         init();
+        loadSearchHistory();
 
         EventBus eventbus = EventBus.getInstance();
 
@@ -65,6 +66,24 @@ public class DataSearchHistoryPanel extends ContentPanel {
         setHeading(I18N.DISPLAY.searchHistory());
         add(container);
         layout();
+    }
+
+    private void loadSearchHistory() {
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.getSearchHistory(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.retrieveSearchHistoryError(), caught);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                setSearchHistory(JsonUtil.getObject(result));
+            }
+
+        });
+
     }
 
     private void update(String searchTerm) {
@@ -150,7 +169,7 @@ public class DataSearchHistoryPanel extends ContentPanel {
     }
 
     private final class HistoryRemoveListenerImpl implements Listener<BaseEvent> {
-        private String history;
+        private final String history;
 
         public HistoryRemoveListenerImpl(String history) {
             this.history = history;
@@ -165,7 +184,7 @@ public class DataSearchHistoryPanel extends ContentPanel {
     }
 
     private final class HistorySelectedListenerImpl implements Listener<BaseEvent> {
-        private String history;
+        private final String history;
 
         public HistorySelectedListenerImpl(String history) {
             this.history = history;
