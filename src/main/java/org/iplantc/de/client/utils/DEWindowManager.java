@@ -9,11 +9,10 @@ import org.iplantc.de.client.factories.WindowFactory;
 import org.iplantc.de.client.gxt3.utils.IplantWindowManager;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
-import com.extjs.gxt.ui.client.core.FastMap;
-import com.extjs.gxt.ui.client.event.WindowListener;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.sencha.gxt.core.client.util.Point;
+import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.event.ActivateEvent.ActivateHandler;
 import com.sencha.gxt.widget.core.client.event.DeactivateEvent.DeactivateHandler;
@@ -25,7 +24,6 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  * Manages window widgets in the web "desktop" environment.
  */
 public class DEWindowManager extends IplantWindowManager {
-    private final WindowListener listener;
     private IPlantWindowInterface activeWindow;
     private final FastMap<IPlantWindowInterface> windows = new FastMap<IPlantWindowInterface>();
     private Point first_window_postion;
@@ -41,10 +39,8 @@ public class DEWindowManager extends IplantWindowManager {
      * 
      * @param listener window listener.
      */
-    public DEWindowManager(WindowListener listener,
- ActivateHandler<Window> activateHandler, DeactivateHandler<Window> deactivateHandler,
+    public DEWindowManager(ActivateHandler<Window> activateHandler, DeactivateHandler<Window> deactivateHandler,
             HideHandler hideHandler, MinimizeHandler minimizeHandler, ShowHandler showHandler) {
-        this.listener = listener;
         this.activateHandler = activateHandler;
         this.deactivateHandler = deactivateHandler;
         this.hideHandler = hideHandler;
@@ -97,9 +93,7 @@ public class DEWindowManager extends IplantWindowManager {
         if (window != null) {
             window.setId(window.getTag());
             getDEWindows().put(window.getTag(), window);
-            if (window instanceof com.extjs.gxt.ui.client.widget.Window) {
-                window.addWindowListener(listener);
-            } else if (window instanceof Window) {
+            if (window instanceof Window) {
                 window.addActivateHandler(activateHandler);
                 window.addDeactivateHandler(deactivateHandler);
                 window.addHideHandler(hideHandler);

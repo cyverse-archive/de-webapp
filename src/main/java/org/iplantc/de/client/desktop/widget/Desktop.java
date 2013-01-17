@@ -30,6 +30,7 @@ import org.iplantc.de.client.desktop.layout.DesktopLayout;
 import org.iplantc.de.client.desktop.layout.DesktopLayout.RequestType;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
+import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.WindowPayloadEvent;
 import org.iplantc.de.client.events.WindowPayloadEvent.WindowPayloadEventHandler;
 import org.iplantc.de.client.factories.WindowConfigFactory;
@@ -142,11 +143,14 @@ public class Desktop implements IsWidget {
      */
     private void initWindowEventHandlers(final EventBus eventbus) {
         // Launching Tito and App windows
-        eventbus.addHandler(AppLoadEvent.TYPE, new AppLoadEventHandlerImpl(this));
-        eventbus.addHandler(CreateNewAppEvent.TYPE, new CreateNewAppEventHandlerImpl(this));
+        ShowWindowEventHandler showWindowHandler = new ShowWindowEventHandler(this);
+        eventbus.addHandler(AppLoadEvent.TYPE, showWindowHandler);
+        eventbus.addHandler(CreateNewAppEvent.TYPE, showWindowHandler);
 
         // Launching File Preview windows
-        eventbus.addHandler(ShowFilePreviewEvent.TYPE, new ShowFilePreviewEventHandlerImpl(this));
+        eventbus.addHandler(ShowFilePreviewEvent.TYPE, showWindowHandler);
+
+        eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler);
     }
 
     private void initEventHandlers(final EventBus eventbus) {
@@ -273,7 +277,7 @@ public class Desktop implements IsWidget {
      */
     public DEWindowManager getWindowManager() {
         if (windowManager == null) {
-            windowManager = new DEWindowManager(null, getHandler(), getHandler(), getHandler(), getHandler(), getHandler());
+            windowManager = new DEWindowManager(getHandler(), getHandler(), getHandler(), getHandler(), getHandler());
         }
         return windowManager;
     }
@@ -433,7 +437,7 @@ public class Desktop implements IsWidget {
     }
 
     private boolean isMaximized() {
-        com.extjs.gxt.ui.client.core.FastMap<IPlantWindowInterface> deWindows = getWindowManager()
+        FastMap<IPlantWindowInterface> deWindows = getWindowManager()
                 .getDEWindows();
         for (String windowKey : deWindows.keySet()) {
             IPlantWindowInterface window = deWindows.get(windowKey);

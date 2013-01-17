@@ -223,26 +223,13 @@ public class IplantWindowManager implements HasRegisterHandlers<Widget>, HasUnre
     }
 
     private void setActiveWin(Widget window) {
-        if (window != front) {
-            if (front != null) {
-                if (front instanceof Window) {
-                    ((Window)front).setActive(false);
-                } else if (front instanceof com.extjs.gxt.ui.client.widget.Window) {
-                    ((com.extjs.gxt.ui.client.widget.Window)front).setActive(false);
-                }
-            }
+        if ((window != front) && (front != null) && (front instanceof Window)) {
+            ((Window)front).setActive(false);
             front = window;
             if (window != null) {
                 if (window instanceof Window) {
                     Window w = (Window)window;
                     w.setActive(true);
-                    // w.setZIndex(XDOM.getTopZIndex());
-                    // w.setZIndex(XDOM.getTopZIndex(10));
-                } else if (window instanceof com.extjs.gxt.ui.client.widget.Window) {
-                    com.extjs.gxt.ui.client.widget.Window w = (com.extjs.gxt.ui.client.widget.Window)window;
-                    w.setActive(true);
-                    // w.setZIndex(XDOM.getTopZIndex());
-                    // w.setZIndex(XDOM.getTopZIndex(10));
                 } else {
                     window.getElement().<XElement> cast().setZIndex(XDOM.getTopZIndex(10));
                 }

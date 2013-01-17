@@ -14,6 +14,7 @@ import org.iplantc.de.client.collaborators.views.ManageCollaboratorsDailog;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
+import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.NotificationWindowConfig;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
@@ -50,6 +52,8 @@ import com.sencha.gxt.widget.core.client.menu.Menu;
 
 /**
  * Default DE View as Desktop
+ * 
+ * FIXME JDS Move more UI construction into ui.xml
  * 
  * @author sriram
  * 
@@ -316,6 +320,7 @@ public class DEViewImpl implements DEView {
                     @Override
                     public void handleEvent(BaseEvent be) {
                         // displayAboutDe();
+                        EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
                         helpMenu.hide();
                     }
                 }));
@@ -337,8 +342,7 @@ public class DEViewImpl implements DEView {
     private void showHeaderActionsMenu(HorizontalLayoutContainer anchor, Menu actionsMenu) {
         // show the menu so that its right edge is aligned with with the anchor's right edge,
         // and its top is aligned with the anchor's bottom.
-        com.sencha.gxt.core.client.util.Point point = new com.sencha.gxt.core.client.util.Point(
-                anchor.getAbsoluteLeft(), anchor.getAbsoluteTop());
+        Point point = new Point(anchor.getAbsoluteLeft(), anchor.getAbsoluteTop());
         //
         actionsMenu.showAt(point.getX() + anchor.getElement().getWidth(true) + 2, point.getY()
                 + anchor.getElement().getHeight(true) + 25);

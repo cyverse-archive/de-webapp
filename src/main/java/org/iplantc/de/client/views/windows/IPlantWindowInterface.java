@@ -17,12 +17,9 @@ import com.sencha.gxt.widget.core.client.event.MinimizeEvent.HasMinimizeHandlers
 import com.sencha.gxt.widget.core.client.event.ShowEvent.HasShowHandlers;
 
 /**
- * This interface is intended to be used by the {@link DEWindowManager} in place of the
- * {@link IPlantWindow} class.
+ * This interface is intended to be used by the {@link DEWindowManager} for all primary iPlant windows.
  * 
  * FIXME Rename this file to "IPlantWindow" and rename "IPlantWindow" -> "IPlantWindowImpl"
- * 
- * JDS Ensure that you use 'git mv' in order to preserve history.
  * 
  * @author jstroot
  * 

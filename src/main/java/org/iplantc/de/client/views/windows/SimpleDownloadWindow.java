@@ -2,10 +2,10 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.WindowConfig;
 import org.iplantc.core.uicommons.client.widgets.Hyperlink;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
@@ -13,83 +13,47 @@ import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
 import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
  * An iPlant window for displaying simple download links.
  * 
- * FIXME JDS Needs to be updated
- * 
  * @author psarando
  * 
  */
-public class SimpleDownloadWindow extends IPlantWindow {
+public class SimpleDownloadWindow extends Gxt3IplantWindow {
 
-    private SimpleDownloadWindowConfig config;
-    private LayoutContainer contents;
+    private final DeResources res = GWT.create(DeResources.class);
 
     public SimpleDownloadWindow(String tag, SimpleDownloadWindowConfig config) {
         super(tag, false, true, true, true);
+        res.css().ensureInjected();
 
-        this.config = config;
-
-        init();
+        init(config);
     }
 
-    private void init() {
-        setHeading(I18N.DISPLAY.download());
-        setSize(320, 320);
-        setLayout(new FitLayout());
-        setScrollMode(Scroll.AUTO);
+    private void init(SimpleDownloadWindowConfig config) {
+        setHeadingText(I18N.DISPLAY.download());
+        setSize("320", "320");
 
         // Add window contents container for the simple download links
-        contents = new LayoutContainer();
+        VerticalLayoutContainer contents = new VerticalLayoutContainer();
 
-        contents.setStyleAttribute("padding", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        add(new Label("&nbsp;" + I18N.DISPLAY.simpleDownloadNotice()));
+        contents.add(new Label("" + I18N.DISPLAY.simpleDownloadNotice()));
+        buildLinks(config, contents);
         add(contents);
     }
 
-    @Override
-    public void setWindowConfig(WindowConfig config) {
-        if (config instanceof SimpleDownloadWindowConfig) {
-            this.config = (SimpleDownloadWindowConfig)config;
-
-            contents.removeAll();
-
-            if (isRendered()) {
-                compose();
-            }
-        }
-    }
-
-    @Override
-    protected void onRender(Element parent, int pos) {
-        super.onRender(parent, pos);
-
-        compose();
-    }
-
-    private void compose() {
-        contents.add(buildLinks());
-        layout();
-    }
-
-    private LayoutContainer buildLinks() {
-        VerticalPanel pnlLinks = new VerticalPanel();
+    private void buildLinks(SimpleDownloadWindowConfig config, VerticalLayoutContainer vlc) {
 
         List<String> downloadPaths = config.getDownloadPaths();
         for (final String path : downloadPaths) {
-            Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(path), "de_hyperlink"); //$NON-NLS-1$
+            Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(path), res.css().de_hyperlink());
 
             link.addClickListener(new Listener<ComponentEvent>() {
                 @Override
@@ -98,10 +62,9 @@ public class SimpleDownloadWindow extends IPlantWindow {
                 }
             });
 
-            pnlLinks.add(link);
+            vlc.add(link);
         }
 
-        return pnlLinks;
     }
 
     @Override

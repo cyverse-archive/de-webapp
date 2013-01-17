@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
  * Models a user interface for "about" application information.
@@ -38,14 +39,12 @@ public class AboutApplicationWindow extends Gxt3IplantWindow {
      */
     public AboutApplicationWindow(String tag) {
         super(tag);
-
+        setSize("300", "235");
         res = GWT.create(DeResources.class);
         res.css().ensureInjected();
-        // setLayout(new RowLayout());
         setId(tag);
         setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
         setResizable(false);
-        // setAutoHeight(true);
         initComponents();
         executeServiceCall();
     }
@@ -70,12 +69,14 @@ public class AboutApplicationWindow extends Gxt3IplantWindow {
     }
 
     private void compose() {
+        VerticalLayoutContainer vlc = new VerticalLayoutContainer();
+        vlc.setBorders(true);
         Image logo = new Image(Resources.ICONS.iplantAbout().getSafeUri());
 
-        add(logo);
-        add(lblNSFStatement);
-        add(buildDetailsContainer());
-        // layout();
+        vlc.add(logo);
+        vlc.add(lblNSFStatement);
+        vlc.add(buildDetailsContainer());
+        add(vlc);
     }
 
     /**
