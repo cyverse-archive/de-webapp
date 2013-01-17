@@ -15,10 +15,10 @@ final class AppLoadEventHandlerImpl implements AppLoadEventHandler {
 
     @Override
     public void onLoad(AppLoadEvent event) {
-        String viewMode = null;
-        if (event.getMode() == AppLoadEvent.MODE.EDIT) {
-            viewMode = TitoWindowConfig.VIEW_APP_EDIT;
-        }
+        // String viewMode = null;
+        // if (event.getMode() == AppLoadEvent.MODE.EDIT) {
+        // viewMode = TitoWindowConfig.VIEW_APP_EDIT;
+        // }
 
         // TBI JDS
         TitoWindowConfig config = new TitoWindowConfig(null);

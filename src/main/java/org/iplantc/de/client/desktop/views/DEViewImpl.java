@@ -68,7 +68,6 @@ public class DEViewImpl implements DEView {
     @UiField
     BorderLayoutContainer con;
 
-    private Presenter presenter;
     private NotificationIndicator lblNotifications;
     private ViewNotificationMenu notificationsView;
 
@@ -346,9 +345,7 @@ public class DEViewImpl implements DEView {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
+    public void setPresenter(Presenter presenter) {/* Not Used */}
 
     private void showNotificationWindow(final Category category) {
         NotificationWindowConfig config = new NotificationWindowConfig();

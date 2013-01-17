@@ -2,7 +2,6 @@ package org.iplantc.de.client;
 
 import org.iplantc.de.client.desktop.presenter.DEPresenter;
 import org.iplantc.de.client.desktop.views.DEView;
-import org.iplantc.de.client.desktop.views.DEView.Presenter;
 import org.iplantc.de.client.desktop.views.DEViewImpl;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -23,7 +22,7 @@ public class DiscoveryEnvironment implements EntryPoint {
         DeResources resources = GWT.create(DeResources.class);
         resources.css().ensureInjected();
         DEView view = new DEViewImpl(resources);
-        Presenter p = new DEPresenter(view, resources);
+        new DEPresenter(view, resources);
         // HistoryManager mgrHistory = new HistoryManager();
         // String token = History.getToken();
         //

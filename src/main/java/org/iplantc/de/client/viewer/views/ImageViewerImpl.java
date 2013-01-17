@@ -20,7 +20,6 @@ public class ImageViewerImpl implements FileViewer {
     private static ImageViewerUiBinder uiBinder = GWT.create(ImageViewerUiBinder.class);
 
     private final Widget widget;
-    private Presenter presenter;
 
     @UiField(provided = true)
     Image img;
@@ -48,9 +47,7 @@ public class ImageViewerImpl implements FileViewer {
     }
 
     @Override
-    public void setPresenter(Presenter p) {
-        this.presenter = p;
-    }
+    public void setPresenter(Presenter p) {/* Not Used */}
 
     @Override
     public void setData(Object data) {

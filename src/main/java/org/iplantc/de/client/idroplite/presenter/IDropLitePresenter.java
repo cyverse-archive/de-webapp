@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.iplantc.de.client.idroplite.presenter;
 
 import org.iplantc.core.jsonutil.JsonUtil;
@@ -14,7 +11,6 @@ import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.models.IDropLiteWindowConfig;
 
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.google.common.collect.Sets;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -29,7 +25,6 @@ import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 public class IDropLitePresenter implements Presenter {
 
     private final IDropLiteView view;
-    private Dialog dlgUpload;
     private final int CONTENT_PADDING = 12;
     final private IDropLiteWindowConfig config;
 

@@ -12,10 +12,6 @@ import com.google.gwt.json.client.JSONObject;
  * 
  */
 public class PipelineEditorWindowConfig extends WindowConfig {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 8475782623579692145L;
     public static final String PIPELINE_CONFIG = "pipeline_config"; //$NON-NLS-1$
 
     public PipelineEditorWindowConfig(JSONObject json) {

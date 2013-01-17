@@ -53,7 +53,7 @@ public class NotifyInfo {
 
     private static void includeAsNotification(NotificationHelper.Category category, final String text,
             Params parameters) {
-        NotificationHelper mgr = NotificationHelper.getInstance();
+        // NotificationHelper mgr = NotificationHelper.getInstance();
 
         // only add to the notification manager when we want inclusion
         // TODO: fix add notification add

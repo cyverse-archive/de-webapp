@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.iplantc.de.client.collaborators.views;
 
 import java.util.ArrayList;
@@ -8,7 +5,6 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.collaborators.Collaborator;
 import org.iplantc.core.uicommons.client.models.collaborators.CollaboratorKeyProvider;
-
 import org.iplantc.core.uicommons.client.models.collaborators.CollaboratorProperties;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.collaborators.presenter.ManageCollaboratorsPresenter;
@@ -90,8 +86,7 @@ public class ManageCollaboratorsDailog extends Dialog {
 
         checkBoxModel = new CheckBoxSelectionModel<Collaborator>(valueProvider);
 
-        @SuppressWarnings("rawtypes")
-        ColumnConfig colCheckBox = checkBoxModel.getColumn();
+        ColumnConfig<Collaborator, Collaborator> colCheckBox = checkBoxModel.getColumn();
         configs.add(colCheckBox);
 
         ColumnConfig<Collaborator, Collaborator> name = new ColumnConfig<Collaborator, Collaborator>(

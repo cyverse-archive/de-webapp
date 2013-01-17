@@ -3,7 +3,6 @@
  */
 package org.iplantc.de.client.analysis.views;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.de.client.I18N;
@@ -11,7 +10,6 @@ import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -73,8 +71,6 @@ public class AnalysesViewImpl implements AnalysesView {
     private final Widget widget;
 
     private Presenter presenter;
-
-    private ArrayList<HandlerRegistration> handlers;
 
     public AnalysesViewImpl(ListStore<Analysis> listStore, ColumnModel<Analysis> cm,
             GridSelectionModel<Analysis> checkBoxModel, RowExpander<Analysis> expander) {

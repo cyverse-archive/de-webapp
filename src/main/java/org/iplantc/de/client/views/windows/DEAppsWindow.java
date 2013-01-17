@@ -1,4 +1,4 @@
-package org.iplantc.de.client.apps.views;
+package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uiapplications.client.models.CatalogWindowConfig;
 import org.iplantc.core.uiapplications.client.presenter.AppsViewPresenter;
@@ -10,7 +10,6 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
 import org.iplantc.de.client.factories.WindowConfigFactory;
-import org.iplantc.de.client.views.windows.Gxt3IplantWindow;
 
 import com.google.gwt.json.client.JSONObject;
 

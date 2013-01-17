@@ -155,7 +155,7 @@ public class NotificationListView implements IsWidget {
     }
 
     public void highlightNewNotifications() {
-        List<NotificationMessage> new_notifications = store.getAll();
+        // List<NotificationMessage> new_notifications = store.getAll();
         // TODO: implement higlight
     }
 

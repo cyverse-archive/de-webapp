@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.HasOneWidget;
 public class ManageCollaboratorsPresenter implements Presenter {
 
     private final ManageCollaboratorsView view;
-    private MODE currentMode;
 
     public static enum MODE {
         MANAGE, SEARCH
@@ -151,7 +150,6 @@ public class ManageCollaboratorsPresenter implements Presenter {
     }
 
     private void updateCurrentMode(MODE m) {
-        currentMode = m;
         view.setMode(m);
     }
 

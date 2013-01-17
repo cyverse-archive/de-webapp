@@ -27,8 +27,6 @@ public class PreferencesViewImpl implements PreferencesView {
 
     private final Widget widget;
 
-    private Presenter presenter;
-
     @UiField
     VerticalLayoutContainer container;
 
@@ -59,9 +57,7 @@ public class PreferencesViewImpl implements PreferencesView {
     }
 
     @Override
-    public void setPresenter(Presenter p) {
-        presenter = p;
-    }
+    public void setPresenter(Presenter p) {/* Not Used */}
 
     @Override
     public void setDefaultValues() {

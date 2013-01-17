@@ -29,8 +29,6 @@ public class TextViewerImpl implements FileViewer {
 
     private final Widget widget;
 
-    private Presenter presenter;
-
     @UiField
     HTML textArea;
 
@@ -60,9 +58,7 @@ public class TextViewerImpl implements FileViewer {
     }
 
     @Override
-    public void setPresenter(Presenter p) {
-        presenter = p;
-    }
+    public void setPresenter(Presenter p) {/* Not Used */}
 
     @Override
     public void setData(Object data) {

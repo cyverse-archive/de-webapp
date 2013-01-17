@@ -21,8 +21,6 @@ public class NotificationWindowConfig extends WindowConfig {
     public static final String SELECTED_IDS = "selectedIds"; //$NON-NLS-1$
     public static final String SORT_DIR = "sort_dir";
 
-    private static final long serialVersionUID = 6533350718698752311L;
-
     /**
      * Creates a NotificationWindowConfig from the JSON parameter "category". This JSON parameter and any
      * others in the JSON object are additionally added as BaseModelData parameters.
