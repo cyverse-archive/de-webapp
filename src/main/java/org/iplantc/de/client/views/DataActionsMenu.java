@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.views.dialogs.IPlantDialog;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
@@ -159,7 +160,10 @@ public final class DataActionsMenu extends Menu {
         add(itemMetaData);
         add(itemShareResource);
         add(itemRestore);
-        add(itemManageDataLinks);
+
+        if (DEProperties.getInstance().isTicketsEnabled()) {
+            add(itemManageDataLinks);
+        }
     }
 
     private MenuItem buildLeafMenuItem(final String id, final String text,
@@ -274,7 +278,9 @@ public final class DataActionsMenu extends Menu {
                     break;
                 case Share:
                     showMenuItem(itemShareResource);
-                    showMenuItem(itemManageDataLinks);
+                    if (DEProperties.getInstance().isTicketsEnabled()) {
+                        showMenuItem(itemManageDataLinks);
+                    }
                     break;
                 // case Copy:
                 // showMenuItem(itemCopyResource);
