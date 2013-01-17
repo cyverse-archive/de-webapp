@@ -11,22 +11,21 @@ import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AboutApplicationData;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
-import com.extjs.gxt.ui.client.util.Format;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 
 /**
  * Models a user interface for "about" application information.
  * 
  * @author lenards
  */
-public class AboutApplicationWindow extends IPlantWindow {
+public class AboutApplicationWindow extends Gxt3IplantWindow {
     private AboutApplicationData model;
 
     private Label lblNSFStatement;
@@ -42,11 +41,11 @@ public class AboutApplicationWindow extends IPlantWindow {
 
         res = GWT.create(DeResources.class);
         res.css().ensureInjected();
-        setLayout(new RowLayout());
+        // setLayout(new RowLayout());
         setId(tag);
         setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
         setResizable(false);
-        setAutoHeight(true);
+        // setAutoHeight(true);
         initComponents();
         executeServiceCall();
     }
@@ -76,7 +75,7 @@ public class AboutApplicationWindow extends IPlantWindow {
         add(logo);
         add(lblNSFStatement);
         add(buildDetailsContainer());
-        layout();
+        // layout();
     }
 
     /**
