@@ -29,8 +29,8 @@ import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
 import org.iplantc.de.client.views.panels.FileUploadDialogPanel;
 
 import com.extjs.gxt.ui.client.core.FastMap;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.common.collect.Lists;
+import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler,
         RequestBulkUploadEventHandler, RequestImportFromUrlEventHandler,
@@ -137,9 +137,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     }
 
     private void showErrorMsg() {
-        // TODO JDS Use a GXT3 message window
-        MessageBox.alert(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage(),
-                null);
+        new AlertMessageBox(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage()).show();
     }
 
     private void promptUploadImportForm(FileUploadDialogPanel.MODE mode, Folder uploadDest) {

@@ -14,12 +14,7 @@ import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
 import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.models.TitoWindowConfig;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;
@@ -111,15 +106,15 @@ public class TitoWindow extends IPlantWindow {
         // }
     }
 
-    private void confirmNavigation(final Listener<MessageBoxEvent> listener) {
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                MessageBox.confirm(I18N.DISPLAY.confirmAction(), I18N.DISPLAY.navigateWarning(),
-                        listener);
-            }
-        });
-    }
+    // private void confirmNavigation(final Listener<MessageBoxEvent> listener) {
+    // Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+    // @Override
+    // public void execute() {
+    // MessageBox.confirm(I18N.DISPLAY.confirmAction(), I18N.DISPLAY.navigateWarning(),
+    // listener);
+    // }
+    // });
+    // }
 
     @Override
     public void setWindowConfig(WindowConfig config) {
@@ -136,33 +131,33 @@ public class TitoWindow extends IPlantWindow {
         }
     }
 
-    private class EditWarningMsgBoxListener implements Listener<MessageBoxEvent> {
-        @Override
-        public void handleEvent(MessageBoxEvent be) {
-            if (be.getButtonClicked().getText().equals("Yes")) { //$NON-NLS-1$
-                updateViewFromConfig();
-            }
+    // private class EditWarningMsgBoxListener implements Listener<MessageBoxEvent> {
+    // @Override
+    // public void handleEvent(MessageBoxEvent be) {
+    //            if (be.getButtonClicked().getText().equals("Yes")) { //$NON-NLS-1$
+    // updateViewFromConfig();
+    // }
+    //
+    // MessageBox box = be.getMessageBox();
+    // box.close();
+    //
+    // }
+    //
+    // }
 
-            MessageBox box = be.getMessageBox();
-            box.close();
-
-        }
-
-    }
-
-    private class CloseWarningMsgBoxListener implements Listener<MessageBoxEvent> {
-        @Override
-        public void handleEvent(MessageBoxEvent be) {
-            if (be.getButtonClicked().getText().equals("Yes")) { //$NON-NLS-1$
-                hide();
-            }
-
-            MessageBox box = be.getMessageBox();
-            box.close();
-
-        }
-
-    }
+    // private class CloseWarningMsgBoxListener implements Listener<MessageBoxEvent> {
+    // @Override
+    // public void handleEvent(MessageBoxEvent be) {
+    //            if (be.getButtonClicked().getText().equals("Yes")) { //$NON-NLS-1$
+    // hide();
+    // }
+    //
+    // MessageBox box = be.getMessageBox();
+    // box.close();
+    //
+    // }
+    //
+    // }
 
     /**
      * {@inheritDoc}
