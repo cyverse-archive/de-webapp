@@ -11,7 +11,7 @@ import org.iplantc.de.client.models.TitoWindowConfig;
 import org.iplantc.de.client.models.ViewerWindowConfig;
 import org.iplantc.de.client.models.WizardWindowConfig;
 import org.iplantc.de.client.notifications.views.NotificationWindow3;
-import org.iplantc.de.client.util.WindowUtil;
+import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.viewer.views.FileViewerWindow;
 import org.iplantc.de.client.views.windows.AboutApplicationWindow;
 import org.iplantc.de.client.views.windows.DEAppsWindow;
@@ -24,7 +24,6 @@ import org.iplantc.de.client.views.windows.TitoWindow;
 /**
  * Defines a factory for the creation of windows.
  * 
- * @see org.iplantc.de.client.views.windows.IPlantWindow
  */
 public class WindowFactory {
     /**

@@ -20,7 +20,7 @@ import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.NotificationWindowConfig;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
-import org.iplantc.de.client.util.WindowUtil;
+import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;

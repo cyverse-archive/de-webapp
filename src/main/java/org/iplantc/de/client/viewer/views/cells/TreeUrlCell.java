@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.viewer.views.cells;
 
-import org.iplantc.de.client.util.WindowUtil;
+import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.viewer.models.TreeUrl;
 
 import com.google.gwt.cell.client.AbstractCell;

@@ -13,7 +13,7 @@ import org.iplantc.core.uidiskresource.client.models.autobeans.Folder;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.util.WindowUtil;
+import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.shared.SharedDataApiServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
