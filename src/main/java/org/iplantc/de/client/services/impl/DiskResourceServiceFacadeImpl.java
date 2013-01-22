@@ -8,6 +8,7 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResourceMetadata;
 import org.iplantc.core.uidiskresource.client.models.autobeans.Folder;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
@@ -161,9 +162,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void renameDiskResource(
-            org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource src, String destName,
-            AsyncCallback<String> callback) {
+    public void renameDiskResource(DiskResource src, String destName, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix + ".rename"; //$NON-NLS-1$
         JSONObject body = new JSONObject();
         body.put("source", new JSONString(src.getId())); //$NON-NLS-1$
@@ -264,8 +263,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public <T extends org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource> void deleteDiskResources(
-            Set<T> diskResources, AsyncCallback<String> callback) {
+    public <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix + ".delete"; //$NON-NLS-1$
         List<String> drIds = toStringIdList(diskResources);
         String body = "{\"paths\": " + JsonUtil.buildJsonArrayString(drIds) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -275,19 +273,16 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
     }
 
-    private <D extends org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource> List<String> toStringIdList(
-            Collection<D> resources) {
+    private <D extends DiskResource> List<String> toStringIdList(Collection<D> resources) {
         List<String> stringIdList = Lists.newArrayList();
-        for (org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource dr : resources) {
+        for (DiskResource dr : resources) {
             stringIdList.add(dr.getId());
         }
         return stringIdList;
     }
 
     @Override
-    public void getDiskResourceMetaData(
-            org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource resource,
-            AsyncCallback<String> callback) {
+    public void getDiskResourceMetaData(DiskResource resource, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix + ".metadata" + "?path="
                 + URL.encodePathSegment(resource.getId());
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
@@ -296,8 +291,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void setDiskResourceMetaData(
-            org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource resource,
+    public void setDiskResourceMetaData(DiskResource resource,
             Set<DiskResourceMetadata> mdToUpdate, Set<DiskResourceMetadata> mdToDelete,
             AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix

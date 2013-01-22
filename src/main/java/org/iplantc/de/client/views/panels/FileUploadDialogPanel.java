@@ -7,6 +7,7 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.views.panels.IPlantDialogPanel;
 import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.DeResources;
@@ -451,8 +452,7 @@ public class FileUploadDialogPanel extends IPlantDialogPanel {
                             JSONObject file = JsonUtil.getObject(jsonFileUploadStatus, "file"); //$NON-NLS-1$
 
                             DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
-                            AutoBean<org.iplantc.core.uidiskresource.client.models.autobeans.File> fileAb = AutoBeanCodex.decode(factory,
-                                    org.iplantc.core.uidiskresource.client.models.autobeans.File.class, file.toString());
+                            AutoBean<File> fileAb = AutoBeanCodex.decode(factory, File.class, file.toString());
 
                             if (fileAb != null) {
                                 hdlrUpload.onCompletion(fileAb.as().getName(), file.toString());
