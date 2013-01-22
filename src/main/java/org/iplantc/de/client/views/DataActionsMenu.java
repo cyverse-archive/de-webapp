@@ -392,8 +392,8 @@ public final class DataActionsMenu extends Menu {
         public void componentSelected(MenuEvent ce) {
             if (DataUtils.isSharable(resources)) {
                 DataSharingDialog sd = new DataSharingDialog(resources);
-                sd.show();
                 sd.initView();
+                sd.show();
             } else {
                 showErrorMsg();
             }

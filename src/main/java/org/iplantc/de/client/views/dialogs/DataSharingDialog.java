@@ -49,13 +49,13 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.dom.client.Element;
 
 /**
  * @author sriram
@@ -196,6 +196,8 @@ public class DataSharingDialog extends Dialog {
         new GridDragSource(collaboratorsGrid) {
             @Override
             protected void onDragStart(DNDEvent e) {
+                super.onDragStart(e);
+
                 List<Collaborator> list = collaboratorsGrid.getSelectionModel().getSelectedItems();
                 if (list == null || list.size() == 0) {
                     e.setCancelled(true);
@@ -394,6 +396,7 @@ public class DataSharingDialog extends Dialog {
 
         @Override
         public void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
             Element data = diskResourceGrid.getView().findRow(e.getTarget());
             setDiskResourcDropFeedback(e, data);
         }
