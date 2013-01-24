@@ -18,7 +18,9 @@ import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent.Re
 import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.autobeans.File;
 import org.iplantc.core.uidiskresource.client.models.autobeans.Folder;
+import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
+import org.iplantc.core.uidiskresource.client.views.dialogs.FileUploadByUrlDialog;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
@@ -38,6 +40,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
 
     private IPlantSubmittableDialog dlgUpload;
     private final Desktop desktop;
+    private final DiskResourceServiceFacade drService = Services.DISK_RESOURCE_SERVICE;
 
     DesktopFileTransferEventHandler(Desktop desktop) {
         this.desktop = desktop;
@@ -52,7 +55,10 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     @Override
     public void onRequestUploadFromUrl(RequestImportFromUrlEvent event) {
         Folder uploadDest = event.getDestinationFolder();
-        promptUploadImportForm(FileUploadDialogPanel.MODE.URL_ONLY, uploadDest);
+        
+        String userName = UserInfo.getInstance().getUsername();
+        FileUploadByUrlDialog dlg = new FileUploadByUrlDialog(uploadDest, drService, userName);
+        dlg.show();
     }
 
     @Override

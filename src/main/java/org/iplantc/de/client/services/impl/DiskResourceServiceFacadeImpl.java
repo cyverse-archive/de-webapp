@@ -7,6 +7,7 @@ import java.util.Set;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.autobeans.DiskResourceMetadata;
@@ -219,13 +220,11 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void importFromUrl(final String url, final String dest, final String description,
-            AsyncCallback<String> callback) {
+    public void importFromUrl(final String url, final HasId dest, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix + ".file-urlupload"; //$NON-NLS-1$
         JSONObject body = new JSONObject();
-        body.put("dest", new JSONString(dest)); //$NON-NLS-1$
+        body.put("dest", new JSONString(dest.getId())); //$NON-NLS-1$
         body.put("address", new JSONString(url)); //$NON-NLS-1$
-        body.put("description", new JSONString(description)); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());

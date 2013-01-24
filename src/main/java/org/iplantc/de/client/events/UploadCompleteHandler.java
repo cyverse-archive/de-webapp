@@ -9,11 +9,10 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * Subclasses of this handler are called when file upload is complete by the FileUploadPanel
  * 
- * @see org.iplantc.de.client.views.panels.FileUploadDialogPanel
  * @see org.iplantc.de.client.events.DefaultUploadCompleteHandler
  */
 public abstract class UploadCompleteHandler implements EventHandler {
-    private String idParentFolder;
+    private final String idParentFolder;
 
     /**
      * Instantiate from a parent id.
