@@ -18,6 +18,7 @@
     <http use-expressions="true" entry-point-ref="casAuthEntryPoint">
     	<intercept-url pattern="/applets/**" access="permitAll" />
         <intercept-url pattern="/discoveryenvironment/logout" access="permitAll" />
+        <intercept-url pattern="/discoveryenvironment/logged-out" access="permitAll" />
         <intercept-url pattern="/**" access="isAuthenticated()" />
         <custom-filter ref="casAuthenticationFilter" position="CAS_FILTER" />
         <logout logout-success-url="/discoveryenvironment/logout" />
