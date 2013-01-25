@@ -14,16 +14,14 @@ import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.DataSharing;
 import org.iplantc.de.client.models.DataSharing.TYPE;
 import org.iplantc.de.client.models.Sharing;
+import org.iplantc.de.client.views.dialogs.SelectCollaboratorsDialog;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.dnd.DND.Operation;
-import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -43,8 +41,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid.TreeNode;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -61,6 +57,7 @@ public class SharePanel extends ContentPanel {
     private FastMap<List<Sharing>> unshareList;
     private List<DiskResource> resources;
     private ToolBar toolbar;
+    private static final String ID_BTN_ADD_COLLABS = "idBtnAddCollabs"; //$NON-NLS-1$
     private static final String ID_BTN_REMOVE = "idBtnRemove"; //$NON-NLS-1$
     private FastMap<List<Sharing>> originalList;
 
@@ -85,11 +82,6 @@ public class SharePanel extends ContentPanel {
 
         add(grid);
         addToolBar();
-        TreeGridDropTarget sgdt = new ShareTreeGridDropTargetImpl(grid);
-
-        sgdt.setOperation(Operation.COPY);
-        sgdt.setAllowDropOnLeaf(false);
-        sgdt.setAutoExpand(true);
     }
 
     private void initGrid(TreeStore<Sharing> store, ColumnModel cm) {
@@ -177,9 +169,13 @@ public class SharePanel extends ContentPanel {
 
     private void addToolBar() {
         toolbar = new ToolBar();
+
+        toolbar.add(buildAddCollabsButton());
         Button removeBtn = buildUnshareButton();
         toolbar.add(removeBtn);
+
         toolbar.add(new FillToolItem());
+
         SimpleComboBox<String> permissionsCombo = buildPermissionsCombo();
         permissionsCombo.setEmptyText(I18N.DISPLAY.permissions());
         permissionsCombo.disable();
@@ -187,6 +183,26 @@ public class SharePanel extends ContentPanel {
         toolbar.add(permissionsCombo);
 
         setTopComponent(toolbar);
+    }
+
+    private Button buildAddCollabsButton() {
+        Button addCollabsBtn = new Button(I18N.DISPLAY.selectCollabs(),
+                AbstractImagePrototype.create(Resources.ICONS.viewCurrentCollabs()));
+        addCollabsBtn.setId(ID_BTN_ADD_COLLABS);
+        addCollabsBtn.addSelectionListener(new AddCollaboratorsListener());
+
+        return addCollabsBtn;
+    }
+
+    private class AddCollaboratorsListener extends SelectionListener<ButtonEvent> {
+        @Override
+        public void componentSelected(ButtonEvent ce) {
+            final SelectCollaboratorsDialog sd = new SelectCollaboratorsDialog();
+            sd.getDoneButton().setText(I18N.DISPLAY.add());
+            sd.showCurrentCollborators();
+            sd.show();
+        }
+
     }
 
     private Button buildUnshareButton() {
@@ -342,9 +358,7 @@ public class SharePanel extends ContentPanel {
                         updateList.add(s);
                     }
                 }
-
             }
-
         }
 
         return updateList;
@@ -401,50 +415,6 @@ public class SharePanel extends ContentPanel {
                 }
             }
 
-        }
-    }
-
-    private final class ShareTreeGridDropTargetImpl extends TreeGridDropTarget {
-        private ShareTreeGridDropTargetImpl(@SuppressWarnings("rawtypes") TreeGrid tree) {
-            super(tree);
-        }
-
-        @Override
-        public void onDragMove(DNDEvent e) {
-            super.onDragMove(e);
-            @SuppressWarnings("rawtypes")
-            TreeNode tn = grid.findNode(e.getTarget());
-            setDropFeedback(e, tn);
-        }
-
-        @Override
-        public void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            @SuppressWarnings("rawtypes")
-            TreeNode tn = grid.findNode(e.getTarget());
-            setDropFeedback(e, tn);
-        }
-
-        @Override
-        public void onDragDrop(DNDEvent e) {
-            List<?> items = e.getData();
-            if (items != null) {
-                if (items.get(0) instanceof Collaborator) {
-                    for (Object coll : items) {
-                        addSharing(new Sharing((Collaborator)coll));
-                    }
-                    return;
-                }
-            }
-
-            @SuppressWarnings("rawtypes")
-            TreeNode tn = grid.findNode(e.getTarget());
-            Sharing s = (Sharing)tn.getModel();
-            for (Object dr : items) {
-                DataSharing ds = new DataSharing(s.getCollaborator(),
-                        new Permissions(true, false, false), ((DiskResource)dr).getId());
-                grid.getTreeStore().add(s, ds, false);
-            }
         }
     }
 
@@ -515,40 +485,5 @@ public class SharePanel extends ContentPanel {
         }
 
         return false;
-    }
-
-    private void setDNDFeedback(DNDEvent e, boolean feedback) {
-        e.getStatus().setStatus(feedback);
-        e.setCancelled(!feedback);
-    }
-
-    private void setDropFeedback(DNDEvent e, @SuppressWarnings("rawtypes") TreeNode tn) {
-        List<?> items = e.getData();
-        TreeStore<Sharing> store = grid.getTreeStore();
-
-        if (items != null && items.size() > 0) {
-            if (items.get(0) instanceof Collaborator) {
-                for (Object obj : items) {
-                    if (store.contains(new Sharing((Collaborator)obj))) {
-                        setDNDFeedback(e, false);
-                        return;
-                    }
-                }
-                return;
-            } else {
-                if (tn == null) {
-                    e.getStatus().setStatus(false);
-                    e.setCancelled(true);
-                    return;
-                }
-                Sharing s = (Sharing)tn.getModel();
-                for (Object dr : items) {
-                    if (!canShare(s.getCollaborator(), ((DiskResource)dr).getId())) {
-                        setDNDFeedback(e, false);
-                        return;
-                    }
-                }
-            }
-        }
     }
 }
