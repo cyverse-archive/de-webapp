@@ -56,12 +56,12 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  * 
  */
 public class SharePanel extends ContentPanel {
-    private static final String ID_PERM_GROUP = "idPermGroup";
+    private static final String ID_PERM_GROUP = "idPermGroup"; //$NON-NLS-1$
     private EditorTreeGrid<Sharing> grid;
     private FastMap<List<Sharing>> unshareList;
     private List<DiskResource> resources;
     private ToolBar toolbar;
-    private static final String ID_BTN_REMOVE = "idBtnRemove";
+    private static final String ID_BTN_REMOVE = "idBtnRemove"; //$NON-NLS-1$
     private FastMap<List<Sharing>> originalList;
 
     public SharePanel(List<DiskResource> resources) {
@@ -95,7 +95,7 @@ public class SharePanel extends ContentPanel {
     private void initGrid(TreeStore<Sharing> store, ColumnModel cm) {
         grid = new EditorTreeGrid<Sharing>(store, cm);
 
-        grid.getView().setEmptyText(org.iplantc.de.client.I18N.DISPLAY.sharePanelEmptyText());
+        grid.getView().setEmptyText(I18N.DISPLAY.sharePanelEmptyText());
         grid.setSelectionModel(new TreeGridSelectionModel<Sharing>());
         grid.setClicksToEdit(ClicksToEdit.ONE);
         TreeGridSelectionModel<Sharing> sm = (TreeGridSelectionModel<Sharing>)grid.getSelectionModel();
@@ -168,7 +168,6 @@ public class SharePanel extends ContentPanel {
         grid.addListener(Events.AfterEdit, new Listener<GridEvent<Sharing>>() {
             @Override
             public void handleEvent(GridEvent<Sharing> be) {
-                // be.setCancelled(true);
                 // edited row can only be of instance DataSharing
                 DataSharing ds = (DataSharing)be.getRecord().getModel();
                 updatePermissions(be.getValue().toString(), ds);
@@ -191,7 +190,7 @@ public class SharePanel extends ContentPanel {
     }
 
     private Button buildUnshareButton() {
-        Button removeBtn = new Button(org.iplantc.de.client.I18N.DISPLAY.unshare(),
+        Button removeBtn = new Button(I18N.DISPLAY.unshare(),
                 AbstractImagePrototype.create(Resources.ICONS.deleteIcon()));
         removeBtn.setId(ID_BTN_REMOVE);
         removeBtn.addSelectionListener(new RemoveButtonSelectionListener());
@@ -260,7 +259,7 @@ public class SharePanel extends ContentPanel {
         ColumnConfig sharee = new ColumnConfig(Sharing.NAME, I18N.DISPLAY.name(), 170);
         sharee.setRenderer(new TreeGridCellRenderer<Sharing>());
         ColumnConfig permissions = new ColumnConfig(DataSharing.DISPLAY_PERMISSION,
-                org.iplantc.de.client.I18N.DISPLAY.permissions(), 100);
+                I18N.DISPLAY.permissions(), 100);
         permissions.setEditor(buildPermissionsEditor());
         sharee.setMenuDisabled(true);
         sharee.setSortable(true);
@@ -284,7 +283,7 @@ public class SharePanel extends ContentPanel {
                 if (value == null) {
                     return value;
                 }
-                return ((ModelData)value).get("value");
+                return ((ModelData)value).get("value"); //$NON-NLS-1$
             }
         };
 
@@ -296,9 +295,9 @@ public class SharePanel extends ContentPanel {
         final SimpleComboBox<String> combo = new SimpleComboBox<String>();
         combo.setId(ID_PERM_GROUP);
         combo.setForceSelection(true);
-        combo.add(org.iplantc.de.client.I18N.DISPLAY.read());
-        combo.add(org.iplantc.de.client.I18N.DISPLAY.write());
-        combo.add(org.iplantc.de.client.I18N.DISPLAY.own());
+        combo.add(I18N.DISPLAY.read());
+        combo.add(I18N.DISPLAY.write());
+        combo.add(I18N.DISPLAY.own());
         combo.setEditable(false);
 
         combo.setTriggerAction(TriggerAction.ALL);
@@ -450,9 +449,9 @@ public class SharePanel extends ContentPanel {
     }
 
     private void updatePermissions(String perm, DataSharing model) {
-        if (perm.equals(org.iplantc.de.client.I18N.DISPLAY.read())) {
+        if (perm.equals(I18N.DISPLAY.read())) {
             model.setReadable(true);
-        } else if (perm.equals(org.iplantc.de.client.I18N.DISPLAY.write())) {
+        } else if (perm.equals(I18N.DISPLAY.write())) {
             model.setWritable(true);
         } else {
             model.setOwner(true);
