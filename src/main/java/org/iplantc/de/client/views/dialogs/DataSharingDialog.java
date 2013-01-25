@@ -101,7 +101,7 @@ public class DataSharingDialog extends Dialog {
                     callUnshareService(unshareRequestBody);
                 }
                 if (requestBody != null || unshareRequestBody != null) {
-                    MessageBox.info(I18N.DISPLAY.share() + "/ " + I18N.DISPLAY.unshare(),
+                    MessageBox.info(I18N.DISPLAY.share() + "/ " + I18N.DISPLAY.unshare(), //$NON-NLS-1$
                             I18N.DISPLAY.sharingCompleteMsg(), null);
                 }
 
@@ -132,7 +132,7 @@ public class DataSharingDialog extends Dialog {
         ContentPanel center = new ContentPanel();
         center.setLayout(new FitLayout());
         center.setHeading("2. " + I18N.DISPLAY.selectFilesFolders());
-        ToolButton helpBtn = new ToolButton("x-tool-help");
+        ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
         helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.shareDiskResourceHelp()));
         center.getHeader().addTool(helpBtn);
         center.add(buildDiskResourceGrid());
@@ -146,7 +146,7 @@ public class DataSharingDialog extends Dialog {
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.EAST, 320, 200, 350);
         sharePanel = new SharePanel(resources);
         sharePanel.setHeading("3. " + I18N.DISPLAY.changePermissions());
-        ToolButton helpBtn = new ToolButton("x-tool-help");
+        ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
         helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.sharingPermissionsHelp()));
         sharePanel.getHeader().addTool(helpBtn);
         getUserPermissionsInfo();
@@ -180,7 +180,7 @@ public class DataSharingDialog extends Dialog {
     private ToolTipConfig getToolTipConfig() {
         ToolTipConfig config = new ToolTipConfig();
         config.setMouseOffset(new int[] {0, 0});
-        config.setAnchor("left");
+        config.setAnchor("left"); //$NON-NLS-1$
         config.setCloseable(true);
         return config;
     }
@@ -224,7 +224,7 @@ public class DataSharingDialog extends Dialog {
 
             @Override
             public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
-                return "iplantc-select-grid";
+                return "iplantc-select-grid"; //$NON-NLS-1$
             }
 
         };
@@ -270,9 +270,9 @@ public class DataSharingDialog extends Dialog {
     private void loadPermissions(String path, JSONArray user_arr) {
         for (int i = 0; i < user_arr.size(); i++) {
             JSONObject obj = user_arr.get(i).isObject();
-            JSONObject perm = JsonUtil.getObject(obj, "permissions");
+            JSONObject perm = JsonUtil.getObject(obj, "permissions"); //$NON-NLS-1$
             Collaborator collaborator = CollaboratorsUtil.findCollaboratorByUserName(JsonUtil.getString(
-                    obj, "user"));
+                    obj, "user")); //$NON-NLS-1$
 
             String userName = collaborator.getUserName();
             Sharing s = sharingList.get(userName);
@@ -298,7 +298,7 @@ public class DataSharingDialog extends Dialog {
         for (int i = 0; i < resources.size(); i++) {
             ids.set(i, new JSONString(resources.get(i).getId()));
         }
-        obj.put("paths", ids);
+        obj.put("paths", ids); //$NON-NLS-1$
         return obj;
     }
 
@@ -428,15 +428,14 @@ public class DataSharingDialog extends Dialog {
 
         @Override
         public void onSuccess(String result) {
-            JSONObject obj = JsonUtil.getObject(result);
-            JSONArray permissionsArray = JsonUtil.getArray(obj, "paths");
+            JSONArray permissionsArray = JsonUtil.getArray(JsonUtil.getObject(result), "paths"); //$NON-NLS-1$
             sharingList = new FastMap<Sharing>();
             dataSharingMap = new FastMap<List<Sharing>>();
             if (permissionsArray != null) {
                 for (int i = 0; i < permissionsArray.size(); i++) {
                     JSONObject user_perm_obj = permissionsArray.get(i).isObject();
-                    String path = JsonUtil.getString(user_perm_obj, "path");
-                    JSONArray user_arr = JsonUtil.getArray(user_perm_obj, "user-permissions");
+                    String path = JsonUtil.getString(user_perm_obj, "path"); //$NON-NLS-1$
+                    JSONArray user_arr = JsonUtil.getArray(user_perm_obj, "user-permissions"); //$NON-NLS-1$
                     loadPermissions(path, user_arr);
                 }
             }
@@ -468,7 +467,7 @@ public class DataSharingDialog extends Dialog {
             }
             link.setToolTip(model.getId());
             link.setWidth(model.getName().length());
-            link.setOnMouseOverStyle("text-decoration", "none");
+            link.setOnMouseOverStyle("text-decoration", "none"); //$NON-NLS-1$ //$NON-NLS-2$
             return link;
         }
     }
@@ -483,12 +482,12 @@ public class DataSharingDialog extends Dialog {
             for (String userName : sharingMap.keySet()) {
                 List<Sharing> shareList = sharingMap.get(userName);
                 JSONObject userObj = new JSONObject();
-                userObj.put("user", new JSONString(userName));
-                userObj.put("paths", buildPathArrWithPermissions(shareList));
+                userObj.put("user", new JSONString(userName)); //$NON-NLS-1$
+                userObj.put("paths", buildPathArrWithPermissions(shareList)); //$NON-NLS-1$
                 sharingArr.set(index++, userObj);
             }
 
-            sharingObj.put("sharing", sharingArr);
+            sharingObj.put("sharing", sharingArr); //$NON-NLS-1$
             return sharingObj;
         } else {
             return null;
@@ -502,8 +501,8 @@ public class DataSharingDialog extends Dialog {
         for (Sharing s : list) {
             DataSharing ds = (DataSharing)s;
             obj = new JSONObject();
-            obj.put("path", new JSONString(ds.getPath()));
-            obj.put("permissions", buildSharingPermissions(ds));
+            obj.put("path", new JSONString(ds.getPath())); //$NON-NLS-1$
+            obj.put("permissions", buildSharingPermissions(ds)); //$NON-NLS-1$
             pathArr.set(index++, obj);
         }
 
@@ -522,9 +521,9 @@ public class DataSharingDialog extends Dialog {
 
     private JSONObject buildSharingPermissions(DataSharing sh) {
         JSONObject permission = new JSONObject();
-        permission.put("read", JSONBoolean.getInstance(sh.isReadable()));
-        permission.put("write", JSONBoolean.getInstance(sh.isWritable()));
-        permission.put("own", JSONBoolean.getInstance(sh.isOwner()));
+        permission.put("read", JSONBoolean.getInstance(sh.isReadable())); //$NON-NLS-1$
+        permission.put("write", JSONBoolean.getInstance(sh.isWritable())); //$NON-NLS-1$
+        permission.put("own", JSONBoolean.getInstance(sh.isOwner())); //$NON-NLS-1$
         return permission;
     }
 
@@ -538,11 +537,11 @@ public class DataSharingDialog extends Dialog {
             for (String userName : unSharingMap.keySet()) {
                 List<Sharing> shareList = unSharingMap.get(userName);
                 JSONObject userObj = new JSONObject();
-                userObj.put("user", new JSONString(userName));
-                userObj.put("paths", buildPathArr(shareList));
+                userObj.put("user", new JSONString(userName)); //$NON-NLS-1$
+                userObj.put("paths", buildPathArr(shareList)); //$NON-NLS-1$
                 unsharingArr.set(index++, userObj);
             }
-            unsharingObj.put("unshare", unsharingArr);
+            unsharingObj.put("unshare", unsharingArr); //$NON-NLS-1$
             return unsharingObj;
         } else {
             return null;
