@@ -63,7 +63,7 @@ public class DataSharingDialog extends Dialog {
     private Grid<DiskResource> diskResourceGrid;
 
     private FastMap<Sharing> sharingList;
-    private FastMap<List<Sharing>> dataSharingMap;
+    private FastMap<List<DataSharing>> dataSharingMap;
 
     private SharePanel sharePanel;
 
@@ -75,10 +75,10 @@ public class DataSharingDialog extends Dialog {
     }
 
     private void setButtons() {
-        setButtons(Dialog.OK);
+        setButtons(Dialog.OKCANCEL);
         setButtonAlign(HorizontalAlignment.RIGHT);
         Button okButton = getOkButton();
-        okButton.setText(org.iplantc.de.client.I18N.DISPLAY.done());
+        okButton.setText(I18N.DISPLAY.done());
         okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -218,10 +218,10 @@ public class DataSharingDialog extends Dialog {
                 s = new Sharing(collaborator);
                 sharingList.put(userName, s);
             }
-            List<Sharing> list = dataSharingMap.get(userName);
 
+            List<DataSharing> list = dataSharingMap.get(userName);
             if (list == null) {
-                list = new ArrayList<Sharing>();
+                list = new ArrayList<DataSharing>();
                 dataSharingMap.put(userName, list);
             }
 
@@ -308,7 +308,7 @@ public class DataSharingDialog extends Dialog {
         public void onSuccess(String result) {
             JSONArray permissionsArray = JsonUtil.getArray(JsonUtil.getObject(result), "paths"); //$NON-NLS-1$
             sharingList = new FastMap<Sharing>();
-            dataSharingMap = new FastMap<List<Sharing>>();
+            dataSharingMap = new FastMap<List<DataSharing>>();
             if (permissionsArray != null) {
                 for (int i = 0; i < permissionsArray.size(); i++) {
                     JSONObject user_perm_obj = permissionsArray.get(i).isObject();
@@ -317,8 +317,7 @@ public class DataSharingDialog extends Dialog {
                     loadPermissions(path, user_arr);
                 }
             }
-            ArrayList<Sharing> list = new ArrayList<Sharing>(sharingList.values());
-            sharePanel.loadSharingData(list, dataSharingMap);
+            sharePanel.loadSharingData(dataSharingMap);
             sharePanel.unmask();
 
         }
@@ -352,13 +351,13 @@ public class DataSharingDialog extends Dialog {
 
     private JSONObject buildSharingJson() {
         JSONObject sharingObj = new JSONObject();
-        FastMap<List<Sharing>> sharingMap = sharePanel.getSharingMap();
+        FastMap<List<DataSharing>> sharingMap = sharePanel.getSharingMap();
 
         if (sharingMap != null && sharingMap.size() > 0) {
             JSONArray sharingArr = new JSONArray();
             int index = 0;
             for (String userName : sharingMap.keySet()) {
-                List<Sharing> shareList = sharingMap.get(userName);
+                List<DataSharing> shareList = sharingMap.get(userName);
                 JSONObject userObj = new JSONObject();
                 userObj.put("user", new JSONString(userName)); //$NON-NLS-1$
                 userObj.put("paths", buildPathArrWithPermissions(shareList)); //$NON-NLS-1$
@@ -372,12 +371,11 @@ public class DataSharingDialog extends Dialog {
         }
     }
 
-    private JSONArray buildPathArrWithPermissions(List<Sharing> list) {
+    private JSONArray buildPathArrWithPermissions(List<DataSharing> shareList) {
         JSONArray pathArr = new JSONArray();
         int index = 0;
         JSONObject obj;
-        for (Sharing s : list) {
-            DataSharing ds = (DataSharing)s;
+        for (DataSharing ds : shareList) {
             obj = new JSONObject();
             obj.put("path", new JSONString(ds.getPath())); //$NON-NLS-1$
             obj.put("permissions", buildSharingPermissions(ds)); //$NON-NLS-1$
@@ -387,11 +385,10 @@ public class DataSharingDialog extends Dialog {
         return pathArr;
     }
 
-    private JSONArray buildPathArr(List<Sharing> list) {
+    private JSONArray buildPathArr(List<DataSharing> list) {
         JSONArray pathArr = new JSONArray();
         int index = 0;
-        for (Sharing s : list) {
-            DataSharing ds = (DataSharing)s;
+        for (DataSharing ds : list) {
             pathArr.set(index++, new JSONString(ds.getPath()));
         }
         return pathArr;
@@ -407,13 +404,13 @@ public class DataSharingDialog extends Dialog {
 
     private JSONObject buildUnSharingJson() {
         JSONObject unsharingObj = new JSONObject();
-        FastMap<List<Sharing>> unSharingMap = sharePanel.getUnshareList();
+        FastMap<List<DataSharing>> unSharingMap = sharePanel.getUnshareList();
 
         if (unSharingMap != null && unSharingMap.size() > 0) {
             JSONArray unsharingArr = new JSONArray();
             int index = 0;
             for (String userName : unSharingMap.keySet()) {
-                List<Sharing> shareList = unSharingMap.get(userName);
+                List<DataSharing> shareList = unSharingMap.get(userName);
                 JSONObject userObj = new JSONObject();
                 userObj.put("user", new JSONString(userName)); //$NON-NLS-1$
                 userObj.put("paths", buildPathArr(shareList)); //$NON-NLS-1$

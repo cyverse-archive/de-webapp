@@ -21,6 +21,7 @@ public class DataSharing extends Sharing {
     public static final String OWN = "own";
     public static final String PATH = "path";
     public static final String DISPLAY_PERMISSION = "displayPermission";
+    public static final String USER = "user";
 
     public static enum TYPE {
         FILE, FOLDER
@@ -28,12 +29,14 @@ public class DataSharing extends Sharing {
 
     public DataSharing(Collaborator c, Permissions p, String path) {
         super(c);
+
         set(PATH, path);
         if (p != null) {
             setReadable(p.isReadable());
             setWritable(p.isWritable());
             setOwner(p.isOwner());
         }
+        set(USER, getName());
         set(Sharing.NAME, DiskResourceUtil.parseNameFromPath(path));
     }
 
