@@ -224,13 +224,13 @@ public class SharePanel extends ContentPanel {
                     newList.add(copyShare);
 
                     if (!displayPermission.equals(copyShare.getDisplayPermission())) {
-                        displayPermission = "varies";
+                        displayPermission = I18N.DISPLAY.varies();
                     }
                 }
                 originalList.put(userName, newList);
 
                 if (resources.keySet().size() != newList.size()) {
-                    displayPermission = "varies";
+                    displayPermission = I18N.DISPLAY.varies();
                 }
 
                 displayShare.setDisplayPermission(displayPermission);

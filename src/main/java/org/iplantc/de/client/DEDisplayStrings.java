@@ -968,6 +968,13 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String own();
 
     /**
+     * Localized display text for varies
+     * 
+     * @return a string representing the localized text.
+     */
+    String varies();
+
+    /**
      * Localized display text search collaborators
      * 
      * @return a string representing the localized text.
