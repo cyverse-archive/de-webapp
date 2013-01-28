@@ -119,7 +119,7 @@ public class SelectCollaboratorsDialog extends Dialog {
     }
 
     private void setButtons() {
-        setButtons(Dialog.OK);
+        setButtons(Dialog.OKCANCEL);
         setButtonAlign(HorizontalAlignment.RIGHT);
 
         getDoneButton().setText(I18N.DISPLAY.done());
