@@ -187,7 +187,7 @@ public class SharePanel extends ContentPanel {
                 shareList.add(share);
 
                 if (displayShare == null) {
-                    displayShare = share;
+                    displayShare = share.copy();
                     grid.getStore().add(displayShare);
                 }
             }
@@ -216,19 +216,23 @@ public class SharePanel extends ContentPanel {
             List<DataSharing> list = sharingMap.get(userName);
             List<DataSharing> newList = new ArrayList<DataSharing>();
             if (list != null && list.size() > 0) {
-                DataSharing displayShare = list.get(0);
+                DataSharing displayShare = list.get(0).copy();
                 String displayPermission = displayShare.getDisplayPermission();
 
                 for (DataSharing share : list) {
                     DataSharing copyShare = share.copy();
                     newList.add(copyShare);
 
+                    // Set the display permission to "varies" if not every resource in this user's list
+                    // has the same permissions.
                     if (!displayPermission.equals(copyShare.getDisplayPermission())) {
                         displayPermission = I18N.DISPLAY.varies();
                     }
                 }
                 originalList.put(userName, newList);
 
+                // Set the display permission to "varies" if not every resource is included in this
+                // user's list.
                 if (resources.keySet().size() != newList.size()) {
                     displayPermission = I18N.DISPLAY.varies();
                 }
@@ -380,8 +384,6 @@ public class SharePanel extends ContentPanel {
     private void updatePermissions(String perm, String username) {
         List<DataSharing> models = sharingMap.get(username);
         if (models != null) {
-            DataSharing displayShare = models.get(0);
-
             boolean own = perm.equals(I18N.DISPLAY.own());
             boolean write = own || perm.equals(I18N.DISPLAY.write());
             boolean read = true;
@@ -396,9 +398,8 @@ public class SharePanel extends ContentPanel {
                 }
             }
 
-            grid.getStore().update(displayShare);
-
             if (resources.size() != models.size()) {
+                Collaborator user = models.get(0).getCollaborator();
                 Permissions perms = new Permissions(read, write, own);
 
                 for (String path : resources.keySet()) {
@@ -411,7 +412,7 @@ public class SharePanel extends ContentPanel {
                     }
 
                     if (!shared) {
-                        models.add(new DataSharing(displayShare.getCollaborator(), perms, path));
+                        models.add(new DataSharing(user, perms, path));
                     }
                 }
             }
