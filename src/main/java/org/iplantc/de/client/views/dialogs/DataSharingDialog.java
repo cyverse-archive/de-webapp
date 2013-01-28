@@ -28,11 +28,11 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -69,7 +69,7 @@ public class DataSharingDialog extends Dialog {
 
     public DataSharingDialog(List<DiskResource> resources) {
         this.resources = resources;
-        setSize(800, 400);
+        setSize(600, 600);
         setHeading(I18N.DISPLAY.manageSharing());
         setButtons();
     }
@@ -123,27 +123,31 @@ public class DataSharingDialog extends Dialog {
     private void buildDataPanel() {
         ContentPanel dataPanel = new ContentPanel();
         dataPanel.setLayout(new FitLayout());
-        dataPanel.setHeading(I18N.DISPLAY.selectFilesFolders());
-        ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
-        helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.shareDiskResourceHelp()));
-        dataPanel.getHeader().addTool(helpBtn);
+        dataPanel.setHeading(I18N.DISPLAY.selectedFilesFolders());
+        // TODO temp. remove help text.
+        // ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
+        // helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.shareDiskResourceHelp()));
+        // dataPanel.getHeader().addTool(helpBtn);
         dataPanel.add(buildDiskResourceGrid());
 
-        BorderLayoutData data = new BorderLayoutData(LayoutRegion.WEST, 200, 250, 350);
+        BorderLayoutData data = new BorderLayoutData(LayoutRegion.NORTH, 150, 125, 300);
+        data.setMargins(new Margins(10));
         data.setSplit(true);
         add(dataPanel, data);
     }
 
     private void buildSharePanel() {
         sharePanel = new SharePanel(resources);
-        sharePanel.setHeading(I18N.DISPLAY.changePermissions());
-        ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
-        helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.sharingPermissionsHelp()));
-        sharePanel.getHeader().addTool(helpBtn);
+        sharePanel.setHeaderVisible(false);
+        // TODO temp. remove help text.
+        // ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
+        // helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.sharingPermissionsHelp()));
+        // sharePanel.getHeader().addTool(helpBtn);
 
         loadPermissions();
 
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.CENTER);
+        data.setMargins(new Margins(10));
         data.setSplit(true);
         data.setCollapsible(false);
         add(sharePanel, data);

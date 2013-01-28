@@ -1258,11 +1258,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String selectCollabs();
 
     /**
-     * select files / folders
+     * Localized display text for Selected file(s) / folder(s).
      * 
      * @return
      */
-    String selectFilesFolders();
+    String selectedFilesFolders();
 
     /**
      * change permissions
