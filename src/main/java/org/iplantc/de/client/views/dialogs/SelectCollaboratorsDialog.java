@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.CollaboratorsAddedEvent;
@@ -34,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -231,7 +233,27 @@ public class SelectCollaboratorsDialog extends Dialog {
      * Sets the grid with the user's current Collaborators.
      */
     public void showCurrentCollborators() {
-        loadResults(CollaboratorsUtil.getCurrentCollaborators());
+        List<Collaborator> currentCollaborators = CollaboratorsUtil.getCurrentCollaborators();
+        if (currentCollaborators != null) {
+            loadResults(currentCollaborators);
+        } else {
+            grid.mask(I18N.DISPLAY.loadingMask());
+
+            CollaboratorsUtil.getCollaborators(new AsyncCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    grid.unmask();
+                    loadResults(CollaboratorsUtil.getCurrentCollaborators());
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+                    grid.unmask();
+                    ErrorHandler.post(caught);
+                }
+            });
+        }
     }
 
     /**
