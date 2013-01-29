@@ -74,7 +74,8 @@ public class SelectCollaboratorsDialog extends Dialog {
         setHideOnButtonClick(true);
         setModal(true);
 
-        buildHelpToolTip();
+        // TODO temp. remove help button.
+        // buildHelpToolTip();
 
         setButtons();
 
