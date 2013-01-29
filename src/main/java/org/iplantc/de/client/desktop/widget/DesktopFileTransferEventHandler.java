@@ -21,6 +21,7 @@ import org.iplantc.core.uidiskresource.client.models.autobeans.Folder;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.views.dialogs.FileUploadByUrlDialog;
+import org.iplantc.core.uidiskresource.client.views.dialogs.SimpleFileUploadDialog;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
@@ -32,6 +33,7 @@ import org.iplantc.de.client.views.panels.FileUploadDialogPanel;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.google.common.collect.Lists;
+import com.google.gwt.safehtml.shared.UriUtils;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler,
@@ -49,7 +51,13 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     @Override
     public void onRequestSimpleUpload(RequestSimpleUploadEvent event) {
         Folder uploadDest = event.getDestinationFolder();
-        promptUploadImportForm(FileUploadDialogPanel.MODE.FILE_ONLY, uploadDest);
+        // promptUploadImportForm(FileUploadDialogPanel.MODE.FILE_ONLY, uploadDest);
+
+        SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, 
+                drService, 
+                UriUtils.fromTrustedString(Constants.CLIENT.fileUploadServlet()), 
+                UserInfo.getInstance().getUsername());
+        dlg.show();
     }
 
     @Override
