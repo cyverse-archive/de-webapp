@@ -27,6 +27,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -40,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -52,6 +55,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public class SharePanel extends ContentPanel {
     private static final String ID_PERM_GROUP = "idPermGroup"; //$NON-NLS-1$
     private EditorGrid<DataSharing> grid;
+    private LayoutContainer explainPanel;
     private final FastMap<List<DataSharing>> unshareList;
     private final FastMap<DiskResource> resources;
     private ToolBar toolbar;
@@ -78,6 +82,7 @@ public class SharePanel extends ContentPanel {
 
         add(grid);
         addToolBar();
+        addExplainPanel();
     }
 
     private void initGrid() {
@@ -130,6 +135,35 @@ public class SharePanel extends ContentPanel {
         });
     }
 
+    private void addExplainPanel() {
+        explainPanel = new HorizontalPanel();
+
+        explainPanel.add(new LabelToolItem(I18N.DISPLAY.variablePermissionsNotice() + ":")); //$NON-NLS-1$
+
+        Button explainBtn = new Button(I18N.DISPLAY.explain(), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ArrayList<DataSharing> shares = new ArrayList<DataSharing>();
+                for (String user : sharingMap.keySet()) {
+                    shares.addAll(sharingMap.get(user));
+                }
+
+                ShareBreakdownDialog explainDlg = new ShareBreakdownDialog(shares);
+                explainDlg.show();
+            }
+        });
+
+        explainPanel.add(explainBtn);
+
+        ToolBar topBar = new ToolBar();
+        topBar.add(new LabelToolItem(I18N.DISPLAY.whoHasAccess() + ":")); //$NON-NLS-1$
+        topBar.add(new FillToolItem());
+        topBar.add(explainPanel);
+
+        setTopComponent(topBar);
+    }
+
     private void addToolBar() {
         toolbar = new ToolBar();
 
@@ -146,7 +180,7 @@ public class SharePanel extends ContentPanel {
         permissionsCombo.addListener(Events.Select, new PermissionsChangeListenerImpl());
         toolbar.add(permissionsCombo);
 
-        setTopComponent(toolbar);
+        setBottomComponent(toolbar);
     }
 
     private Button buildAddCollabsButton() {
@@ -216,33 +250,28 @@ public class SharePanel extends ContentPanel {
 
         ListStore<DataSharing> store = grid.getStore();
         store.removeAll();
+        explainPanel.hide();
 
         for (String userName : sharingMap.keySet()) {
-            List<DataSharing> list = sharingMap.get(userName);
-            List<DataSharing> newList = new ArrayList<DataSharing>();
-            if (list != null && list.size() > 0) {
-                DataSharing displayShare = list.get(0).copy();
-                String displayPermission = displayShare.getDisplayPermission();
+            List<DataSharing> dataShares = sharingMap.get(userName);
 
-                for (DataSharing share : list) {
+            if (dataShares != null && !dataShares.isEmpty()) {
+                List<DataSharing> newList = new ArrayList<DataSharing>();
+                for (DataSharing share : dataShares) {
                     DataSharing copyShare = share.copy();
                     newList.add(copyShare);
-
-                    // Set the display permission to "varies" if not every resource in this user's list
-                    // has the same permissions.
-                    if (!displayPermission.equals(copyShare.getDisplayPermission())) {
-                        displayPermission = I18N.DISPLAY.varies();
-                    }
                 }
                 originalList.put(userName, newList);
 
-                // Set the display permission to "varies" if not every resource is included in this
-                // user's list.
-                if (resources.keySet().size() != newList.size()) {
-                    displayPermission = I18N.DISPLAY.varies();
+                // Add a dummy display share to the grid.
+                DataSharing displayShare = dataShares.get(0).copy();
+                if (hasVaryingPermissions(dataShares)) {
+                    // Set the display permission to "varies" if this user's share list has varying
+                    // permissions.
+                    displayShare.setDisplayPermission(I18N.DISPLAY.varies());
+                    explainPanel.show();
                 }
 
-                displayShare.setDisplayPermission(displayPermission);
                 store.add(displayShare);
             }
         }
@@ -421,6 +450,8 @@ public class SharePanel extends ContentPanel {
                     }
                 }
             }
+
+            checkExplainPanelVisibility();
         }
     }
 
@@ -459,6 +490,51 @@ public class SharePanel extends ContentPanel {
                 unshareList.put(userName, list);
             }
         }
+
+        checkExplainPanelVisibility();
+    }
+
+    /**
+     * Checks if the explainPanel should be hidden after permissions have been updated or removed.
+     */
+    private void checkExplainPanelVisibility() {
+        if (explainPanel.isVisible()) {
+            boolean permsVary = false;
+
+            for (DataSharing dataShare : grid.getStore().getModels()) {
+                permsVary = hasVaryingPermissions(sharingMap.get(dataShare.getUserName()));
+
+                if (permsVary) {
+                    // Stop checking after the first user is found with variable permissions.
+                    break;
+                }
+            }
+
+            if (!permsVary) {
+                explainPanel.hide();
+            }
+        }
+    }
+
+    /**
+     * @param dataShares
+     * @return true if the given dataShares list has a different size than the resources list, or if not
+     *         every permission in the given dataShares list is the same; false otherwise.
+     */
+    private boolean hasVaryingPermissions(List<DataSharing> dataShares) {
+        if (dataShares == null || dataShares.size() != resources.size()) {
+            return true;
+        } else {
+            String displayPermission = dataShares.get(0).getDisplayPermission();
+
+            for (DataSharing share : dataShares) {
+                if (!displayPermission.equals(share.getDisplayPermission())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean canShare(Collaborator c, String path) {
