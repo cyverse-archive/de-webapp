@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
+import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -93,8 +94,11 @@ public class SharePanel extends ContentPanel {
 
         grid = new EditorGrid<DataSharing>(store, buildColumnModel(sm.getColumn()));
 
-        grid.getView().setEmptyText(I18N.DISPLAY.sharePanelEmptyText());
         grid.setClicksToEdit(ClicksToEdit.ONE);
+
+        GridView view = grid.getView();
+        view.setEmptyText(I18N.DISPLAY.sharePanelEmptyText());
+        view.setForceFit(true);
 
         grid.setSelectionModel(sm);
         grid.addPlugin(sm);
@@ -130,13 +134,14 @@ public class SharePanel extends ContentPanel {
         toolbar = new ToolBar();
 
         toolbar.add(buildAddCollabsButton());
+
         Button removeBtn = buildUnshareButton();
         toolbar.add(removeBtn);
 
         toolbar.add(new FillToolItem());
 
         SimpleComboBox<String> permissionsCombo = buildPermissionsCombo();
-        permissionsCombo.setEmptyText(I18N.DISPLAY.permissions());
+        permissionsCombo.setEmptyText(I18N.DISPLAY.changePermissions());
         permissionsCombo.disable();
         permissionsCombo.addListener(Events.Select, new PermissionsChangeListenerImpl());
         toolbar.add(permissionsCombo);
@@ -145,7 +150,7 @@ public class SharePanel extends ContentPanel {
     }
 
     private Button buildAddCollabsButton() {
-        Button addCollabsBtn = new Button(I18N.DISPLAY.selectCollabs(),
+        Button addCollabsBtn = new Button(I18N.DISPLAY.addCollabs(),
                 AbstractImagePrototype.create(Resources.ICONS.viewCurrentCollabs()));
         addCollabsBtn.setId(ID_BTN_ADD_COLLABS);
         addCollabsBtn.addSelectionListener(new AddCollaboratorsListener());

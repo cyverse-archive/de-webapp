@@ -1251,6 +1251,13 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String deleteDataLinkToolTip();
 
     /**
+     * Localized display text for "Add Collaborators"
+     * 
+     * @return
+     */
+    String addCollabs();
+
+    /**
      * select collabs
      * 
      * @return
