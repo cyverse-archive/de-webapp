@@ -35,7 +35,7 @@ public class CollaboratorsDialog extends Dialog {
 
     private void initDialog() {
         setHeading(I18N.DISPLAY.collaborators());
-        setSize(450, 280);
+        setSize(450, 450);
         setButtons();
         setResizable(false);
         setHideOnButtonClick(true);
