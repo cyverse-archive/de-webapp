@@ -11,7 +11,9 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.CollaboratorsAddedEvent;
 import org.iplantc.de.client.events.CollaboratorsLoadedEvent;
+import org.iplantc.de.client.events.CollaboratorsRemovedEvent;
 import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.JsCollaborators;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
@@ -239,6 +241,8 @@ public class CollaboratorsUtil {
             if (callback != null) {
                 callback.onSuccess(null);
             }
+
+            EventBus.getInstance().fireEvent(new CollaboratorsAddedEvent(models));
         }
     }
 
@@ -280,6 +284,7 @@ public class CollaboratorsUtil {
                 callback.onSuccess(null);
             }
 
+            EventBus.getInstance().fireEvent(new CollaboratorsRemovedEvent(models));
         }
     }
 
