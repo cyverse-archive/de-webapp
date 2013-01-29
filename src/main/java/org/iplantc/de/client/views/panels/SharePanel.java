@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
@@ -532,17 +531,6 @@ public class SharePanel extends ContentPanel {
                     return true;
                 }
             }
-        }
-
-        return false;
-    }
-
-    private boolean canShare(Collaborator c, String path) {
-        ListStore<DataSharing> store = grid.getStore();
-        DataSharing s = new DataSharing(c, new Permissions(true, false, false), path);
-        if (!store.contains(s)
-                && (!c.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername()))) {
-            return true;
         }
 
         return false;
