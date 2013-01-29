@@ -975,6 +975,41 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String varies();
 
     /**
+     * Localized display text for a variable permissions sharing notice.
+     * 
+     * @return a string representing the localized text.
+     */
+    String variablePermissionsNotice();
+
+    /**
+     * Localized display text for Explain.
+     * 
+     * @return a string representing the localized text.
+     */
+    String explain();
+
+    /**
+     * Localized display text for "Who has access".
+     * 
+     * @return a string representing the localized text.
+     */
+    String whoHasAccess();
+
+    /**
+     * Localized display text for "Group by User".
+     * 
+     * @return a string representing the localized text.
+     */
+    String groupByUser();
+
+    /**
+     * Localized display text for "Group by Data".
+     * 
+     * @return a string representing the localized text.
+     */
+    String groupByData();
+
+    /**
      * Localized display text search collaborators
      * 
      * @return a string representing the localized text.
