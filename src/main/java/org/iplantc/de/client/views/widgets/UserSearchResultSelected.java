@@ -8,15 +8,15 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class UserSearchResultSelected extends GwtEvent<UserSearchResultSelectedEventHandler> {
 
-    interface UserSearchResultSelectedEventHandler extends EventHandler {
+    public interface UserSearchResultSelectedEventHandler extends EventHandler {
 
         void onUserSearchResultSelected(UserSearchResultSelected userSearchResultSelected);
     }
 
-    private static final GwtEvent.Type<UserSearchResultSelectedEventHandler> TYPE = new GwtEvent.Type<UserSearchResultSelected.UserSearchResultSelectedEventHandler>();
+    public static final GwtEvent.Type<UserSearchResultSelectedEventHandler> TYPE = new GwtEvent.Type<UserSearchResultSelected.UserSearchResultSelectedEventHandler>();
     private final Collaborator collaborator;
 
-    public UserSearchResultSelected(String tag, Collaborator collaborator) {
+    public UserSearchResultSelected(Collaborator collaborator) {
         this.collaborator = collaborator;
     }
 
@@ -28,6 +28,10 @@ public class UserSearchResultSelected extends GwtEvent<UserSearchResultSelectedE
     @Override
     protected void dispatch(UserSearchResultSelectedEventHandler handler) {
         handler.onUserSearchResultSelected(this);
+    }
+
+    public Collaborator getCollaborator() {
+        return collaborator;
     }
 
 }

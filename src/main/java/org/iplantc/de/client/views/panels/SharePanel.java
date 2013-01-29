@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
@@ -12,6 +13,9 @@ import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.DataSharing;
 import org.iplantc.de.client.models.Sharing;
 import org.iplantc.de.client.views.dialogs.SelectCollaboratorsDialog;
+import org.iplantc.de.client.views.widgets.UserSearchField;
+import org.iplantc.de.client.views.widgets.UserSearchResultSelected;
+import org.iplantc.de.client.views.widgets.UserSearchResultSelected.UserSearchResultSelectedEventHandler;
 
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -110,6 +114,14 @@ public class SharePanel extends ContentPanel {
                 }
             }
         });
+        // Add event handler to listen for the selected User results.
+        EventBus.getInstance().addHandler(UserSearchResultSelected.TYPE, new UserSearchResultSelectedEventHandler() {
+
+            @Override
+            public void onUserSearchResultSelected(UserSearchResultSelected event) {
+                addCollaborator(event.getCollaborator());
+            }
+        });
     }
 
     private void addExplainPanel() {
@@ -144,6 +156,9 @@ public class SharePanel extends ContentPanel {
     private void addToolBar() {
         toolbar = new ToolBar();
 
+        // Add the User search field. Selections from the search field are fired through the event bus.
+        toolbar.add(new UserSearchField());
+        toolbar.add(new FillToolItem());
         toolbar.add(buildAddCollabsButton());
 
         setBottomComponent(toolbar);
