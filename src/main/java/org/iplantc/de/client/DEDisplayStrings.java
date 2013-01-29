@@ -1017,6 +1017,20 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String searchCollab();
 
     /**
+     * Localized display text for an empty "Select Collaborators" grid.
+     * 
+     * @return a string representing the localized text.
+     */
+    String selectCollaboratorsEmptyText();
+
+    /**
+     * Localized display text for "Manage Collaborators".
+     * 
+     * @return a string representing the localized text.
+     */
+    String manageCollaborators();
+
+    /**
      * The display text for the view raw menu item.
      * 
      * @return the localized display text

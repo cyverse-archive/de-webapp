@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.CollaboratorsAddedEvent;
+import org.iplantc.de.client.events.CollaboratorsAddedEventHandler;
+import org.iplantc.de.client.events.CollaboratorsRemovedEvent;
+import org.iplantc.de.client.events.CollaboratorsRemovedEventHandler;
+import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.utils.CollaboratorsUtil;
 
@@ -12,6 +18,8 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -24,6 +32,9 @@ import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -35,7 +46,20 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class SelectCollaboratorsDialog extends Dialog {
+    public class ManageCollaboratorsListener extends SelectionListener<ButtonEvent> {
+
+        @Override
+        public void componentSelected(ButtonEvent ce) {
+            CollaboratorsDialog collabsDialog = new CollaboratorsDialog();
+            collabsDialog.setModal(true);
+            collabsDialog.show();
+        }
+
+    }
+
+    private static final String ID_BTN_MANAGE_COLLABS = "idBtnManageCollabs"; //$NON-NLS-1$
     private Grid<Collaborator> grid;
+    private List<HandlerRegistration> handlers;
 
     public SelectCollaboratorsDialog() {
         init();
@@ -55,6 +79,43 @@ public class SelectCollaboratorsDialog extends Dialog {
         buildCollaboratorsGrid();
 
         add(grid);
+
+        initHandlers();
+    }
+
+    private void initHandlers() {
+        handlers = new ArrayList<HandlerRegistration>();
+
+        EventBus eventBus = EventBus.getInstance();
+
+        handlers.add(eventBus.addHandler(CollaboratorsAddedEvent.TYPE,
+                new CollaboratorsAddedEventHandler() {
+
+                    @Override
+                    public void onAdd(CollaboratorsAddedEvent event) {
+                        grid.getStore().add(event.getCollaborators());
+                    }
+                }));
+
+        handlers.add(eventBus.addHandler(CollaboratorsRemovedEvent.TYPE,
+                new CollaboratorsRemovedEventHandler() {
+
+                    @Override
+                    public void onRemove(CollaboratorsRemovedEvent event) {
+                        for (Collaborator user : event.getCollaborators()) {
+                            grid.getStore().remove(user);
+                        }
+                    }
+                }));
+    }
+
+    @Override
+    protected void onHide() {
+        for (HandlerRegistration handler : handlers) {
+            handler.removeHandler();
+        }
+
+        super.onHide();
     }
 
     private void buildHelpToolTip() {
@@ -85,7 +146,7 @@ public class SelectCollaboratorsDialog extends Dialog {
 
         grid.setAutoExpandColumn(Collaborator.NAME);
         grid.setBorders(false);
-        grid.getView().setEmptyText(I18N.DISPLAY.noCollaborators());
+        grid.getView().setEmptyText(I18N.DISPLAY.selectCollaboratorsEmptyText());
 
         GridView view = grid.getView();
         view.setViewConfig(buildGridViewConfig());
@@ -119,10 +180,24 @@ public class SelectCollaboratorsDialog extends Dialog {
     }
 
     private void setButtons() {
+        ToolBar bottomBar = new ToolBar();
+        bottomBar.add(buildManageCollabsButton());
+
+        setBottomComponent(bottomBar);
+
         setButtons(Dialog.OKCANCEL);
         setButtonAlign(HorizontalAlignment.RIGHT);
 
         getDoneButton().setText(I18N.DISPLAY.done());
+    }
+
+    private Button buildManageCollabsButton() {
+        Button addCollabsBtn = new Button(I18N.DISPLAY.manageCollaborators(),
+                AbstractImagePrototype.create(Resources.ICONS.viewCurrentCollabs()));
+        addCollabsBtn.setId(ID_BTN_MANAGE_COLLABS);
+        addCollabsBtn.addSelectionListener(new ManageCollaboratorsListener());
+
+        return addCollabsBtn;
     }
 
     /**
