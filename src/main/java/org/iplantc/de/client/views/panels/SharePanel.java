@@ -35,9 +35,12 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -285,7 +288,32 @@ public class SharePanel extends ContentPanel {
         permissions.setEditor(buildPermissionsEditor());
         permissions.setMenuDisabled(true);
 
-        return new ColumnModel(Arrays.asList(checkCol, sharee, permissions));
+        ColumnConfig actions = new ColumnConfig("actions", "", 25); //$NON-NLS-1$ //$NON-NLS-2$
+        actions.setFixed(true);
+        actions.setMenuDisabled(true);
+        actions.setSortable(false);
+        actions.setRenderer(new GridCellRenderer<DataSharing>() {
+
+            @Override
+            public Object render(final DataSharing model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<DataSharing> store, Grid<DataSharing> grid) {
+                Button remove = new Button();
+                remove.setIcon(AbstractImagePrototype.create(Resources.ICONS.cancel()));
+                remove.setId(ID_BTN_REMOVE + model.getKey());
+                remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        removeModel(model);
+                        checkExplainPanelVisibility();
+                    }
+                });
+
+                return remove;
+            }
+        });
+
+        return new ColumnModel(Arrays.asList(checkCol, sharee, permissions, actions));
     }
 
     private CellEditor buildPermissionsEditor() {
@@ -459,38 +487,38 @@ public class SharePanel extends ContentPanel {
         @Override
         public void componentSelected(ButtonEvent ce) {
             List<DataSharing> models = grid.getSelectionModel().getSelectedItems();
-            removeModels(models);
+            for (DataSharing model : models) {
+                removeModel(model);
+            }
+
+            checkExplainPanelVisibility();
         }
     }
 
-    private void removeModels(List<DataSharing> models) {
+    private void removeModel(DataSharing model) {
         // prepared unshared list here
         ListStore<DataSharing> store = grid.getStore();
-        for (DataSharing model : models) {
-            String userName = model.getUserName();
-            List<DataSharing> list = unshareList.get(userName);
-            if (list == null) {
-                list = new ArrayList<DataSharing>();
-            }
-
-            DataSharing sharing = store.findModel(model);
-            if (sharing != null) {
-                List<DataSharing> removeList = sharingMap.get(userName);
-                for (DataSharing remItem : removeList) {
-                    if (isExistedOriginally(remItem)) {
-                        list.add(remItem);
-                    }
-                }
-
-                store.remove(sharing);
-            }
-
-            if (!list.isEmpty()) {
-                unshareList.put(userName, list);
-            }
+        String userName = model.getUserName();
+        List<DataSharing> list = unshareList.get(userName);
+        if (list == null) {
+            list = new ArrayList<DataSharing>();
         }
 
-        checkExplainPanelVisibility();
+        DataSharing sharing = store.findModel(model);
+        if (sharing != null) {
+            List<DataSharing> removeList = sharingMap.get(userName);
+            for (DataSharing remItem : removeList) {
+                if (isExistedOriginally(remItem)) {
+                    list.add(remItem);
+                }
+            }
+
+            store.remove(sharing);
+        }
+
+        if (!list.isEmpty()) {
+            unshareList.put(userName, list);
+        }
     }
 
     /**
