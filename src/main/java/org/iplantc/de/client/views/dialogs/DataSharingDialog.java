@@ -16,7 +16,6 @@ import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.DataSharing;
-import org.iplantc.de.client.models.Sharing;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.CollaboratorsUtil;
 import org.iplantc.de.client.views.panels.SharePanel;
@@ -62,7 +61,7 @@ public class DataSharingDialog extends Dialog {
 
     private Grid<DiskResource> diskResourceGrid;
 
-    private FastMap<Sharing> sharingList;
+    private FastMap<List<JSONObject>> sharingList;
     private FastMap<List<DataSharing>> dataSharingMap;
 
     private SharePanel sharePanel;
@@ -144,7 +143,7 @@ public class DataSharingDialog extends Dialog {
         // helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.sharingPermissionsHelp()));
         // sharePanel.getHeader().addTool(helpBtn);
 
-        loadPermissions();
+        getUserPermissionsInfo();
 
         BorderLayoutData data = new BorderLayoutData(LayoutRegion.CENTER);
         data.setMargins(new Margins(10));
@@ -182,27 +181,6 @@ public class DataSharingDialog extends Dialog {
         return config;
     }
 
-    private void loadPermissions() {
-        // Load permissions after collaborators are ready.
-        if (CollaboratorsUtil.getCurrentCollaborators() == null) {
-            CollaboratorsUtil.getCollaborators(new AsyncCallback<Void>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    ErrorHandler.post(caught);
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                    getUserPermissionsInfo();
-                }
-
-            });
-        } else {
-            getUserPermissionsInfo();
-        }
-    }
-
     private void getUserPermissionsInfo() {
         DiskResourceServiceFacade facade = new DiskResourceServiceFacade();
         sharePanel.mask(I18N.DISPLAY.loadingMask());
@@ -211,26 +189,17 @@ public class DataSharingDialog extends Dialog {
 
     private void loadPermissions(String path, JSONArray user_arr) {
         for (int i = 0; i < user_arr.size(); i++) {
-            JSONObject obj = user_arr.get(i).isObject();
-            JSONObject perm = JsonUtil.getObject(obj, "permissions"); //$NON-NLS-1$
-            Collaborator collaborator = CollaboratorsUtil.findCollaboratorByUserName(JsonUtil.getString(
-                    obj, "user")); //$NON-NLS-1$
+            JSONObject userPermission = JsonUtil.getObjectAt(user_arr, i);
+            JSONObject perm = JsonUtil.getObject(userPermission, "permissions"); //$NON-NLS-1$
+            String userName = JsonUtil.getString(userPermission, "user"); //$NON-NLS-1$
 
-            String userName = collaborator.getUserName();
-            Sharing s = sharingList.get(userName);
-            if (s == null) {
-                s = new Sharing(collaborator);
-                sharingList.put(userName, s);
+            List<JSONObject> shareList = sharingList.get(userName);
+            if (shareList == null) {
+                shareList = new ArrayList<JSONObject>();
+                sharingList.put(userName, shareList);
             }
-
-            List<DataSharing> list = dataSharingMap.get(userName);
-            if (list == null) {
-                list = new ArrayList<DataSharing>();
-                dataSharingMap.put(userName, list);
-            }
-
-            DataSharing dataSharing = new DataSharing(collaborator, new Permissions(perm), path);
-            list.add(dataSharing);
+            perm.put("path", new JSONString(path)); //$NON-NLS-1$
+            shareList.add(perm);
         }
 
     }
@@ -311,19 +280,47 @@ public class DataSharingDialog extends Dialog {
         @Override
         public void onSuccess(String result) {
             JSONArray permissionsArray = JsonUtil.getArray(JsonUtil.getObject(result), "paths"); //$NON-NLS-1$
-            sharingList = new FastMap<Sharing>();
-            dataSharingMap = new FastMap<List<DataSharing>>();
             if (permissionsArray != null) {
+                sharingList = new FastMap<List<JSONObject>>();
                 for (int i = 0; i < permissionsArray.size(); i++) {
                     JSONObject user_perm_obj = permissionsArray.get(i).isObject();
                     String path = JsonUtil.getString(user_perm_obj, "path"); //$NON-NLS-1$
                     JSONArray user_arr = JsonUtil.getArray(user_perm_obj, "user-permissions"); //$NON-NLS-1$
                     loadPermissions(path, user_arr);
                 }
-            }
-            sharePanel.loadSharingData(dataSharingMap);
-            sharePanel.unmask();
 
+                List<String> usernames = new ArrayList<String>();
+                usernames.addAll(sharingList.keySet());
+                CollaboratorsUtil.getUserInfo(usernames, new AsyncCallback<List<Collaborator>>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // TODO Auto-generated method stub
+                        ErrorHandler.post(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(List<Collaborator> results) {
+                        dataSharingMap = new FastMap<List<DataSharing>>();
+                        for (Collaborator user : results) {
+                            String userName = user.getUserName();
+                            List<DataSharing> dataShares = new ArrayList<DataSharing>();
+
+                            dataSharingMap.put(userName, dataShares);
+
+                            for (JSONObject share : sharingList.get(userName)) {
+                                String path = JsonUtil.getString(share, "path"); //$NON-NLS-1$
+                                DataSharing dataSharing = new DataSharing(user, new Permissions(share),
+                                        path);
+                                dataShares.add(dataSharing);
+                            }
+                        }
+
+                        sharePanel.loadSharingData(dataSharingMap);
+                        sharePanel.unmask();
+                    }
+                });
+            }
         }
     }
 

@@ -74,6 +74,12 @@ public class CollaboratorsUtil {
         }
     }
 
+    public static void getUserInfo(List<String> usernames,
+            final AsyncCallback<List<Collaborator>> superCallback) {
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.getUserInfo(usernames, new GetUserInfoCallback(superCallback));
+    }
+
     public static void search(final String term, final AsyncCallback<Void> superCallback) {
         UserSessionServiceFacade facade = new UserSessionServiceFacade();
         facade.searchCollaborators(term, new SearchCallback(superCallback));
@@ -178,6 +184,45 @@ public class CollaboratorsUtil {
         JSONObject obj = new JSONObject();
         obj.put("users", arr);
         return obj;
+    }
+
+    public static class GetUserInfoCallback implements AsyncCallback<String> {
+
+        private final AsyncCallback<List<Collaborator>> superCallback;
+
+        public GetUserInfoCallback(AsyncCallback<List<Collaborator>> superCallback) {
+            this.superCallback = superCallback;
+        }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            if (superCallback != null) {
+                superCallback.onFailure(caught);
+            }
+        }
+
+        @Override
+        public void onSuccess(String result) {
+            if (superCallback != null) {
+                List<Collaborator> userResults = new ArrayList<Collaborator>();
+
+                JSONObject users = JsonUtil.getObject(result);
+                if (users != null) {
+                    for (String username : users.keySet()) {
+                        JSONObject userJson = JsonUtil.getObject(users, username);
+                        String id = JsonUtil.getString(userJson, Collaborator.ID);
+                        String firstName = JsonUtil.getString(userJson, Collaborator.FIRST_NAME);
+                        String lastName = JsonUtil.getString(userJson, Collaborator.LAST_NAME);
+                        String email = JsonUtil.getString(userJson, Collaborator.EMAIL);
+
+                        userResults.add(new Collaborator(id, username, firstName, lastName, email));
+                    }
+                }
+
+                superCallback.onSuccess(userResults);
+            }
+        }
+
     }
 
     private static final class SearchCallback implements AsyncCallback<String> {

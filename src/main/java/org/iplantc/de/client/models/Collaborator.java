@@ -4,6 +4,8 @@
 package org.iplantc.de.client.models;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 
 /**
  * A model class to store collaborators attributes
@@ -11,6 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * @author sriram
  * 
  */
+@SuppressWarnings("nls")
 public class Collaborator extends BaseModelData {
 
     /**
@@ -19,10 +22,10 @@ public class Collaborator extends BaseModelData {
     private static final long serialVersionUID = 3956502462940674969L;
 
     public static final String ID = "id";
-    public static final String FIRST_NAME = "firstName";
-    public static final String LAST_NAME = "lastName";
+    public static final String FIRST_NAME = "firstname";
+    public static final String LAST_NAME = "lastname";
     public static final String EMAIL = "email";
-    public static final String USERNAME = "userName";
+    public static final String USERNAME = "username";
     public static final String NAME = "name";
 
     public Collaborator(JsCollaborators jsCollaborators) {
@@ -38,7 +41,6 @@ public class Collaborator extends BaseModelData {
         } else {
             set(ID, id);
         }
-        set(ID, id);
         if (firstName == null) {
             set(NAME, "");
         } else {
@@ -102,6 +104,9 @@ public class Collaborator extends BaseModelData {
 
     @Override
     public String toString() {
-        return "{\"username\":\"" + getUserName() + "\"}";
+        JSONObject ret = new JSONObject();
+        ret.put(USERNAME, new JSONString(getUserName()));
+
+        return ret.toString();
     }
 }
