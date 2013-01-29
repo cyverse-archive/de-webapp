@@ -13,14 +13,11 @@ import org.iplantc.de.client.models.DataSharing;
 import org.iplantc.de.client.models.Sharing;
 import org.iplantc.de.client.views.dialogs.SelectCollaboratorsDialog;
 
-import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -31,9 +28,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -96,33 +91,13 @@ public class SharePanel extends ContentPanel {
             }
         });
 
-        CheckBoxSelectionModel<DataSharing> sm = new CheckBoxSelectionModel<DataSharing>();
-        sm.setSelectionMode(SelectionMode.MULTI);
-
-        grid = new EditorGrid<DataSharing>(store, buildColumnModel(sm.getColumn()));
+        grid = new EditorGrid<DataSharing>(store, buildColumnModel());
 
         grid.setClicksToEdit(ClicksToEdit.ONE);
 
         GridView view = grid.getView();
         view.setEmptyText(I18N.DISPLAY.sharePanelEmptyText());
         view.setForceFit(true);
-
-        grid.setSelectionModel(sm);
-        grid.addPlugin(sm);
-
-        sm.addListener(Events.SelectionChange, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    toolbar.getItemByItemId(ID_BTN_REMOVE).enable();
-                    toolbar.getItemByItemId(ID_PERM_GROUP).enable();
-                } else {
-                    toolbar.getItemByItemId(ID_BTN_REMOVE).disable();
-                    toolbar.getItemByItemId(ID_PERM_GROUP).disable();
-                }
-
-            }
-        });
 
         grid.addListener(Events.AfterEdit, new Listener<GridEvent<Sharing>>() {
             @Override
@@ -170,17 +145,6 @@ public class SharePanel extends ContentPanel {
         toolbar = new ToolBar();
 
         toolbar.add(buildAddCollabsButton());
-
-        Button removeBtn = buildUnshareButton();
-        toolbar.add(removeBtn);
-
-        toolbar.add(new FillToolItem());
-
-        SimpleComboBox<String> permissionsCombo = buildPermissionsCombo();
-        permissionsCombo.setEmptyText(I18N.DISPLAY.changePermissions());
-        permissionsCombo.disable();
-        permissionsCombo.addListener(Events.Select, new PermissionsChangeListenerImpl());
-        toolbar.add(permissionsCombo);
 
         setBottomComponent(toolbar);
     }
@@ -237,15 +201,6 @@ public class SharePanel extends ContentPanel {
         }
     }
 
-    private Button buildUnshareButton() {
-        Button removeBtn = new Button(I18N.DISPLAY.unshare(),
-                AbstractImagePrototype.create(Resources.ICONS.deleteIcon()));
-        removeBtn.setId(ID_BTN_REMOVE);
-        removeBtn.addSelectionListener(new RemoveButtonSelectionListener());
-        removeBtn.disable();
-        return removeBtn;
-    }
-
     public void loadSharingData(FastMap<List<DataSharing>> sharingMap) {
         this.sharingMap = sharingMap;
         originalList = new FastMap<List<DataSharing>>();
@@ -279,7 +234,7 @@ public class SharePanel extends ContentPanel {
         }
     }
 
-    private ColumnModel buildColumnModel(ColumnConfig checkCol) {
+    private ColumnModel buildColumnModel() {
         ColumnConfig sharee = new ColumnConfig(DataSharing.USER, I18N.DISPLAY.name(), 170);
         sharee.setMenuDisabled(true);
 
@@ -313,7 +268,7 @@ public class SharePanel extends ContentPanel {
             }
         });
 
-        return new ColumnModel(Arrays.asList(checkCol, sharee, permissions, actions));
+        return new ColumnModel(Arrays.asList(sharee, permissions, actions));
     }
 
     private CellEditor buildPermissionsEditor() {
@@ -423,25 +378,6 @@ public class SharePanel extends ContentPanel {
         return unshareList;
     }
 
-    private final class PermissionsChangeListenerImpl implements Listener<FieldEvent> {
-        @Override
-        public void handleEvent(FieldEvent be) {
-            List<DataSharing> selected = grid.getSelectionModel().getSelectedItems();
-            if (selected != null) {
-                @SuppressWarnings("unchecked")
-                SimpleComboBox<String> perm = (SimpleComboBox<String>)be.getField();
-                SimpleComboValue<String> value = perm.getValue();
-
-                if (value != null) {
-                    for (Sharing sharing : selected) {
-                        updatePermissions(value.getValue(), sharing.getUserName());
-                    }
-                }
-            }
-
-        }
-    }
-
     private void updatePermissions(String perm, String username) {
         List<DataSharing> models = sharingMap.get(username);
         if (models != null) {
@@ -476,19 +412,6 @@ public class SharePanel extends ContentPanel {
                         models.add(new DataSharing(user, perms, path));
                     }
                 }
-            }
-
-            checkExplainPanelVisibility();
-        }
-    }
-
-    private class RemoveButtonSelectionListener extends SelectionListener<ButtonEvent> {
-
-        @Override
-        public void componentSelected(ButtonEvent ce) {
-            List<DataSharing> models = grid.getSelectionModel().getSelectedItems();
-            for (DataSharing model : models) {
-                removeModel(model);
             }
 
             checkExplainPanelVisibility();
