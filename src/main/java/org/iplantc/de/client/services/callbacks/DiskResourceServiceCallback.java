@@ -15,8 +15,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * parse JSON error messages from the given Throwable::getMessage method to display to the user.
  * 
  * @author psarando
- * 
+ * @deprecated Usage of this class needs to be factored out in favor of the patterns used in
+ *             the disk resource module.
  */
+@Deprecated
 public abstract class DiskResourceServiceCallback implements AsyncCallback<String> {
 
     public static final String STATUS_FAILURE = "failure"; //$NON-NLS-1$

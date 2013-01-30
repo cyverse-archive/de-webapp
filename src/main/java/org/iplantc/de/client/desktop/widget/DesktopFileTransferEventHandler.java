@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.views.dialogs.IPlantSubmittableDialog;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent.RequestBulkDownloadEventHandler;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
@@ -25,13 +24,10 @@ import org.iplantc.core.uidiskresource.client.views.dialogs.SimpleFileUploadDial
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.events.AsyncUploadCompleteHandler;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.models.IDropLiteWindowConfig;
 import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
-import org.iplantc.de.client.views.panels.FileUploadDialogPanel;
 
-import com.extjs.gxt.ui.client.core.FastMap;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.UriUtils;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
@@ -40,7 +36,6 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         RequestBulkUploadEventHandler, RequestImportFromUrlEventHandler,
         RequestSimpleDownloadEventHandler, RequestSimpleUploadEventHandler {
 
-    private IPlantSubmittableDialog dlgUpload;
     private final Desktop desktop;
     private final DiskResourceServiceFacade drService = Services.DISK_RESOURCE_SERVICE;
 
@@ -51,8 +46,6 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     @Override
     public void onRequestSimpleUpload(RequestSimpleUploadEvent event) {
         Folder uploadDest = event.getDestinationFolder();
-        // promptUploadImportForm(FileUploadDialogPanel.MODE.FILE_ONLY, uploadDest);
-
         SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, 
                 drService, 
                 UriUtils.fromTrustedString(Constants.CLIENT.fileUploadServlet()), 
@@ -153,34 +146,4 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     private void showErrorMsg() {
         new AlertMessageBox(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage()).show();
     }
-
-    private void promptUploadImportForm(FileUploadDialogPanel.MODE mode, Folder uploadDest) {
-
-        if (canUpload(uploadDest)) {
-            String uploadDestId = uploadDest.getId();
-            String username = UserInfo.getInstance().getUsername();
-
-            // provide key/value pairs for hidden fields
-            FastMap<String> hiddenFields = new FastMap<String>();
-            hiddenFields.put(FileUploadDialogPanel.HDN_PARENT_ID_KEY, uploadDestId);
-            hiddenFields.put(FileUploadDialogPanel.HDN_USER_ID_KEY, username);
-
-            // define a handler for upload completion
-            AsyncUploadCompleteHandler handler = new AsyncUploadCompleteHandler(uploadDestId) {
-                @Override
-                public void onAfterCompletion() {
-                    if (dlgUpload != null) {
-                        dlgUpload.hide();
-                    }
-                }
-            };
-
-            FileUploadDialogPanel pnlUpload = new FileUploadDialogPanel(hiddenFields,
-                    Constants.CLIENT.fileUploadServlet(), handler, mode);
-
-            dlgUpload = new IPlantSubmittableDialog(I18N.DISPLAY.upload(), 536, pnlUpload);
-            dlgUpload.show();
-        }
-    }
-
 }
