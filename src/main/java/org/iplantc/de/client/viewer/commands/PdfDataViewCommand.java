@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.commands;
 
-import org.iplantc.core.uidiskresource.client.models.autobeans.File;
+import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.viewer.views.FileViewer;
