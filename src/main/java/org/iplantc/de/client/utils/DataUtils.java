@@ -67,7 +67,6 @@ public class DataUtils {
                         ret.add(Action.View);
                         ret.add(Action.ViewTree);
                         ret.add(Action.SimpleDownload);
-                        ret.add(Action.Share);
                     }
 
                 } else {
@@ -75,10 +74,10 @@ public class DataUtils {
                         ret.add(Action.View);
                         ret.add(Action.SimpleDownload);
                     }
-                    ret.add(Action.Share);
                 }
                 ret.add(Action.BulkDownload);
                 ret.add(Action.Delete);
+                ret.add(Action.Share);
                 // ret.add(Action.Copy);
                 // ret.add(Action.Paste);
             } else {
