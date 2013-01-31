@@ -178,9 +178,10 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.ViewTree));
         assertTrue(actions.contains(Action.Metadata));
         assertTrue(actions.contains(Action.Share));
+        assertTrue(actions.contains(Action.DataLinks));
         // assertTrue(actions.contains(Action.Copy));
         // assertTrue(actions.contains(Action.Paste));
-        assertEquals(8, actions.size());
+        assertEquals(9, actions.size());
 
         actions = DataUtils.getSupportedActions(buildSingleFolderList(), null);
         assertTrue(actions.contains(Action.Delete));
@@ -196,9 +197,10 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.Delete));
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.Share));
+        assertTrue(actions.contains(Action.DataLinks));
         // assertTrue(actions.contains(Action.Copy));
         // assertTrue(actions.contains(Action.Paste));
-        assertEquals(3, actions.size());
+        assertEquals(4, actions.size());
 
         actions = DataUtils.getSupportedActions(buildMixedPermissionsFilesList(), null);
         assertTrue(actions.contains(Action.Delete));
@@ -206,9 +208,10 @@ public class GwtTestDataUtils extends GWTTestCase {
         assertTrue(actions.contains(Action.BulkDownload));
         assertTrue(actions.contains(Action.View));
         assertTrue(actions.contains(Action.Share));
+        assertTrue(actions.contains(Action.DataLinks));
         // assertTrue(actions.contains(Action.Copy));
         // assertTrue(actions.contains(Action.Paste));
-        assertEquals(5, actions.size());
+        assertEquals(6, actions.size());
 
         actions = DataUtils.getSupportedActions(buildReadOnlyFolderList(), null);
         assertTrue(actions.contains(Action.Delete));
