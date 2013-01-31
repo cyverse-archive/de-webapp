@@ -278,6 +278,8 @@ public final class DataActionsMenu extends Menu {
                     break;
                 case Share:
                     showMenuItem(itemShareResource);
+                    break;
+                case DataLinks:
                     if (DEProperties.getInstance().isTicketsEnabled()) {
                         showMenuItem(itemManageDataLinks);
                     }
