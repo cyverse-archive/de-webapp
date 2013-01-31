@@ -114,11 +114,11 @@ public class SelectCollaboratorsDialog extends Dialog {
 
     @Override
     protected void onHide() {
+        super.onHide();
+
         for (HandlerRegistration handler : handlers) {
             handler.removeHandler();
         }
-
-        super.onHide();
     }
 
     private void buildHelpToolTip() {
