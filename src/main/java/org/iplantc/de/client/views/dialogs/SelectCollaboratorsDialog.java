@@ -195,7 +195,7 @@ public class SelectCollaboratorsDialog extends Dialog {
     }
 
     private Button buildManageCollabsButton() {
-        Button addCollabsBtn = new Button(I18N.DISPLAY.manageCollaborators(),
+        Button addCollabsBtn = new Button(I18N.DISPLAY.addCollabs(),
                 AbstractImagePrototype.create(Resources.ICONS.viewCurrentCollabs()));
         addCollabsBtn.setId(ID_BTN_MANAGE_COLLABS);
         addCollabsBtn.addSelectionListener(new ManageCollaboratorsListener());

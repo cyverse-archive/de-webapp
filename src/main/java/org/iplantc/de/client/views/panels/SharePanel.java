@@ -163,7 +163,7 @@ public class SharePanel extends ContentPanel {
     }
 
     private Button buildAddCollabsButton() {
-        Button addCollabsBtn = new Button(I18N.DISPLAY.addCollabs(),
+        Button addCollabsBtn = new Button(I18N.DISPLAY.chooseCollaborators(),
                 AbstractImagePrototype.create(Resources.ICONS.viewCurrentCollabs()));
         addCollabsBtn.setId(ID_BTN_ADD_COLLABS);
         addCollabsBtn.addSelectionListener(new AddCollaboratorsListener());
@@ -175,7 +175,6 @@ public class SharePanel extends ContentPanel {
         @Override
         public void componentSelected(ButtonEvent ce) {
             final SelectCollaboratorsDialog sd = new SelectCollaboratorsDialog();
-            sd.getDoneButton().setText(I18N.DISPLAY.add());
             sd.getDoneButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override

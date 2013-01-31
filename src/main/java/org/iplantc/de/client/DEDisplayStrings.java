@@ -1024,11 +1024,11 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String selectCollaboratorsEmptyText();
 
     /**
-     * Localized display text for "Manage Collaborators".
+     * Localized display text for "Choose from Collaborators".
      * 
      * @return a string representing the localized text.
      */
-    String manageCollaborators();
+    String chooseCollaborators();
 
     /**
      * The display text for the view raw menu item.
