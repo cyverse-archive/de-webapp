@@ -113,8 +113,8 @@ public class SelectCollaboratorsDialog extends Dialog {
     }
 
     @Override
-    protected void onHide() {
-        super.onHide();
+    protected void onDetach() {
+        super.onDetach();
 
         for (HandlerRegistration handler : handlers) {
             handler.removeHandler();
