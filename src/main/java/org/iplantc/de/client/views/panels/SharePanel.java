@@ -258,7 +258,7 @@ public class SharePanel extends ContentPanel {
         permissions.setEditor(buildPermissionsEditor());
         permissions.setMenuDisabled(true);
 
-        ColumnConfig actions = new ColumnConfig("actions", "", 25); //$NON-NLS-1$ //$NON-NLS-2$
+        ColumnConfig actions = new ColumnConfig("actions", "", 32); //$NON-NLS-1$ //$NON-NLS-2$
         actions.setFixed(true);
         actions.setMenuDisabled(true);
         actions.setSortable(false);
