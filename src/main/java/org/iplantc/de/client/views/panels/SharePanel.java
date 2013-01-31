@@ -57,7 +57,6 @@ public class SharePanel extends ContentPanel {
     private static final String ID_PERM_GROUP = "idPermGroup"; //$NON-NLS-1$
     private EditorGrid<DataSharing> grid;
     private LayoutContainer explainPanel;
-    private final FastMap<List<DataSharing>> unshareList;
     private final FastMap<DiskResource> resources;
     private ToolBar toolbar;
     private static final String ID_BTN_ADD_COLLABS = "idBtnAddCollabs"; //$NON-NLS-1$
@@ -66,7 +65,6 @@ public class SharePanel extends ContentPanel {
     private FastMap<List<DataSharing>> originalList;
 
     public SharePanel(List<DiskResource> resourceList) {
-        unshareList = new FastMap<List<DataSharing>>();
         resources = new FastMap<DiskResource>();
 
         for (DiskResource data : resourceList) {
@@ -198,6 +196,8 @@ public class SharePanel extends ContentPanel {
 
     private void addCollaborator(Collaborator user) {
         String userName = user.getUserName();
+
+        // Only add users not already displayed in the grid.
         if (sharingMap.get(userName) == null) {
             List<DataSharing> shareList = new ArrayList<DataSharing>();
             DataSharing displayShare = null;
@@ -371,25 +371,24 @@ public class SharePanel extends ContentPanel {
     }
 
     /**
-     * check if a sharing recored originally existed. Needed to remove false submission of unshare list
-     * 
-     * @return
-     */
-    private boolean isExistedOriginally(DataSharing s) {
-        String userName = s.getUserName();
-        List<DataSharing> fromOriginal = originalList.get(userName);
-        if (fromOriginal != null && fromOriginal.contains(s)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    /**
      * @return the unshareList
      */
     public FastMap<List<DataSharing>> getUnshareList() {
+        // Prepare unshared list here
+        FastMap<List<DataSharing>> unshareList = new FastMap<List<DataSharing>>();
+
+        for (String userName : originalList.keySet()) {
+            if (sharingMap.get(userName) == null) {
+                // The username entry from the original list was removed from the sharingMap, which means
+                // it was unshared.
+                List<DataSharing> removeList = originalList.get(userName);
+
+                if (removeList != null && !removeList.isEmpty()) {
+                    unshareList.put(userName, removeList);
+                }
+            }
+        }
+
         return unshareList;
     }
 
@@ -434,28 +433,13 @@ public class SharePanel extends ContentPanel {
     }
 
     private void removeModel(DataSharing model) {
-        // prepared unshared list here
         ListStore<DataSharing> store = grid.getStore();
-        String userName = model.getUserName();
-        List<DataSharing> list = unshareList.get(userName);
-        if (list == null) {
-            list = new ArrayList<DataSharing>();
-        }
 
         DataSharing sharing = store.findModel(model);
         if (sharing != null) {
-            List<DataSharing> removeList = sharingMap.get(userName);
-            for (DataSharing remItem : removeList) {
-                if (isExistedOriginally(remItem)) {
-                    list.add(remItem);
-                }
-            }
-
+            // Remove the shares from the sharingMap as well as the grid.
+            sharingMap.put(sharing.getUserName(), null);
             store.remove(sharing);
-        }
-
-        if (!list.isEmpty()) {
-            unshareList.put(userName, list);
         }
     }
 
