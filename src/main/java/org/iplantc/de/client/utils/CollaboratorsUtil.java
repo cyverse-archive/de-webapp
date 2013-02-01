@@ -18,6 +18,7 @@ import org.iplantc.de.client.models.Collaborator;
 import org.iplantc.de.client.models.JsCollaborators;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 
+import com.extjs.gxt.ui.client.core.FastMap;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
@@ -75,7 +76,7 @@ public class CollaboratorsUtil {
     }
 
     public static void getUserInfo(List<String> usernames,
-            final AsyncCallback<List<Collaborator>> superCallback) {
+            final AsyncCallback<FastMap<Collaborator>> superCallback) {
         UserSessionServiceFacade facade = new UserSessionServiceFacade();
         facade.getUserInfo(usernames, new GetUserInfoCallback(superCallback));
     }
@@ -188,9 +189,9 @@ public class CollaboratorsUtil {
 
     public static class GetUserInfoCallback implements AsyncCallback<String> {
 
-        private final AsyncCallback<List<Collaborator>> superCallback;
+        private final AsyncCallback<FastMap<Collaborator>> superCallback;
 
-        public GetUserInfoCallback(AsyncCallback<List<Collaborator>> superCallback) {
+        public GetUserInfoCallback(AsyncCallback<FastMap<Collaborator>> superCallback) {
             this.superCallback = superCallback;
         }
 
@@ -204,7 +205,7 @@ public class CollaboratorsUtil {
         @Override
         public void onSuccess(String result) {
             if (superCallback != null) {
-                List<Collaborator> userResults = new ArrayList<Collaborator>();
+                FastMap<Collaborator> userResults = new FastMap<Collaborator>();
 
                 JSONObject users = JsonUtil.getObject(result);
                 if (users != null) {
@@ -215,7 +216,8 @@ public class CollaboratorsUtil {
                         String lastName = JsonUtil.getString(userJson, Collaborator.LAST_NAME);
                         String email = JsonUtil.getString(userJson, Collaborator.EMAIL);
 
-                        userResults.add(new Collaborator(id, username, firstName, lastName, email));
+                        Collaborator user = new Collaborator(id, username, firstName, lastName, email);
+                        userResults.put(username, user);
                     }
                 }
 
