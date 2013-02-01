@@ -289,9 +289,9 @@ public class DataSharingDialog extends Dialog {
                     loadPermissions(path, user_arr);
                 }
 
-                List<String> usernames = new ArrayList<String>();
+                final List<String> usernames = new ArrayList<String>();
                 usernames.addAll(sharingList.keySet());
-                CollaboratorsUtil.getUserInfo(usernames, new AsyncCallback<List<Collaborator>>() {
+                CollaboratorsUtil.getUserInfo(usernames, new AsyncCallback<FastMap<Collaborator>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -300,10 +300,14 @@ public class DataSharingDialog extends Dialog {
                     }
 
                     @Override
-                    public void onSuccess(List<Collaborator> results) {
+                    public void onSuccess(FastMap<Collaborator> results) {
                         dataSharingMap = new FastMap<List<DataSharing>>();
-                        for (Collaborator user : results) {
-                            String userName = user.getUserName();
+                        for (String userName : usernames) {
+                            Collaborator user = results.get(userName);
+                            if (user == null) {
+                                user = new Collaborator(null, userName, userName, null, null);
+                            }
+
                             List<DataSharing> dataShares = new ArrayList<DataSharing>();
 
                             dataSharingMap.put(userName, dataShares);
