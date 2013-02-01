@@ -41,10 +41,11 @@
 	<inherits name="org.iplantc.core.JsonUtil"/>
     <inherits name="org.iplantc.core.ui-commons"/>
 	<inherits name="org.iplantc.core.Metadata"/>`
-	<inherits name="org.iplantc.core.diskresource"/>
 	<inherits name="org.iplantc.core.applications"/>
+	<inherits name="org.iplantc.core.diskresource"/>
 	<inherits name="org.iplantc.core.pipelines"/>
-	<inherits name="org.iplantc.core.Widgets"/>
+	<inherits name="org.iplantc.core.widgets.Widgets"/>
+	<inherits name="org.iplantc.core.appsIntegration.AppsIntegration"/>
 	<!-- for server push -->
 	<inherits name="com.google.gwt.rpc.RPC" />
 
@@ -67,11 +68,7 @@
       <when-type-is class="org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade"/>
    </replace-with>
    
-   <replace-with class="org.iplantc.core.client.widgets.appWizard.presenter.AppWizardPresenterImpl">
-      <when-type-is class="org.iplantc.core.client.widgets.appWizard.view.AppWizardView.Presenter"/>
-   </replace-with>
-   
-      <replace-with class="org.iplantc.de.client.services.CollaboratorsServiceFacadeImpl">
+   <replace-with class="org.iplantc.de.client.services.CollaboratorsServiceFacadeImpl">
       <when-type-is class="org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade"/>
    </replace-with>
    

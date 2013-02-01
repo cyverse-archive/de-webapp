@@ -1,9 +1,9 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.client.widgets.appWizard.view.AppWizardView;
 import org.iplantc.core.uiapplications.client.Services;
 import org.iplantc.core.uiapplications.client.services.AppUserServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.widgets.client.appWizard.view.AppWizardView;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.WizardWindowConfig;
 

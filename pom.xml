@@ -64,27 +64,27 @@
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>widgets</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>applications</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>pipelines</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>diskresource</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.de</groupId>
          <artifactId>de-common</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.de</groupId>
@@ -94,17 +94,22 @@
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>metadata</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>jsonutil</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
          <artifactId>ui-commons</artifactId>
-         <version>gxt3Sandbox-SNAPSHOT</version>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.iplantc.core</groupId>
+         <artifactId>apps-integration</artifactId>
+         <version>${project.version}</version>
       </dependency>
         
         <dependency>
@@ -426,10 +431,6 @@
         </plugins>
     </reporting>
     <repositories>
-      	<repository>
-      		<id>jboss-public-repository</id>
-      		<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-      	</repository>
       	<repository>
       		<id>iplantCollaborative</id>
       		<name>iPlant Collaborative local repository</name>

@@ -33,7 +33,7 @@ public class UploadEventJSONBuilder extends AbstractEventJSONBuilder {
         String filename = file.as().getName();
 
         if (!filename.isEmpty()) {
-            return I18N.DISPLAY.fileUploadSuccess(filename);
+            return I18N.DISPLAY.fileUploadSuccess(filename).asString();
         }
 
         String sourceUrl = JsonUtil.getString(jsonObj, "sourceUrl"); //$NON-NLS-1$

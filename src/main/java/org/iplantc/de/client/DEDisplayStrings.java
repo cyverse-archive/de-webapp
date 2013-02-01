@@ -2,6 +2,8 @@ package org.iplantc.de.client;
 
 import org.iplantc.core.uicommons.client.CommonUIDisplayStrings;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
+
 /**
  * Constants used by the client as display text.
  * 
@@ -14,7 +16,7 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      * @return a string representing the localized text.
      */
-    String fileUploadSuccess(String filename);
+    SafeHtml fileUploadSuccess(String filename);
 
     /**
      * Caption to file upload status messages.
@@ -715,6 +717,7 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      * @return a string representing the localized text.
      */
+    @Override
     String reset();
 
     /**
