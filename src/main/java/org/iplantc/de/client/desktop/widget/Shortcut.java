@@ -6,6 +6,7 @@
 package org.iplantc.de.client.desktop.widget;
 
 import org.iplantc.de.client.models.ShortcutDesc;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -15,8 +16,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class Shortcut extends IconButton {
 
-    private String action;
-    private String tag;
+    private final String action;
+    private final String tag;
+    private final WindowConfig windowConfig;
 
     /**
      * Creates a new shortcut.
@@ -25,12 +27,17 @@ public class Shortcut extends IconButton {
         super(desc.getId());
         setId(desc.getId());
         setSize("64px", "64px");
+        this.windowConfig = desc.getWindowConfig();
 
         this.action = desc.getAction();
         this.tag = desc.getTag();
 
         this.addSelectHandler(handler);
         setBorders(false);
+    }
+
+    public WindowConfig getWindowConfig() {
+        return windowConfig;
     }
 
     /**

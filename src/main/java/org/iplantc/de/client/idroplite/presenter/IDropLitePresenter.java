@@ -9,7 +9,7 @@ import org.iplantc.de.client.Services;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
-import org.iplantc.de.client.models.IDropLiteWindowConfig;
+import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 
 import com.google.common.collect.Sets;
 import com.google.gwt.json.client.JSONObject;
@@ -26,18 +26,14 @@ public class IDropLitePresenter implements Presenter {
 
     private final IDropLiteView view;
     private final int CONTENT_PADDING = 12;
-    final private IDropLiteWindowConfig config;
+    private IDropLiteWindowConfig idlwc;
 
     public IDropLitePresenter(IDropLiteView view, IDropLiteWindowConfig config) {
         this.view = view;
-        this.config = config;
+        view.setPresenter(this);
+        this.idlwc = config;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter#buildUploadApplet()
-     */
     @Override
     public void buildUploadApplet() {
         view.mask();
@@ -46,7 +42,7 @@ public class IDropLitePresenter implements Presenter {
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
                 int adjustSize = CONTENT_PADDING * 2;
 
-                appletData.put("uploadDest", new JSONString(config.getUploadFolderDest().getId())); //$NON-NLS-1$
+                appletData.put("uploadDest", new JSONString(idlwc.getUploadFolderDest().getId())); //$NON-NLS-1$
 
                 return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth()
                         - CONTENT_PADDING, view.getViewHeight() - adjustSize);
@@ -55,15 +51,10 @@ public class IDropLitePresenter implements Presenter {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter#buildDownloadApplet()
-     */
     @Override
     public void buildDownloadApplet() {
         view.mask();
-        Services.DISK_RESOURCE_SERVICE.download(config.getDownloadPaths(),
+        Services.DISK_RESOURCE_SERVICE.download(idlwc.getDownloadPaths(),
                 new IDropLiteServiceCallback() {
             @Override
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
@@ -104,30 +95,20 @@ public class IDropLitePresenter implements Presenter {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter#onSimpleUploadClick()
-     */
     @Override
     public void onSimpleUploadClick() {
-        EventBus.getInstance().fireEvent(new RequestSimpleUploadEvent(this, config.getUploadFolderDest()));
+        EventBus.getInstance().fireEvent(new RequestSimpleUploadEvent(this, idlwc.getUploadFolderDest()));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter#onSimpleDownloadClick()
-     */
     @Override
     public void onSimpleDownloadClick() {
-        EventBus.getInstance().fireEvent(new RequestSimpleDownloadEvent(this, Sets.newHashSet(config.getResourcesToDownload()), config.getCurrentFolder()));
+        EventBus.getInstance().fireEvent(new RequestSimpleDownloadEvent(this, Sets.newHashSet(idlwc.getResourcesToDownload()), idlwc.getCurrentFolder()));
     }
 
     @Override
     public void go(HasOneWidget container) {
         container.setWidget(view.asWidget());
-        int mode = config.getDisplayMode();
+        int mode = idlwc.getDisplayMode();
         if (mode == IDropLiteUtil.DISPLAY_MODE_UPLOAD) {
             buildUploadApplet();
         } else if (mode == IDropLiteUtil.DISPLAY_MODE_DOWNLOAD) {

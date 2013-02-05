@@ -2,26 +2,23 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.Set;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.core.uidiskresource.client.gin.DiskResourceInjector;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.views.DiskResourceView;
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
-import org.iplantc.de.client.factories.WindowConfigFactory;
-import org.iplantc.de.client.models.DataWindowConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.gwt.json.client.JSONObject;
 
-public class DeDiskResourceWindow extends Gxt3IplantWindow {
+public class DeDiskResourceWindow extends IplantWindowBase {
 
     private final DiskResourceView.Presenter presenter;
 
-    public DeDiskResourceWindow(String tag, DataWindowConfig config) {
-        super(tag, config);
-
+    public DeDiskResourceWindow(DiskResourceWindowConfig config) {
+        super(null, null);
         presenter = DiskResourceInjector.INSTANCE.getDiskResourceViewPresenter();
 
         setHeadingText(I18N.DISPLAY.data());
@@ -30,39 +27,22 @@ public class DeDiskResourceWindow extends Gxt3IplantWindow {
         // presenter.setSelectedFolderById("/iplant/home/jstroot/analyses/analysis1-2012-10-15-14-44-02.028/logs");
         presenter.doRefresh();
 
-        if (config != null) {
-            if ((config.getFolderId() != null) && !config.getFolderId().isEmpty()) {
-                presenter.setSelectedFolderById(config.getFolderId());
-            }
-            if ((config.getDiskResourceIds().isArray() != null)
-                    && (config.getDiskResourceIds().isArray().size() > 0)) {
-                Set<String> diskResourceIdList = Sets.newHashSet(JsonUtil.buildStringList(config
-                        .getDiskResourceIds()));
-                presenter.setSelectedDiskResourcesById(diskResourceIdList);
-            }
+        if (config.getSelectedFolder() != null) {
+            presenter.setSelectedFolderById(config.getSelectedFolder().getId());
+        }
+        if ((config.getSelectedDiskResources() != null) && !config.getSelectedDiskResources().isEmpty()) {
+            Set<String> diskResourceIdSet = Sets.newHashSet(DiskResourceUtil.asStringIdList(config.getSelectedDiskResources()));
+            presenter.setSelectedDiskResourcesById(diskResourceIdSet);
         }
 
     }
 
     @Override
-    public JSONObject getWindowState() {
-        // Build config data
-        DataWindowConfig configData = new DataWindowConfig(config);
-        storeWindowViewState(configData);
-
-        if (presenter.getSelectedFolder() != null) {
-            configData.setFolderId(presenter.getSelectedFolder().getId());
-        }
-
-        configData.setDiskResourceIdsAlt(presenter.getSelectedDiskResources());
-
-        // Build window config
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.myDataTag(),
-                configData);
-
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-        return dispatcher.getDispatchJson(Constants.CLIENT.myDataTag(), ActionType.DISPLAY_WINDOW);
+    public WindowState getWindowState() {
+        DiskResourceWindowConfig config = ConfigFactory.diskResourceWindowConfig();
+        config.setSelectedFolder(presenter.getSelectedFolder());
+        config.setSelectedDiskResources(Lists.newArrayList(presenter.getSelectedDiskResources()));
+        return createWindowState(config);
     }
 
 }

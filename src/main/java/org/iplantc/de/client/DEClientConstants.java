@@ -28,53 +28,11 @@ public interface DEClientConstants extends CommonUiConstants {
     String myDataTag();
 
     /**
-     * The tag used by the window manager to identify the My Analysis window.
-     * 
-     * @return a string representing the handle for the My Analyis window
-     */
-    String myAnalysisTag();
-
-    /**
-     * The tag used by the window manager to identify the My Notifications window.
-     * 
-     * @return a string representing the handle for My Notifications window
-     */
-    String myNotifyTag();
-
-    /**
      * The tag use by the window manager to identify the Help - User Manual window.
      * 
      * @return a string representing the handle for the Help - User Manual window
      */
     String myHelpTag();
-
-    /**
-     * The tag use by the window manager to identify the About Discovery Environment window.
-     * 
-     * @return a string representing the handle for the About Discovery Environment window
-     */
-    String myAboutTag();
-
-    /**
-     * The tag used by the window manager to identify the File Editor window.
-     * 
-     * @return a string representing the handle for the File Editor window
-     */
-    String fileEditorTag();
-
-    /**
-     * The tag used by the window manager to identify the wizard window.
-     * 
-     * @return a string representing the handle for the wizard window
-     */
-    String wizardTag();
-
-    /**
-     * The history token for the logout operation.
-     * 
-     * @return a string representing the history token for logout
-     */
-    String logoutTag();
 
     /**
      * Width for desktop shortcut width
@@ -117,13 +75,6 @@ public interface DEClientConstants extends CommonUiConstants {
      * @return path to help file;
      */
     String deHelpFile();
-
-    /**
-     * The tag for DE catalog
-     * 
-     * @return path to help file
-     */
-    String deCatalog();
 
     /**
      * The unique tag used to identify a viewer window.

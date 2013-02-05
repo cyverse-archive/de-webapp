@@ -3,14 +3,11 @@ package org.iplantc.de.client.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplantc.core.uicommons.client.models.WindowConfig;
 import org.iplantc.de.client.desktop.widget.TaskButton;
 import org.iplantc.de.client.factories.WindowFactory;
-import org.iplantc.de.client.gxt3.utils.IplantWindowManager;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
@@ -70,38 +67,29 @@ public class DEWindowManager extends IplantWindowManager {
         return activeWindow;
     }
 
-    /**
-     * Add a window to be managed.
-     * 
-     * @param tag tag of window to pass into WindowFactory for allocation.
-     * @param config a WindowConfiguration to use for the new window
-     * @return newly added window.
-     */
-    public IPlantWindowInterface add(String tag, WindowConfig config) {
-        IPlantWindowInterface ret = WindowFactory.build(tag
-                + ((config != null) ? config.getTagSuffix() : ""), config);
-        add(ret);
-        return ret;
-    }
-
-    /**
-     * Add a window to be managed.
-     * 
-     * @param window window to be added.
-     */
-    public void add(IPlantWindowInterface window) {
-        if (window != null) {
-            window.setId(window.getTag());
-            getDEWindows().put(window.getTag(), window);
-            if (window instanceof Window) {
-                window.addActivateHandler(activateHandler);
-                window.addDeactivateHandler(deactivateHandler);
-                window.addHideHandler(hideHandler);
-                window.addMinimizeHandler(minimizeHandler);
-                window.addShowHandler(showHandler);
-            }
-            register(window.asWidget());
+    public <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> IPlantWindowInterface add(C config) {
+        IPlantWindowInterface window = WindowFactory.build(config);
+        
+        if (window == null)
+            return null;
+        String windowId = WindowFactory.constructWindowId(config);
+        window.setId(windowId);
+        getDEWindows().put(windowId, window);
+        window.addActivateHandler(activateHandler);
+        window.addDeactivateHandler(deactivateHandler);
+        window.addHideHandler(hideHandler);
+        window.addMinimizeHandler(minimizeHandler);
+        window.addShowHandler(showHandler);
+        register(window.asWidget());
+        if (getFirst_window_postion() != null) {
+            int new_x = getFirst_window_postion().getX() + ((getCount() - 1) * 10);
+            int new_y = getFirst_window_postion().getY() + ((getCount() - 1) * 20);
+            window.setPagePosition(new_x, new_y);
         }
+        if (getCount() == 1) {
+            setFirst_window_postion(window.getPosition3(true));
+        }
+        return window;
     }
 
     /**
@@ -112,6 +100,11 @@ public class DEWindowManager extends IplantWindowManager {
      */
     public IPlantWindowInterface getWindow(String tag) {
         return getDEWindows().get(tag);
+    }
+
+    public <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> IPlantWindowInterface getWindow(C config) {
+        String windowId = WindowFactory.constructWindowId(config);
+        return getDEWindows().get(windowId);
     }
 
     /**
@@ -125,17 +118,6 @@ public class DEWindowManager extends IplantWindowManager {
         if (getDEWindows().size() == 0) {
             first_window_postion = null;
         }
-    }
-
-    /**
-     * Check if a window already exists
-     * 
-     * @param tag
-     * @return boolean
-     */
-    public boolean contains(String tag) {
-        IPlantWindowInterface win = getDEWindows().remove(tag);
-        return !(win == null);
     }
 
     /**
@@ -165,30 +147,14 @@ public class DEWindowManager extends IplantWindowManager {
         }
     }
 
-    /**
-     * 
-     * Show the window
-     * 
-     * @param tag
-     */
-    public void show(String tag) {
-        if (tag != null) {
-            IPlantWindowInterface window = getDEWindows().get(tag);
-            if (window != null) {
-                if (getFirst_window_postion() != null) {
-                    int new_x = getFirst_window_postion().getX() + ((getCount() - 1) * 10);
-                    int new_y = getFirst_window_postion().getY() + ((getCount() - 1) * 20);
-                    window.setPagePosition(new_x, new_y);
-                }
-                window.show();
-                window.toFront();
-                window.refresh();
-                if (getCount() == 1) {
-                    setFirst_window_postion(window.getPosition3(true));
-                }
-            }
-
+    public void show(IPlantWindowInterface window) {
+        if ((window == null) || !getDEWindows().containsValue(window)) {
+            return;
         }
+
+        window.show();
+        window.toFront();
+        window.refresh();
     }
 
     /**
@@ -218,15 +184,19 @@ public class DEWindowManager extends IplantWindowManager {
         return windows;
     }
 
+    /**
+     * TBI JDS This should be used to persist window states.
+     * @return
+     */
     public JSONObject getActiveWindowStates() {
         JSONObject obj = new JSONObject();
         int index = 0;
         for (IPlantWindowInterface win : windows.values()) {
-            JSONObject state = win.getWindowState();
-            String tag = win.getTag();
-            state.put("order", new JSONString(index++ + ""));
-            state.put("tag", new JSONString(tag));
-            obj.put(tag, state);
+//            JSONObject state = win.getWindowState();
+//            String tag = win.getTag();
+//            state.put("order", new JSONString(index++ + ""));
+//            state.put("tag", new JSONString(tag));
+//            obj.put(tag, state);
         }
         return obj;
     }

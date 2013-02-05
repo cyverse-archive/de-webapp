@@ -13,6 +13,7 @@ import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationList;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
+import org.iplantc.de.client.notifications.models.NotificationPayload;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
@@ -20,8 +21,8 @@ import org.iplantc.de.client.notifications.views.NotificationToolbarView;
 import org.iplantc.de.client.notifications.views.NotificationToolbarViewImpl;
 import org.iplantc.de.client.notifications.views.NotificationView;
 import org.iplantc.de.client.notifications.views.NotificationView.Presenter;
-import org.iplantc.de.client.utils.builders.context.AnalysisContextBuilder;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -134,14 +135,17 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
             NotificationMessage nm = n.getMessage();
             nm.setCategory(Category.fromTypeString(n.getCategory()));
             if (n.getCategory().equalsIgnoreCase(Category.ANALYSIS.toString())) {
-                AnalysisContextBuilder builder = new AnalysisContextBuilder();
-                nm.setContext(builder.build(n.getNotificationPayload()));
+                NotificationPayload payload = n.getNotificationPayload();
+                if(!Strings.isNullOrEmpty(payload.getAction()) && payload.getAction().equals("job_status_change")){
+                    nm.setContext("{\"id\": " + JsonUtil.quoteString(payload.getId()) + "}");
+                }
             }
             messages.add(nm);
         }
         return messages;
     }
 
+    @Override
     public FilterPagingLoadConfig buildDefaultLoadConfig() {
         FilterPagingLoadConfig config = new FilterPagingLoadConfigBean();
         config.setLimit(10);
@@ -244,5 +248,10 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
             }
         });
 
+    }
+
+    @Override
+    public Category getCurrentCategory() {
+        return currentCategory;
     }
 }

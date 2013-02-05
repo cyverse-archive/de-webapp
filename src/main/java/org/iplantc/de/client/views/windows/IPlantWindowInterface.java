@@ -1,10 +1,8 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uicommons.client.models.WindowConfig;
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.de.client.utils.DEWindowManager;
 
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.Style.AnchorAlignment;
@@ -31,8 +29,6 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
 
     void setId(String tag);
 
-    void addWindowListener(WindowListener listener);
-
     void setPagePosition(int new_x, int new_y);
 
     void show();
@@ -43,12 +39,8 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
 
     Point getPosition3(boolean b);
 
-    <X> X getData(String key);
-
-    void setWindowConfig(WindowConfig config);
-
-    JSONObject getWindowState();
-
+    WindowState getWindowState();
+    
     boolean isVisible();
 
     boolean isMaximized();

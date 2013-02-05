@@ -9,7 +9,6 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
-import org.iplantc.de.client.events.UploadCompleteHandler;
 import org.iplantc.de.client.services.callbacks.DiskResourceServiceCallback;
 
 import com.google.gwt.core.client.GWT;
@@ -135,7 +134,7 @@ public class AnalysisParamView implements IsWidget {
         @Override
         public void onSuccess(String result) {
             JSONObject obj = JSONParser.parseStrict(result).isObject();
-            UploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
+            DefaultUploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
             uch.onCompletion(fileName, JsonUtil.getObject(obj, "file").toString());
         }
 

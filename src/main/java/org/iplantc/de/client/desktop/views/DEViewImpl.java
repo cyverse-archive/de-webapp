@@ -11,17 +11,16 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.collaborators.views.ManageCollaboratorsDailog;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.de.client.factories.WindowConfigFactory;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.images.Resources;
-import org.iplantc.de.client.models.NotificationWindowConfig;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -29,7 +28,6 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -78,13 +76,15 @@ public class DEViewImpl implements DEView {
     private final Widget widget;
 
     private final DeResources resources;
+    private final EventBus eventBus;
 
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
     }
 
-    public DEViewImpl(final DeResources resources) {
+    public DEViewImpl(final DeResources resources, final EventBus eventBus) {
         this.resources = resources;
+        this.eventBus = eventBus;
         widget = uiBinder.createAndBindUi(this);
         con.setStyleName(resources.css().iplantcBackground());
         initEventHandlers();
@@ -175,7 +175,7 @@ public class DEViewImpl implements DEView {
         lblNotifications = new NotificationIndicator(0);
 
         final PushButton button = new PushButton(menuHeaderText, headerWidth);
-        notificationsView = new ViewNotificationMenu();
+        notificationsView = new ViewNotificationMenu(eventBus);
         notificationsView.setBorders(false);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
         notificationsView.setShadow(false);
@@ -352,15 +352,7 @@ public class DEViewImpl implements DEView {
     public void setPresenter(Presenter presenter) {/* Not Used */}
 
     private void showNotificationWindow(final Category category) {
-        NotificationWindowConfig config = new NotificationWindowConfig();
-        config.setCategory(category);
-
-        // Build window config
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory
-                .buildWindowConfig(Constants.CLIENT.myNotifyTag(), config);
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-        dispatcher.dispatchAction(Constants.CLIENT.myNotifyTag());
+        eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(category)));
     }
 
     /**

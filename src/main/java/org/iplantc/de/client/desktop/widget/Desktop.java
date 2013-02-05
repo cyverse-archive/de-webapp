@@ -8,20 +8,16 @@ package org.iplantc.de.client.desktop.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uiapplications.client.events.AppLoadEvent;
 import org.iplantc.core.uiapplications.client.events.CreateNewAppEvent;
+import org.iplantc.core.uiapplications.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.events.UserEvent;
-import org.iplantc.core.uicommons.client.events.UserEventHandler;
-import org.iplantc.core.uicommons.client.models.WindowConfig;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestImportFromUrlEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.CascadeDesktopLayout;
@@ -31,9 +27,7 @@ import org.iplantc.de.client.desktop.layout.DesktopLayout.RequestType;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.de.client.events.WindowPayloadEvent;
-import org.iplantc.de.client.events.WindowPayloadEvent.WindowPayloadEventHandler;
-import org.iplantc.de.client.factories.WindowConfigFactory;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.utils.ShortcutManager;
 import org.iplantc.de.client.utils.builders.DefaultDesktopBuilder;
@@ -42,7 +36,6 @@ import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 import com.extjs.gxt.desktop.client.StartMenu;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -98,7 +91,7 @@ public class Desktop implements IsWidget {
     /**
      * The default desktop layout type.
      */
-    public static final DesktopLayoutType DEFAULT_DESKTOP_LAYOUT_TYPE = DesktopLayoutType.CENTER;
+    private static final DesktopLayoutType DEFAULT_DESKTOP_LAYOUT_TYPE = DesktopLayoutType.CENTER;
 
     private VBoxLayoutContainer desktop;
     private TaskBar taskBar;
@@ -110,20 +103,20 @@ public class Desktop implements IsWidget {
     private DesktopLayout desktopLayout;
     private FastMap<DesktopLayout> desktopLayouts;
     private DEWindowManager windowManager;
-    private final WindowConfigFactory factoryWindowConfig;
     private final DeResources resources;
+
+    private final EventBus eventBus;
 
     /**
      * Creates a new Desktop window.
      */
-    public Desktop(final DeResources resources) {
+    public Desktop(final DeResources resources, EventBus eventBus) {
         this.resources = resources;
-        factoryWindowConfig = new WindowConfigFactory();
+        this.eventBus = eventBus;
         initShortcuts();
-        EventBus eventbus = EventBus.getInstance();
-        initEventHandlers(eventbus);
+        initEventHandlers(eventBus);
 
-        initWindowEventHandlers(eventbus);
+        initWindowEventHandlers(eventBus);
     }
 
     /**
@@ -131,7 +124,7 @@ public class Desktop implements IsWidget {
      * 
      * @param shortcut the shortcut to add
      */
-    public void addShortcut(Shortcut shortcut) {
+    private void addShortcut(Shortcut shortcut) {
         getShortcuts().add(shortcut);
         getDesktop().add(shortcut, new BoxLayoutData(new Margins(5)));
     }
@@ -151,20 +144,11 @@ public class Desktop implements IsWidget {
         eventbus.addHandler(ShowFilePreviewEvent.TYPE, showWindowHandler);
 
         eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler);
+        eventbus.addHandler(WindowShowRequestEvent.TYPE, showWindowHandler);
+        eventbus.addHandler(RunAppEvent.TYPE, showWindowHandler);
     }
 
     private void initEventHandlers(final EventBus eventbus) {
-
-        // user action
-        eventbus.addHandler(UserEvent.TYPE, new UserEventHandler() {
-            @Override
-            public void onEvent(UserEvent event) {
-                dispatchUserEvent(event.getAction(), event.getType(), event.getParams());
-            }
-        });
-
-        // window payload events
-        eventbus.addHandler(WindowPayloadEvent.TYPE, new WindowPayloadEventHandlerImpl());
 
         eventbus.addHandler(RequestBulkDownloadEvent.TYPE, new DesktopFileTransferEventHandler(this));
         eventbus.addHandler(RequestBulkUploadEvent.TYPE, new DesktopFileTransferEventHandler(this));
@@ -174,31 +158,14 @@ public class Desktop implements IsWidget {
 
     }
 
-    protected void showWindow(final String type, final WindowConfig config) {
-        String tag = type;
-        // if we have params, the unique window identifier will be type + params
-
-        if (config != null) {
-            tag = tag + config.getTagSuffix();
-        }
-
-        IPlantWindowInterface window = getWindowManager().getWindow(tag);
-
-        // do we already have this window?
+    protected <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> void showWindow(final C config) {
+        IPlantWindowInterface window = getWindowManager().getWindow(config);
         if (window == null) {
-            window = getWindowManager().add(type, config);
+            window = getWindowManager().add(config);
         }
 
-        // show the window and bring it to the front
         if (window != null) {
-            window.setWindowConfig(config);
-            getWindowManager().show(window.getTag());
-        }
-    }
-
-    private void dispatchUserEvent(String action, String tag, WindowConfig params) {
-        if (action.equals(Constants.CLIENT.windowTag())) {
-            showWindow(tag, params);
+            getWindowManager().show(window);
         }
     }
 
@@ -296,7 +263,7 @@ public class Desktop implements IsWidget {
      * 
      * @param window the window to minimize
      */
-    public void minimizeWindow(IPlantWindowInterface window) {
+    private void minimizeWindow(IPlantWindowInterface window) {
         window.setMinimized(true);
         window.hide();
     }
@@ -322,7 +289,7 @@ public class Desktop implements IsWidget {
     }
 
     private void initShortcuts() {
-        ShortcutManager mgr = new ShortcutManager(new DefaultDesktopBuilder());
+        ShortcutManager mgr = new ShortcutManager(new DefaultDesktopBuilder(), eventBus);
 
         List<Shortcut> shortcuts = mgr.getShortcuts();
 
@@ -409,20 +376,6 @@ public class Desktop implements IsWidget {
         return handler;
     }
 
-    // private IPlantWindowInterface getWidgetWindow(Widget widget) {
-    // IPlantWindowInterface window;
-    // if (widget instanceof IPlantWindowInterface) {
-    // window = (IPlantWindowInterface)widget;
-    // } else {
-    // window = getWindowManager().find(widget);
-    // if (widget == null) {
-    // window = new Window();
-    // window.add(widget);
-    // }
-    // }
-    // return window;
-    // }
-
     private void hideWindow(IPlantWindowInterface window) {
         if (window.isMinimized()) {
             markInactive(window);
@@ -494,52 +447,6 @@ public class Desktop implements IsWidget {
         taskButton = taskBar.addTaskButton(window);
         getWindowManager().setTaskButton(window.getTag(), taskButton);
         layout(window, RequestType.OPEN);
-    }
-
-    /**
-     * 
-     * A event handler for WindowPayLoadEvent
-     * 
-     * @author sriram
-     * 
-     */
-    private class WindowPayloadEventHandlerImpl implements WindowPayloadEventHandler {
-        private boolean isWindowDisplayPayload(final JSONObject objPayload) {
-            boolean ret = false; // assume failure
-
-            // do we have a payload?
-            if (objPayload != null) {
-                // get our action
-                String action = JsonUtil.getString(objPayload, "action"); //$NON-NLS-1$
-
-                if (action.equals("display_window")) { //$NON-NLS-1$
-                    ret = true;
-                }
-            }
-
-            return ret;
-        }
-
-        @Override
-        public void onFire(WindowPayloadEvent event) {
-            JSONObject objPayload = event.getPayload();
-
-            if (objPayload != null) {
-                if (isWindowDisplayPayload(objPayload)) {
-                    JSONObject objData = JsonUtil.getObject(objPayload, "data"); //$NON-NLS-1$
-
-                    if (objData != null) {
-                        String tag = JsonUtil.getString(objData, "tag"); //$NON-NLS-1$
-
-                        WindowConfig config = factoryWindowConfig.build(JsonUtil.getObject(objData,
-                                "config")); //$NON-NLS-1$
-
-                        showWindow(tag, config);
-                    }
-                }
-            }
-        }
-
     }
 
     private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>, MinimizeHandler, HideHandler, ShowHandler {

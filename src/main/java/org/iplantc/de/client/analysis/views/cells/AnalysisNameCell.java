@@ -3,16 +3,15 @@
  */
 package org.iplantc.de.client.analysis.views.cells;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.analysis.models.Analysis;
-import org.iplantc.de.client.models.DataWindowConfig;
-import org.iplantc.de.client.utils.MyDataViewContextExecutor;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
@@ -48,11 +47,7 @@ public class AnalysisNameCell extends AbstractCell<Analysis> {
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
         if (value != null && value.getResultFolderId() != null && !value.getResultFolderId().isEmpty()) {
-            JSONObject obj = new JSONObject();
-            obj.put(DataWindowConfig.FOLDER_ID, new JSONString(value.getResultFolderId()));
-
-            MyDataViewContextExecutor contextExec = new MyDataViewContextExecutor();
-            contextExec.execute(context.toString());
+            EventBus.getInstance().fireEvent(new WindowShowRequestEvent(ConfigFactory.diskResourceWindowConfig()));
         }
 
     }

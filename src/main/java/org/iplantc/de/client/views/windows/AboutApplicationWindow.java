@@ -1,18 +1,16 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.de.client.Constants;
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
-import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AboutApplicationData;
+import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
@@ -26,19 +24,14 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
  * 
  * @author lenards
  */
-public class AboutApplicationWindow extends Gxt3IplantWindow {
+public class AboutApplicationWindow extends IplantWindowBase {
     private AboutApplicationData model;
 
     private Label lblNSFStatement;
     private final DeResources res;
 
-    /**
-     * Constructs an instance given a unique identifier.
-     * 
-     * @param tag string that serves as an identifier, or window handle.
-     */
-    public AboutApplicationWindow(String tag) {
-        super(tag);
+    public AboutApplicationWindow(AboutWindowConfig config) {
+        super("");
         setSize("300", "235");
         res = GWT.create(DeResources.class);
         res.css().ensureInjected();
@@ -104,20 +97,7 @@ public class AboutApplicationWindow extends Gxt3IplantWindow {
     }
 
     @Override
-    public JSONObject getWindowState() {
-        // Build window config
-        JSONObject configData = config;
-        if (configData == null) {
-            configData = new JSONObject();
-        }
-
-        storeWindowViewState(configData);
-
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.myAboutTag(),
-                configData);
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-
-        return dispatcher.getDispatchJson(Constants.CLIENT.myAboutTag(), ActionType.DISPLAY_WINDOW);
+    public WindowState getWindowState() {
+        return createWindowState(ConfigFactory.aboutWindowConfig());
     }
 }

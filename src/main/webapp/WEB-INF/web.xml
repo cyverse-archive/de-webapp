@@ -173,7 +173,7 @@
     <!-- Mappings for servlets that can't be initialized in DeServletContextListener -->
     <servlet-mapping>
         <servlet-name>jUnitHostImpl</servlet-name>
-        <url-pattern>/discoveryenvironment/junithost</url-pattern>
+        <url-pattern>/discoveryenvironment/junithost/*</url-pattern>
     </servlet-mapping>
 
     <session-config>

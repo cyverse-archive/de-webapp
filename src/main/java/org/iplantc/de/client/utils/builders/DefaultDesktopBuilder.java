@@ -2,6 +2,7 @@ package org.iplantc.de.client.utils.builders;
 
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.core.client.GWT;
 
@@ -17,12 +18,12 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
         DeResources res = GWT.create(DeResources.class);
         res.css().ensureInjected();
         addShortcut(res.css().iplantcMydataShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                Constants.CLIENT.myDataTag());
+                ConfigFactory.diskResourceWindowConfig());
 
         addShortcut(res.css().iplantcMyanalysisShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                Constants.CLIENT.myAnalysisTag());
+                ConfigFactory.analysisWindowConfig());
 
         addShortcut(res.css().iplantcCatalogShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                Constants.CLIENT.deCatalog());
+                ConfigFactory.appsWindowConfig());
     }
 }

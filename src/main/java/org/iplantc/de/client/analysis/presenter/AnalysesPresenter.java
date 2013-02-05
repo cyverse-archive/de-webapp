@@ -382,4 +382,9 @@ public class AnalysesPresenter implements Presenter,
 
         }
     }
+
+    @Override
+    public List<Analysis> getSelectedAnalyses() {
+        return view.getSelectedAnalyses();
+    }
 }

@@ -3,7 +3,9 @@
  */
 package org.iplantc.de.client.views.panels;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.notifications.views.NotificationListView;
+
 import com.sencha.gxt.widget.core.client.menu.Menu;
 
 /**
@@ -12,10 +14,10 @@ import com.sencha.gxt.widget.core.client.menu.Menu;
  */
 public class ViewNotificationMenu extends Menu {
 
-    private NotificationListView view;
+    private final NotificationListView view;
 
-    public ViewNotificationMenu() {
-        view = new NotificationListView();
+    public ViewNotificationMenu(EventBus eventBus) {
+        view = new NotificationListView(eventBus);
         add(view.asWidget());
     }
 

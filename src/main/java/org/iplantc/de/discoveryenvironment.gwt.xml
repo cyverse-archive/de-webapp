@@ -40,7 +40,7 @@
 	<inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
 	<inherits name="org.iplantc.core.JsonUtil"/>
     <inherits name="org.iplantc.core.ui-commons"/>
-	<inherits name="org.iplantc.core.Metadata"/>`
+	<inherits name="org.iplantc.core.Metadata"/>
 	<inherits name="org.iplantc.core.applications"/>
 	<inherits name="org.iplantc.core.diskresource"/>
 	<inherits name="org.iplantc.core.pipelines"/>
@@ -74,4 +74,7 @@
    
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.iplantc.de.client.DiscoveryEnvironment' />
+	
+	<source path="client"/>
+    <source path="de"/>
 </module>

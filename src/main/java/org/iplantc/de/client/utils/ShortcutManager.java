@@ -3,8 +3,9 @@ package org.iplantc.de.client.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.desktop.widget.Shortcut;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.ShortcutDesc;
 import org.iplantc.de.client.utils.builders.DesktopBuilder;
 
@@ -20,35 +21,26 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class ShortcutManager {
     private final List<Shortcut> shortcuts = new ArrayList<Shortcut>();
 
-    // private final SelectionListener<ComponentEvent> listener = new SelectionListener<ComponentEvent>()
-    // {
-    // @Override
-    // public void componentSelected(ComponentEvent ce) {
-    // Shortcut shortcut = (Shortcut)ce.getComponent();
-    //
-    // // Dispatch window display action
-    // WindowDispatcher dispatcher = new WindowDispatcher();
-    // dispatcher.dispatchAction(shortcut.getTag());
-    // }
-    // };
-
     private final SelectHandler handler = new SelectHandler() {
 
         @Override
         public void onSelect(SelectEvent event) {
             Shortcut shortcut = (Shortcut)event.getSource();
-            WindowDispatcher dispatcher = new WindowDispatcher();
-            dispatcher.dispatchAction(shortcut.getTag());
+            eventBus.fireEvent(new WindowShowRequestEvent(shortcut.getWindowConfig()));
 
         }
     };
+
+    private final EventBus eventBus;
 
     /**
      * Instantiate from desktop builder.
      * 
      * @param builder builder which contains shortcut templates.
+     * @param eventBus
      */
-    public ShortcutManager(DesktopBuilder builder) {
+    public ShortcutManager(DesktopBuilder builder, EventBus eventBus) {
+        this.eventBus = eventBus;
         addShortcuts(builder);
     }
 

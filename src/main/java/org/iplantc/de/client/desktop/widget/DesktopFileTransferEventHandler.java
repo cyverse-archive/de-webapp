@@ -1,6 +1,5 @@
 package org.iplantc.de.client.desktop.widget;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.UserInfo;
@@ -15,7 +14,6 @@ import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent.
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent.RequestSimpleUploadEventHandler;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
-import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
@@ -25,8 +23,9 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
-import org.iplantc.de.client.models.IDropLiteWindowConfig;
-import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
+import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.UriUtils;
@@ -67,12 +66,11 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         Folder uploadDest = event.getDestinationFolder();
         if (canUpload(uploadDest)) {
             // Build window config
-            IDropLiteWindowConfig configData = new IDropLiteWindowConfig();
-            configData.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_UPLOAD);
-            configData.setUploadFolderDest(uploadDest);
-            configData.setCurrentFolder(uploadDest);
-
-            desktop.showWindow(Constants.CLIENT.iDropLiteTag(), configData);
+            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteWindowConfig();
+            idlwc.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_UPLOAD);
+            idlwc.setUploadFolderDest(uploadDest);
+            idlwc.setCurrentFolder(uploadDest);
+            desktop.showWindow(idlwc);
         }
     }
 
@@ -84,18 +82,9 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
                 // Download now
                 Services.DISK_RESOURCE_SERVICE.simpleDownload(resources.get(0).getId());
             } else {
-                List<String> paths = new ArrayList<String>();
-
-                for (DiskResource resource : resources) {
-                    if (resource instanceof File) {
-                        paths.add(resource.getId());
-                    }
-                }
-
-                SimpleDownloadWindowConfig configData = new SimpleDownloadWindowConfig();
-                configData.setDownloadPaths(paths);
-
-                desktop.showWindow(Constants.CLIENT.simpleDownloadTag(), configData);
+                SimpleDownloadWindowConfig sdwc = ConfigFactory.simpleDownloadWindowConfig();
+                sdwc.setResourcesToDownload(resources);
+                desktop.showWindow(sdwc);
             }
         } else {
             showErrorMsg();
@@ -109,13 +98,11 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         if (isDownloadable(resources)) {
 
             // Build window config
-            IDropLiteWindowConfig configData = new IDropLiteWindowConfig();
-            configData.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_DOWNLOAD);
-            configData.setDownloadPaths(resources);
-            configData.setCurrentFolder(event.getCurrentFolder());
-
-            desktop.showWindow(Constants.CLIENT.iDropLiteTag(), configData);
-
+            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteWindowConfig();
+            idlwc.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_DOWNLOAD);
+            idlwc.setResourcesToDownload(resources);
+            idlwc.setCurrentFolder(event.getCurrentFolder());
+            desktop.showWindow(idlwc);
         } else {
             showErrorMsg();
         }

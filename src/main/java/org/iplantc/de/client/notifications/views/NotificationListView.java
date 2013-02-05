@@ -7,12 +7,9 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.WindowConfigFactory;
-import org.iplantc.de.client.models.NotificationWindowConfig;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
 import org.iplantc.de.client.notifications.models.Notification;
@@ -23,6 +20,7 @@ import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.utils.NotifyInfo;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -76,6 +74,7 @@ public class NotificationListView implements IsWidget {
     final DeResources deRes = GWT.create(DeResources.class);
     final Style style = resources.css();
     final Renderer r = GWT.create(Renderer.class);
+    private final EventBus eventBus;
 
     interface Renderer extends XTemplates {
         @XTemplate("<div class=\"{style.thumb}\"> {msg.message}</div>")
@@ -124,7 +123,9 @@ public class NotificationListView implements IsWidget {
 
     };
 
-    public NotificationListView() {
+
+    public NotificationListView(EventBus eventBus) {
+        this.eventBus = eventBus;
         resources.css().ensureInjected();
         deRes.css().ensureInjected();
         initListeners();
@@ -331,15 +332,7 @@ public class NotificationListView implements IsWidget {
 
     /** Makes the notification window visible and filters by a category */
     private void showNotificationWindow(final Category category) {
-        NotificationWindowConfig config = new NotificationWindowConfig();
-        config.setCategory(category);
-
-        // Build window config
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory
-                .buildWindowConfig(Constants.CLIENT.myNotifyTag(), config);
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-        dispatcher.dispatchAction(Constants.CLIENT.myNotifyTag());
+        eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(category)));
     }
 
     @Override

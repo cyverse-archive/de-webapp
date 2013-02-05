@@ -3,9 +3,10 @@
  */
 package org.iplantc.de.client.preferences.views;
 
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.preferences.presenter.PreferencesPresenterImpl;
 import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
-import org.iplantc.de.client.I18N;
+
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.ButtonBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;

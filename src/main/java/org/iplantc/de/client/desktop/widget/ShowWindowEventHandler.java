@@ -2,16 +2,21 @@ package org.iplantc.de.client.desktop.widget;
 
 import org.iplantc.core.uiapplications.client.events.AppLoadEvent;
 import org.iplantc.core.uiapplications.client.events.AppLoadEvent.AppLoadEventHandler;
+import org.iplantc.core.uiapplications.client.events.RunAppEvent;
+import org.iplantc.core.uiapplications.client.events.RunAppEvent.RunAppEventHandler;
 import org.iplantc.core.uiapplications.client.events.handlers.CreateNewAppEventHandler;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.ShowAboutWindowEvent.ShowAboutWindowEventHandler;
-import org.iplantc.de.client.models.TitoWindowConfig;
-import org.iplantc.de.client.models.ViewerWindowConfig;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.events.WindowShowRequestEvent.WindowShowRequestEventHandler;
+import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 
-final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler, CreateNewAppEventHandler, AppLoadEventHandler {
+final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler, CreateNewAppEventHandler, AppLoadEventHandler, WindowShowRequestEventHandler,
+        RunAppEventHandler {
     private final Desktop desktop;
 
     ShowWindowEventHandler(Desktop desktop) {
@@ -20,25 +25,18 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
 
     @Override
     public void showAboutWindowRequested(ShowAboutWindowEvent event) {
-        desktop.showWindow(Constants.CLIENT.myAboutTag(), null);
+        desktop.showWindow(ConfigFactory.aboutWindowConfig());
     }
 
     @Override
     public void showFilePreview(ShowFilePreviewEvent event) {
-        ViewerWindowConfig config = new ViewerWindowConfig();
-        config.setFile(event.getFile());
-        config.setShowTreeTab(false);
-        desktop.showWindow(Constants.CLIENT.dataViewerTag(), config);
+        FileViewerWindowConfig fileViewerWindowConfig = ConfigFactory.fileViewerWindowConfig(event.getFile(), false);
+        desktop.showWindow(fileViewerWindowConfig);
     }
 
     @Override
     public void createNewApp() {
-        // TBI JDS
-        TitoWindowConfig config = new TitoWindowConfig(null);
-
-        desktop.showWindow(Constants.CLIENT.titoTag(), config);
-        // this.titoController.dispatcher.launchTitoWindow(TitoWindowConfig.VIEW_NEW_TOOL, null);
-        // Just build the config and showWindow from here
+        // TBI JDS Implement apps integration window
     }
 
     @Override
@@ -48,10 +46,17 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
         // viewMode = TitoWindowConfig.VIEW_APP_EDIT;
         // }
 
-        // TBI JDS
-        TitoWindowConfig config = new TitoWindowConfig(null);
+        // TBI JDS Implement apps integration window
+    }
 
-        desktop.showWindow(Constants.CLIENT.titoTag(), config);
-        // this.titoController.dispatcher.launchTitoWindow(viewMode, event.getIdTemplate());
+    @Override
+    public void onWindowShowRequest(WindowShowRequestEvent event) {
+        desktop.showWindow(event.getWindowConfig());
+    }
+
+    @Override
+    public void onRunAppActionInitiated(RunAppEvent event) {
+        AppWizardConfig config = ConfigFactory.appWizardConfig(event.getAppToRun().getId());
+        desktop.showWindow(config);
     }
 }

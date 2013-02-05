@@ -8,10 +8,10 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
-import org.iplantc.de.client.utils.AnalysisViewContextExecutor;
-import org.iplantc.de.client.utils.DataViewContextExecutor;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -69,19 +69,12 @@ public class NotificationHelper {
     }
 
     private static NotificationHelper instance = null;
-    private DataViewContextExecutor dataContextExecutor;
-    private AnalysisViewContextExecutor analysisContextExecutor;
 
     private int total;
 
     private NotificationHelper() {
-        initContextExecuters();
     }
 
-    private void initContextExecuters() {
-        dataContextExecutor = new DataViewContextExecutor();
-        analysisContextExecutor = new AnalysisViewContextExecutor();
-    }
 
     /** View a notification */
     public void view(NotificationMessage msg) {
@@ -96,9 +89,9 @@ public class NotificationHelper {
                 if (context != null) {
                     if (category == NotificationHelper.Category.DATA) {
                         // execute data context
-                        dataContextExecutor.execute(context);
+                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(ConfigFactory.diskResourceWindowConfig()));
                     } else if (category == NotificationHelper.Category.ANALYSIS) {
-                        analysisContextExecutor.execute(context);
+                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(ConfigFactory.analysisWindowConfig()));
                     }
                 }
             }

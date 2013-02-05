@@ -1,73 +1,89 @@
 package org.iplantc.de.client.factories;
 
-import org.iplantc.core.uicommons.client.models.WindowConfig;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.analysis.views.MyAnalysesWindow;
-import org.iplantc.de.client.idroplite.views.IDropLiteAppletWindow;
-import org.iplantc.de.client.models.DataWindowConfig;
-import org.iplantc.de.client.models.IDropLiteWindowConfig;
-import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
-import org.iplantc.de.client.models.TitoWindowConfig;
-import org.iplantc.de.client.models.ViewerWindowConfig;
-import org.iplantc.de.client.models.WizardWindowConfig;
-import org.iplantc.de.client.notifications.views.NotificationWindow3;
 import org.iplantc.de.client.utils.WindowUtil;
-import org.iplantc.de.client.viewer.views.FileViewerWindow;
 import org.iplantc.de.client.views.windows.AboutApplicationWindow;
+import org.iplantc.de.client.views.windows.AppWizardWindow;
 import org.iplantc.de.client.views.windows.DEAppsWindow;
 import org.iplantc.de.client.views.windows.DeDiskResourceWindow;
-import org.iplantc.de.client.views.windows.Gxt3WizardWindow;
+import org.iplantc.de.client.views.windows.FileViewerWindow;
+import org.iplantc.de.client.views.windows.IDropLiteAppletWindow;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
+import org.iplantc.de.client.views.windows.MyAnalysesWindow;
+import org.iplantc.de.client.views.windows.NotificationWindow;
 import org.iplantc.de.client.views.windows.SimpleDownloadWindow;
-import org.iplantc.de.client.views.windows.TitoWindow;
+import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
+import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
+import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
+import org.iplantc.de.client.views.windows.configs.AppsWindowConfig;
+import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
+import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
+import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
+import org.iplantc.de.client.views.windows.configs.NotifyWindowConfig;
+import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
+
+import com.google.common.base.Strings;
 
 /**
  * Defines a factory for the creation of windows.
  * 
  */
 public class WindowFactory {
+    
     /**
-     * Builds a window from a tag.
+     * Constructs a DE window based on the given {@link WindowConfig}
+     * The "tag" for the window must be constructed here.
      * 
-     * @param type unique type for window used to determine type of window to build.
-     * @param config a WindowConfiguration suitable for the type of window to create
-     * @return new window.
+     * @param config
+     * @return
      */
-    public static IPlantWindowInterface build(String type, WindowConfig config) {
+    public static <C extends WindowConfig> IPlantWindowInterface  build(C config){
+        EventBus eventBus = EventBus.getInstance();
         IPlantWindowInterface ret = null;
-        // type format is type#tagSuffix. so split on tag to just get the type
-        if (type != null) {
-            if (type.startsWith(Constants.CLIENT.myDataTag())) {
-                // ret = new MyDataWindow(type, config);
-                ret = new DeDiskResourceWindow(type, (DataWindowConfig)config);
-            } else if (type.startsWith(Constants.CLIENT.myNotifyTag())) {
-                ret = new NotificationWindow3(type, config);
-            } else if (type.startsWith(Constants.CLIENT.myHelpTag())) {
-                // since the help page is now a wiki page, open it in a new window so that the user may
-                // login to the Wiki.
+        switch (config.getWindowType()) {
+            case ABOUT:
+                ret = new AboutApplicationWindow((AboutWindowConfig)config);
+                break;
+            case ANALYSES:
+                ret = new MyAnalysesWindow((AnalysisWindowConfig)config, eventBus);
+                break;
+            case APP_INTEGRATION:
+                break;
+            case APP_WIZARD:
+                ret = new AppWizardWindow((AppWizardConfig)config);
+                break;
+            case APPS:
+                ret = new DEAppsWindow((AppsWindowConfig)config);
+                break;
+            case DATA:
+                ret = new DeDiskResourceWindow((DiskResourceWindowConfig)config);
+                break;
+            case DATA_VIEWER:
+                ret = new FileViewerWindow((FileViewerWindowConfig)config);
+                break;
+            case HELP:
                 WindowUtil.open(Constants.CLIENT.deHelpFile());
-            } else if (type.startsWith(Constants.CLIENT.myAboutTag())) {
-                ret = new AboutApplicationWindow(type);
-            } else if (type.startsWith(Constants.CLIENT.myAnalysisTag())) {
-                ret = new MyAnalysesWindow(type, config);
-            } else if (type.startsWith(Constants.CLIENT.deCatalog())) {
-                ret = new DEAppsWindow(type, config);
-                // } else if (type.startsWith(Constants.CLIENT.pipelineEditorTag())) {
-                // ret = new PipelineEditorWindow(type);
-            } else if (type.startsWith(Constants.CLIENT.iDropLiteTag())) {
-                ret = new IDropLiteAppletWindow(type, (IDropLiteWindowConfig)config);
-            } else if (type.startsWith(Constants.CLIENT.titoTag())) {
-                ret = new TitoWindow(type, (TitoWindowConfig)config);
-            } else if (type.startsWith(Constants.CLIENT.simpleDownloadTag())) {
-                ret = new SimpleDownloadWindow(type, (SimpleDownloadWindowConfig)config);
-            } else if (type.startsWith(Constants.CLIENT.dataViewerTag())) {
-                ret = new FileViewerWindow(type, (ViewerWindowConfig)config);
-            } else {
-//                ret = new WizardWindow(type, config);
-                ret = new Gxt3WizardWindow(type, (WizardWindowConfig)config);
-            }
+                break;
+            case IDROP_LITE:
+                ret = new IDropLiteAppletWindow((IDropLiteWindowConfig)config);
+                break;
+            case NOTIFICATIONS:
+                ret = new NotificationWindow((NotifyWindowConfig)config);
+                break;
+            case SIMPLE_DOWNLOAD:
+                ret = new SimpleDownloadWindow((SimpleDownloadWindowConfig)config);
+                break;
+            default:
+                break;
         }
-
         return ret;
+    }
+
+    public static <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> String constructWindowId(C config) {
+        String windowType = config.getWindowType().toString();
+        String tag = config.getTag();
+        return (!Strings.isNullOrEmpty(tag)) ? windowType + "_" + tag : windowType;
     }
 }

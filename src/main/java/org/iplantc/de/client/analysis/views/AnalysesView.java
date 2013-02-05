@@ -22,7 +22,9 @@ public interface AnalysesView extends IsWidget {
     public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
 
         void onAnalysesSelection(List<Analysis> selectedItems);
-
+        
+        List<Analysis> getSelectedAnalyses();
+        
     }
 
     public void setPresenter(final Presenter presenter);

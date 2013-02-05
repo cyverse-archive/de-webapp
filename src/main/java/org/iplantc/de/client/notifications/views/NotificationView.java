@@ -35,6 +35,8 @@ public interface NotificationView extends IsWidget {
         public void onNotificationSelection(List<NotificationMessage> items);
 
         void setRefreshButton(TextButton refreshBtn);
+
+        Category getCurrentCategory();
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.Map;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
@@ -12,7 +13,6 @@ import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.controllers.PipelineController;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.periodic.MessagePoller;
@@ -34,21 +34,20 @@ public class DEPresenter implements DEView.Presenter {
 
     private final DEView view;
     private final DeResources res;
+    private final EventBus eventBus;
 
     /**
      * Constructs a default instance of the object.
      */
-    public DEPresenter(final DEView view, final DeResources resources) {
+    public DEPresenter(final DEView view, final DeResources resources, EventBus eventBus) {
         this.view = view;
         this.res = resources;
+        this.eventBus = eventBus;
         initializeDEProperties();
-        // Initialize Controllers
-        PipelineController.getInstance();
-
     }
 
     private void doWorkspaceDisplay() {
-        Desktop widget = new Desktop(res);
+        Desktop widget = new Desktop(res, eventBus);
         view.drawHeader();
         view.replaceCenterPanel(widget);
         RootPanel.get().add(view.asWidget());

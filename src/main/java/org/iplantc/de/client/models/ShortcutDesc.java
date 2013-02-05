@@ -1,5 +1,6 @@
 package org.iplantc.de.client.models;
 
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 /**
  * Models the data associated to a desktop shortcut.
@@ -7,26 +8,25 @@ package org.iplantc.de.client.models;
  * @author amuir
  * 
  */
-public class ShortcutDesc extends ActionTagPair {
-    private String id;
-    private String caption;
+public class ShortcutDesc {
+    private final String id;
+    private final String caption;
+    private String action;
+    private String tag;
+    private final WindowConfig config;
 
-    // private ImageResource icon;
-
-    /**
-     * Instantiate from id, caption, action tag.
-     * 
-     * @param id unique shortcut id.
-     * @param caption caption to display under shortcut.
-     * @param action user action.
-     * @param tag associated tag.
-     */
-    public ShortcutDesc(String id, String caption, String action, String tag) {
-        super(action, tag);
-
+    public ShortcutDesc(String id, String caption, String action, WindowConfig config) {
         this.id = id;
         this.caption = caption;
+        if (action != null) {
+            this.action = action;
+        }
 
+        this.config = config;
+    }
+
+    public WindowConfig getWindowConfig() {
+        return config;
     }
 
     /**
@@ -45,5 +45,23 @@ public class ShortcutDesc extends ActionTagPair {
      */
     public String getCaption() {
         return caption;
+    }
+
+    /**
+     * Retrieve action.
+     * 
+     * @return action field.
+     */
+    public String getAction() {
+        return action;
+    }
+
+    /**
+     * Retrieve tag.
+     * 
+     * @return tag field.
+     */
+    public String getTag() {
+        return tag;
     }
 }
