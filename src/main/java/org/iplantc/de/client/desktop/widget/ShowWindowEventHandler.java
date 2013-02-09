@@ -5,6 +5,7 @@ import org.iplantc.core.uiapplications.client.events.AppLoadEvent.AppLoadEventHa
 import org.iplantc.core.uiapplications.client.events.RunAppEvent;
 import org.iplantc.core.uiapplications.client.events.RunAppEvent.RunAppEventHandler;
 import org.iplantc.core.uiapplications.client.events.handlers.CreateNewAppEventHandler;
+import org.iplantc.core.uiapplications.client.events.handlers.CreateNewWorkflowEventHandler;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
@@ -15,7 +16,9 @@ import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 
-final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler, CreateNewAppEventHandler, AppLoadEventHandler, WindowShowRequestEventHandler,
+final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler,
+        CreateNewAppEventHandler, CreateNewWorkflowEventHandler, AppLoadEventHandler,
+        WindowShowRequestEventHandler,
         RunAppEventHandler {
     private final Desktop desktop;
 
@@ -37,6 +40,11 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
     @Override
     public void createNewApp() {
         // TBI JDS Implement apps integration window
+    }
+
+    @Override
+    public void createNewWorkflow() {
+        desktop.showWindow(ConfigFactory.workflowIntegrationWindowConfig());
     }
 
     @Override

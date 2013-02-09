@@ -65,6 +65,12 @@ public class ConfigFactory {
         return nwc;
     }
 
+    public static PipelineEditorWindowConfig workflowIntegrationWindowConfig() {
+        PipelineEditorWindowConfig config = applyWindowType(WindowType.WORKFLOW_INTEGRATION,
+                factory.pipelineEditorWindowConfig()).as();
+        return config;
+    }
+
     public static SimpleDownloadWindowConfig simpleDownloadWindowConfig() {
         SimpleDownloadWindowConfig sdwc = applyWindowType(WindowType.SIMPLE_DOWNLOAD, factory.simpleDownloadWindowConfig()).as();
         return sdwc;

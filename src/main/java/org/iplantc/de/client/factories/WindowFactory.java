@@ -12,6 +12,7 @@ import org.iplantc.de.client.views.windows.IDropLiteAppletWindow;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 import org.iplantc.de.client.views.windows.MyAnalysesWindow;
 import org.iplantc.de.client.views.windows.NotificationWindow;
+import org.iplantc.de.client.views.windows.PipelineEditorWindow;
 import org.iplantc.de.client.views.windows.SimpleDownloadWindow;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
@@ -74,6 +75,9 @@ public class WindowFactory {
                 break;
             case SIMPLE_DOWNLOAD:
                 ret = new SimpleDownloadWindow((SimpleDownloadWindowConfig)config);
+                break;
+            case WORKFLOW_INTEGRATION:
+                ret = new PipelineEditorWindow(config);
                 break;
             default:
                 break;

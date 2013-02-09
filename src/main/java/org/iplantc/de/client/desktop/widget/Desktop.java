@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.iplantc.core.uiapplications.client.events.AppLoadEvent;
 import org.iplantc.core.uiapplications.client.events.CreateNewAppEvent;
+import org.iplantc.core.uiapplications.client.events.CreateNewWorkflowEvent;
 import org.iplantc.core.uiapplications.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
@@ -139,6 +140,7 @@ public class Desktop implements IsWidget {
         ShowWindowEventHandler showWindowHandler = new ShowWindowEventHandler(this);
         eventbus.addHandler(AppLoadEvent.TYPE, showWindowHandler);
         eventbus.addHandler(CreateNewAppEvent.TYPE, showWindowHandler);
+        eventbus.addHandler(CreateNewWorkflowEvent.TYPE, showWindowHandler);
 
         // Launching File Preview windows
         eventbus.addHandler(ShowFilePreviewEvent.TYPE, showWindowHandler);
