@@ -13,6 +13,8 @@ public interface DEView extends IsWidget {
 
     public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
 
+		void doLogout();
+
     }
 
     /**

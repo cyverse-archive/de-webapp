@@ -10,6 +10,7 @@ import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
@@ -21,6 +22,7 @@ import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -41,6 +43,7 @@ public class DEPresenter implements DEView.Presenter {
      */
     public DEPresenter(final DEView view, final DeResources resources, EventBus eventBus) {
         this.view = view;
+        this.view.setPresenter(this);
         this.res = resources;
         this.eventBus = eventBus;
         initializeDEProperties();
@@ -184,4 +187,17 @@ public class DEPresenter implements DEView.Presenter {
     public void go(HasOneWidget container) {
 
     }
+
+	@Override
+	public void doLogout() {
+		// TODO Auto-generated method stub
+		
+		// Need to persist session data.
+		
+		// Need to stop polling
+		MessagePoller.getInstance().stop();
+		// Need to perform actual logout redirect.
+		Window.Location.assign(Window.Location.getPath() + Constants.CLIENT.logoutUrl());
+		
+	}
 }

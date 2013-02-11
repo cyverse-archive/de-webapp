@@ -78,6 +78,8 @@ public class DEViewImpl implements DEView {
     private final DeResources resources;
     private final EventBus eventBus;
 
+	private DEView.Presenter presenter;
+
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
     }
@@ -257,6 +259,7 @@ public class DEViewImpl implements DEView {
                     @Override
                     public void handleEvent(BaseEvent be) {
                         // doLogout();
+                    	presenter.doLogout();
                         userMenu.hide();
                     }
                 }, null));
@@ -349,7 +352,9 @@ public class DEViewImpl implements DEView {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {/* Not Used */}
+    public void setPresenter(DEView.Presenter presenter) {
+    	this.presenter = presenter;
+    }
 
     private void showNotificationWindow(final Category category) {
         eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(category)));
