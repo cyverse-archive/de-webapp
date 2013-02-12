@@ -249,7 +249,7 @@ public class ApplicationLayout extends Viewport {
     private Menu buildUserMenu() {
         final Menu userMenu = buildMenu();
 
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.logout(), linkStyle, hoverStyle, 
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.logout(), linkStyle, hoverStyle,
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -257,7 +257,7 @@ public class ApplicationLayout extends Viewport {
                         userMenu.hide();
                     }
                 }, null));
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.preferences(), linkStyle, hoverStyle, 
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.preferences(), linkStyle, hoverStyle,
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -265,7 +265,7 @@ public class ApplicationLayout extends Viewport {
                         userMenu.hide();
                     }
                 }, null));
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.collaborators(), linkStyle, hoverStyle, 
+        userMenu.add(new MenuHyperlink(I18N.DISPLAY.collaborators(), linkStyle, hoverStyle,
                 new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent be) {
@@ -335,6 +335,7 @@ public class ApplicationLayout extends Viewport {
         if (cd == null) {
             cd = new CollaboratorsDialog();
         }
+        cd.init();
         if (!cd.isVisible()) {
             cd.show();
         } else {

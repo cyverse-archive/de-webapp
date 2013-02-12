@@ -24,11 +24,10 @@ public class CollaboratorsDialog extends Dialog {
     private ManageCollaboratorsPanel collabPanel;
 
     public CollaboratorsDialog() {
-        init();
+        initDialog();
     }
 
-    private void init() {
-        initDialog();
+    public void init() {
         buildCollaboratorsPanel();
         layout();
     }
@@ -45,9 +44,8 @@ public class CollaboratorsDialog extends Dialog {
     private void setButtons() {
         ButtonBar buttonBar = getButtonBar();
         buttonBar.removeAll();
-        buttonBar.setAlignment(HorizontalAlignment.RIGHT);
         setOkButton();
-
+        buttonBar.setAlignment(HorizontalAlignment.RIGHT);
     }
 
     private void setOkButton() {
@@ -65,6 +63,7 @@ public class CollaboratorsDialog extends Dialog {
     }
 
     private void buildCollaboratorsPanel() {
+        removeAll();
         collabPanel = new ManageCollaboratorsPanel(MODE.MANAGE, 435, 270);
         add(collabPanel);
     }
