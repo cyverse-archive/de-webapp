@@ -129,14 +129,15 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
 
     private void doSearch() {
         String search = searchTerm.getValue();
-
         if (search == null || search.isEmpty() || search.length() < 3) {
             searchTerm.markInvalid(I18N.DISPLAY.collabSearchPrompt());
             return;
         }
+
         panel.setHeading(I18N.DISPLAY.search() + ": " + search);
         status.setBusy("");
         panel.mask(I18N.DISPLAY.searching());
+        searchTerm.clearInvalid();
         CollaboratorsUtil.search(search, new AsyncCallback<Void>() {
 
             @Override
