@@ -1414,4 +1414,10 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String cannotRunApp();
+
+    /**
+     * 
+     * @return
+     */
+    String partialRestore();
 }

@@ -439,7 +439,7 @@ public final class DataActionsMenu extends Menu {
 
     private void doRestore() {
         JSONObject obj = new JSONObject();
-        JSONArray pathArr = new JSONArray();
+        final JSONArray pathArr = new JSONArray();
         int i = 0;
         for (DiskResource r : resources) {
             pathArr.set(i++, new JSONString(r.getId()));
@@ -453,6 +453,7 @@ public final class DataActionsMenu extends Menu {
                 ManageDataRefreshEvent event = new ManageDataRefreshEvent(tag, currentPage, null);
                 EventBus.getInstance().fireEvent(event);
                 NotifyInfo.display(I18N.DISPLAY.restore(), I18N.DISPLAY.restoreMsg());
+                checkForPartialRestore(pathArr, result);
             }
 
             @Override
@@ -467,6 +468,23 @@ public final class DataActionsMenu extends Menu {
 
         });
 
+    }
+
+    private void checkForPartialRestore(JSONArray pathArr, String result) {
+        JSONObject obj = JsonUtil.getObject(result);
+        if (obj != null) {
+            for (int i = 0; i < pathArr.size(); i++) {
+                JSONObject restoreObj = JsonUtil.getObject(obj, "restored");
+                JSONObject pathObj = restoreObj.get(JsonUtil.trim(pathArr.get(i).isString().toString()))
+                        .isObject();
+                boolean isPartial = JsonUtil.getBoolean(pathObj, "partial-restore", false);
+                if (isPartial) {
+                    MessageBox.alert(I18N.DISPLAY.information(), I18N.DISPLAY.partialRestore(), null);
+                    break;
+                }
+            }
+
+        }
     }
 
     private void doCopy() {
