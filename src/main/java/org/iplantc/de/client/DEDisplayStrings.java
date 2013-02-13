@@ -769,28 +769,28 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * 
      * @return a string representing the localized text.
      */
-    String savingSession();
+    SafeHtml savingSession();
 
     /**
      * Localized text for a user state saving wait message.
      * 
      * @return a string representing the localized text.
      */
-    String savingSessionWaitNotice();
+    SafeHtml savingSessionWaitNotice();
 
     /**
      * Localized text for a user state loading message.
      * 
      * @return a string representing the localized text.
      */
-    String loadingSession();
+    SafeHtml loadingSession();
 
     /**
      * Localized text for a user state loading wait message.
      * 
      * @return a string representing the localized text.
      */
-    String loadingSessionWaitNotice();
+    SafeHtml loadingSessionWaitNotice();
 
     /**
      * Localized display text for bulk download actions.

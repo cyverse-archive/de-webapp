@@ -13,6 +13,7 @@ import org.iplantc.core.uiapplications.client.events.CreateNewAppEvent;
 import org.iplantc.core.uiapplications.client.events.CreateNewWorkflowEvent;
 import org.iplantc.core.uiapplications.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestImportFromUrlEvent;
@@ -33,9 +34,12 @@ import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.utils.ShortcutManager;
 import org.iplantc.de.client.utils.builders.DefaultDesktopBuilder;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.extjs.gxt.desktop.client.StartMenu;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -160,7 +164,7 @@ public class Desktop implements IsWidget {
 
     }
 
-    protected <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> void showWindow(final C config) {
+    protected <C extends WindowConfig> void showWindow(final C config) {
         IPlantWindowInterface window = getWindowManager().getWindow(config);
         if (window == null) {
             window = getWindowManager().add(config);
@@ -386,8 +390,8 @@ public class Desktop implements IsWidget {
         if (activeWindow == window) {
             activeWindow = null;
         }
-        taskBar.removeTaskButton(getWindowManager().getTaskButton(window.getTag()));
-        windowManager.remove(window.getTag());
+        taskBar.removeTaskButton(getWindowManager().getTaskButton(window.getStateId()));
+        windowManager.remove(window.getStateId());
         layout(window, RequestType.HIDE);
     }
 
@@ -424,7 +428,7 @@ public class Desktop implements IsWidget {
         if (activeWindow != null && activeWindow != window) {
             markInactive(activeWindow);
         }
-        TaskButton taskButton = getWindowManager().getTaskButton(window.getTag());
+        TaskButton taskButton = getWindowManager().getTaskButton(window.getStateId());
         taskBar.setActiveButton(taskButton);
         activeWindow = window;
         taskButton.setValue(true);
@@ -434,20 +438,20 @@ public class Desktop implements IsWidget {
     private void markInactive(IPlantWindowInterface window) {
         if (window == activeWindow) {
             activeWindow = null;
-            TaskButton taskButton = getWindowManager().getTaskButton(window.getTag());
+            TaskButton taskButton = getWindowManager().getTaskButton(window.getStateId());
             taskButton.setValue(false);
         }
     }
 
     private void showWindow(IPlantWindowInterface window) {
-        TaskButton taskButton = getWindowManager().getTaskButton(window.getTag());
+        TaskButton taskButton = getWindowManager().getTaskButton(window.getStateId());
         window.setMinimized(false);
         if (taskButton != null && taskBar.getButtons().contains(taskButton)) {
             layout(window, RequestType.SHOW);
             return;
         }
         taskButton = taskBar.addTaskButton(window);
-        getWindowManager().setTaskButton(window.getTag(), taskButton);
+        getWindowManager().setTaskButton(window.getStateId(), taskButton);
         layout(window, RequestType.OPEN);
     }
 
@@ -478,6 +482,29 @@ public class Desktop implements IsWidget {
             showWindow((IPlantWindowInterface)event.getSource());
         }
 
+    }
+
+    public List<WindowState> getWindowStates() {
+        return getWindowManager().getActiveWindowStates();
+    }
+
+    public List<WindowState> getOrderedWindowStates() {
+        List<WindowState> windowStates = Lists.newArrayList();
+        for (Widget w : getWindowManager().getStack()) {
+            windowStates.add(((IPlantWindowInterface)w).getWindowState());
+        }
+        return Lists.reverse(windowStates);
+    }
+
+    public void restoreWindow(WindowState ws) {
+        WindowConfig config = ConfigFactory.getConfig(ws);
+        IPlantWindowInterface window = getWindowManager().getWindow(config);
+        if (window == null) {
+            window = getWindowManager().add(config);
+            window.setPixelSize(ws.getWidth(), ws.getHeight());
+            window.setPagePosition(ws.getWinLeft(), ws.getWinTop());
+        }
+        showWindow(config);
     }
 
 }

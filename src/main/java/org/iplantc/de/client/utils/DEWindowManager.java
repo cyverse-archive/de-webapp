@@ -1,13 +1,15 @@
 package org.iplantc.de.client.utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.de.client.desktop.widget.TaskButton;
 import org.iplantc.de.client.factories.WindowFactory;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
-import com.google.gwt.json.client.JSONObject;
+import com.google.common.collect.Lists;
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
@@ -19,6 +21,7 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
 /**
  * Manages window widgets in the web "desktop" environment.
+ * FIXME JDS There is a lot of unnecessary redundancy in this class. More use should be made of {@link IplantWindowManager}
  */
 public class DEWindowManager extends IplantWindowManager {
     private IPlantWindowInterface activeWindow;
@@ -72,9 +75,9 @@ public class DEWindowManager extends IplantWindowManager {
         
         if (window == null)
             return null;
-        String windowId = WindowFactory.constructWindowId(config);
-        window.setId(windowId);
-        getDEWindows().put(windowId, window);
+        String windowStateId = WindowFactory.constructWindowId(config);
+        window.setStateId(windowStateId);
+        getDEWindows().put(windowStateId, window);
         window.addActivateHandler(activateHandler);
         window.addDeactivateHandler(deactivateHandler);
         window.addHideHandler(hideHandler);
@@ -85,9 +88,6 @@ public class DEWindowManager extends IplantWindowManager {
             int new_x = getFirst_window_postion().getX() + ((getCount() - 1) * 10);
             int new_y = getFirst_window_postion().getY() + ((getCount() - 1) * 20);
             window.setPagePosition(new_x, new_y);
-        }
-        if (getCount() == 1) {
-            setFirst_window_postion(window.getPosition3(true));
         }
         return window;
     }
@@ -140,11 +140,7 @@ public class DEWindowManager extends IplantWindowManager {
      * @return
      */
     public int getCount() {
-        if (getDEWindows() != null) {
-            return getDEWindows().size();
-        } else {
-            return 0;
-        }
+        return getDEWindows().size();
     }
 
     public void show(IPlantWindowInterface window) {
@@ -155,6 +151,9 @@ public class DEWindowManager extends IplantWindowManager {
         window.show();
         window.toFront();
         window.refresh();
+        if (getCount() == 1) {
+            setFirst_window_postion(window.getPosition3(true));
+        }
     }
 
     /**
@@ -185,19 +184,13 @@ public class DEWindowManager extends IplantWindowManager {
     }
 
     /**
-     * TBI JDS This should be used to persist window states.
      * @return
      */
-    public JSONObject getActiveWindowStates() {
-        JSONObject obj = new JSONObject();
-        int index = 0;
+    public List<WindowState> getActiveWindowStates() {
+        List<WindowState> windowStates = Lists.newArrayList();
         for (IPlantWindowInterface win : windows.values()) {
-//            JSONObject state = win.getWindowState();
-//            String tag = win.getTag();
-//            state.put("order", new JSONString(index++ + ""));
-//            state.put("tag", new JSONString(tag));
-//            obj.put(tag, state);
+            windowStates.add(win.getWindowState());
         }
-        return obj;
+        return windowStates;
     }
 }

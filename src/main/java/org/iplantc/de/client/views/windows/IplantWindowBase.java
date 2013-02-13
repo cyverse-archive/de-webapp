@@ -46,7 +46,6 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         AutoBean<WindowState> windowState();
     }
 
-    protected String tag;
     protected WindowConfig config;
     protected Status status;
 
@@ -94,7 +93,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
             boolean isMaximizable, boolean isClosable) {
         super(new GrayWindowAppearance());
         res.css().ensureInjected();
-        this.tag = tag;
+        setStateId(tag);
 
         if (haveStatus) {
             status = new Status();
@@ -151,7 +150,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createMaximizeButton() {
         final ToolButton newMaxBtn = new ToolButton(res.css().xToolMaximizewindow());
-        newMaxBtn.setId("idmaximize-" + tag); //$NON-NLS-1$
+        newMaxBtn.setId("idmaximize-" + getStateId()); //$NON-NLS-1$
         newMaxBtn.sinkEvents(Event.ONMOUSEOUT);
         newMaxBtn.setToolTip(I18N.DISPLAY.maximize());
 
@@ -194,7 +193,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createRestoreButton() {
         final ToolButton btnRestore = new ToolButton(res.css().xToolRestorewindow());
-        btnRestore.setId("idrestore-" + tag); //$NON-NLS-1$
+        btnRestore.setId("idrestore-" + getStateId()); //$NON-NLS-1$
         btnRestore.sinkEvents(Event.ONMOUSEOUT);
         btnRestore.setToolTip(I18N.DISPLAY.restore());
 
@@ -230,7 +229,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createMinimizeButton() {
         final ToolButton newMinBtn = new ToolButton(res.css().xToolMinimizewindow());
-        newMinBtn.setId("idminimize-" + tag); //$NON-NLS-1$
+        newMinBtn.setId("idminimize-" + getStateId()); //$NON-NLS-1$
         newMinBtn.sinkEvents(Event.ONMOUSEOUT);
         newMinBtn.setToolTip(I18N.DISPLAY.minimize());
 
@@ -262,7 +261,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createCloseButton() {
         final ToolButton newCloseBtn = new ToolButton(res.css().xToolClosewindow());
-        newCloseBtn.setId("idclose-" + tag); //$NON-NLS-1$
+        newCloseBtn.setId("idclose-" + getStateId()); //$NON-NLS-1$
         newCloseBtn.sinkEvents(Event.ONMOUSEOUT);
         newCloseBtn.setToolTip(I18N.DISPLAY.close());
 
@@ -368,6 +367,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     protected <C extends WindowConfig> WindowState createWindowState(C config){
         WindowState ws = wsf.windowState().as();
+        ws.setConfigType(config.getWindowType());
         ws.setMaximized(isMaximized());
         ws.setMinimized(!isVisible());
         ws.setWinLeft(getAbsoluteLeft());
@@ -377,11 +377,6 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         Splittable configSplittable = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(config));
         ws.setWindowConfig(configSplittable);
         return ws;
-    }
-
-    @Override
-    public String getTag() {
-        return tag;
     }
 
     @Override

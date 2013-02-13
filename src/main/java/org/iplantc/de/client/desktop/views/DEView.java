@@ -1,5 +1,9 @@
 package org.iplantc.de.client.desktop.views;
 
+import java.util.List;
+
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -15,26 +19,38 @@ public interface DEView extends IsWidget {
 
 		void doLogout();
 
+        /**
+         * Restores the windows specified by the given list of <code>WindowState</code> objects.
+         * This method restores the windows in the order they are given.
+         * 
+         * @param windowStates
+         */
+        void restoreWindows(List<WindowState> windowStates);
+
+        List<WindowState> getOrderedWindowStates();
     }
 
     /**
      * set up DE main header logo and menus
      * 
      */
-    public void drawHeader();
-
-    /**
-     * set up DE desktop view
-     * 
-     * @param view
-     */
-    public void replaceCenterPanel(IsWidget view);
+    void drawHeader();
 
     /**
      * Set the presenter for this view
      * 
      * @param presenter
      */
-    public void setPresenter(final Presenter presenter);
+    void setPresenter(final Presenter presenter);
+
+    /**
+     * XXX JDS This method should not exist in the view.
+     * Eventually, all window management functionality should be contained within the presenter.
+     * 
+     * @return
+     */
+    List<WindowState> getOrderedWindowStates();
+
+    void restoreWindows(List<WindowState> windowStates);
 
 }

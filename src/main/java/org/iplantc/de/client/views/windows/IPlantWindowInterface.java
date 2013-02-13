@@ -7,6 +7,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.Style.AnchorAlignment;
 import com.sencha.gxt.core.client.util.Point;
+import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.event.ActivateEvent.HasActivateHandlers;
 import com.sencha.gxt.widget.core.client.event.DeactivateEvent.HasDeactivateHandlers;
@@ -25,9 +26,15 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.HasShowHandlers;
 public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
         HasDeactivateHandlers<Window>, HasMinimizeHandlers, HasHideHandlers, HasShowHandlers, IsWidget {
 
-    String getTag();
+    /**
+     * @see Component#getStateId()
+     */
+    String getStateId();
 
-    void setId(String tag);
+    /**
+     * @see Component#setStateId(String)
+     */
+    void setStateId(String stateId);
 
     void setPagePosition(int new_x, int new_y);
 

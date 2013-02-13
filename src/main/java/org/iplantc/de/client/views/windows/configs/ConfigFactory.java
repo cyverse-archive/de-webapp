@@ -1,5 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.core.uicommons.client.models.autobeans.WindowType;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
@@ -74,6 +75,61 @@ public class ConfigFactory {
     public static SimpleDownloadWindowConfig simpleDownloadWindowConfig() {
         SimpleDownloadWindowConfig sdwc = applyWindowType(WindowType.SIMPLE_DOWNLOAD, factory.simpleDownloadWindowConfig()).as();
         return sdwc;
+    }
+
+    public static WindowConfig getConfig(WindowState ws) {
+        WindowConfig config = null;
+        switch (ws.getConfigType()) {
+            case ABOUT:
+                config = AutoBeanCodex.decode(factory, AboutWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+            case ANALYSES:
+                config = AutoBeanCodex.decode(factory, AnalysisWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case APP_INTEGRATION:
+                config = AutoBeanCodex.decode(factory, AppsIntegrationWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case APP_WIZARD:
+                config = AutoBeanCodex.decode(factory, AppWizardConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case APPS:
+                config = AutoBeanCodex.decode(factory, AppsWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case DATA:
+                config = AutoBeanCodex.decode(factory, DiskResourceWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case DATA_VIEWER:
+                config = AutoBeanCodex.decode(factory, FileViewerWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case HELP:
+                config = null;
+                break;
+
+            case IDROP_LITE:
+                config = AutoBeanCodex.decode(factory, IDropLiteWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case NOTIFICATIONS:
+                config = AutoBeanCodex.decode(factory, NotifyWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case SIMPLE_DOWNLOAD:
+                config = AutoBeanCodex.decode(factory, SimpleDownloadWindowConfig.class, ws.getWindowConfig()).as();
+                break;
+
+            case WORKFLOW_INTEGRATION:
+                // TBI JDS
+                config = null;
+                break;
+        }
+
+        return config;
     }
 
     private static <C extends WindowConfig> AutoBean<C> applyWindowType(WindowType type, AutoBean<C> wc) {

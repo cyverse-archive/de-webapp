@@ -1,5 +1,6 @@
 package org.iplantc.de.client.desktop.presenter;
 
+import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
@@ -9,18 +10,20 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;
-import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -46,13 +49,82 @@ public class DEPresenter implements DEView.Presenter {
         this.view.setPresenter(this);
         this.res = resources;
         this.eventBus = eventBus;
+        // Add a close handler to detect browser refresh events.
+        Window.addCloseHandler(new CloseHandler<Window>() {
+
+            @Override
+            public void onClose(CloseEvent<Window> event) {
+                UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(DEPresenter.this);
+                uspmb.show();
+            }
+        });
         initializeDEProperties();
     }
 
+    /**
+     * Initializes the discovery environment configuration properties object.
+     */
+    private void initializeDEProperties() {
+        PropertyServiceFacade.getInstance().getProperties(new AsyncCallback<Map<String, String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.systemInitializationError(), caught);
+            }
+    
+            @Override
+            public void onSuccess(Map<String, String> result) {
+                DEProperties.getInstance().initialize(result);
+                getUserInfo();
+                getUserPreferences();
+                setBrowserContextMenuEnabled(DEProperties.getInstance().isContextClickEnabled());
+            }
+        });
+    }
+
+    /**
+     * Retrieves the user information from the server.
+     */
+    private void getUserInfo() {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "bootstrap"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+    
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(I18N.ERROR.retrieveUserInfoFailed(), caught);
+            }
+    
+            @Override
+            public void onSuccess(String result) {
+                parseWorkspaceId(result);
+                initializeUserInfoAttributes();
+                initKeepaliveTimer();
+            }
+        });
+    }
+
+    private void getUserPreferences() {
+        Services.USER_SESSION_SERVICE.getUserPreferences(new AsyncCallback<String>() {
+    
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
+            }
+    
+            @Override
+            public void onSuccess(String result) {
+                loadPrerences(JsonUtil.getObject(result));
+            }
+        });
+    }
+
+    private void getUserSession() {
+        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.restoreSession(this);
+        uspmb.show();
+    }
+
     private void doWorkspaceDisplay() {
-        Desktop widget = new Desktop(res, eventBus);
         view.drawHeader();
-        view.replaceCenterPanel(widget);
         RootPanel.get().add(view.asWidget());
         initMessagePoller();
     }
@@ -104,49 +176,14 @@ public class DEPresenter implements DEView.Presenter {
                         userInfo.setFullUsername(attributes.get(UserInfo.ATTR_USERNAME));
                         userInfo.setFirstName(attributes.get(UserInfo.ATTR_FIRSTNAME));
                         userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
-
                         doWorkspaceDisplay();
+                        getUserSession();
                     }
                 });
     }
 
-    /**
-     * Initializes the discovery environment configuration properties object.
-     */
-    private void initializeDEProperties() {
-        PropertyServiceFacade.getInstance().getProperties(new AsyncCallback<Map<String, String>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.systemInitializationError(), caught);
-            }
-
-            @Override
-            public void onSuccess(Map<String, String> result) {
-                DEProperties.getInstance().initialize(result);
-                getUserInfo();
-                getUserPreferences();
-                setBrowserContextMenuEnabled(DEProperties.getInstance().isContextClickEnabled());
-            }
-        });
-    }
-
     private void loadPrerences(JSONObject obj) {
         UserSettings.getInstance().setValues(obj);
-    }
-
-    private void getUserPreferences() {
-        Services.USER_SESSION_SERVICE.getUserPreferences(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(caught);
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                loadPrerences(JsonUtil.getObject(result));
-            }
-        });
     }
 
     /**
@@ -161,43 +198,29 @@ public class DEPresenter implements DEView.Presenter {
 		};
     }-*/;
 
-    /**
-     * Retrieves the user information from the server.
-     */
-    private void getUserInfo() {
-        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "bootstrap"; //$NON-NLS-1$
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-
-        DEServiceFacade.getInstance().getServiceData(wrapper, new AsyncCallback<String>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.retrieveUserInfoFailed(), caught);
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                parseWorkspaceId(result);
-                initializeUserInfoAttributes();
-                initKeepaliveTimer();
-            }
-        });
-    }
-
     @Override
-    public void go(HasOneWidget container) {
-
-    }
+    public void go(HasOneWidget container) {/* Do Nothing */}
 
 	@Override
 	public void doLogout() {
-		// TODO Auto-generated method stub
-		
-		// Need to persist session data.
-		
 		// Need to stop polling
 		MessagePoller.getInstance().stop();
+
+        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this);
+        uspmb.show();
+
 		// Need to perform actual logout redirect.
 		Window.Location.assign(Window.Location.getPath() + Constants.CLIENT.logoutUrl());
 		
 	}
+
+    @Override
+    public void restoreWindows(List<WindowState> windowStates) {
+        view.restoreWindows(windowStates);
+    }
+
+    @Override
+    public List<WindowState> getOrderedWindowStates() {
+        return view.getOrderedWindowStates();
+    }
 }

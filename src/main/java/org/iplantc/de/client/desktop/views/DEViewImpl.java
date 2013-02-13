@@ -3,24 +3,25 @@
  */
 package org.iplantc.de.client.desktop.views;
 
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
 import org.iplantc.core.uicommons.client.widgets.MenuHyperlink;
 import org.iplantc.core.uicommons.client.widgets.PushButton;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.collaborators.views.ManageCollaboratorsDailog;
+import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.images.Resources;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
-import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -34,7 +35,6 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -79,6 +79,7 @@ public class DEViewImpl implements DEView {
     private final EventBus eventBus;
 
 	private DEView.Presenter presenter;
+    private final Desktop desktop;
 
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
@@ -88,6 +89,11 @@ public class DEViewImpl implements DEView {
         this.resources = resources;
         this.eventBus = eventBus;
         widget = uiBinder.createAndBindUi(this);
+
+        desktop = new Desktop(resources, eventBus);
+        con.remove(con.getCenterWidget());
+        con.setCenterWidget(desktop, centerData);
+        
         con.setStyleName(resources.css().iplantcBackground());
         initEventHandlers();
     }
@@ -148,17 +154,6 @@ public class DEViewImpl implements DEView {
         panel.add(logo);
 
         return panel;
-    }
-
-    /**
-     * Replace the contents of the center panel.
-     * 
-     * @param view a new component to set in the center of the BorderLayout.
-     */
-    @Override
-    public void replaceCenterPanel(IsWidget view) {
-        con.remove(con.getCenterWidget());
-        con.setCenterWidget(view, centerData);
     }
 
     private HorizontalPanel buildHtmlActionsPanel() {
@@ -356,10 +351,6 @@ public class DEViewImpl implements DEView {
     	this.presenter = presenter;
     }
 
-    private void showNotificationWindow(final Category category) {
-        eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(category)));
-    }
-
     /**
      * A Label with a setCount method that can set the label's styled text to the count when it's greater
      * than 0, or setting empty text and removing the style for a count of 0 or less.
@@ -393,6 +384,18 @@ public class DEViewImpl implements DEView {
                 removeStyleName(resources.css().de_notification_indicator_highlight());
                 Window.setTitle(I18N.DISPLAY.rootApplicationTitle());
             }
+        }
+    }
+
+    @Override
+    public List<WindowState> getOrderedWindowStates() {
+        return desktop.getOrderedWindowStates();
+    }
+
+    @Override
+    public void restoreWindows(List<WindowState> windowStates) {
+        for (WindowState ws : windowStates) {
+            desktop.restoreWindow(ws);
         }
     }
 }

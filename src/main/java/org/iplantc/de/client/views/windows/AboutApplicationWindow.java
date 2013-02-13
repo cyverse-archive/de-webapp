@@ -35,7 +35,6 @@ public class AboutApplicationWindow extends IplantWindowBase {
         setSize("300", "235");
         res = GWT.create(DeResources.class);
         res.css().ensureInjected();
-        setId(tag);
         setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
         setResizable(false);
         initComponents();
