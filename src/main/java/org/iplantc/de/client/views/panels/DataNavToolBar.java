@@ -32,6 +32,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -54,7 +55,6 @@ public class DataNavToolBar extends ToolBar {
     private static final String ID_UPLD_MENU = "idUpldMenu";
     private static final String ID_COLLAPSE_ALL = "idCollapseAll";
 
-    @SuppressWarnings("unused")
     private final String tag;
     private Folder rootFolder;
     private TreePanelSelectionModel<Folder> selectionModel;
@@ -79,8 +79,9 @@ public class DataNavToolBar extends ToolBar {
 
         add(buildAddFolderButton());
         add(buildRenameFolderButton());
-        add(buildEmptyTrashButton());
         add(buildCollapseAllButton());
+        add(new SeparatorToolItem());
+        add(buildEmptyTrashButton());
 
     }
 
