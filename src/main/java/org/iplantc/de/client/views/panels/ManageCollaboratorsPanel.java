@@ -64,7 +64,7 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
         HorizontalPanel hp = new HorizontalPanel();
         hp.setBorders(false);
         hp.setWidth(440);
-        hp.setSpacing(15);
+        hp.setSpacing(18);
         hp.add(searchTerm);
         hp.add(search);
         buildShowListButton();
@@ -118,7 +118,7 @@ public class ManageCollaboratorsPanel extends LayoutContainer {
                 }
             }
         };
-        searchTerm.setWidth(250);
+        searchTerm.setWidth(240);
         searchTerm.setEmptyText(I18N.DISPLAY.collabSearchPrompt());
         searchTerm.setMinLength(3);
     }
