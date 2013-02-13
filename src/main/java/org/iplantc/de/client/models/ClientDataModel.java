@@ -241,6 +241,15 @@ public class ClientDataModel {
         }
     }
 
+    private void updateFilePath(String pathNew) {
+        for (DiskResource dr : page.getResources()) {
+            if (dr instanceof File) {
+                ((File)dr).setPath(pathNew);
+                dr.setId(pathNew + "/" + dr.getName());
+            }
+        }
+    }
+
     public Folder getFolder(final String path) {
         return heirarchy.findModel("id", path); //$NON-NLS-1$
     }
@@ -255,7 +264,8 @@ public class ClientDataModel {
             ret.setName(DiskResourceUtil.parseNameFromPath(pathNew));
 
             heirarchy.update(ret);
-
+            page.setPath(pathNew);
+            updateFilePath(pathNew);
             updateSubtreeIds(subfolders, pathOrig, pathNew);
         }
 
