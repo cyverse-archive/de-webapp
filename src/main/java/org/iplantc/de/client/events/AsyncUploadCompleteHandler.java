@@ -39,6 +39,14 @@ public class AsyncUploadCompleteHandler extends UploadCompleteHandler implements
 
     @Override
     public void onFailure(Throwable caught) {
+        JSONObject obj = JsonUtil.getObject(caught.getMessage());
+        if (obj != null) {
+            String err = JsonUtil.getString(obj, "error_code");
+            if (err.equalsIgnoreCase("ERR_INVALID_URL")) {
+                ErrorHandler.post(I18N.ERROR.importFailed(JsonUtil.getString(obj, "url")), caught);
+                return;
+            }
+        }
         ErrorHandler.post(caught);
     }
 
