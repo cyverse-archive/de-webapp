@@ -6,15 +6,18 @@ import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.models.AboutApplicationData;
+import org.iplantc.de.client.models.DeModelAutoBeanFactory;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -49,7 +52,8 @@ public class AboutApplicationWindow extends IplantWindowBase {
         AboutApplicationServiceFacade.getInstance().getAboutInfo(new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                model = new AboutApplicationData(result);
+                DeModelAutoBeanFactory factory = GWT.create(DeModelAutoBeanFactory.class);
+                model = AutoBeanCodex.decode(factory, AboutApplicationData.class, result).as();
                 compose();
             }
 
@@ -85,7 +89,7 @@ public class AboutApplicationWindow extends IplantWindowBase {
         pnlDetails.setBodyStyleName(res.css().iplantcAboutPadText());
 
         HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
-                model.getBuildNumber(), model.getUserAgent()));
+                model.getBuildNumber(), Window.Navigator.getUserAgent()));
         pnlDetails.add(txt);
 
         return pnlDetails;
