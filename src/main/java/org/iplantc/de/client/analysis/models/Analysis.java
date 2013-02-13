@@ -1,8 +1,13 @@
 package org.iplantc.de.client.analysis.models;
 
+import org.iplantc.core.uiapplications.client.models.autobeans.App;
+import org.iplantc.core.uicommons.client.models.HasDescription;
+import org.iplantc.core.uicommons.client.models.HasId;
+
+import com.google.gwt.user.client.ui.HasName;
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
-public interface Analysis {
+public interface Analysis extends HasId, HasName, HasDescription {
 
     @PropertyName("wiki_url")
     public void setWikiUrl(String url);
@@ -16,6 +21,11 @@ public interface Analysis {
     @PropertyName("enddate")
     public long getEndDate();
 
+    /**
+     * XXX JDS Is this supposed to be an {@link App} id? If so, we should rename the method.
+     * 
+     * @return
+     */
     @PropertyName("analysis_id")
     public String getAnalysisId();
 
@@ -25,11 +35,7 @@ public interface Analysis {
     @PropertyName("analysis_details")
     public String getAnalysisDetails();
 
-    @PropertyName("status")
     public String getStatus();
-
-    @PropertyName("description")
-    public String getDescription();
 
     @PropertyName("startdate")
     public void setStartDate(long startdate);
@@ -46,23 +52,9 @@ public interface Analysis {
     @PropertyName("analysis_details")
     public void setAnalysisDetails(String analysis_details);
 
-    @PropertyName("status")
     public void setStatus(String status);
 
-    @PropertyName("description")
-    public void setDescription(String description);
-
-    @PropertyName("id")
     public void setId(String id);
-
-    @PropertyName("id")
-    public String getId();
-
-    @PropertyName("name")
-    public String getName();
-
-    @PropertyName("name")
-    public void setName(String name);
 
     @PropertyName("resultfolderid")
     public void setResultFolderId(String resultfolderid);

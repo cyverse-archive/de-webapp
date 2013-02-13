@@ -3,7 +3,7 @@ package org.iplantc.de.client.views.windows;
 import org.iplantc.core.client.pipelines.gxt3.presenter.PipelineViewPresenter;
 import org.iplantc.core.client.pipelines.gxt3.views.PipelineView;
 import org.iplantc.core.client.pipelines.gxt3.views.PipelineViewImpl;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;

@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowType;
+import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowType;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
@@ -24,8 +24,9 @@ public class ConfigFactory {
         return awc;
     }
     
-    public static AppsIntegrationWindowConfig appsIntegrationWindowConfig(){
+    public static AppsIntegrationWindowConfig appsIntegrationWindowConfig(String appId) {
         AppsIntegrationWindowConfig aiwc = applyWindowType(WindowType.APP_INTEGRATION, factory.appsIntegrationWindowConfig()).as();
+        aiwc.setAppId(appId);
         return aiwc;
     }
 

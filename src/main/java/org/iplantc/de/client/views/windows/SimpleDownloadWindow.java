@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.widgets.Hyperlink;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;

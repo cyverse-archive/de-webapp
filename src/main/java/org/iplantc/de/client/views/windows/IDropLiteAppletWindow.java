@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uidiskresource.client.events.DiskResourceRefreshEvent;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;

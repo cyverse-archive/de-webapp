@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.images.Resources;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 

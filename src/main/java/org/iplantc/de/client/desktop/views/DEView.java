@@ -2,7 +2,7 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

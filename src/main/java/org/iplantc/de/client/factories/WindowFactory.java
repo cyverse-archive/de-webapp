@@ -4,6 +4,7 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.windows.AboutApplicationWindow;
+import org.iplantc.de.client.views.windows.AppIntegrationWindow;
 import org.iplantc.de.client.views.windows.AppWizardWindow;
 import org.iplantc.de.client.views.windows.DEAppsWindow;
 import org.iplantc.de.client.views.windows.DeDiskResourceWindow;
@@ -17,6 +18,7 @@ import org.iplantc.de.client.views.windows.SimpleDownloadWindow;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
+import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.AppsWindowConfig;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
@@ -51,6 +53,7 @@ public class WindowFactory {
                 ret = new MyAnalysesWindow((AnalysisWindowConfig)config, eventBus);
                 break;
             case APP_INTEGRATION:
+                ret = new AppIntegrationWindow((AppsIntegrationWindowConfig)config);
                 break;
             case APP_WIZARD:
                 ret = new AppWizardWindow((AppWizardConfig)config);

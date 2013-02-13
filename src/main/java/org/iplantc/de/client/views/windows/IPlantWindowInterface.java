@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.utils.DEWindowManager;
 
 import com.google.gwt.user.client.Element;

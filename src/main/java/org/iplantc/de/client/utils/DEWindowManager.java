@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.desktop.widget.TaskButton;
 import org.iplantc.de.client.factories.WindowFactory;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;

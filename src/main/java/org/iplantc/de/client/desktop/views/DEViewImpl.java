@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.widgets.MenuHyperlink;
 import org.iplantc.core.uicommons.client.widgets.PushButton;
 import org.iplantc.de.client.Constants;

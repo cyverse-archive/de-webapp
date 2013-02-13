@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.images.Resources;

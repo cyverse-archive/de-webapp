@@ -2,7 +2,7 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;

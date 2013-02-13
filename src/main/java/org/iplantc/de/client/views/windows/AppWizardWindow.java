@@ -3,7 +3,7 @@ package org.iplantc.de.client.views.windows;
 import org.iplantc.core.uiapplications.client.Services;
 import org.iplantc.core.uiapplications.client.services.AppUserServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.autobeans.WindowState;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.widgets.client.appWizard.view.AppWizardView;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
@@ -11,6 +11,7 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 public class AppWizardWindow extends IplantWindowBase {
 
@@ -34,6 +35,10 @@ public class AppWizardWindow extends IplantWindowBase {
             presenter.go(this, config.getAppTemplate());
             // KLUDGE JDS This call to forceLayout should not be necessary.
             forceLayout();
+        } else if ((config.getLegacyAppTemplateJson() != null) && (!config.getLegacyAppTemplateJson().asString().isEmpty())) {
+            presenter.goLegacy(this, config.getLegacyAppTemplateJson());
+            setHeadingText(presenter.getAppTemplate().getLabel());
+            forceLayout();
         } else {
             templateService.getTemplate(config.getAppId(), new AsyncCallback<String>() {
                 @Override
@@ -43,7 +48,7 @@ public class AppWizardWindow extends IplantWindowBase {
 
                 @Override
                 public void onSuccess(String json) {
-                    presenter.go(AppWizardWindow.this, json);
+                    presenter.goLegacy(AppWizardWindow.this, StringQuoter.split(json));
                     AppWizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
                     // KLUDGE JDS This call to forceLayout should not be necessary.
                     AppWizardWindow.this.forceLayout();
