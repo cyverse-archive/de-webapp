@@ -4,9 +4,9 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.util.Format;
 import com.google.gwt.json.client.JSONObject;
+import com.sencha.gxt.core.client.GXT;
+import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 
 /**
@@ -28,7 +28,7 @@ public class IDropLiteUtil {
                 JsonUtil.getString(jsonAppletParams, "uploadDest")));
         htmlAppletTag.append(buildAppletParam("displayMode", String.valueOf(DISPLAY_MODE_UPLOAD)));
 
-        if (GXT.isIE) {
+        if (GXT.isIE()) {
             htmlAppletTag.append("</object>");
         } else {
             htmlAppletTag.append(I18N.DISPLAY.javaError());
@@ -47,7 +47,7 @@ public class IDropLiteUtil {
         StringBuilder htmlAppletTag = buildAppletTagCommon(jsonAppletParams, width, height);
         htmlAppletTag.append(buildAppletParam("displayMode", String.valueOf(DISPLAY_MODE_DOWNLOAD)));
         htmlAppletTag.append(I18N.DISPLAY.javaError());
-        if (GXT.isIE) {
+        if (GXT.isIE()) {
             htmlAppletTag.append("</object>");
         } else {
             htmlAppletTag.append(I18N.DISPLAY.javaError());
@@ -64,7 +64,7 @@ public class IDropLiteUtil {
 
         StringBuilder htmlAppletTag = null;
 
-        if (GXT.isIE) {
+        if (GXT.isIE()) {
             htmlAppletTag = buildIEAppletTagCommon(jsonAppletParams, width, height);
         } else {
             htmlAppletTag = new StringBuilder(Format.substitute(

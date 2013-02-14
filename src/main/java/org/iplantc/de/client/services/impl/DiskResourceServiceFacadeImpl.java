@@ -19,7 +19,6 @@ import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.shared.SharedDataApiServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import com.extjs.gxt.ui.client.util.Format;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -32,6 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.sencha.gxt.core.client.util.Format;
 
 /**
  * Provides access to remote services for folder operations.

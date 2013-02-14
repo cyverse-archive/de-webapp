@@ -14,6 +14,7 @@ import org.iplantc.core.uiapplications.client.events.EditAppEvent;
 import org.iplantc.core.uiapplications.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.widgets.FormLabel;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestImportFromUrlEvent;
@@ -37,8 +38,6 @@ import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
-import com.extjs.gxt.desktop.client.StartMenu;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -78,7 +77,6 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  * FIXME JDS Need move functional/non-ui stuff from this class to its p
  * 
  * @see TaskBar
- * @see StartMenu
  * @see Shortcut
  */
 public class Desktop implements IsWidget {
@@ -217,13 +215,13 @@ public class Desktop implements IsWidget {
         CopyRightLayoutContainerTemplate copy_template = GWT
                 .create(CopyRightLayoutContainerTemplate.class);
         HtmlLayoutContainer copyright = new HtmlLayoutContainer(copy_template.getTemplate());
-        copyright.add(new LabelField(I18N.DISPLAY.projectCopyrightStatement()), new HtmlData(".cell1"));
+        copyright.add(new FormLabel(I18N.DISPLAY.projectCopyrightStatement()), new HtmlData(".cell1"));
         copyright.setStyleName(resources.css().copyright());
         pnlFooter.add(copyright);
 
         NsfLayoutContainerTemplate nsf_template = GWT.create(NsfLayoutContainerTemplate.class);
         HtmlLayoutContainer nsftext = new HtmlLayoutContainer(nsf_template.getTemplate());
-        nsftext.add(new LabelField(I18N.DISPLAY.nsfProjectText()), new HtmlData(".cell1"));
+        nsftext.add(new FormLabel(I18N.DISPLAY.nsfProjectText()), new HtmlData(".cell1"));
         nsftext.getElement().addClassName(resources.css().nsfText());
 
         pnlFooter.add(nsftext);

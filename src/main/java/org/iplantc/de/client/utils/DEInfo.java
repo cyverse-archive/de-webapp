@@ -4,17 +4,17 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.core.XDOM;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.util.Params;
-import com.extjs.gxt.ui.client.util.Point;
-import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.core.client.util.Point;
+import com.sencha.gxt.core.client.util.Size;
 
 /**
  * Display info to the user in the lower-right corner.
@@ -95,6 +95,7 @@ public class DEInfo extends ContentPanel {
     /**
      * Hides the pop-up.
      */
+    @Override
     public void hide() {
         super.hide();
         afterHide();
@@ -110,6 +111,7 @@ public class DEInfo extends ContentPanel {
 
         // give the last item time to be removed before showing the next one.
         Timer t = new Timer() {
+            @Override
             public void run() {
                 DEInfo info = peek();
 
@@ -127,6 +129,7 @@ public class DEInfo extends ContentPanel {
      */
     protected void afterShow() {
         Timer t = new Timer() {
+            @Override
             public void run() {
                 afterHide();
             }
@@ -155,7 +158,7 @@ public class DEInfo extends ContentPanel {
         setText();
 
         Point p = position();
-        el().setLeftTop(p.x, p.y);
+        el().setLeftTop(p.getX(), p.getY());
         setSize(config.width, config.height);
 
         afterShow();
@@ -163,8 +166,8 @@ public class DEInfo extends ContentPanel {
 
     private Point position() {
         Size s = XDOM.getViewportSize();
-        int left = s.width - config.width - 10 + XDOM.getBodyScrollLeft();
-        int top = s.height - config.height - 10 + XDOM.getBodyScrollTop();
+        int left = s.getWidth() - config.width - 10 + XDOM.getBodyScrollLeft();
+        int top = s.getHeight() - config.height - 10 + XDOM.getBodyScrollTop();
 
         return new Point(left, top);
     }

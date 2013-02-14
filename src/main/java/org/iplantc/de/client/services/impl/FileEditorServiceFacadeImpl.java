@@ -9,12 +9,12 @@ import org.iplantc.de.shared.SharedServiceFacade;
 import org.iplantc.de.shared.SharedUnsecuredServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import com.extjs.gxt.ui.client.util.Format;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.core.client.util.Format;
 
 /**
  * Facade for file editors.
