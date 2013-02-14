@@ -8,7 +8,7 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.widgets.MenuHyperlink;
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
 import org.iplantc.core.uicommons.client.widgets.PushButton;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
@@ -23,8 +23,6 @@ import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -249,32 +247,29 @@ public class DEViewImpl implements DEView {
     private Menu buildUserMenu() {
         final Menu userMenu = buildMenu();
 
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.logout(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        // doLogout();
-                    	presenter.doLogout();
-                        userMenu.hide();
-                    }
-                }, null));
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.preferences(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        buildAndShowPreferencesDialog();
-                        userMenu.hide();
-                    }
-                }, null));
-        userMenu.add(new MenuHyperlink(I18N.DISPLAY.collaborators(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        ManageCollaboratorsDailog dialog = new ManageCollaboratorsDailog();
-                        dialog.show();
-                        userMenu.hide();
-                    }
-                }, null));
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.logout(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                // doLogout();
+                presenter.doLogout();
+                userMenu.hide();
+            }
+        }));
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.preferences(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                buildAndShowPreferencesDialog();
+                userMenu.hide();
+            }
+        }));
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.collaborators(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                ManageCollaboratorsDailog dialog = new ManageCollaboratorsDailog();
+                dialog.show();
+                userMenu.hide();
+            }
+        }));
 
         return userMenu;
     }
@@ -286,42 +281,35 @@ public class DEViewImpl implements DEView {
 
     private Menu buildHelpMenu() {
         final Menu helpMenu = buildMenu();
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.documentation(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        WindowUtil.open(Constants.CLIENT.deHelpFile());
-                        helpMenu.hide();
-                    }
-                }));
-
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.forums(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        WindowUtil.open(Constants.CLIENT.forumsUrl());
-                        helpMenu.hide();
-                    }
-                }));
-
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.contactSupport(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        WindowUtil.open(Constants.CLIENT.supportUrl());
-                        helpMenu.hide();
-                    }
-                }));
-
-        helpMenu.add(new MenuHyperlink(I18N.DISPLAY.about(), resources.css().de_header_menu_hyperlink(), resources.css().de_header_menu_hyperlink_hover(),
-                new Listener<BaseEvent>() {
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        // displayAboutDe();
-                        EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
-                        helpMenu.hide();
-                    }
-                }));
+        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.deHelpFile());
+                helpMenu.hide();
+            }
+        }));
+        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.forums(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.forumsUrl());
+                helpMenu.hide();
+            }
+        }));
+        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.contactSupport(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.supportUrl());
+                helpMenu.hide();
+            }
+        }));
+        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.about(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                // displayAboutDe();
+                EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
+                helpMenu.hide();
+            }
+        }));
 
         return helpMenu;
     }

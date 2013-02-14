@@ -77,6 +77,10 @@
       <when-type-is class="org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade"/>
    </replace-with>
    
+   <replace-with class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorDefaultAppearance">
+      <when-type-is class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance"/>
+   </replace-with>
+   
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.iplantc.de.client.DiscoveryEnvironment' />
 	

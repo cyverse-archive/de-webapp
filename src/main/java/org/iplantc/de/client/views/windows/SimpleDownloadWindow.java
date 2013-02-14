@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.widgets.Hyperlink;
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.DeResources;
@@ -10,9 +10,9 @@ import org.iplantc.de.client.Services;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
@@ -47,16 +47,25 @@ public class SimpleDownloadWindow extends IplantWindowBase {
 
     private void buildLinks(SimpleDownloadWindowConfig config, VerticalLayoutContainer vlc) {
         for (final DiskResource dr : config.getResourcesToDownload()) {
-            Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(dr.getId()), res.css().de_hyperlink());
+            IPlantAnchor link2 = new IPlantAnchor(DiskResourceUtil.parseNameFromPath(dr.getId()), 120, new ClickHandler() {
 
-            link.addClickListener(new Listener<ComponentEvent>() {
                 @Override
-                public void handleEvent(ComponentEvent be) {
+                public void onClick(ClickEvent event) {
                     Services.DISK_RESOURCE_SERVICE.simpleDownload(dr.getId());
+
                 }
             });
+            // Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(dr.getId()),
+            // res.css().de_hyperlink());
+            //
+            // link.addClickListener(new Listener<ComponentEvent>() {
+            // @Override
+            // public void handleEvent(ComponentEvent be) {
+            // Services.DISK_RESOURCE_SERVICE.simpleDownload(dr.getId());
+            // }
+            // });
 
-            vlc.add(link);
+            vlc.add(link2);
         }
     }
 
