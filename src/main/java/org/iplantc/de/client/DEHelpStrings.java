@@ -67,4 +67,11 @@ public interface DEHelpStrings extends Messages {
      */
     String manageDataLinksHelp();
 
+    /**
+     * help text for collaborators
+     * 
+     * @return the localized display text.
+     */
+    String collaboratorsHelp();
+
 }

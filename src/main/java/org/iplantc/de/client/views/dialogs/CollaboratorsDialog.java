@@ -13,6 +13,8 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 
 /**
  * A dialog to display collaborators
@@ -38,7 +40,25 @@ public class CollaboratorsDialog extends Dialog {
         setButtons();
         setResizable(false);
         setHideOnButtonClick(true);
+        ToolButton helpBtn = new ToolButton("x-tool-help"); //$NON-NLS-1$
+        helpBtn.setToolTip(buildHelpToolTip(I18N.HELP.collaboratorsHelp()));
+        getHeader().addTool(helpBtn);
 
+    }
+
+    private ToolTipConfig buildHelpToolTip(String helpText) {
+        ToolTipConfig ttc = getToolTipConfig();
+        ttc.setTitle(I18N.DISPLAY.help());
+        ttc.setText(helpText);
+        return ttc;
+    }
+
+    private ToolTipConfig getToolTipConfig() {
+        ToolTipConfig config = new ToolTipConfig();
+        config.setMouseOffset(new int[] {0, 0});
+        config.setAnchor("left"); //$NON-NLS-1$
+        config.setCloseable(true);
+        return config;
     }
 
     private void setButtons() {
