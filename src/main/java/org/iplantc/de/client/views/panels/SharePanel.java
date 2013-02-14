@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Permissions;
 import org.iplantc.de.client.I18N;
@@ -29,6 +30,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -113,13 +115,14 @@ public class SharePanel extends ContentPanel {
             }
         });
         // Add event handler to listen for the selected User results.
-        EventBus.getInstance().addHandler(UserSearchResultSelected.TYPE, new UserSearchResultSelectedEventHandler() {
+        EventBus.getInstance().addHandler(UserSearchResultSelected.TYPE,
+                new UserSearchResultSelectedEventHandler() {
 
-            @Override
-            public void onUserSearchResultSelected(UserSearchResultSelected event) {
-                addCollaborator(event.getCollaborator());
-            }
-        });
+                    @Override
+                    public void onUserSearchResultSelected(UserSearchResultSelected event) {
+                        addCollaborator(event.getCollaborator());
+                    }
+                });
     }
 
     private void addExplainPanel() {
@@ -137,6 +140,7 @@ public class SharePanel extends ContentPanel {
                 }
 
                 ShareBreakdownDialog explainDlg = new ShareBreakdownDialog(shares);
+                explainDlg.setHeading(I18N.DISPLAY.whoHasAccess());
                 explainDlg.show();
             }
         });
@@ -195,6 +199,10 @@ public class SharePanel extends ContentPanel {
 
     private void addCollaborator(Collaborator user) {
         String userName = user.getUserName();
+        if (userName != null && userName.equalsIgnoreCase(UserInfo.getInstance().getUsername())) {
+            MessageBox.alert(I18N.DISPLAY.warning(), I18N.DISPLAY.selfShareWarning(), null);
+            return;
+        }
 
         // Only add users not already displayed in the grid.
         if (sharingMap.get(userName) == null) {
@@ -269,6 +277,7 @@ public class SharePanel extends ContentPanel {
                 Button remove = new Button();
                 remove.setIcon(AbstractImagePrototype.create(Resources.ICONS.cancel()));
                 remove.setId(ID_BTN_REMOVE + model.getKey());
+                remove.setToolTip(I18N.DISPLAY.removeAccess());
                 remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                     @Override

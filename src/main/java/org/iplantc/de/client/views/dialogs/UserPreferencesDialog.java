@@ -24,11 +24,10 @@ public class UserPreferencesDialog extends Dialog {
     private UserSettingPanel settingPanel;
 
     public UserPreferencesDialog() {
-        init();
+        initDialog();
     }
 
-    private void init() {
-        initDialog();
+    public void init() {
         buildSettingPanel();
         layout();
     }
@@ -78,6 +77,7 @@ public class UserPreferencesDialog extends Dialog {
     }
 
     private void buildSettingPanel() {
+        removeAll();
         settingPanel = new UserSettingPanel();
         add(settingPanel);
     }

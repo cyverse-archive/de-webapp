@@ -68,7 +68,7 @@ public class DataSharingDialog extends Dialog {
 
     public DataSharingDialog(List<DiskResource> resources) {
         this.resources = resources;
-        setSize(600, 600);
+        setSize(600, 500);
         setHeading(I18N.DISPLAY.manageSharing());
         setButtons();
     }

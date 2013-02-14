@@ -53,6 +53,7 @@ public class SelectCollaboratorsDialog extends Dialog {
         @Override
         public void componentSelected(ButtonEvent ce) {
             CollaboratorsDialog collabsDialog = new CollaboratorsDialog();
+            collabsDialog.init();
             collabsDialog.setModal(true);
             collabsDialog.show();
         }
