@@ -123,7 +123,6 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
             final Set<org.iplantc.core.uidiskresource.client.models.DiskResource> diskResources,
             final Folder idDestFolder, AsyncCallback<String> callback) {
 
-        // TODO JDS Mock then implement; moveDiskResources
         String address = serviceNamePrefix + ".move"; //$NON-NLS-1$
 
         List<String> idSrcFiles = toStringIdList(diskResources);
@@ -134,31 +133,6 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 body.toString());
 
-        callService(callback, wrapper);
-    }
-
-    @Override
-    public void moveFile(final List<String> idSrcFiles, final String idDestFolder,
-            final AsyncCallback<String> callback) {
-        String address = serviceNamePrefix + ".file-move"; //$NON-NLS-1$
-
-        JSONObject body = new JSONObject();
-        body.put("dest", new JSONString(idDestFolder)); //$NON-NLS-1$
-        body.put("sources", JsonUtil.buildArrayFromStrings(idSrcFiles)); //$NON-NLS-1$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
-                body.toString());
-
-        callService(callback, wrapper);
-    }
-
-    @Override
-    public void moveFolder(final List<String> idSrcFolders, final String idDestFolder,
-            AsyncCallback<String> callback) {
-        String address = serviceNamePrefix + ".directory-move"; //$NON-NLS-1$
-        String body = "{" + JsonUtil.buildStringArray("sources", idSrcFolders) + ", \"dest\": \"" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + idDestFolder + "\"}"; //$NON-NLS-1$
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
         callService(callback, wrapper);
     }
 
@@ -191,32 +165,6 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
-
-    @Override
-    public void renameFolder(final String srcName, final String destName, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix + ".directory-rename"; //$NON-NLS-1$
-        JSONObject body = new JSONObject();
-        body.put("source", new JSONString(srcName)); //$NON-NLS-1$
-        body.put("dest", new JSONString(destName)); //$NON-NLS-1$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body.toString());
-        callService(callback, wrapper);
-    }
-
-    @Override
-    public void renameFile(String srcId, String destId, AsyncCallback<String> callback) {
-        String fullAddress = serviceNamePrefix + ".file-rename"; //$NON-NLS-1$
-
-        JSONObject body = new JSONObject();
-        body.put("source", new JSONString(srcId)); //$NON-NLS-1$
-        body.put("dest", new JSONString(destId)); //$NON-NLS-1$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body.toString());
-
-        callService(callback, wrapper);
     }
 
     @Override
