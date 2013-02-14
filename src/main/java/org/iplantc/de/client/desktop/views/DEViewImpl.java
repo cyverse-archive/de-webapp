@@ -23,14 +23,15 @@ import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 
-import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
@@ -346,7 +347,7 @@ public class DEViewImpl implements DEView {
      * @author psarando
      * 
      */
-    private class NotificationIndicator extends Label {
+    private class NotificationIndicator extends HTML {
 
         int count;
 
@@ -368,7 +369,7 @@ public class DEViewImpl implements DEView {
                 addStyleName(resources.css().de_notification_indicator_highlight());
                 Window.setTitle("(" + count + ") " + I18N.DISPLAY.rootApplicationTitle());
             } else {
-                setText("&nbsp;&nbsp;"); //$NON-NLS-1$
+                setHTML(SafeHtmlUtils.fromSafeConstant("&nbsp;&nbsp;"));
                 removeStyleName(resources.css().de_notification_indicator_highlight());
                 Window.setTitle(I18N.DISPLAY.rootApplicationTitle());
             }
