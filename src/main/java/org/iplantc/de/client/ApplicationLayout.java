@@ -324,6 +324,8 @@ public class ApplicationLayout extends Viewport {
             usd.setSize(450, 430);
         }
 
+        usd.init();
+
         if (!usd.isVisible()) {
             usd.show();
         } else {
@@ -335,7 +337,9 @@ public class ApplicationLayout extends Viewport {
         if (cd == null) {
             cd = new CollaboratorsDialog();
         }
+
         cd.init();
+
         if (!cd.isVisible()) {
             cd.show();
         } else {

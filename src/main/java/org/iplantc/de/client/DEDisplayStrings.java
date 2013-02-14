@@ -1420,4 +1420,16 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String partialRestore();
+
+    /**
+     * 
+     * @return
+     */
+    String removeAccess();
+
+    /**
+     * 
+     * @return
+     */
+    String selfShareWarning();
 }

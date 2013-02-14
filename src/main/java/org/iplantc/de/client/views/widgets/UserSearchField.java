@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -47,7 +48,8 @@ public class UserSearchField extends ComboBox<Collaborator> {
         setMinChars(3);
 
         // Create a loader with our custom RpcProxy.
-        ListLoader<ListLoadResult<Collaborator>> loader = new BaseListLoader<ListLoadResult<Collaborator>>(searchProxy);
+        ListLoader<ListLoadResult<Collaborator>> loader = new BaseListLoader<ListLoadResult<Collaborator>>(
+                searchProxy);
 
         // Create the store
         final ListStore<Collaborator> store = new ListStore<Collaborator>(loader);
@@ -81,6 +83,15 @@ public class UserSearchField extends ComboBox<Collaborator> {
         setPropertyEditor(propertyEditor);
     }
 
+    @Override
+    protected void onTriggerClick(ComponentEvent ce) {
+        if (getRawValue() == null || getRawValue().length() < 3) {
+            return;
+        } else {
+            super.onTriggerClick(ce);
+        }
+
+    }
 
     public void cleanup() {
         for (HandlerRegistration handler : handlers) {
@@ -131,4 +142,4 @@ public class UserSearchField extends ComboBox<Collaborator> {
 
         return template.toString();
     }
-    }
+}
