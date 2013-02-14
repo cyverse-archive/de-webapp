@@ -15,7 +15,6 @@ import org.iplantc.de.client.viewer.models.TreeUrl;
 import org.iplantc.de.client.viewer.models.TreeUrlAutoBeanFactory;
 import org.iplantc.de.client.viewer.models.TreeUrlList;
 import org.iplantc.de.client.viewer.views.FileViewer;
-import org.iplantc.de.client.viewer.views.FileViewer.Presenter;
 import org.iplantc.de.client.views.windows.FileViewerWindow;
 
 import com.google.gwt.core.shared.GWT;
@@ -32,7 +31,7 @@ import com.sencha.gxt.widget.core.client.event.ActivateEvent.ActivateHandler;
  * @author sriram
  * 
  */
-public class FileViewerPresenter implements Presenter {
+public class FileViewerPresenter implements FileViewer.Presenter {
 
     // A presenter can handle more than one view of the same data at a time
     private final List<FileViewer> viewers;

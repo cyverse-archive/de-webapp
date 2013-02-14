@@ -3,13 +3,13 @@ package org.iplantc.de.client.analysis.views;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
-import org.iplantc.de.client.services.callbacks.DiskResourceServiceCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
@@ -17,6 +17,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -120,13 +121,12 @@ public class AnalysisParamView implements IsWidget {
         return sw.toString();
     }
 
-    private class SaveasServiceCallbackHandler extends DiskResourceServiceCallback {
+    private class SaveasServiceCallbackHandler implements AsyncCallback<String> {
 
         private final String parentFolder;
         private final String fileName;
 
         public SaveasServiceCallbackHandler(String path) {
-            super(null);
             this.fileName = DiskResourceUtil.parseNameFromPath(path);
             this.parentFolder = DiskResourceUtil.parseParent(path);
         }
@@ -139,13 +139,8 @@ public class AnalysisParamView implements IsWidget {
         }
 
         @Override
-        protected String getErrorMessageDefault() {
-            return I18N.ERROR.saveParamFailed();
-        }
-
-        @Override
-        protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
-            return getErrorMessageForFiles(code, fileName);
+        public void onFailure(Throwable caught) {
+            ErrorHandler.post(I18N.ERROR.saveParamFailed(), caught);
         }
     }
 

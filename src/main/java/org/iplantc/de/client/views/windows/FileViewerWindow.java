@@ -1,19 +1,24 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uidiskresource.client.models.File;
-import org.iplantc.de.client.I18N;
+import org.iplantc.core.uidiskresource.client.services.errors.DiskResourceErrorAutoBeanFactory;
+import org.iplantc.core.uidiskresource.client.services.errors.ErrorDiskResource;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
-import org.iplantc.de.client.services.callbacks.DiskResourceServiceCallback;
 import org.iplantc.de.client.viewer.presenter.FileViewerPresenter;
-import org.iplantc.de.client.viewer.views.FileViewer.Presenter;
+import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
 
 /**
@@ -75,13 +80,12 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void getFileManifest() {
-        Services.FILE_EDITOR_SERVICE.getManifest(file.getId(),
-                new DiskResourceServiceCallback(null) {
+        Services.FILE_EDITOR_SERVICE.getManifest(file.getId(), new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 if (result != null) {
                     manifest = JsonUtil.getObject(result);
-                    Presenter p = new FileViewerPresenter(file, manifest, configAB.isShowTreeTab());
+                    FileViewer.Presenter p = new FileViewerPresenter(file, manifest, configAB.isShowTreeTab());
                     p.go(FileViewerWindow.this);
                 } else {
                     onFailure(null);
@@ -89,13 +93,10 @@ public class FileViewerWindow extends IplantWindowBase {
             }
 
             @Override
-            protected String getErrorMessageDefault() {
-                return I18N.ERROR.unableToRetrieveFileManifest(file.getName());
-            }
-
-            @Override
-            protected String getErrorMessageByCode(ErrorCode code, JSONObject jsonError) {
-                return getErrorMessageForFiles(code, file.getName());
+            public void onFailure(Throwable caught) {
+                DiskResourceErrorAutoBeanFactory factory = GWT.create(DiskResourceErrorAutoBeanFactory.class);
+                AutoBean<ErrorDiskResource> errorBean = AutoBeanCodex.decode(factory, ErrorDiskResource.class, caught.getMessage());
+                ErrorHandler.post(errorBean.as(), caught);
             }
         });
     }
