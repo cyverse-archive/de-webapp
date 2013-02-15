@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplantc.core.client.widgets.Hyperlink;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
@@ -264,6 +265,14 @@ public class SharePanel extends ContentPanel {
                 I18N.DISPLAY.permissions(), 100);
         permissions.setEditor(buildPermissionsEditor());
         permissions.setMenuDisabled(true);
+        permissions.setRenderer(new GridCellRenderer<DataSharing>() {
+
+            @Override
+            public Object render(DataSharing model, String property, ColumnData config, int rowIndex,
+                    int colIndex, ListStore<DataSharing> store, Grid<DataSharing> grid) {
+                return new Hyperlink(model.getDisplayPermission(), "de_hyperlink"); //$NON-NLS-1$
+            }
+        });
 
         ColumnConfig actions = new ColumnConfig("actions", "", 32); //$NON-NLS-1$ //$NON-NLS-2$
         actions.setFixed(true);
