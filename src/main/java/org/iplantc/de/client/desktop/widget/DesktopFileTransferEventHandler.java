@@ -2,6 +2,7 @@ package org.iplantc.de.client.desktop.widget;
 
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent.RequestBulkDownloadEventHandler;
@@ -47,6 +48,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         Folder uploadDest = event.getDestinationFolder();
         SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, 
                 drService, 
+                EventBus.getInstance(),
                 UriUtils.fromTrustedString(Constants.CLIENT.fileUploadServlet()), 
                 UserInfo.getInstance().getUsername());
         dlg.show();

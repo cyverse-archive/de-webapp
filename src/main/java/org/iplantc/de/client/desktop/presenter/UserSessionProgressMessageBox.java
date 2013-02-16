@@ -51,6 +51,9 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
 
     private UserSessionProgressMessageBox(SafeHtml headingHtml, SafeHtml messageHtml, ProgressBoxType type, DEView.Presenter presenter) {
         super(headingHtml, messageHtml);
+        this.getProgressBar().setDuration(1000);
+        this.getProgressBar().setInterval(100);
+        this.auto();
         this.type = type;
         this.presenter = presenter;
         restoreSessionCallback = new GetUserSessionCallback(this, presenter, factory);

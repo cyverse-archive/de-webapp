@@ -18,7 +18,6 @@ public class DEAppsWindow extends IplantWindowBase {
         presenter = new AppsViewPresenter(view);
 
         setSize("800", "410");
-        presenter.go(this);
         presenter.go(this, config.getSelectedAppGroup(), config.getSelectedApp());
         setHeadingText(I18N.DISPLAY.applications());
     }

@@ -125,8 +125,8 @@ public class ConfigFactory {
                 break;
 
             case WORKFLOW_INTEGRATION:
-                // TBI JDS
-                config = null;
+                config = AutoBeanCodex.decode(factory, PipelineEditorWindowConfig.class,
+                        ws.getWindowConfig()).as();
                 break;
         }
 

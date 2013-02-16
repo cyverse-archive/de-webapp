@@ -7,6 +7,7 @@ import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.services.errors.DiskResourceErrorAutoBeanFactory;
 import org.iplantc.core.uidiskresource.client.services.errors.ErrorDiskResource;
+import org.iplantc.core.uidiskresource.client.services.errors.ErrorGetManifest;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
 import org.iplantc.de.client.viewer.presenter.FileViewerPresenter;
@@ -95,8 +96,12 @@ public class FileViewerWindow extends IplantWindowBase {
             @Override
             public void onFailure(Throwable caught) {
                 DiskResourceErrorAutoBeanFactory factory = GWT.create(DiskResourceErrorAutoBeanFactory.class);
-                AutoBean<ErrorDiskResource> errorBean = AutoBeanCodex.decode(factory, ErrorDiskResource.class, caught.getMessage());
-                ErrorHandler.post(errorBean.as(), caught);
+                String message = caught.getMessage();
+                AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory, ErrorGetManifest.class, message);
+                ErrorDiskResource as = errorBean.as();
+                String tmp = as.generateErrorMsg();
+                FileViewerWindow.this.hide();
+                ErrorHandler.post(as, caught);
             }
         });
     }
