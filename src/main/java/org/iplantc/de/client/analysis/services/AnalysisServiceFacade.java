@@ -2,6 +2,7 @@ package org.iplantc.de.client.analysis.services;
 
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,36 +34,6 @@ public class AnalysisServiceFacade {
 
             address.append("&offset="); //$NON-NLS-1$
             address.append(pagingConfig.getOffset());
-
-            // String sortField = pagingConfig.getSortField();
-            // if (sortField != null && !sortField.isEmpty()) {
-            //                address.append("&sort-field="); //$NON-NLS-1$
-            // address.append(sortField);
-            // }
-            //
-            // SortDir sortDir = pagingConfig.getSortDir();
-            // if (sortDir == SortDir.ASC || sortDir == SortDir.DESC) {
-            //                address.append("&sort-order="); //$NON-NLS-1$
-            // address.append(sortDir.toString());
-            // }
-            //
-            // List<FilterConfig> filters = pagingConfig.getFilterConfigs();
-            // if (filters != null && !filters.isEmpty()) {
-            //                address.append("&filter="); //$NON-NLS-1$
-            //
-            // JSONArray jsonFilters = new JSONArray();
-            // int filterIndex = 0;
-            // for (FilterConfig filter : filters) {
-            // JSONObject jsonFilter = new JSONObject();
-            //
-            // jsonFilter.put("field", new JSONString(filter.getField()));
-            // jsonFilter.put("value", new JSONString((String)filter.getValue()));
-            //
-            // jsonFilters.set(filterIndex++, jsonFilter);
-            // }
-            //
-            // address.append(URL.encodeQueryString(jsonFilters.toString()));
-            // }
         }
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address.toString());
@@ -132,6 +103,19 @@ public class AnalysisServiceFacade {
                 + workspaceId + "/newexperiment"; //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.PUT, address, json);
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    /**
+     * get json to relaunch an analysis
+     * 
+     * @param analyisId
+     */
+    public void relaunchAnalysis(HasId analyisId, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl() + "analysis-rerun-info/" + analyisId.getId();
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
 
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }

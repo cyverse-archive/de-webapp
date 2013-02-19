@@ -14,7 +14,7 @@ public interface AnalysisProperties extends PropertyAccess<Analysis> {
 
     ValueProvider<Analysis, String> name();
 
-    ValueProvider<Analysis, String> analysisName();
+    ValueProvider<Analysis, String> appName();
 
     ValueProvider<Analysis, Long> startDate();
 

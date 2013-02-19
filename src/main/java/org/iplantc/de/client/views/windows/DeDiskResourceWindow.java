@@ -1,17 +1,17 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.Set;
+import java.util.List;
 
+import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uidiskresource.client.gin.DiskResourceInjector;
-import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.views.DiskResourceView;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class DeDiskResourceWindow extends IplantWindowBase {
 
@@ -25,16 +25,26 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         setSize("800", "410");
         // presenter.setSelectedFolderById("/iplant/home/jstroot/analyses/analysis1-2012-10-15-14-44-02.028/logs");
         // presenter.doRefresh();
+        //
+        // if (config.getSelectedFolder() != null) {
+        //
+        // presenter.setSelectedFolderById(config.getSelectedFolder().getId());
+        // }
+        // if ((config.getSelectedDiskResources() != null) &&
+        // !config.getSelectedDiskResources().isEmpty()) {
+        // Set<String> diskResourceIdSet =
+        // Sets.newHashSet(DiskResourceUtil.asStringIdList(config.getSelectedDiskResources()));
+        // presenter.setSelectedDiskResourcesById(diskResourceIdSet);
+        // }
+        // presenter.go(this);
 
-        if (config.getSelectedFolder() != null) {
+        // Create an empty
+        List<HasId> resourcesToSelect = Lists.newArrayList();
+        if (config.getSelectedDiskResources() != null) {
+            resourcesToSelect.addAll(config.getSelectedDiskResources());
+        }
+        presenter.go(this, config.getSelectedFolder(), resourcesToSelect);
 
-            presenter.setSelectedFolderById(config.getSelectedFolder().getId());
-        }
-        if ((config.getSelectedDiskResources() != null) && !config.getSelectedDiskResources().isEmpty()) {
-            Set<String> diskResourceIdSet = Sets.newHashSet(DiskResourceUtil.asStringIdList(config.getSelectedDiskResources()));
-            presenter.setSelectedDiskResourcesById(diskResourceIdSet);
-        }
-        presenter.go(this);
 
     }
 
@@ -42,8 +52,21 @@ public class DeDiskResourceWindow extends IplantWindowBase {
     public WindowState getWindowState() {
         DiskResourceWindowConfig config = ConfigFactory.diskResourceWindowConfig();
         config.setSelectedFolder(presenter.getSelectedFolder());
-        config.setSelectedDiskResources(Lists.newArrayList(presenter.getSelectedDiskResources()));
+        List<HasId> selectedResources = Lists.newArrayList();
+        selectedResources.addAll(presenter.getSelectedDiskResources());
+        config.setSelectedDiskResources(selectedResources);
         return createWindowState(config);
+    }
+
+    @Override
+    public <C extends WindowConfig> void update(C config) {
+        DiskResourceWindowConfig drConfig = (DiskResourceWindowConfig)config;
+        presenter.setSelectedFolderById(drConfig.getSelectedFolder());
+    }
+    
+    @Override
+    public void refresh() {
+        presenter.doRefresh();
     }
 
 }

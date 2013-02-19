@@ -1,0 +1,8 @@
+.hasResultFolder {
+	cursor:pointer;
+	white-space:pre-wrap;
+}
+
+.noResultFolder {
+	white-space:pre-wrap;
+}

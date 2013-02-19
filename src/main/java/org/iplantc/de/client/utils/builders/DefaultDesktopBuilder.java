@@ -20,10 +20,10 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
         addShortcut(res.css().iplantcMydataShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.diskResourceWindowConfig());
 
-        addShortcut(res.css().iplantcMyanalysisShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                ConfigFactory.analysisWindowConfig());
-
         addShortcut(res.css().iplantcCatalogShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.appsWindowConfig());
+
+        addShortcut(res.css().iplantcMyanalysisShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+                ConfigFactory.analysisWindowConfig());
     }
 }

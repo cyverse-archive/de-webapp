@@ -24,9 +24,6 @@
 	<!-- any one of the following lines.                            -->
 	<!-- inherits name='com.google.gwt.user.theme.standard.Standard' / -->
 
-	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
-
 	<!-- Other module inherits                                      -->
 	<!-- Include GWTUpload library, used by File Upload Servlet -->
 	<inherits name="gwtupload.GWTUpload" />

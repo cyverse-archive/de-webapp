@@ -14,7 +14,6 @@ import org.iplantc.core.uiapplications.client.events.EditAppEvent;
 import org.iplantc.core.uiapplications.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.widgets.FormLabel;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestImportFromUrlEvent;
@@ -41,7 +40,9 @@ import org.iplantc.de.client.views.windows.configs.WindowConfig;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
@@ -166,11 +167,11 @@ public class Desktop implements IsWidget {
         IPlantWindowInterface window = getWindowManager().getWindow(config);
         if (window == null) {
             window = getWindowManager().add(config);
+            getWindowManager().show(window);
+        } else {
+            getWindowManager().updateAndShow(window, config);
         }
 
-        if (window != null) {
-            getWindowManager().show(window);
-        }
     }
 
     @Override
@@ -215,13 +216,18 @@ public class Desktop implements IsWidget {
         CopyRightLayoutContainerTemplate copy_template = GWT
                 .create(CopyRightLayoutContainerTemplate.class);
         HtmlLayoutContainer copyright = new HtmlLayoutContainer(copy_template.getTemplate());
-        copyright.add(new FormLabel(I18N.DISPLAY.projectCopyrightStatement()), new HtmlData(".cell1"));
+        HTML copyRight = new HTML();
+        copyRight.setHTML(I18N.DISPLAY.projectCopyrightStatement());
+        copyright.add(copyRight, new HtmlData(".cell1"));
         copyright.setStyleName(resources.css().copyright());
         pnlFooter.add(copyright);
 
         NsfLayoutContainerTemplate nsf_template = GWT.create(NsfLayoutContainerTemplate.class);
         HtmlLayoutContainer nsftext = new HtmlLayoutContainer(nsf_template.getTemplate());
-        nsftext.add(new FormLabel(I18N.DISPLAY.nsfProjectText()), new HtmlData(".cell1"));
+
+        Label nsfLabel = new Label();
+        nsfLabel.setText(I18N.DISPLAY.nsfProjectText());
+        nsftext.add(nsfLabel, new HtmlData(".cell1"));
         nsftext.getElement().addClassName(resources.css().nsfText());
 
         pnlFooter.add(nsftext);
@@ -248,7 +254,8 @@ public class Desktop implements IsWidget {
      */
     public DEWindowManager getWindowManager() {
         if (windowManager == null) {
-            windowManager = new DEWindowManager(getHandler(), getHandler(), getHandler(), getHandler(), getHandler());
+            windowManager = new DEWindowManager(getHandler(), getHandler(), getHandler(), getHandler(),
+                    getHandler());
         }
         return windowManager;
     }
@@ -394,8 +401,7 @@ public class Desktop implements IsWidget {
     }
 
     private boolean isMaximized() {
-        FastMap<IPlantWindowInterface> deWindows = getWindowManager()
-                .getDEWindows();
+        FastMap<IPlantWindowInterface> deWindows = getWindowManager().getDEWindows();
         for (String windowKey : deWindows.keySet()) {
             IPlantWindowInterface window = deWindows.get(windowKey);
             if (window.isVisible() && window.isMaximized()) {
@@ -453,7 +459,8 @@ public class Desktop implements IsWidget {
         layout(window, RequestType.OPEN);
     }
 
-    private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>, MinimizeHandler, HideHandler, ShowHandler {
+    private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>,
+            MinimizeHandler, HideHandler, ShowHandler {
 
         @Override
         public void onActivate(ActivateEvent<Window> event) {

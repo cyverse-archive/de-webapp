@@ -1,6 +1,5 @@
 package org.iplantc.de.client.analysis.models;
 
-import org.iplantc.core.uiapplications.client.models.autobeans.App;
 import org.iplantc.core.uicommons.client.models.HasDescription;
 import org.iplantc.core.uicommons.client.models.HasId;
 
@@ -21,16 +20,11 @@ public interface Analysis extends HasId, HasName, HasDescription {
     @PropertyName("enddate")
     public long getEndDate();
 
-    /**
-     * XXX JDS Is this supposed to be an {@link App} id? If so, we should rename the method.
-     * 
-     * @return
-     */
     @PropertyName("analysis_id")
-    public String getAnalysisId();
+    public String getAppId();
 
     @PropertyName("analysis_name")
-    public String getAnalysisName();
+    public String getAppName();
 
     @PropertyName("analysis_details")
     public String getAnalysisDetails();
@@ -44,10 +38,10 @@ public interface Analysis extends HasId, HasName, HasDescription {
     public void setEndDate(long enddate);
 
     @PropertyName("analysis_id")
-    public void setAnalysisId(String analysis_id);
+    public void setAppId(String appId);
 
     @PropertyName("analysis_name")
-    public void setAnalysisName(String analysisname);
+    public void setAppName(String appName);
 
     @PropertyName("analysis_details")
     public void setAnalysisDetails(String analysis_details);
