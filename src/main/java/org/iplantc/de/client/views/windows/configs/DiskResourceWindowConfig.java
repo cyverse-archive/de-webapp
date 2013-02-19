@@ -2,17 +2,16 @@ package org.iplantc.de.client.views.windows.configs;
 
 import java.util.List;
 
-import org.iplantc.core.uidiskresource.client.models.DiskResource;
-import org.iplantc.core.uidiskresource.client.models.Folder;
+import org.iplantc.core.uicommons.client.models.HasId;
 
 public interface DiskResourceWindowConfig extends WindowConfig {
 
-    Folder getSelectedFolder();
+    HasId getSelectedFolder();
 
-    List<DiskResource> getSelectedDiskResources();
+    List<HasId> getSelectedDiskResources();
     
-    void setSelectedFolder(Folder selectedFolder);
+    void setSelectedFolder(HasId selectedFolder);
     
-    void setSelectedDiskResources(List<DiskResource> selectedResources);
+    void setSelectedDiskResources(List<HasId> selectedResources);
 
 }
