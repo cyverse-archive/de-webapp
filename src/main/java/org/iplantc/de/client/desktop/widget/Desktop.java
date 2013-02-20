@@ -164,12 +164,18 @@ public class Desktop implements IsWidget {
     }
 
     protected <C extends WindowConfig> void showWindow(final C config) {
+        showWindow(config, false);
+    }
+
+    protected <C extends WindowConfig> void showWindow(final C config, boolean update) {
         IPlantWindowInterface window = getWindowManager().getWindow(config);
         if (window == null) {
             window = getWindowManager().add(config);
             getWindowManager().show(window);
-        } else {
+        } else if (update) {
             getWindowManager().updateAndShow(window, config);
+        } else {
+            getWindowManager().show(window);
         }
 
     }
