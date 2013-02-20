@@ -10,6 +10,7 @@ import org.iplantc.de.client.factories.WindowFactory;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
@@ -20,8 +21,8 @@ import com.sencha.gxt.widget.core.client.event.MinimizeEvent.MinimizeHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
 /**
- * Manages window widgets in the web "desktop" environment.
- * FIXME JDS There is a lot of unnecessary redundancy in this class. More use should be made of {@link IplantWindowManager}
+ * Manages window widgets in the web "desktop" environment. FIXME JDS There is a lot of unnecessary
+ * redundancy in this class. More use should be made of {@link IplantWindowManager}
  */
 public class DEWindowManager extends IplantWindowManager {
     private IPlantWindowInterface activeWindow;
@@ -39,8 +40,9 @@ public class DEWindowManager extends IplantWindowManager {
      * 
      * @param listener window listener.
      */
-    public DEWindowManager(ActivateHandler<Window> activateHandler, DeactivateHandler<Window> deactivateHandler,
-            HideHandler hideHandler, MinimizeHandler minimizeHandler, ShowHandler showHandler) {
+    public DEWindowManager(ActivateHandler<Window> activateHandler,
+            DeactivateHandler<Window> deactivateHandler, HideHandler hideHandler,
+            MinimizeHandler minimizeHandler, ShowHandler showHandler) {
         this.activateHandler = activateHandler;
         this.deactivateHandler = deactivateHandler;
         this.hideHandler = hideHandler;
@@ -70,9 +72,10 @@ public class DEWindowManager extends IplantWindowManager {
         return activeWindow;
     }
 
-    public <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> IPlantWindowInterface add(C config) {
+    public <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> IPlantWindowInterface add(
+            C config) {
         IPlantWindowInterface window = WindowFactory.build(config);
-        
+
         if (window == null)
             return null;
         String windowStateId = WindowFactory.constructWindowId(config);
@@ -102,7 +105,8 @@ public class DEWindowManager extends IplantWindowManager {
         return getDEWindows().get(tag);
     }
 
-    public <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> IPlantWindowInterface getWindow(C config) {
+    public <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> IPlantWindowInterface getWindow(
+            C config) {
         String windowId = WindowFactory.constructWindowId(config);
         return getDEWindows().get(windowId);
     }
@@ -184,7 +188,9 @@ public class DEWindowManager extends IplantWindowManager {
     }
 
     /**
-     * @return
+     * get window state for all active windows
+     * 
+     * @return a list of WindowState objects
      */
     public List<WindowState> getActiveWindowStates() {
         List<WindowState> windowStates = Lists.newArrayList();
@@ -192,5 +198,20 @@ public class DEWindowManager extends IplantWindowManager {
             windowStates.add(win.getWindowState());
         }
         return windowStates;
+    }
+
+    /**
+     * A convenience method to get a list of active windows.
+     * 
+     * @return a list of active IPlant windows
+     */
+    public List<IPlantWindowInterface> getIplantWindows() {
+        List<IPlantWindowInterface> windows = Lists.newArrayList();
+        for (Widget w : super.getWindows()) {
+            if (w instanceof IPlantWindowInterface) {
+                windows.add((IPlantWindowInterface)w);
+            }
+        }
+        return windows;
     }
 }

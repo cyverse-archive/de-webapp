@@ -30,6 +30,7 @@ import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.utils.ShortcutManager;
 import org.iplantc.de.client.utils.builders.DefaultDesktopBuilder;
@@ -49,6 +50,7 @@ import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.Padding;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
@@ -66,6 +68,8 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.MinimizeEvent;
 import com.sencha.gxt.widget.core.client.event.MinimizeEvent.MinimizeHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
@@ -243,8 +247,35 @@ public class Desktop implements IsWidget {
     public TaskBar getTaskBar() {
         if (taskBar == null) {
             taskBar = new TaskBar();
+            taskBar.add(buildLayoutSwitchButton());
         }
+
         return taskBar;
+    }
+
+    public TextButton buildLayoutSwitchButton() {
+        TextButton btn = new TextButton();
+        btn.setIcon(Resources.ICONS.layoutWand());
+        btn.addSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                DesktopLayout dl = getDesktopLayout();
+                if (dl.getDesktopLayoutType().equals(DesktopLayoutType.CENTER)) {
+                    layout(DesktopLayoutType.CASCADE);
+                    setDesktopLayoutType(DesktopLayoutType.CASCADE);
+                } else if (dl.getDesktopLayoutType().equals(DesktopLayoutType.CASCADE)) {
+                    layout(DesktopLayoutType.TILE);
+                    setDesktopLayoutType(DesktopLayoutType.TILE);
+                } else {
+                    layout(DesktopLayoutType.CENTER);
+                    setDesktopLayoutType(DesktopLayoutType.CENTER);
+                }
+
+            }
+        });
+
+        return btn;
     }
 
     /**
@@ -413,14 +444,11 @@ public class Desktop implements IsWidget {
 
     private void layout(DesktopLayout desktopLayout, IPlantWindowInterface window,
             RequestType requestType) {
-        if (!isMaximized()) {
-            // desktopLayout.layoutDesktop(
-            // window,
-            // requestType,
-            // getDesktop().getElement(),
-            // getWindowManager().getWindows().subList(0,
-            // getWindowManager().getWindows().size() - 1), getDesktop().getOffsetWidth(),
-            // getDesktop().getOffsetHeight());
+        List<IPlantWindowInterface> windows_list = getWindowManager().getIplantWindows();
+        if (!isMaximized() && windows_list != null && windows_list.size() > 0) {
+            desktopLayout.layoutDesktop(window, requestType, getDesktop().getElement(),
+                    getWindowManager().getIplantWindows(), getDesktop().getOffsetWidth(), getDesktop()
+                            .getOffsetHeight());
         }
     }
 

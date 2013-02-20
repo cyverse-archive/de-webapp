@@ -367,4 +367,6 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
     @Source("iplant_about.gif")
     ImageResource iplantAbout();
 
+    @Source("wand.png")
+    ImageResource layoutWand();
 }
