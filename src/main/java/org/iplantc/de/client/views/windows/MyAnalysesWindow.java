@@ -80,7 +80,7 @@ public class MyAnalysesWindow extends IplantWindowBase {
         name.setHeader(I18N.DISPLAY.name());
         configs.add(name);
         name.setMenuDisabled(true);
-        name.setCell(new AnalysisNameCell());
+        name.setCell(new AnalysisNameCell(eventBus));
 
         ColumnConfig<Analysis, Analysis> app = new ColumnConfig<Analysis, Analysis>(valueProvider, 100);
         app.setHeader(I18N.DISPLAY.appName());

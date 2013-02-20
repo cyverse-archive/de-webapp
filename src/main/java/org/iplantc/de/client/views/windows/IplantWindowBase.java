@@ -422,5 +422,9 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     public int getHeaderOffSetHeight() {
         return getHeader().getOffsetHeight();
     }
+    
+    @Override
+    public <C extends WindowConfig> void update(C config) {
+    }
 
 }

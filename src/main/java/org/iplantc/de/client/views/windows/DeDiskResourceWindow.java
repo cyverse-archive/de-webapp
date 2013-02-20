@@ -9,6 +9,7 @@ import org.iplantc.core.uidiskresource.client.views.DiskResourceView;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
 
@@ -55,6 +56,17 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         selectedResources.addAll(presenter.getSelectedDiskResources());
         config.setSelectedDiskResources(selectedResources);
         return createWindowState(config);
+    }
+
+    @Override
+    public <C extends WindowConfig> void update(C config) {
+        DiskResourceWindowConfig drConfig = (DiskResourceWindowConfig)config;
+        presenter.setSelectedFolderById(drConfig.getSelectedFolder());
+    }
+    
+    @Override
+    public void refresh() {
+        presenter.doRefresh();
     }
 
 }

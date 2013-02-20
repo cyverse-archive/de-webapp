@@ -2,6 +2,7 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.utils.DEWindowManager;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -39,6 +40,8 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
     void setPagePosition(int new_x, int new_y);
 
     void show();
+    
+    <C extends WindowConfig> void update(C config);
 
     void toFront();
 

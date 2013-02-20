@@ -8,6 +8,7 @@ import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.desktop.widget.TaskButton;
 import org.iplantc.de.client.factories.WindowFactory;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Widget;
@@ -158,6 +159,15 @@ public class DEWindowManager extends IplantWindowManager {
         if (getCount() == 1) {
             setFirst_window_postion(window.getPosition3(true));
         }
+    }
+    
+    public <C extends WindowConfig> void updateAndShow(IPlantWindowInterface window, C config){
+        if ((window == null) || !getDEWindows().containsValue(window)) {
+            return;
+        }
+        
+        window.update(config);
+        show(window);
     }
 
     /**
