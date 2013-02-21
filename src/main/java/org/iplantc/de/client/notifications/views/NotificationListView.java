@@ -14,15 +14,15 @@ import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
-import org.iplantc.de.client.notifications.models.NotificationList;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
+import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.json.client.JSONArray;
@@ -38,8 +38,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.XTemplates;
@@ -193,16 +191,12 @@ public class NotificationListView implements IsWidget {
 
     public void fetchUnseenNotifications() {
         MessageServiceFacade facadeMessageService = new MessageServiceFacade();
-        facadeMessageService.getRecentMessages(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(caught);
-            }
+        facadeMessageService.getRecentMessages(new NotificationCallback() {
 
             @Override
             public void onSuccess(String result) {
-                processMessages(result);
+                super.onSuccess(result);
+                processMessages(this.getNotifications());
             }
         });
     }
@@ -213,31 +207,25 @@ public class NotificationListView implements IsWidget {
      * 
      * @param json string to be processed.
      */
-    public void processMessages(final String json) {
+    // public void processMessages(final String json) {
+    public void processMessages(final List<Notification> notifications) {
         // cache before removing
         List<NotificationMessage> temp = store.getAll();
         store.clear();
         boolean displayInfo = false;
 
-        if (json != null) {
-            AutoBean<NotificationList> bean = AutoBeanCodex
-                    .decode(factory, NotificationList.class, json);
-            List<Notification> notifications = bean.as().getNotifications();
-            for (Notification n : notifications) {
-                NotificationMessage nm = n.getMessage();
-                nm.setSeen(n.isSeen());
-                nm.setCategory(Category.fromTypeString(n.getCategory()));
-                if (nm != null && !isExist(temp, nm)) {
-                    store.add(nm);
-                    displayNotificationPopup(nm);
-                    displayInfo = true;
-                }
+        for (Notification n : notifications) {
+            NotificationMessage nm = n.getMessage();
+            nm.setSeen(n.isSeen());
+            if (nm != null && !isExist(temp, nm)) {
+                store.add(nm);
+                displayNotificationPopup(nm);
+                displayInfo = true;
             }
         }
         if (total_unseen > NEW_NOTIFICATIONS_LIMIT && displayInfo) {
             NotifyInfo.display(I18N.DISPLAY.newNotifications(), I18N.DISPLAY.newNotificationsAlert());
         }
-        // store.sort(Notification.PROP_TIMESTAMP, SortDir.DESC);
         highlightNewNotifications();
     }
 

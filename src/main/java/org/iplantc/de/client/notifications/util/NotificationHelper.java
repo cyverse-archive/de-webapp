@@ -1,23 +1,35 @@
 package org.iplantc.de.client.notifications.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.CommonModelAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.HasId;
+import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
+import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * helps with notifications for the user.
@@ -29,6 +41,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class NotificationHelper {
     /**
      * Represents a notification category.
+     * 
+     * XXX JDS If these enum fields were the same name as what comes in (e.g. ANALYSIS could be
+     * Analysis), then they could be deserialized directly into the autobean.
      */
     public enum Category {
         /** All notification categories */
@@ -72,6 +87,9 @@ public class NotificationHelper {
 
     private int total;
 
+    private final DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
+    private final CommonModelAutoBeanFactory cFactory = GWT.create(CommonModelAutoBeanFactory.class);
+
     private NotificationHelper() {
     }
 
@@ -89,9 +107,20 @@ public class NotificationHelper {
                 if (context != null) {
                     if (category == NotificationHelper.Category.DATA) {
                         // execute data context
-                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(ConfigFactory.diskResourceWindowConfig()));
+                        AutoBean<File> fAb = AutoBeanCodex.decode(drFactory, File.class, context);
+                        ArrayList<HasId> newArrayList = Lists.newArrayList();
+                        newArrayList.add(fAb.as());
+
+                        DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory.diskResourceWindowConfig();
+                        diskResourceWindowConfig.setSelectedFolder(DiskResourceUtil.getFolderIdFromFile(fAb.as()));
+                        diskResourceWindowConfig.setSelectedDiskResources(newArrayList);
+                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig, true));
                     } else if (category == NotificationHelper.Category.ANALYSIS) {
-                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(ConfigFactory.analysisWindowConfig()));
+                        AutoBean<HasId> hAb = AutoBeanCodex.decode(cFactory, HasId.class, context);
+
+                        AnalysisWindowConfig analysisWindowConfig = ConfigFactory.analysisWindowConfig();
+                        analysisWindowConfig.setSelectedAnalyses(Lists.newArrayList(hAb.as()));
+                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(analysisWindowConfig, true));
                     }
                 }
             }

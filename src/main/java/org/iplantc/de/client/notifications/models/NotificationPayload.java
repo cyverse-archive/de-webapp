@@ -4,6 +4,7 @@
 package org.iplantc.de.client.notifications.models;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
  * @author sriram
@@ -11,6 +12,12 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
  */
 public interface NotificationPayload {
 
+    Splittable getData();
+    /**
+     * XXX JDS This could be turned into an enum
+     * 
+     * @return
+     */
     @PropertyName("action")
     String getAction();
 

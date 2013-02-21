@@ -44,7 +44,7 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
 
     @Override
     public void onWindowShowRequest(WindowShowRequestEvent event) {
-        desktop.showWindow(event.getWindowConfig());
+        desktop.showWindow(event.getWindowConfig(), event.updateWithConfig());
     }
 
     @Override

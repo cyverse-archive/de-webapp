@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.analysis.models.Analysis;
@@ -17,6 +18,7 @@ import org.iplantc.de.client.analysis.views.cells.AnalysisTimeStampCell;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -112,7 +114,9 @@ public class MyAnalysesWindow extends IplantWindowBase {
     @Override
     public WindowState getWindowState() {
         AnalysisWindowConfig config = ConfigFactory.analysisWindowConfig();
-        config.setSelectedAnalyses(presenter.getSelectedAnalyses());
+        List<HasId> selectedAnalyses = Lists.newArrayList();
+        selectedAnalyses.addAll(presenter.getSelectedAnalyses());
+        config.setSelectedAnalyses(selectedAnalyses);
         return createWindowState(config);
     }
 

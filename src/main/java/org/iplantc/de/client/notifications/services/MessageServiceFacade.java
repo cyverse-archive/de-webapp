@@ -21,8 +21,7 @@ public class MessageServiceFacade {
      * @param maxNotifications the maximum number of notifications to retrieve.
      * @param callback called on RPC completion.
      */
-    public void getNotifications(int limit, int offset, String filter, String sortDir,
-            AsyncCallback<String> callback) {
+    public <C extends NotificationCallback> void getNotifications(int limit, int offset, String filter, String sortDir, C callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl(); //$NON-NLS-1$
 
         StringBuilder builder = new StringBuilder("notifications/messages?limit=" + limit + "&offset="
@@ -80,7 +79,7 @@ public class MessageServiceFacade {
      * 
      * @param callback called on RPC completion.
      */
-    public void getRecentMessages(AsyncCallback<String> callback) {
+    public <C extends NotificationCallback> void getRecentMessages(C callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl()
                 + "notifications/last-ten-messages"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
