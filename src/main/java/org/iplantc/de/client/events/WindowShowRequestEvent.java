@@ -22,9 +22,15 @@ public class WindowShowRequestEvent extends GwtEvent<WindowShowRequestEventHandl
 
     public static final GwtEvent.Type<WindowShowRequestEventHandler> TYPE = new GwtEvent.Type<WindowShowRequestEventHandler>();
     private final WindowConfig windowConfig;
+    private boolean updateWithConfig = false;
 
     public WindowShowRequestEvent(WindowConfig config) {
+        this(config, false);
+    }
+
+    public WindowShowRequestEvent(WindowConfig config, boolean updateWithConfig) {
         this.windowConfig = config;
+        this.updateWithConfig = updateWithConfig;
     }
 
     @Override
@@ -39,6 +45,10 @@ public class WindowShowRequestEvent extends GwtEvent<WindowShowRequestEventHandl
 
     public WindowConfig getWindowConfig() {
         return windowConfig;
+    }
+
+    public boolean updateWithConfig() {
+        return updateWithConfig;
     }
 
 }

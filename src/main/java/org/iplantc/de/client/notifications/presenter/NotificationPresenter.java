@@ -3,18 +3,15 @@ package org.iplantc.de.client.notifications.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.models.Notification;
-import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
-import org.iplantc.de.client.notifications.models.NotificationList;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
-import org.iplantc.de.client.notifications.models.NotificationPayload;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
+import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.notifications.views.NotificationToolbarView;
@@ -22,13 +19,12 @@ import org.iplantc.de.client.notifications.views.NotificationToolbarViewImpl;
 import org.iplantc.de.client.notifications.views.NotificationView;
 import org.iplantc.de.client.notifications.views.NotificationView.Presenter;
 
-import com.google.common.base.Strings;
-import com.google.gwt.core.shared.GWT;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.SortInfo;
@@ -55,7 +51,6 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
 
     private final NotificationView view;
     private final NotificationToolbarView toolbar;
-    private final NotificationAutoBeanFactory factory = GWT.create(NotificationAutoBeanFactory.class);
 
     private PagingLoadResult<NotificationMessage> callbackResult;
     private Category currentCategory;
@@ -129,22 +124,6 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
         }
     }
 
-    private List<NotificationMessage> getNotificationMessages(AutoBean<NotificationList> bean) {
-        List<NotificationMessage> messages = new ArrayList<NotificationMessage>();
-        for (Notification n : bean.as().getNotifications()) {
-            NotificationMessage nm = n.getMessage();
-            nm.setCategory(Category.fromTypeString(n.getCategory()));
-            if (n.getCategory().equalsIgnoreCase(Category.ANALYSIS.toString())) {
-                NotificationPayload payload = n.getNotificationPayload();
-                if(!Strings.isNullOrEmpty(payload.getAction()) && payload.getAction().equals("job_status_change")){
-                    nm.setContext("{\"id\": " + JsonUtil.quoteString(payload.getId()) + "}");
-                }
-            }
-            messages.add(nm);
-        }
-        return messages;
-    }
-
     @Override
     public FilterPagingLoadConfig buildDefaultLoadConfig() {
         FilterPagingLoadConfig config = new FilterPagingLoadConfigBean();
@@ -167,7 +146,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
         return config;
     }
 
-    private final class NotificationServiceCallback implements AsyncCallback<String> {
+    private final class NotificationServiceCallback extends NotificationCallback {
         private final PagingLoadConfig loadConfig;
         private final AsyncCallback<PagingLoadResult<NotificationMessage>> callback;
 
@@ -178,22 +157,19 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
         }
 
         @Override
-        public void onFailure(Throwable caught) {
-            org.iplantc.core.uicommons.client.ErrorHandler.post(caught);
-
-        }
-
-        @Override
         public void onSuccess(String result) {
-            AutoBean<NotificationList> bean = AutoBeanCodex.decode(factory, NotificationList.class,
-                    result);
+            super.onSuccess(result);
+            Splittable splitResult = StringQuoter.split(result);
             int total = 0;
-            String jsonTotal = JsonUtil.getString(JsonUtil.getObject(result), "total");
-            if (jsonTotal != null) {
-                total = Integer.parseInt(jsonTotal);
+
+            if (splitResult.get("total") != null) {
+                total = Integer.parseInt(splitResult.get("total").asString());
             }
 
-            List<NotificationMessage> messages = getNotificationMessages(bean);
+            List<NotificationMessage> messages = Lists.newArrayList();
+            for (Notification n : this.getNotifications()) {
+                messages.add(n.getMessage());
+            }
 
             callbackResult = new PagingLoadResultBean<NotificationMessage>(messages, total,
                     loadConfig.getOffset());

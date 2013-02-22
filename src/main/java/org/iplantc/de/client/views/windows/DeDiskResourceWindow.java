@@ -62,6 +62,7 @@ public class DeDiskResourceWindow extends IplantWindowBase {
     public <C extends WindowConfig> void update(C config) {
         DiskResourceWindowConfig drConfig = (DiskResourceWindowConfig)config;
         presenter.setSelectedFolderById(drConfig.getSelectedFolder());
+        presenter.setSelectedDiskResourcesById(drConfig.getSelectedDiskResources());
     }
     
     @Override

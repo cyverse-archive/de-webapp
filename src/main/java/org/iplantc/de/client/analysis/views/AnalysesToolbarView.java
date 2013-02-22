@@ -12,7 +12,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
  */
 public interface AnalysesToolbarView extends IsWidget {
 
-    public interface Presenter {
+    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
         void onDeleteClicked();
 
         void onViewParamClicked();

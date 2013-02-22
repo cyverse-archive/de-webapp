@@ -19,7 +19,6 @@ import org.iplantc.de.client.analysis.models.AnalysisParametersList;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarView;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarViewImpl;
 import org.iplantc.de.client.analysis.views.AnalysesView;
-import org.iplantc.de.client.analysis.views.AnalysesView.Presenter;
 import org.iplantc.de.client.analysis.views.AnalysisParamView;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamValueCell;
@@ -59,12 +58,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
  * @author sriram
  * 
  */
-public class AnalysesPresenter implements Presenter,
-        org.iplantc.de.client.analysis.views.AnalysesToolbarView.Presenter {
+public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolbarView.Presenter {
 
     private final AnalysesView view;
     private final AnalysesToolbarView toolbar;
-    private AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
+    private final AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
     private PagingLoadResult<Analysis> callbackResult;
 
     public AnalysesPresenter(AnalysesView view) {
