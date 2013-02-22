@@ -532,7 +532,7 @@ public class Desktop implements IsWidget {
         for (Widget w : getWindowManager().getStack()) {
             windowStates.add(((IPlantWindowInterface)w).getWindowState());
         }
-        return Lists.reverse(windowStates);
+        return windowStates;
     }
 
     public void restoreWindow(WindowState ws) {
