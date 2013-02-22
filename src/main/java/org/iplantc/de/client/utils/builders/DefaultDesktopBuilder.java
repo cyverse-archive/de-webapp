@@ -17,13 +17,17 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
     protected void buildShortcuts() {
         DeResources res = GWT.create(DeResources.class);
         res.css().ensureInjected();
-        addShortcut(res.css().iplantcMydataShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        addShortcut(res.css().iplantcMydataShortcut(),
+                "Manage and organize all your data here.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.diskResourceWindowConfig());
 
-        addShortcut(res.css().iplantcCatalogShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        addShortcut(res.css().iplantcCatalogShortcut(),
+                "Find and runs scientific apps. You can create new apps.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.appsWindowConfig());
 
-        addShortcut(res.css().iplantcMyanalysisShortcut(), "", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        addShortcut(
+                res.css().iplantcMyanalysisShortcut(),
+                "Find status of your submitted app runs. You can also access results for the completed or failed ones.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.analysisWindowConfig());
     }
 }

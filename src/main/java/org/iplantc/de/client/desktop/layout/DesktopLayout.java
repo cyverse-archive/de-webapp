@@ -17,9 +17,9 @@ public interface DesktopLayout {
 
     static final int PREFERRED_WIDTH = 400;
     static final int PREFERRED_HEIGHT = 400;
-    static final int PREFERRED_MAX_WIDTH_PCT = 75;
+    static final int PREFERRED_MAX_WIDTH_PCT = 80;
 
-    static final int PREFERRED_MAX_HEIGHT_PCT = 75;
+    static final int PREFERRED_MAX_HEIGHT_PCT = 80;
 
     DesktopLayoutType getDesktopLayoutType();
 

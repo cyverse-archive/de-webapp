@@ -9,7 +9,6 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
-import org.iplantc.core.uicommons.client.widgets.PushButton;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
@@ -36,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Point;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
@@ -43,6 +43,8 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
@@ -77,7 +79,7 @@ public class DEViewImpl implements DEView {
     private final DeResources resources;
     private final EventBus eventBus;
 
-	private DEView.Presenter presenter;
+    private DEView.Presenter presenter;
     private final Desktop desktop;
 
     @UiTemplate("DEView.ui.xml")
@@ -92,7 +94,7 @@ public class DEViewImpl implements DEView {
         desktop = new Desktop(resources, eventBus);
         con.remove(con.getCenterWidget());
         con.setCenterWidget(desktop, centerData);
-        
+
         con.setStyleName(resources.css().iplantcBackground());
         initEventHandlers();
     }
@@ -158,7 +160,7 @@ public class DEViewImpl implements DEView {
     private HorizontalPanel buildHtmlActionsPanel() {
         HorizontalPanel panel = new HorizontalPanel();
         panel.setSpacing(10);
-        panel.setWidth("20%");
+        panel.setWidth("18%");
         panel.add(buildActionsMenu(UserInfo.getInstance().getUsername(), 60, buildUserMenu()));
         panel.add(buildActionsMenu(I18N.DISPLAY.help(), 60, buildHelpMenu()));
         panel.add(buildNotificationMenu(I18N.DISPLAY.notifications(), 85));
@@ -170,19 +172,19 @@ public class DEViewImpl implements DEView {
         final HorizontalLayoutContainer ret = new HorizontalLayoutContainer();
         lblNotifications = new NotificationIndicator(0);
 
-        final PushButton button = new PushButton(menuHeaderText, headerWidth);
+        final TextButton button = new TextButton(menuHeaderText);
         notificationsView = new ViewNotificationMenu(eventBus);
-        notificationsView.setBorders(false);
+        // notificationsView.setBorders(false);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
-        notificationsView.setShadow(false);
-        notificationsView.addShowHandler(new ShowHandler() {
-
-            @Override
-            public void onShow(ShowEvent event) {
-                button.addStyleName(resources.css().de_header_menu_selected());
-
-            }
-        });
+        // notificationsView.setShadow(false);
+        // notificationsView.addShowHandler(new ShowHandler() {
+        //
+        // @Override
+        // public void onShow(ShowEvent event) {
+        // button.addStyleName(resources.css().de_header_menu_selected());
+        //
+        // }
+        // });
 
         notificationsView.addHideHandler(new HideHandler() {
 
@@ -191,17 +193,26 @@ public class DEViewImpl implements DEView {
                 button.removeStyleName(resources.css().de_header_menu_selected());
             }
         });
-        button.addClickHandler(new ClickHandler() {
+        // button.addClickHandler(new ClickHandler() {
+        //
+        // @Override
+        // public void onClick(ClickEvent arg0) {
+        // // showNotificationWindow(Category.ALL);
+        // showHeaderActionsMenu(ret, notificationsView);
+        // lblNotifications.setCount(0);
+        // }
+        // });
+        button.addSelectHandler(new SelectHandler() {
 
             @Override
-            public void onClick(ClickEvent arg0) {
-                // showNotificationWindow(Category.ALL);
-                showHeaderActionsMenu(ret, notificationsView);
+            public void onSelect(SelectEvent event) {
+                // showHeaderActionsMenu(ret, notificationsView);
                 lblNotifications.setCount(0);
+
             }
         });
 
-        button.setImage(new Image(Resources.ICONS.menuAnchor()));
+        button.setMenu(notificationsView);
         ret.add(button);
         ret.add(lblNotifications);
 
@@ -213,33 +224,47 @@ public class DEViewImpl implements DEView {
         final HorizontalLayoutContainer ret = new HorizontalLayoutContainer();
         ret.setBorders(false);
 
-        final PushButton button = new PushButton(menuHeaderText, headerWidth);
-        button.addClickHandler(new ClickHandler() {
+        // final PushButton button = new PushButton(menuHeaderText, headerWidth);
+        // button.addClickHandler(new ClickHandler() {
+        //
+        // @Override
+        // public void onClick(ClickEvent arg0) {
+        // showHeaderActionsMenu(ret, menu);
+        //
+        // }
+        // });
 
-            @Override
-            public void onClick(ClickEvent arg0) {
-                showHeaderActionsMenu(ret, menu);
+        final TextButton button = new TextButton(menuHeaderText);
 
-            }
-        });
+        // button.setText(menuHeaderText);
+        // button.addClickHandler(new ClickHandler() {
+        //
+        // @Override
+        // public void onClick(ClickEvent event) {
+        // showHeaderActionsMenu(ret, menu);
+        //
+        // }
+        // });
 
-        menu.addShowHandler(new ShowHandler() {
+        button.setMenu(menu);
 
-            @Override
-            public void onShow(ShowEvent event) {
-                button.addStyleName(resources.css().de_header_menu_selected());
-            }
-        });
+        // menu.addShowHandler(new ShowHandler() {
+        //
+        // @Override
+        // public void onShow(ShowEvent event) {
+        // button.addStyleName(resources.css().de_header_menu_selected());
+        // }
+        // });
+        //
+        // menu.addHideHandler(new HideHandler() {
+        //
+        // @Override
+        // public void onHide(HideEvent event) {
+        // button.removeStyleName(resources.css().de_header_menu_selected());
+        // }
+        // });
 
-        menu.addHideHandler(new HideHandler() {
-
-            @Override
-            public void onHide(HideEvent event) {
-                button.removeStyleName(resources.css().de_header_menu_selected());
-            }
-        });
-
-        button.setImage(new Image(Resources.ICONS.menuAnchor()));
+        // button.setImage(new Image(Resources.ICONS.menuAnchor()));
         ret.add(button);
 
         return ret;
@@ -317,27 +342,22 @@ public class DEViewImpl implements DEView {
 
     private Menu buildMenu() {
         Menu d = new Menu();
-
-        d.setSize("110px", "90px");
-        d.setBorders(true);
         d.setStyleName(resources.css().de_header_menu_body());
-        d.setShadow(false);
-
         return d;
     }
 
-    private void showHeaderActionsMenu(HorizontalLayoutContainer anchor, Menu actionsMenu) {
-        // show the menu so that its right edge is aligned with with the anchor's right edge,
-        // and its top is aligned with the anchor's bottom.
-        Point point = new Point(anchor.getAbsoluteLeft(), anchor.getAbsoluteTop());
-        //
-        actionsMenu.showAt(point.getX() + anchor.getElement().getWidth(true) + 2, point.getY()
-                + anchor.getElement().getHeight(true) + 25);
-    }
+    // private void showHeaderActionsMenu(HorizontalLayoutContainer anchor, Menu actionsMenu) {
+    // // show the menu so that its right edge is aligned with with the anchor's right edge,
+    // // and its top is aligned with the anchor's bottom.
+    // Point point = new Point(anchor.getAbsoluteLeft(), anchor.getAbsoluteTop());
+    // //
+    // actionsMenu.showAt(point.getX() + anchor.getElement().getWidth(true) + 2, point.getY()
+    // + anchor.getElement().getHeight(true) + 25);
+    // }
 
     @Override
     public void setPresenter(DEView.Presenter presenter) {
-    	this.presenter = presenter;
+        this.presenter = presenter;
     }
 
     /**

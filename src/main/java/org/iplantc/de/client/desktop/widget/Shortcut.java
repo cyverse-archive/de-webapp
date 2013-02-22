@@ -27,6 +27,7 @@ public class Shortcut extends IconButton {
         super(desc.getId());
         setId(desc.getId());
         setSize("64px", "64px");
+        setToolTip(desc.getCaption());
         this.windowConfig = desc.getWindowConfig();
 
         this.action = desc.getAction();

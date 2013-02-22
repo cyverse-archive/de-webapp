@@ -525,8 +525,6 @@ img.analysis_remove {
 .de_header_menu_body {
 	background-color: white;
 	outline: none;
-	border-color: #0098AA;
-	border-width: 3px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-khtml-border-radius: 5px;
