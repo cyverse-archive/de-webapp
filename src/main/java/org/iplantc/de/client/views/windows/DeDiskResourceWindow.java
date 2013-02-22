@@ -23,20 +23,6 @@ public class DeDiskResourceWindow extends IplantWindowBase {
 
         setHeadingText(I18N.DISPLAY.data());
         setSize("800", "410");
-        // presenter.setSelectedFolderById("/iplant/home/jstroot/analyses/analysis1-2012-10-15-14-44-02.028/logs");
-        // presenter.doRefresh();
-        //
-        // if (config.getSelectedFolder() != null) {
-        //
-        // presenter.setSelectedFolderById(config.getSelectedFolder().getId());
-        // }
-        // if ((config.getSelectedDiskResources() != null) &&
-        // !config.getSelectedDiskResources().isEmpty()) {
-        // Set<String> diskResourceIdSet =
-        // Sets.newHashSet(DiskResourceUtil.asStringIdList(config.getSelectedDiskResources()));
-        // presenter.setSelectedDiskResourcesById(diskResourceIdSet);
-        // }
-        // presenter.go(this);
 
         // Create an empty
         List<HasId> resourcesToSelect = Lists.newArrayList();

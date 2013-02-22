@@ -1,16 +1,15 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.core.uiapplications.client.models.autobeans.App;
-import org.iplantc.core.uiapplications.client.models.autobeans.AppGroup;
+import org.iplantc.core.uicommons.client.models.HasId;
 
 public interface AppsWindowConfig extends WindowConfig {
 
-    AppGroup getSelectedAppGroup();
+    HasId getSelectedAppGroup();
 
-    App getSelectedApp();
+    HasId getSelectedApp();
 
-    void setSelectedAppGroup(AppGroup appGroup);
+    void setSelectedAppGroup(HasId appGroup);
 
-    void setSelectedApp(App app);
+    void setSelectedApp(HasId app);
 
 }
