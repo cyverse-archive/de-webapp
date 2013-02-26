@@ -9,10 +9,13 @@ import org.iplantc.core.uiapplications.client.Services;
 import org.iplantc.core.uiapplications.client.services.AppUserServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.widgets.client.appWizard.models.AppTemplateAutoBeanFactory;
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.Splittable;
@@ -48,10 +51,15 @@ public class AppIntegrationWindow extends IplantWindowBase {
             presenter.go(this, config.getAppTemplate());
         } else if ((legacyAppTemplateJson != null) && (!legacyAppTemplateJson.getPayload().isEmpty())) {
             presenter.goLegacy(this, config.getLegacyAppTemplateJson());
-        } else {
+        } else if(config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())){
+            // Create empty AppTemplate
+            AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
+            presenter.go(this, factory.appTemplate().as());
+        }else {
             templateService.getTemplate(config.getAppId(), new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
+                    AppIntegrationWindow.this.hide();
                     ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
                 }
 
@@ -75,7 +83,9 @@ public class AppIntegrationWindow extends IplantWindowBase {
      * @return
      */
     private AppsIntegrationWindowConfig getUpdatedConfig() {
+        
         AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig("");
+        config.setAppTemplate(presenter.getAppTemplate());
         return config;
     }
 }

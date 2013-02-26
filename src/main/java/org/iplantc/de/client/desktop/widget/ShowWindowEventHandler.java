@@ -9,6 +9,7 @@ import org.iplantc.core.uiapplications.client.events.RunAppEvent.RunAppEventHand
 import org.iplantc.core.uiapplications.client.events.handlers.CreateNewWorkflowEventHandler;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.ShowAboutWindowEvent.ShowAboutWindowEventHandler;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
@@ -55,7 +56,7 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
 
     @Override
     public void createNewApp(CreateNewAppEvent event) {
-        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig("NEW_APP_TEMPLATE"));
+        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig(Constants.CLIENT.newAppTemplate()));
     }
 
     @Override

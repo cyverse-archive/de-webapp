@@ -117,4 +117,11 @@ public interface DEClientConstants extends CommonUiConstants {
      * @return the tag.
      */
     String simpleDownloadTag();
+    
+    /**
+     * A constant to represent a request to create a new AppTemplate
+     * 
+     * @return
+     */
+    String newAppTemplate();
 }
