@@ -112,7 +112,7 @@ public class NotificationHelper {
                         newArrayList.add(fAb.as());
 
                         DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory.diskResourceWindowConfig();
-                        diskResourceWindowConfig.setSelectedFolder(DiskResourceUtil.getFolderIdFromFile(fAb.as()));
+                        diskResourceWindowConfig.setSelectedFolder(DiskResourceUtil.getFolderIdFromFile(cFactory, fAb.as()));
                         diskResourceWindowConfig.setSelectedDiskResources(newArrayList);
                         EventBus.getInstance().fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig, true));
                     } else if (category == NotificationHelper.Category.ANALYSIS) {
