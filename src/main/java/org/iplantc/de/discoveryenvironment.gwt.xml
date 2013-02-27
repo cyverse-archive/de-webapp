@@ -13,6 +13,8 @@
     <inherits name="com.google.gwt.http.HTTP"/>
     <set-property name="user.agent" value="gecko1_8" />
     <set-property name="locale" value="default" />
+    
+    <inherits name="com.google.gwt.user.Debug"/>
 	<!--
 		Load dynamically predefined styles in the library when the application
 		starts
@@ -43,11 +45,11 @@
 	<inherits name="org.iplantc.core.JsonUtil"/>
     <inherits name="org.iplantc.core.ui-commons"/>
 	<inherits name="org.iplantc.core.Metadata"/>
-	<inherits name="org.iplantc.core.applications"/>
+	<inherits name="org.iplantc.core.uiapps.Apps"/>
+	<inherits name="org.iplantc.core.uiapps.widgets.Widgets"/>
+	<inherits name="org.iplantc.core.uiapps.integration.AppsIntegration"/>
 	<inherits name="org.iplantc.core.diskresource"/>
 	<inherits name="org.iplantc.core.pipelines"/>
-	<inherits name="org.iplantc.core.widgets.Widgets"/>
-	<inherits name="org.iplantc.core.appsIntegration.AppsIntegration"/>
 	<!-- for server push -->
 	<inherits name="com.google.gwt.rpc.RPC" />
 
@@ -60,10 +62,10 @@
     
     <!-- ui-applications deferred binding rules -->
     <replace-with class="org.iplantc.de.client.services.impl.TemplateServiceFacade">
-      <when-type-is class="org.iplantc.core.uiapplications.client.services.AppUserServiceFacade"/>
+      <when-type-is class="org.iplantc.core.uiapps.client.services.AppUserServiceFacade"/>
    </replace-with>
    <replace-with class="org.iplantc.de.client.services.impl.TemplateServiceFacade">
-      <when-type-is class="org.iplantc.core.uiapplications.client.services.AppServiceFacade"/>
+      <when-type-is class="org.iplantc.core.uiapps.client.services.AppServiceFacade"/>
    </replace-with>
    
    <replace-with class="org.iplantc.de.client.services.impl.DiskResourceServiceFacadeImpl">

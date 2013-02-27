@@ -63,7 +63,7 @@
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>widgets</artifactId>
+         <artifactId>apps-widgets</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>

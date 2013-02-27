@@ -1,8 +1,8 @@
 package org.iplantc.de.client.services.impl;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uiapplications.client.I18N;
-import org.iplantc.core.uiapplications.client.services.AppUserServiceFacade;
+import org.iplantc.core.uiapps.client.I18N;
+import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.DEProperties;
@@ -168,9 +168,9 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
     private void sendRatingEmail(final String appName, final String emailAddress) {
         EmailServiceFacade.getInstance().sendEmail(I18N.DISPLAY.ratingEmailSubject(appName),
                 I18N.DISPLAY.ratingEmailText(appName), "noreply@iplantcollaborative.org", emailAddress, //$NON-NLS-1$
-                new AsyncCallback<String>() {
+                new AsyncCallback<Void>() {
                     @Override
-                    public void onSuccess(String arg0) {
+                    public void onSuccess(Void arg0) {
                     }
 
                     @Override

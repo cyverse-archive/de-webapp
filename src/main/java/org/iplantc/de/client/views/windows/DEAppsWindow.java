@@ -1,8 +1,8 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uiapplications.client.presenter.AppsViewPresenter;
-import org.iplantc.core.uiapplications.client.views.AppsView;
-import org.iplantc.core.uiapplications.client.views.AppsViewImpl;
+import org.iplantc.core.uiapps.client.presenter.AppsViewPresenter;
+import org.iplantc.core.uiapps.client.views.AppsView;
+import org.iplantc.core.uiapps.client.views.AppsViewImpl;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppsWindowConfig;

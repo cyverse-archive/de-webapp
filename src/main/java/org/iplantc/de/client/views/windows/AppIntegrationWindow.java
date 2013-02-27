@@ -2,14 +2,14 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.List;
 
-import org.iplantc.core.appsIntegration.client.presenter.AppsIntegrationPresenterImpl;
-import org.iplantc.core.appsIntegration.client.view.AppsIntegrationView;
-import org.iplantc.core.appsIntegration.client.view.AppsIntegrationViewImpl;
-import org.iplantc.core.uiapplications.client.Services;
-import org.iplantc.core.uiapplications.client.services.AppUserServiceFacade;
+import org.iplantc.core.uiapps.client.Services;
+import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
+import org.iplantc.core.uiapps.integration.client.presenter.AppsIntegrationPresenterImpl;
+import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
+import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
+import org.iplantc.core.uiapps.widgets.client.appWizard.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.widgets.client.appWizard.models.AppTemplateAutoBeanFactory;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;

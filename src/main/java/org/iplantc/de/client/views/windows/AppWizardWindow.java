@@ -1,11 +1,10 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uiapplications.client.Services;
-import org.iplantc.core.uiapplications.client.services.AppUserServiceFacade;
+import org.iplantc.core.uiapps.client.Services;
+import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
+import org.iplantc.core.uiapps.widgets.client.appWizard.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.widgets.client.appWizard.view.AppWizardView;
-import org.iplantc.core.widgets.client.appWizard.view.AppWizardView.Presenter;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.analysis.services.AnalysisServiceFacade;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
@@ -18,9 +17,9 @@ import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 public class AppWizardWindow extends IplantWindowBase {
 
     private final class LegacyAppTemplateCallback implements AsyncCallback<String> {
-        private final Presenter presenter;
+        private final AppWizardView.Presenter presenter;
 
-        private LegacyAppTemplateCallback(Presenter presenter) {
+        private LegacyAppTemplateCallback(AppWizardView.Presenter presenter) {
             this.presenter = presenter;
         }
 
