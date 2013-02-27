@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplant.pipeline.client.json.autobeans.Pipeline;
+import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
 
 /**
  * @author psarando
