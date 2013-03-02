@@ -54,9 +54,9 @@
 				<!-- This is the tool bar -->
 				<container:north layoutData="{northData}">
 				    <container:HorizontalLayoutContainer>
-				    	<form:TextField ui:field="searchField" emptyText="{strings.searchCollab}" width="200"></form:TextField>
-				    	<button:TextButton ui:field="searchBtn"     icon="{icons.search}" ></button:TextButton>
-				    	<button:TextButton ui:field="showCollabsBtn"  icon="{icons.viewCurrentCollabs}" enabled="true" visible="false" ></button:TextButton>
+				    	<form:TextField debugId="idTxtSearch" ui:field="searchField" emptyText="{strings.searchCollab}" width="200"></form:TextField>
+				    	<button:TextButton debugId="idBtnSearch" ui:field="searchBtn"     icon="{icons.search}" ></button:TextButton>
+				    	<button:TextButton debugId="idShowCollabBtn" ui:field="showCollabsBtn"  icon="{icons.viewCurrentCollabs}" enabled="true" visible="false" ></button:TextButton>
 				    </container:HorizontalLayoutContainer>
 				</container:north>
 				<!-- This is the main panel -->
@@ -66,8 +66,8 @@
 						<container:VerticalLayoutContainer pixelSize="445,150">
 						<container:child >
 							<toolbar:ToolBar height="30">
-								<button:TextButton ui:field="addBtn"  text="{strings.add}"   icon="{icons.add}" enabled="false" ></button:TextButton>
-				    			<button:TextButton ui:field="deleteBtn" text="{strings.delete}" icon="{icons.delete}" enabled="false"></button:TextButton>
+								<button:TextButton debugId="idAddBtn" ui:field="addBtn"  text="{strings.add}"   icon="{icons.add}" enabled="false" ></button:TextButton>
+				    			<button:TextButton debugId="idDeleteBtn" ui:field="deleteBtn" text="{strings.delete}" icon="{icons.delete}" enabled="false"></button:TextButton>
 							</toolbar:ToolBar>
 							</container:child>
 							<container:child layoutData="{middleData}">

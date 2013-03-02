@@ -11,7 +11,7 @@
 <container:VerticalLayoutContainer ui:field="con" height="380px">
 <toolbar:ToolBar>
 <toolbar:LabelToolItem label="{strings.filePreviewNotice}"></toolbar:LabelToolItem>
-<form:CheckBox ui:field="cbxwrap" boxLabel="{strings.wrap}"></form:CheckBox>
+<form:CheckBox debugId="idCbxWrap" ui:field="cbxwrap" boxLabel="{strings.wrap}"></form:CheckBox>
 </toolbar:ToolBar>
 <g:HTML ui:field="textArea"></g:HTML>
 </container:VerticalLayoutContainer>

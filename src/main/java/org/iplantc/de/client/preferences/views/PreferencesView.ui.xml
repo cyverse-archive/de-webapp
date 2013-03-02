@@ -15,13 +15,13 @@
 	<container:VerticalLayoutContainer ui:field="container" styleName="{style.user_pref}">
 		<g:HorizontalPanel spacing="3">
 
-			<form:CheckBox ui:field="cboNotifyEmail">
+			<form:CheckBox debugId="idCboNotifyEmail" ui:field="cboNotifyEmail">
 			</form:CheckBox>
 			<form:FieldLabel text="{strings.notifyemail}"
 				labelSeparator="" labelWidth="300"></form:FieldLabel>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel spacing="3">
-			<form:CheckBox ui:field="cboLastPath">
+			<form:CheckBox debugId="cboLastPath" ui:field="cboLastPath">
 			</form:CheckBox>
 			<form:FieldLabel text="{strings.rememberFileSectorPath}"
 				labelSeparator="" labelWidth="300">
@@ -29,9 +29,9 @@
 		</g:HorizontalPanel>
 		<g:HorizontalPanel spacing="3" styleName="{style.session_field}">
 			<form:FieldLabel text="{strings.saveSession}"></form:FieldLabel>
-			<form:Radio ui:field="radioSaveSession" boxLabel="{strings.enabled}"
+			<form:Radio debugId="idRdoSaveSession" ui:field="radioSaveSession" boxLabel="{strings.enabled}"
 				name="saveSession" />
-			<form:Radio ui:field="radioNoSaveSession" boxLabel="{strings.disabled}"
+			<form:Radio debugId="idRdoNoSaveSession" ui:field="radioNoSaveSession" boxLabel="{strings.disabled}"
 				name="saveSession" />
 		</g:HorizontalPanel>
 	</container:VerticalLayoutContainer>

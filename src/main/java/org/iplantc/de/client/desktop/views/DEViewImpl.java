@@ -168,8 +168,10 @@ public class DEViewImpl implements DEView {
     private HorizontalLayoutContainer buildNotificationMenu(String menuHeaderText, int headerWidth) {
         final HorizontalLayoutContainer ret = new HorizontalLayoutContainer();
         lblNotifications = new NotificationIndicator(0);
+        lblNotifications.ensureDebugId("lblNotifyCnt");
 
         final TextButton button = new TextButton(menuHeaderText);
+        button.ensureDebugId("id" + menuHeaderText);
         notificationsView = new ViewNotificationMenu(eventBus);
         // notificationsView.setBorders(false);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
@@ -232,6 +234,7 @@ public class DEViewImpl implements DEView {
         // });
 
         final TextButton button = new TextButton(menuHeaderText);
+        button.ensureDebugId("id" + menuHeaderText);
 
         // button.setText(menuHeaderText);
         // button.addClickHandler(new ClickHandler() {

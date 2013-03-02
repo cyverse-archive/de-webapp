@@ -12,12 +12,12 @@
 	<container:SimpleContainer>
 		<toolbar:ToolBar ui:field="menuToolBar">
 
-			<form:SimpleComboBox ui:field="cboFilter"
+			<form:SimpleComboBox debugId="idCboFilter" ui:field="cboFilter"
 				allowBlank="true" forceSelection="true" triggerAction="ALL" />
-			<button:TextButton icon="{icons.deleteIcon}" text="{strings.deleteSelected}"
+			<button:TextButton debugId="idBtnDeleteSelect" icon="{icons.deleteIcon}" text="{strings.deleteSelected}"
 				ui:field="btnDelete" enabled="false" />
 				<toolbar:FillToolItem></toolbar:FillToolItem>
-			<button:TextButton icon="{icons.deleteIcon}" text="{strings.deleteAll}"
+			<button:TextButton debguId="idBtnDeleteAll" icon="{icons.deleteIcon}" text="{strings.deleteAll}"
 				ui:field="btnDeleteAll" enabled="true" />
 		</toolbar:ToolBar>
 	</container:SimpleContainer>

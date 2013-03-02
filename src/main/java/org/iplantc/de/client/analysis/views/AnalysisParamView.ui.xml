@@ -36,7 +36,7 @@
 					<!-- This is the tool bar -->
 					<container:north layoutData="{northData}">
 							<toolbar:ToolBar ui:field="menuToolBar">
-								<button:TextButton icon="{icons.save}" text="{strings.saveAs}"
+								<button:TextButton debugId="idBtnSaveAs" icon="{icons.save}" text="{strings.saveAs}"
 									ui:field="btnSave" enabled="true" />
 							</toolbar:ToolBar>
 					</container:north>

@@ -17,16 +17,19 @@
     <container:SimpleContainer>
         <toolbar:ToolBar ui:field="menuToolBar" >
             <button:TextButton
+                debugId="idBtnCancel"
                 icon="{icons.cancel}"
                 text="{strings.delete}"
                 ui:field="btnDelete" 
                 enabled="false"/>
              <button:TextButton
+                 debugId="idBtnDelete"
                 icon="{icons.deleteIcon}"
                 text="{strings.cancelAnalysis}"
                 ui:field="btnCancel" 
                 enabled="false"/>
               <button:TextButton
+                debugId="idBtnViewParam"
                 icon="{icons.fileView}"
                 text="{strings.viewParamLbl}"
                 ui:field="btnViewParam" 
