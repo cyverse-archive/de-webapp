@@ -13,6 +13,6 @@
 <toolbar:LabelToolItem label="{strings.filePreviewNotice}"></toolbar:LabelToolItem>
 <form:CheckBox debugId="idCbxWrap" ui:field="cbxwrap" boxLabel="{strings.wrap}"></form:CheckBox>
 </toolbar:ToolBar>
-<g:HTML ui:field="textArea"></g:HTML>
+<g:HTML debugId="idViewArea" ui:field="textArea"></g:HTML>
 </container:VerticalLayoutContainer>
 </ui:UiBinder> 

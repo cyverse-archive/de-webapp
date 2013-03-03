@@ -6,6 +6,8 @@ package org.iplantc.de.client.views.panels;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.notifications.views.NotificationListView;
 
+import com.sencha.gxt.widget.core.client.event.ShowEvent;
+import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 
 /**
@@ -19,13 +21,16 @@ public class ViewNotificationMenu extends Menu {
     public ViewNotificationMenu(EventBus eventBus) {
         view = new NotificationListView(eventBus);
         add(view.asWidget());
-    }
+        addShowHandler(new ShowHandler() {
 
-    @Override
-    public void showAt(int x, int y) {
-        super.showAt(x, y);
-        view.highlightNewNotifications();
-        view.markAsSeen();
+            @Override
+            public void onShow(ShowEvent event) {
+                view.highlightNewNotifications();
+                view.markAsSeen();
+                view.updateNotificationLink();
+
+            }
+        });
     }
 
     public void fetchUnseenNotifications() {

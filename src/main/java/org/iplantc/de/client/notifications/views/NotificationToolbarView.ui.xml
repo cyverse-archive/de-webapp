@@ -17,7 +17,7 @@
 			<button:TextButton debugId="idBtnDeleteSelect" icon="{icons.deleteIcon}" text="{strings.deleteSelected}"
 				ui:field="btnDelete" enabled="false" />
 				<toolbar:FillToolItem></toolbar:FillToolItem>
-			<button:TextButton debguId="idBtnDeleteAll" icon="{icons.deleteIcon}" text="{strings.deleteAll}"
+			<button:TextButton debugId="idBtnDeleteAll" icon="{icons.deleteIcon}" text="{strings.deleteAll}"
 				ui:field="btnDeleteAll" enabled="true" />
 		</toolbar:ToolBar>
 	</container:SimpleContainer>

@@ -5,10 +5,13 @@ package org.iplantc.de.client.notifications.views;
 
 import java.util.List;
 
+import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
@@ -121,7 +124,6 @@ public class NotificationListView implements IsWidget {
 
     };
 
-
     public NotificationListView(EventBus eventBus) {
         this.eventBus = eventBus;
         resources.css().ensureInjected();
@@ -163,12 +165,14 @@ public class NotificationListView implements IsWidget {
         java.util.List<NotificationMessage> new_notifications = store.getAll();
         JSONArray arr = new JSONArray();
         int i = 0;
-        if (new_notifications.size() > 0) {
-            for (NotificationMessage n : new_notifications) {
+        for (NotificationMessage n : new_notifications) {
+            if (!n.isSeen()) {
                 arr.set(i++, new JSONString(n.getId().toString()));
-                // set seen here
+                n.setSeen(true);
             }
+        }
 
+        if (arr.size() > 0) {
             JSONObject obj = new JSONObject();
             obj.put("uuids", arr);
 
@@ -177,7 +181,10 @@ public class NotificationListView implements IsWidget {
 
                 @Override
                 public void onSuccess(String result) {
-                    // Do nothing intentionally
+                    JSONObject obj = JsonUtil.getObject(result);
+                    int new_count = Integer.parseInt(JsonUtil.getString(obj, "count"));
+                    NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(new_count);
+                    EventBus.getInstance().fireEvent(event);
                 }
 
                 @Override
@@ -255,7 +262,7 @@ public class NotificationListView implements IsWidget {
         updateNotificationLink();
     }
 
-    private void updateNotificationLink() {
+    public void updateNotificationLink() {
         hyperlinkPanel.clear();
         hyperlinkPanel.add(buildNotificationHyerlink());
         if (total_unseen > 0) {
@@ -263,9 +270,8 @@ public class NotificationListView implements IsWidget {
         }
     }
 
-    private Anchor buildAckAllHyperlink() {
-        Anchor link = new Anchor(I18N.DISPLAY.markAllasSeen());
-        link.addClickHandler(new ClickHandler() {
+    private IPlantAnchor buildAckAllHyperlink() {
+        IPlantAnchor link = new IPlantAnchor(I18N.DISPLAY.markAllasSeen(), -1, new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
@@ -287,12 +293,11 @@ public class NotificationListView implements IsWidget {
             }
         });
 
-        link.setStyleName(deRes.css().de_hyperlink());
         return link;
 
     }
 
-    private Anchor buildNotificationHyerlink() {
+    private IPlantAnchor buildNotificationHyerlink() {
         String displayText;
         if (total_unseen > 0) {
             displayText = I18N.DISPLAY.newNotifications() + " (" + total_unseen + ")";
@@ -300,8 +305,7 @@ public class NotificationListView implements IsWidget {
             displayText = I18N.DISPLAY.allNotifications();
         }
 
-        Anchor link = new Anchor(displayText);
-        link.addClickHandler(new ClickHandler() {
+        IPlantAnchor link = new IPlantAnchor(displayText, -1, new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
@@ -313,8 +317,6 @@ public class NotificationListView implements IsWidget {
 
             }
         });
-
-        link.setStyleName(deRes.css().de_hyperlink());
         return link;
     }
 

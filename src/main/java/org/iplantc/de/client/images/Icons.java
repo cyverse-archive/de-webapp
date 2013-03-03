@@ -181,7 +181,7 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
      * @return image.
      */
     @Source("analysis_gear.gif")
-    ImageResource analysisExecution();
+    ImageResource userMenu();
 
     /**
      * Image resource.

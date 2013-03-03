@@ -34,6 +34,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.Anchor;
+import com.sencha.gxt.core.client.Style.AnchorAlignment;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
@@ -42,9 +44,8 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 /**
  * Default DE View as Desktop
@@ -124,19 +125,12 @@ public class DEViewImpl implements DEView {
     @Override
     public void drawHeader() {
         headerPanel.add(buildLogoPanel());
-        headerPanel.add(buildBufferPanel());
         headerPanel.add(buildHtmlActionsPanel());
-    }
-
-    private HorizontalLayoutContainer buildBufferPanel() {
-        final HorizontalLayoutContainer buffer = new HorizontalLayoutContainer();
-        buffer.setWidth("37%");
-        return buffer;
     }
 
     private VerticalLayoutContainer buildLogoPanel() {
         VerticalLayoutContainer panel = new VerticalLayoutContainer();
-        panel.setWidth("33%");
+        panel.setWidth("80%");
 
         Resources.ICONS.headerLogo();
         Image logo = new Image(Resources.ICONS.headerLogo().getSafeUri());
@@ -154,138 +148,51 @@ public class DEViewImpl implements DEView {
         return panel;
     }
 
-    private HorizontalPanel buildHtmlActionsPanel() {
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.setSpacing(10);
-        panel.setWidth("18%");
-        panel.add(buildActionsMenu(UserInfo.getInstance().getUsername(), 60, buildUserMenu()));
-        panel.add(buildActionsMenu(I18N.DISPLAY.help(), 60, buildHelpMenu()));
-        panel.add(buildNotificationMenu(I18N.DISPLAY.notifications(), 85));
+    private ToolBar buildHtmlActionsPanel() {
+        ToolBar panel = new ToolBar();
+        panel.setWidth(175);
+        panel.add(buildNotificationMenu(I18N.DISPLAY.notifications()));
+        panel.add(lblNotifications);
+        panel.add(buildActionsMenu(UserInfo.getInstance().getUsername(), buildUserMenu()));
 
         return panel;
     }
 
-    private HorizontalLayoutContainer buildNotificationMenu(String menuHeaderText, int headerWidth) {
-        final HorizontalLayoutContainer ret = new HorizontalLayoutContainer();
+    private TextButton buildNotificationMenu(String menuHeaderText) {
         lblNotifications = new NotificationIndicator(0);
         lblNotifications.ensureDebugId("lblNotifyCnt");
 
         final TextButton button = new TextButton(menuHeaderText);
         button.ensureDebugId("id" + menuHeaderText);
         notificationsView = new ViewNotificationMenu(eventBus);
-        // notificationsView.setBorders(false);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
-        // notificationsView.setShadow(false);
-        // notificationsView.addShowHandler(new ShowHandler() {
-        //
-        // @Override
-        // public void onShow(ShowEvent event) {
-        // button.addStyleName(resources.css().de_header_menu_selected());
-        //
-        // }
-        // });
-
         notificationsView.addHideHandler(new HideHandler() {
-
             @Override
             public void onHide(HideEvent event) {
                 button.removeStyleName(resources.css().de_header_menu_selected());
             }
         });
-        // button.addClickHandler(new ClickHandler() {
-        //
-        // @Override
-        // public void onClick(ClickEvent arg0) {
-        // // showNotificationWindow(Category.ALL);
-        // showHeaderActionsMenu(ret, notificationsView);
-        // lblNotifications.setCount(0);
-        // }
-        // });
-        button.addSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                // showHeaderActionsMenu(ret, notificationsView);
-                lblNotifications.setCount(0);
-
-            }
-        });
-
         button.setMenu(notificationsView);
-        ret.add(button);
-        ret.add(lblNotifications);
 
-        return ret;
+        return button;
     }
 
-    private HorizontalLayoutContainer buildActionsMenu(String menuHeaderText, int headerWidth,
-            final Menu menu) {
-        final HorizontalLayoutContainer ret = new HorizontalLayoutContainer();
-        ret.setBorders(false);
-
-        // final PushButton button = new PushButton(menuHeaderText, headerWidth);
-        // button.addClickHandler(new ClickHandler() {
-        //
-        // @Override
-        // public void onClick(ClickEvent arg0) {
-        // showHeaderActionsMenu(ret, menu);
-        //
-        // }
-        // });
-
-        final TextButton button = new TextButton(menuHeaderText);
+    private TextButton buildActionsMenu(String menuHeaderText, final Menu menu) {
+        final TextButton button = new TextButton();
+        button.setIcon(Resources.ICONS.userMenu());
         button.ensureDebugId("id" + menuHeaderText);
-
-        // button.setText(menuHeaderText);
-        // button.addClickHandler(new ClickHandler() {
-        //
-        // @Override
-        // public void onClick(ClickEvent event) {
-        // showHeaderActionsMenu(ret, menu);
-        //
-        // }
-        // });
-
         button.setMenu(menu);
 
-        // menu.addShowHandler(new ShowHandler() {
-        //
-        // @Override
-        // public void onShow(ShowEvent event) {
-        // button.addStyleName(resources.css().de_header_menu_selected());
-        // }
-        // });
-        //
-        // menu.addHideHandler(new HideHandler() {
-        //
-        // @Override
-        // public void onHide(HideEvent event) {
-        // button.removeStyleName(resources.css().de_header_menu_selected());
-        // }
-        // });
-
-        // button.setImage(new Image(Resources.ICONS.menuAnchor()));
-        ret.add(button);
-
-        return ret;
+        return button;
     }
 
     private Menu buildUserMenu() {
         final Menu userMenu = buildMenu();
 
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.logout(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                // doLogout();
-                presenter.doLogout();
-                userMenu.hide();
-            }
-        }));
         userMenu.add(new IPlantAnchor(I18N.DISPLAY.preferences(), -1, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 buildAndShowPreferencesDialog();
-                userMenu.hide();
             }
         }));
         userMenu.add(new IPlantAnchor(I18N.DISPLAY.collaborators(), -1, new ClickHandler() {
@@ -293,7 +200,40 @@ public class DEViewImpl implements DEView {
             public void onClick(ClickEvent event) {
                 ManageCollaboratorsDailog dialog = new ManageCollaboratorsDailog();
                 dialog.show();
-                userMenu.hide();
+            }
+        }));
+
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.deHelpFile());
+            }
+        }));
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.forums(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.forumsUrl());
+            }
+        }));
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.contactSupport(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.supportUrl());
+            }
+        }));
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.about(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                // displayAboutDe();
+                EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
+            }
+        }));
+
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.logout(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                // doLogout();
+                presenter.doLogout();
             }
         }));
 
@@ -305,55 +245,11 @@ public class DEViewImpl implements DEView {
         d.show();
     }
 
-    private Menu buildHelpMenu() {
-        final Menu helpMenu = buildMenu();
-        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.deHelpFile());
-                helpMenu.hide();
-            }
-        }));
-        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.forums(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.forumsUrl());
-                helpMenu.hide();
-            }
-        }));
-        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.contactSupport(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.supportUrl());
-                helpMenu.hide();
-            }
-        }));
-        helpMenu.add(new IPlantAnchor(I18N.DISPLAY.about(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                // displayAboutDe();
-                EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
-                helpMenu.hide();
-            }
-        }));
-
-        return helpMenu;
-    }
-
     private Menu buildMenu() {
         Menu d = new Menu();
         d.setStyleName(resources.css().de_header_menu_body());
         return d;
     }
-
-    // private void showHeaderActionsMenu(HorizontalLayoutContainer anchor, Menu actionsMenu) {
-    // // show the menu so that its right edge is aligned with with the anchor's right edge,
-    // // and its top is aligned with the anchor's bottom.
-    // Point point = new Point(anchor.getAbsoluteLeft(), anchor.getAbsoluteTop());
-    // //
-    // actionsMenu.showAt(point.getX() + anchor.getElement().getWidth(true) + 2, point.getY()
-    // + anchor.getElement().getHeight(true) + 25);
-    // }
 
     @Override
     public void setPresenter(DEView.Presenter presenter) {
