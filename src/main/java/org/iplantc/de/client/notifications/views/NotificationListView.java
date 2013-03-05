@@ -16,7 +16,6 @@ import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
 import org.iplantc.de.client.notifications.models.Notification;
-import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.services.NotificationCallback;
@@ -37,7 +36,6 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -66,8 +64,6 @@ public class NotificationListView implements IsWidget {
     private ListStore<NotificationMessage> store;
     private int total_unseen;
     private final HorizontalPanel hyperlinkPanel;
-
-    private final NotificationAutoBeanFactory factory = GWT.create(NotificationAutoBeanFactory.class);
 
     public static final int NEW_NOTIFICATIONS_LIMIT = 10;
 
@@ -328,7 +324,7 @@ public class NotificationListView implements IsWidget {
     @Override
     public Widget asWidget() {
         VerticalLayoutContainer container = new VerticalLayoutContainer();
-        container.setBorders(true);
+        container.setBorders(false);
         store = new ListStore<NotificationMessage>(kp);
         view = new ListView<NotificationMessage, NotificationMessage>(store,
                 new IdentityValueProvider<NotificationMessage>(), appearance);

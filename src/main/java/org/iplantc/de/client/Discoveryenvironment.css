@@ -450,13 +450,6 @@ ul.ux-taskbuttons-strip li.ux-taskbuttons-edge {
 	outline: none !important;
 }
 
-.de_hyperlink {
-	cursor: pointer;
-	color: #0098AA;
-	text-decoration: none;
-	font-size: 12px;
-}
-
 a.x-menu-item {
 	color: black !important;
 }
@@ -480,17 +473,6 @@ a.x-menu-item {
 	font-size: 11px;
 }
 
-.de_tnrs_hyperlink {
-	cursor: pointer;
-	text-decoration: underline;
-	color: Navy;
-}
-
-.de_notification_hyperlink {
-	cursor: pointer;
-	text-decoration: none;
-	color: black;
-}
 
 .analysis_name {
 	cursor: pointer;
@@ -518,9 +500,6 @@ img.analysis_remove {
 	top: -5px;
 }
 
-.de_header_menu_panel {
-	padding: 3px;
-}
 
 .de_header_menu_body {
 	background-color: white; 
@@ -538,30 +517,24 @@ img.analysis_remove {
 	background-color: #ededed;
 }
 
-.de_header_menu_button {
-	background-image: url('./gxt/images/default/button/arrow.gif');
-	height: 13px;
-	width: 7px;
-	position: relative;
-	top: 5px;
-	padding-left: 5px;
-}
-
-.de_header_menu_label {
-	color: black;
-	padding-left: 3px;
-}
 
 .de_header_menu_label_hover {
 	cursor: pointer;
 }
 
-.de_header_menu_selected {
+.de_header_menu_button_selected {
 	background-color: #fff;
 	border-style: solid;
 	border-color: #0098AA #0098AA white;
-	border-width: 1px 1px 2px;
-	padding: 2px;
+	border-width: 1px 1px 1px;
+	padding: 1px;
+}
+
+.de_header_menu {
+	border-style: solid;
+	border-color: #0098AA #0098AA white;
+	border-width: 1px 1px 1px 1px;
+	padding: 1px;
 }
 
 .de_notification_indicator {

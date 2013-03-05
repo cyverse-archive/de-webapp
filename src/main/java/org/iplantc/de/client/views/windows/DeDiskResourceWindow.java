@@ -22,7 +22,7 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         presenter = DiskResourceInjector.INSTANCE.getDiskResourceViewPresenter();
 
         setHeadingText(I18N.DISPLAY.data());
-        setSize("800", "410");
+        setSize("700", "375");
 
         // Create an empty
         List<HasId> resourcesToSelect = Lists.newArrayList();
@@ -30,7 +30,6 @@ public class DeDiskResourceWindow extends IplantWindowBase {
             resourcesToSelect.addAll(config.getSelectedDiskResources());
         }
         presenter.go(this, config.getSelectedFolder(), resourcesToSelect);
-
 
     }
 
@@ -50,7 +49,7 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         presenter.setSelectedFolderById(drConfig.getSelectedFolder());
         presenter.setSelectedDiskResourcesById(drConfig.getSelectedDiskResources());
     }
-    
+
     @Override
     public void refresh() {
         presenter.doRefresh();

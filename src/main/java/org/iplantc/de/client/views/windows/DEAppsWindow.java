@@ -17,7 +17,7 @@ public class DEAppsWindow extends IplantWindowBase {
         AppsView view = new AppsViewImpl();
         presenter = new AppsViewPresenter(view);
 
-        setSize("800", "410");
+        setSize("600", "375");
         presenter.go(this, config.getSelectedAppGroup(), config.getSelectedApp());
         setHeadingText(I18N.DISPLAY.applications());
     }
@@ -28,12 +28,6 @@ public class DEAppsWindow extends IplantWindowBase {
         config.setSelectedApp(presenter.getSelectedApp());
         config.setSelectedAppGroup(presenter.getSelectedAppGroup());
         return createWindowState(config);
-    }
-
-
-    @Override
-    public int getHeaderOffSetHeight() {
-        return 0;
     }
 
 }

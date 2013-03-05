@@ -490,7 +490,6 @@ public class Desktop implements IsWidget {
         }
         taskButton = taskBar.addTaskButton(window);
         getWindowManager().setTaskButton(window.getStateId(), taskButton);
-        layout(window, RequestType.OPEN);
     }
 
     private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>,

@@ -43,7 +43,7 @@ public class NotificationWindow extends IplantWindowBase {
         ColumnModel<NotificationMessage> cm = buildNotificationColumnModel();
         NotificationView view = new NotificationViewImpl(store, cm, checkBoxModel);
         presenter = new NotificationPresenter(view);
-        setSize("800", "410");
+        setSize("600", "375");
         presenter.go(this);
     }
 

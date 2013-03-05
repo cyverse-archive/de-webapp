@@ -40,7 +40,7 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void init() {
-        setSize("640px", "438px");
+        setSize("600px", "375px");
         this.file = configAB.getFile();
         getFileManifest();
         setTitle(file.getName());
@@ -86,7 +86,8 @@ public class FileViewerWindow extends IplantWindowBase {
             public void onSuccess(String result) {
                 if (result != null) {
                     manifest = JsonUtil.getObject(result);
-                    FileViewer.Presenter p = new FileViewerPresenter(file, manifest, configAB.isShowTreeTab());
+                    FileViewer.Presenter p = new FileViewerPresenter(file, manifest, configAB
+                            .isShowTreeTab());
                     p.go(FileViewerWindow.this);
                 } else {
                     onFailure(null);
@@ -95,9 +96,11 @@ public class FileViewerWindow extends IplantWindowBase {
 
             @Override
             public void onFailure(Throwable caught) {
-                DiskResourceErrorAutoBeanFactory factory = GWT.create(DiskResourceErrorAutoBeanFactory.class);
+                DiskResourceErrorAutoBeanFactory factory = GWT
+                        .create(DiskResourceErrorAutoBeanFactory.class);
                 String message = caught.getMessage();
-                AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory, ErrorGetManifest.class, message);
+                AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory,
+                        ErrorGetManifest.class, message);
                 ErrorDiskResource as = errorBean.as();
                 String tmp = as.generateErrorMsg();
                 FileViewerWindow.this.hide();

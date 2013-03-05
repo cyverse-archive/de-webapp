@@ -41,10 +41,10 @@ public class AppWizardWindow extends IplantWindowBase {
     private final AppUserServiceFacade templateService = Services.USER_APP_SERVICE;
     private final AnalysisServiceFacade analysisService = org.iplantc.de.client.Services.ANALYSIS_SERVICE;
     private final String appId;
-    
+
     public AppWizardWindow(AppWizardConfig config) {
         super(null, null);
-        setSize("640", "410");
+        setSize("640", "375");
         setBorders(false);
 
         presenter = GWT.create(AppWizardView.Presenter.class);
@@ -58,12 +58,14 @@ public class AppWizardWindow extends IplantWindowBase {
             presenter.go(this, config.getAppTemplate());
             // KLUDGE JDS This call to forceLayout should not be necessary.
             forceLayout();
-        } else if ((config.getLegacyAppTemplateJson() != null) && (!config.getLegacyAppTemplateJson().asString().isEmpty())) {
+        } else if ((config.getLegacyAppTemplateJson() != null)
+                && (!config.getLegacyAppTemplateJson().asString().isEmpty())) {
             presenter.goLegacy(this, config.getLegacyAppTemplateJson());
             setHeadingText(presenter.getAppTemplate().getLabel());
             forceLayout();
         } else if (config.isRelaunchAnalysis()) {
-            analysisService.relaunchAnalysis(config.getAnalysisId(), new LegacyAppTemplateCallback(presenter));
+            analysisService.relaunchAnalysis(config.getAnalysisId(), new LegacyAppTemplateCallback(
+                    presenter));
         } else {
             templateService.getTemplate(config.getAppId(), new LegacyAppTemplateCallback(presenter));
         }

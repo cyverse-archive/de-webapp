@@ -15,8 +15,8 @@ public interface DesktopLayout {
         OPEN, HIDE, SHOW, RESIZE, LAYOUT
     }
 
-    static final int PREFERRED_WIDTH = 400;
-    static final int PREFERRED_HEIGHT = 400;
+    static final int PREFERRED_WIDTH = 600;
+    static final int PREFERRED_HEIGHT = 375;
     static final int PREFERRED_MAX_WIDTH_PCT = 80;
 
     static final int PREFERRED_MAX_HEIGHT_PCT = 80;

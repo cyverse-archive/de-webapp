@@ -38,29 +38,19 @@ public interface DeCssResources extends CssResource {
 
     String de_header_menu_body();
 
-    String de_header_menu_button();
+    String de_header_menu();
 
     String de_header_menu_hyperlink();
 
     String de_header_menu_hyperlink_hover();
 
-    String de_header_menu_label();
-
     String de_header_menu_label_hover();
 
-    String de_header_menu_panel();
-
-    String de_header_menu_selected();
-
-    String de_hyperlink();
-
-    String de_notification_hyperlink();
+    String de_header_menu_button_selected();
 
     String de_notification_indicator();
 
     String de_notification_indicator_highlight();
-
-    String de_tnrs_hyperlink();
 
     String delete_button();
 

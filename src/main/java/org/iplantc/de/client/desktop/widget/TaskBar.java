@@ -29,8 +29,6 @@ public class TaskBar extends ToolBar {
      */
     public TaskBar() {
         setHeight(30);
-        // setId("ux-taskbar");
-        // addStyleName("x-taskbar");
         setSpacing(-1);
         getElement().getStyle().setProperty("border", "none");
         setPadding(new Padding(0));

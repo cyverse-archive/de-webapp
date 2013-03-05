@@ -31,11 +31,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.Style.Anchor;
-import com.sencha.gxt.core.client.Style.AnchorAlignment;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
@@ -44,6 +41,8 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.ShowEvent;
+import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -166,10 +165,19 @@ public class DEViewImpl implements DEView {
         button.ensureDebugId("id" + menuHeaderText);
         notificationsView = new ViewNotificationMenu(eventBus);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
+        notificationsView.addShowHandler(new ShowHandler() {
+
+            @Override
+            public void onShow(ShowEvent event) {
+                button.addStyleName(resources.css().de_header_menu_button_selected());
+                notificationsView.addStyleName(resources.css().de_header_menu());
+            }
+        });
         notificationsView.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {
-                button.removeStyleName(resources.css().de_header_menu_selected());
+                button.removeStyleName(resources.css().de_header_menu_button_selected());
+                notificationsView.removeStyleName(resources.css().de_header_menu());
             }
         });
         button.setMenu(notificationsView);
@@ -182,6 +190,22 @@ public class DEViewImpl implements DEView {
         button.setIcon(Resources.ICONS.userMenu());
         button.ensureDebugId("id" + menuHeaderText);
         button.setMenu(menu);
+        menu.addShowHandler(new ShowHandler() {
+
+            @Override
+            public void onShow(ShowEvent event) {
+                button.addStyleName(resources.css().de_header_menu_button_selected());
+                menu.addStyleName(resources.css().de_header_menu());
+
+            }
+        });
+        menu.addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                button.removeStyleName(resources.css().de_header_menu_button_selected());
+                menu.removeStyleName(resources.css().de_header_menu());
+            }
+        });
 
         return button;
     }
@@ -269,7 +293,7 @@ public class DEViewImpl implements DEView {
 
         public NotificationIndicator(int initialCount) {
             super();
-
+            setWidth("30px");
             setStyleName(resources.css().de_notification_indicator());
             setCount(initialCount);
         }
