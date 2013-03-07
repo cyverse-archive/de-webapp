@@ -219,12 +219,14 @@ public class IplantWindowManager implements HasRegisterHandlers<Widget>, HasUnre
             ((Component)widget).focus();
         } else {
             widget.getElement().focus();
-    }
+        }
     }
 
     private void setActiveWin(Widget window) {
-        if ((window != front) && (front != null) && (front instanceof Window)) {
-            ((Window)front).setActive(false);
+        if ((window != front)) {
+            if ((front != null) && (front instanceof Window)) {
+                ((Window)front).setActive(false);
+            }
             front = window;
             if (window != null) {
                 if (window instanceof Window) {

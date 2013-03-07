@@ -29,6 +29,7 @@ import org.iplantc.de.client.desktop.layout.DesktopLayout.RequestType;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
+import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.images.Resources;
 import org.iplantc.de.client.utils.DEWindowManager;
@@ -106,6 +107,14 @@ public class Desktop implements IsWidget {
     private List<Shortcut> shortcuts;
     private WindowHandler handler;
     private IPlantWindowInterface activeWindow;
+
+    /**
+     * @return the activeWindow
+     */
+    public IPlantWindowInterface getActiveWindow() {
+        return activeWindow;
+    }
+
     private VerticalLayoutContainer desktopContainer;
     private Viewport desktopViewport;
     private DesktopLayout desktopLayout;
@@ -145,6 +154,7 @@ public class Desktop implements IsWidget {
     private void initWindowEventHandlers(final EventBus eventbus) {
         // Launching Tito and App windows
         ShowWindowEventHandler showWindowHandler = new ShowWindowEventHandler(this);
+        CloseActiveWindowEventHandler closeActiveWindowHandler = new CloseActiveWindowEventHandler(this);
         eventbus.addHandler(EditAppEvent.TYPE, showWindowHandler);
         eventbus.addHandler(CreateNewAppEvent.TYPE, showWindowHandler);
         eventbus.addHandler(CreateNewWorkflowEvent.TYPE, showWindowHandler);
@@ -155,6 +165,7 @@ public class Desktop implements IsWidget {
         eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler);
         eventbus.addHandler(WindowShowRequestEvent.TYPE, showWindowHandler);
         eventbus.addHandler(RunAppEvent.TYPE, showWindowHandler);
+        eventbus.addHandler(WindowCloseRequestEvent.TYPE, closeActiveWindowHandler);
     }
 
     private void initEventHandlers(final EventBus eventbus) {
@@ -490,6 +501,7 @@ public class Desktop implements IsWidget {
         }
         taskButton = taskBar.addTaskButton(window);
         getWindowManager().setTaskButton(window.getStateId(), taskButton);
+        getWindowManager().bringToFront(window.asWidget());
     }
 
     private class WindowHandler implements ActivateHandler<Window>, DeactivateHandler<Window>,

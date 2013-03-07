@@ -1,5 +1,6 @@
 package org.iplantc.de.client.desktop.presenter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,14 +18,21 @@ import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;
+import org.iplantc.de.client.events.WindowCloseRequestEvent;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.periodic.MessagePoller;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
@@ -40,6 +48,7 @@ public class DEPresenter implements DEView.Presenter {
     private final DEView view;
     private final DeResources res;
     private final EventBus eventBus;
+    private HashMap<Character, Command> keyboardShortCuts;
 
     /**
      * Constructs a default instance of the object.
@@ -54,10 +63,12 @@ public class DEPresenter implements DEView.Presenter {
 
             @Override
             public void onClose(CloseEvent<Window> event) {
-                UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(DEPresenter.this);
+                UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
+                        .saveSession(DEPresenter.this);
                 uspmb.show();
             }
         });
+
         initializeDEProperties();
     }
 
@@ -70,7 +81,7 @@ public class DEPresenter implements DEView.Presenter {
             public void onFailure(Throwable caught) {
                 ErrorHandler.post(I18N.ERROR.systemInitializationError(), caught);
             }
-    
+
             @Override
             public void onSuccess(Map<String, String> result) {
                 DEProperties.getInstance().initialize(result);
@@ -87,13 +98,13 @@ public class DEPresenter implements DEView.Presenter {
     private void getUserInfo() {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "bootstrap"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-    
+
         DEServiceFacade.getInstance().getServiceData(wrapper, new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable caught) {
                 ErrorHandler.post(I18N.ERROR.retrieveUserInfoFailed(), caught);
             }
-    
+
             @Override
             public void onSuccess(String result) {
                 parseWorkspaceId(result);
@@ -105,15 +116,15 @@ public class DEPresenter implements DEView.Presenter {
 
     private void getUserPreferences() {
         Services.USER_SESSION_SERVICE.getUserPreferences(new AsyncCallback<String>() {
-    
+
             @Override
             public void onFailure(Throwable caught) {
                 ErrorHandler.post(caught);
             }
-    
+
             @Override
             public void onSuccess(String result) {
-                loadPrerences(JsonUtil.getObject(result));
+                loadPreferences(JsonUtil.getObject(result));
             }
         });
     }
@@ -127,6 +138,31 @@ public class DEPresenter implements DEView.Presenter {
         view.drawHeader();
         RootPanel.get().add(view.asWidget());
         initMessagePoller();
+    }
+
+    private void setUpKBShortCuts() {
+        keyboardShortCuts = new HashMap<Character, Command>();
+        UserSettings us = UserSettings.getInstance();
+        keyboardShortCuts.put(us.getDataShortCut(), new DataKBShortCutCmd());
+        keyboardShortCuts.put(us.getAppsShortCut(), new AppsKBShortCutCmd());
+        keyboardShortCuts.put(us.getAnalysesShortCut(), new AnalysesKBShortCutCmd());
+        keyboardShortCuts.put(us.getNotifiShortCut(), new NotifyKBShortCutCmd());
+        keyboardShortCuts.put(us.getCloseShortCut(), new CloseKBShortCutCmd());
+        addKeyBoardEvents();
+    }
+
+    private void addKeyBoardEvents() {
+        RootPanel.get().addDomHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                if (event.isShiftKeyDown() && event.isControlKeyDown()) {
+                    Command cmd = keyboardShortCuts.get(event.getCharCode());
+                    if (cmd != null) {
+                        cmd.execute();
+                    }
+                }
+            }
+        }, KeyPressEvent.getType());
     }
 
     private String parseWorkspaceId(String json) {
@@ -182,8 +218,9 @@ public class DEPresenter implements DEView.Presenter {
                 });
     }
 
-    private void loadPrerences(JSONObject obj) {
+    private void loadPreferences(JSONObject obj) {
         UserSettings.getInstance().setValues(obj);
+        setUpKBShortCuts();
     }
 
     /**
@@ -199,20 +236,21 @@ public class DEPresenter implements DEView.Presenter {
     }-*/;
 
     @Override
-    public void go(HasOneWidget container) {/* Do Nothing */}
+    public void go(HasOneWidget container) {/* Do Nothing */
+    }
 
-	@Override
-	public void doLogout() {
-		// Need to stop polling
-		MessagePoller.getInstance().stop();
+    @Override
+    public void doLogout() {
+        // Need to stop polling
+        MessagePoller.getInstance().stop();
 
         UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this);
         uspmb.show();
 
-		// Need to perform actual logout redirect.
-		Window.Location.assign(Window.Location.getPath() + Constants.CLIENT.logoutUrl());
-		
-	}
+        // Need to perform actual logout redirect.
+        Window.Location.assign(Window.Location.getPath() + Constants.CLIENT.logoutUrl());
+
+    }
 
     @Override
     public void restoreWindows(List<WindowState> windowStates) {
@@ -222,5 +260,54 @@ public class DEPresenter implements DEView.Presenter {
     @Override
     public List<WindowState> getOrderedWindowStates() {
         return view.getOrderedWindowStates();
+    }
+
+    private class DataKBShortCutCmd implements Command {
+
+        @Override
+        public void execute() {
+            eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.diskResourceWindowConfig()));
+
+        }
+
+    }
+
+    private class AppsKBShortCutCmd implements Command {
+
+        @Override
+        public void execute() {
+            eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.appsWindowConfig()));
+
+        }
+
+    }
+
+    private class AnalysesKBShortCutCmd implements Command {
+
+        @Override
+        public void execute() {
+            eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.analysisWindowConfig()));
+
+        }
+
+    }
+
+    private class NotifyKBShortCutCmd implements Command {
+
+        @Override
+        public void execute() {
+            eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(Category.ALL)));
+
+        }
+
+    }
+
+    private class CloseKBShortCutCmd implements Command {
+
+        @Override
+        public void execute() {
+            eventBus.fireEvent(new WindowCloseRequestEvent());
+
+        }
     }
 }
