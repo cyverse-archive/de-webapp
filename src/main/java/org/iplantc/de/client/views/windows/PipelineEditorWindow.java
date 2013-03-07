@@ -3,6 +3,7 @@ package org.iplantc.de.client.views.windows;
 import org.iplantc.core.client.pipelines.gxt3.presenter.PipelineViewPresenter;
 import org.iplantc.core.client.pipelines.gxt3.views.PipelineView;
 import org.iplantc.core.client.pipelines.gxt3.views.PipelineViewImpl;
+import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -20,9 +21,15 @@ public class PipelineEditorWindow extends IplantWindowBase {
         setHeadingText(I18N.DISPLAY.pipeline());
         setSize("900", "500"); //$NON-NLS-1$ //$NON-NLS-2$
 
+        Pipeline pipeline = null;
+        if (config instanceof PipelineEditorWindowConfig) {
+            PipelineEditorWindowConfig pipelineConfig = (PipelineEditorWindowConfig)config;
+            pipeline = pipelineConfig.getPipeline();
+        }
+
         PipelineView view = new PipelineViewImpl();
         presenter = new PipelineViewPresenter(view, new PublishCallbackCommand());
-        presenter.go(this);
+        presenter.go(this, pipeline);
     }
 
     class PublishCallbackCommand implements Command {
