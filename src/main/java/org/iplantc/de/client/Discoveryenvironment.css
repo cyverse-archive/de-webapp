@@ -525,15 +525,14 @@ img.analysis_remove {
 .de_header_menu_button_selected {
 	background-color: #fff;
 	border-style: solid;
-	border-color: #0098AA #0098AA white;
+	border-color: #0098AA #0098AA;
 	border-width: 1px 1px 1px;
 	padding: 1px;
 }
 
 .de_header_menu {
 	border-style: solid;
-	border-color: #0098AA #0098AA white;
-	border-width: 1px 1px 1px 1px;
+	border-color: #0098AA #0098AA;
 	padding: 1px;
 }
 
