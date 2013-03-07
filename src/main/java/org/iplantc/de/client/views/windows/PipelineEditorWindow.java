@@ -18,46 +18,12 @@ public class PipelineEditorWindow extends IplantWindowBase {
         super(null, null);
 
         setHeadingText(I18N.DISPLAY.pipeline());
-        setSize("1024", "600"); //$NON-NLS-1$ //$NON-NLS-2$
+        setSize("900", "500"); //$NON-NLS-1$ //$NON-NLS-2$
 
         PipelineView view = new PipelineViewImpl();
         presenter = new PipelineViewPresenter(view, new PublishCallbackCommand());
         presenter.go(this);
     }
-
-// /**
-// * {@inheritDoc}
-// */
-// @Override
-// public void show() {
-// super.show();
-// if (config != null) {
-// editorPanel.configure(((PipelineEditorWindowConfig)config).getPipelineConfig());
-// setWindowViewState();
-// // reset config
-// config = null;
-// }
-//
-// }
-//
-// /**
-// * Applies a window configuration to the window.
-// *
-// * @param config
-// */
-// @Override
-// public void setWindowConfig(WindowConfig config) {
-// if (config instanceof PipelineEditorWindowConfig) {
-// this.config = config;
-// }
-// }
-//
-// @Override
-// public void cleanup() {
-// super.cleanup();
-// editorPanel.cleanup();
-// categoryPanel.cleanup();
-// }
 
     class PublishCallbackCommand implements Command {
         @Override
