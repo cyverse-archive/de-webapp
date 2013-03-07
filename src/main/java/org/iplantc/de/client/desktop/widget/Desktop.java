@@ -435,7 +435,7 @@ public class Desktop implements IsWidget {
         return handler;
     }
 
-    private void hideWindow(IPlantWindowInterface window) {
+    void hideWindow(IPlantWindowInterface window) {
         if (window.isMinimized()) {
             markInactive(window);
             return;
