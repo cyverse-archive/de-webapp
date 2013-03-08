@@ -1,7 +1,6 @@
 package org.iplantc.de.client.preferences.views;
 
-import org.iplantc.core.uiapps.widgets.client.appWizard.view.fields.AppWizardFolderSelector;
-import org.iplantc.core.uiapps.widgets.client.appWizard.view.fields.converters.SplittableToStringConverter;
+import org.iplantc.core.uiapps.widgets.client.view.fields.AppWizardFolderSelector;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.de.client.I18N;
 
@@ -117,8 +116,7 @@ public class PreferencesViewImpl implements PreferencesView {
     public void setValues() {
         cboNotifyEmail.setValue(us.isEnableEmailNotification());
         cboLastPath.setValue(us.isRememberLastPath());
-        SplittableToStringConverter stsc = new SplittableToStringConverter();
-        defaultOpFolder.setValue(stsc.convertFieldValue(us.getDefaultOutputFolder()));
+        defaultOpFolder.setValueFromStringId(us.getDefaultOutputFolder());
         if (us.isSaveSession()) {
             radioSaveSession.setValue(true);
             radioNoSaveSession.setValue(false);
@@ -143,8 +141,7 @@ public class PreferencesViewImpl implements PreferencesView {
         } else {
             us.setSaveSession(true);
         }
-        SplittableToStringConverter stsc = new SplittableToStringConverter();
-        us.setDefaultOutputFolder(stsc.convertModelValue(defaultOpFolder.getValue()));
+        us.setDefaultOutputFolder(defaultOpFolder.getValue().getId());
         us.setAppsShortCut(appKbSc.getValue());
         us.setDataShortCut(dataKbSc.getValue());
         us.setAnalysesShortCut(anaKbSc.getValue());

@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.core.uiapps.widgets.client.appWizard.models.AppTemplate;
+import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uicommons.client.models.HasId;
 
 import com.google.web.bindery.autobean.shared.Splittable;

@@ -2,7 +2,7 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uiapps.client.Services;
 import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
-import org.iplantc.core.uiapps.widgets.client.appWizard.view.AppWizardView;
+import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;

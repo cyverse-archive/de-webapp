@@ -7,7 +7,7 @@ import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
 import org.iplantc.core.uiapps.integration.client.presenter.AppsIntegrationPresenterImpl;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
-import org.iplantc.core.uiapps.widgets.client.appWizard.models.AppTemplateAutoBeanFactory;
+import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
