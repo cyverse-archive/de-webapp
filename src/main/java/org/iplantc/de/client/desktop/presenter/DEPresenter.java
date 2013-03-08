@@ -18,6 +18,8 @@ import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;
+import org.iplantc.de.client.events.PreferencesUpdatedEvent;
+import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
@@ -49,6 +51,7 @@ public class DEPresenter implements DEView.Presenter {
     private final DeResources res;
     private final EventBus eventBus;
     private HashMap<String, Command> keyboardShortCuts;
+    private boolean keyboardEventsAdded;
 
     /**
      * Constructs a default instance of the object.
@@ -58,6 +61,7 @@ public class DEPresenter implements DEView.Presenter {
         this.view.setPresenter(this);
         this.res = resources;
         this.eventBus = eventBus;
+        keyboardShortCuts = new HashMap<String, Command>();
         // Add a close handler to detect browser refresh events.
         Window.addCloseHandler(new CloseHandler<Window>() {
 
@@ -66,6 +70,16 @@ public class DEPresenter implements DEView.Presenter {
                 UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
                         .saveSession(DEPresenter.this);
                 uspmb.show();
+            }
+        });
+
+        eventBus.addHandler(PreferencesUpdatedEvent.TYPE, new PreferencesUpdatedEventHandler() {
+
+            @Override
+            public void onUpdate(PreferencesUpdatedEvent event) {
+                keyboardShortCuts.clear();
+                setUpKBShortCuts();
+
             }
         });
 
@@ -141,7 +155,6 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void setUpKBShortCuts() {
-        keyboardShortCuts = new HashMap<String, Command>();
         UserSettings us = UserSettings.getInstance();
         keyboardShortCuts.put(us.getDataShortCut(), new DataKBShortCutCmd());
         keyboardShortCuts.put(us.getAppsShortCut(), new AppsKBShortCutCmd());
@@ -152,17 +165,20 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void addKeyBoardEvents() {
-        RootPanel.get().addDomHandler(new KeyPressHandler() {
-            @Override
-            public void onKeyPress(KeyPressEvent event) {
-                if (event.isShiftKeyDown() && event.isControlKeyDown()) {
-                    Command cmd = keyboardShortCuts.get(String.valueOf(event.getCharCode()));
-                    if (cmd != null) {
-                        cmd.execute();
+        if (!keyboardEventsAdded) {
+            RootPanel.get().addDomHandler(new KeyPressHandler() {
+                @Override
+                public void onKeyPress(KeyPressEvent event) {
+                    if (event.isShiftKeyDown() && event.isControlKeyDown()) {
+                        Command cmd = keyboardShortCuts.get(String.valueOf(event.getCharCode()));
+                        if (cmd != null) {
+                            cmd.execute();
+                        }
                     }
                 }
-            }
-        }, KeyPressEvent.getType());
+            }, KeyPressEvent.getType());
+            keyboardEventsAdded = true;
+        }
     }
 
     private String parseWorkspaceId(String json) {

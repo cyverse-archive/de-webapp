@@ -3,7 +3,9 @@
  */
 package org.iplantc.de.client.preferences.views;
 
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.preferences.presenter.PreferencesPresenterImpl;
 import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
 
@@ -49,6 +51,8 @@ public class PreferencesDialog extends Dialog {
             public void onSelect(SelectEvent event) {
                 if (presenter.validateAndSave()) {
                     hide();
+                    PreferencesUpdatedEvent pue = new PreferencesUpdatedEvent();
+                    EventBus.getInstance().fireEvent(pue);
                 }
             }
         });
