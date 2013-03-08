@@ -48,7 +48,7 @@ public class DEPresenter implements DEView.Presenter {
     private final DEView view;
     private final DeResources res;
     private final EventBus eventBus;
-    private HashMap<Character, Command> keyboardShortCuts;
+    private HashMap<String, Command> keyboardShortCuts;
 
     /**
      * Constructs a default instance of the object.
@@ -141,7 +141,7 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void setUpKBShortCuts() {
-        keyboardShortCuts = new HashMap<Character, Command>();
+        keyboardShortCuts = new HashMap<String, Command>();
         UserSettings us = UserSettings.getInstance();
         keyboardShortCuts.put(us.getDataShortCut(), new DataKBShortCutCmd());
         keyboardShortCuts.put(us.getAppsShortCut(), new AppsKBShortCutCmd());
@@ -156,7 +156,7 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onKeyPress(KeyPressEvent event) {
                 if (event.isShiftKeyDown() && event.isControlKeyDown()) {
-                    Command cmd = keyboardShortCuts.get(event.getCharCode());
+                    Command cmd = keyboardShortCuts.get(String.valueOf(event.getCharCode()));
                     if (cmd != null) {
                         cmd.execute();
                     }

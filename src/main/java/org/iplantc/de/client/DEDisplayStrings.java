@@ -1097,4 +1097,16 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      */
     String restoreDefaults();
 
+    String keyboadSc();
+
+    String openDatawindow();
+
+    String openAnalyseswindow();
+
+    String openNotificationswindow();
+
+    String openAppswindow();
+
+    String closeActivewindow();
+
 }

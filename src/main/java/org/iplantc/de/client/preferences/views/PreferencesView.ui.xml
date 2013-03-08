@@ -8,31 +8,92 @@
 		.user_pref {
 			background-color: #fff;
 		}
+		
 		.session_field {
-		padding-left:5px;
-	}
+			padding-left: 5px;
+		}
 	</ui:style>
-	<container:VerticalLayoutContainer ui:field="container" styleName="{style.user_pref}">
-		<g:HorizontalPanel spacing="3">
-
-			<form:CheckBox debugId="idCboNotifyEmail" ui:field="cboNotifyEmail">
-			</form:CheckBox>
-			<form:FieldLabel text="{strings.notifyemail}"
-				labelSeparator="" labelWidth="300"></form:FieldLabel>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel spacing="3">
-			<form:CheckBox debugId="cboLastPath" ui:field="cboLastPath">
-			</form:CheckBox>
-			<form:FieldLabel text="{strings.rememberFileSectorPath}"
-				labelSeparator="" labelWidth="300">
-			</form:FieldLabel>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel spacing="3" styleName="{style.session_field}">
-			<form:FieldLabel text="{strings.saveSession}"></form:FieldLabel>
-			<form:Radio debugId="idRdoSaveSession" ui:field="radioSaveSession" boxLabel="{strings.enabled}"
-				name="saveSession" />
-			<form:Radio debugId="idRdoNoSaveSession" ui:field="radioNoSaveSession" boxLabel="{strings.disabled}"
-				name="saveSession" />
-		</g:HorizontalPanel>
+	<container:VerticalLayoutContainer
+		ui:field="container" adjustForScroll="true" styleName="{style.user_pref}">
+		<form:FieldSet headingText="{strings.preferences}"
+			collapsible="true">
+			<container:VerticalLayoutContainer
+				ui:field="prefContainer">
+				<g:HorizontalPanel spacing="3">
+					<form:CheckBox debugId="idCboNotifyEmail" ui:field="cboNotifyEmail"
+						boxLabel="{strings.notifyemail}">
+					</form:CheckBox>
+				</g:HorizontalPanel>
+				<g:HorizontalPanel spacing="3">
+					<form:CheckBox debugId="cboLastPath" ui:field="cboLastPath"
+						boxLabel="{strings.rememberFileSectorPath}">
+					</form:CheckBox>
+				</g:HorizontalPanel>
+				<g:HorizontalPanel spacing="3" styleName="{style.session_field}">
+					<form:FieldLabel HTML="{strings.saveSession}">
+						<form:widget>
+							<g:HorizontalPanel spacing="3">
+								<form:Radio debugId="idRdoSaveSession" ui:field="radioSaveSession"
+									boxLabel="{strings.enabled}" name="saveSession" />
+								<form:Radio debugId="idRdoNoSaveSession" ui:field="radioNoSaveSession"
+									boxLabel="{strings.disabled}" name="saveSession" />
+							</g:HorizontalPanel>
+						</form:widget>
+					</form:FieldLabel>
+				</g:HorizontalPanel>
+			</container:VerticalLayoutContainer>
+		</form:FieldSet>
+		<form:FieldSet headingText="{strings.keyboadSc}"
+			collapsible="true">
+			<container:VerticalLayoutContainer>
+				<form:FieldLabel labelWidth="150" HTML="{strings.openAppswindow}">
+					<form:widget>
+						<g:HorizontalPanel spacing="1">
+							<g:Label text="Control + Shift + "></g:Label>
+							<form:TextField allowBlank="false" width="50"
+								ui:field="appKbSc"></form:TextField>
+						</g:HorizontalPanel>
+					</form:widget>
+				</form:FieldLabel>
+				<form:FieldLabel labelWidth="150" HTML="{strings.openDatawindow}">
+					<form:widget>
+						<g:HorizontalPanel spacing="1">
+							<g:Label text="Control + Shift + "></g:Label>
+							<form:TextField allowBlank="false" width="50"
+								ui:field="dataKbSc"></form:TextField>
+						</g:HorizontalPanel>
+					</form:widget>
+				</form:FieldLabel>
+				<form:FieldLabel labelWidth="150" HTML="{strings.openAnalyseswindow}">
+					<form:widget>
+						<g:HorizontalPanel spacing="1">
+							<g:Label text="Control + Shift + "></g:Label>
+							<form:TextField allowBlank="false" width="50"
+								ui:field="anaKbSc"></form:TextField>
+						</g:HorizontalPanel>
+					</form:widget>
+				</form:FieldLabel>
+				<form:FieldLabel labelWidth="150"
+					HTML="{strings.openNotificationswindow}">
+					<form:widget>
+						<g:HorizontalPanel spacing="1">
+							<g:Label text="Control + Shift + "></g:Label>
+							<form:TextField allowBlank="false" width="50"
+								ui:field="notKbSc"></form:TextField>
+						</g:HorizontalPanel>
+					</form:widget>
+				</form:FieldLabel>
+				<form:FieldLabel labelWidth="150"
+					HTML="{strings.closeActivewindow}">
+					<form:widget>
+						<g:HorizontalPanel spacing="1">
+							<g:Label text="Control + Shift + "></g:Label>
+							<form:TextField allowBlank="false" width="50"
+								ui:field="closeKbSc"></form:TextField>
+						</g:HorizontalPanel>
+					</form:widget>
+				</form:FieldLabel>
+			</container:VerticalLayoutContainer>
+		</form:FieldSet>
 	</container:VerticalLayoutContainer>
 </ui:UiBinder> 

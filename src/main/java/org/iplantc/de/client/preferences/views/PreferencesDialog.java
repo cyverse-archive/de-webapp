@@ -47,8 +47,9 @@ public class PreferencesDialog extends Dialog {
 
             @Override
             public void onSelect(SelectEvent event) {
-                presenter.save();
-                hide();
+                if (presenter.validateAndSave()) {
+                    hide();
+                }
             }
         });
 

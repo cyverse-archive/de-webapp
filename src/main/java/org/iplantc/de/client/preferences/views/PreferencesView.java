@@ -15,7 +15,7 @@ public interface PreferencesView extends IsWidget {
 
     public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
 
-        void save();
+        boolean validateAndSave();
 
         void setDefaults();
 
@@ -26,6 +26,8 @@ public interface PreferencesView extends IsWidget {
     void setDefaultValues();
 
     void setValues();
+
+    boolean isValid();
 
     UserSettings getValues();
 }

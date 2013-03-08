@@ -34,21 +34,25 @@ public class PreferencesPresenterImpl implements Presenter {
     }
 
     @Override
-    public void save() {
-        UserSettings us = view.getValues();
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
+    public boolean validateAndSave() {
+        if (view.isValid()) {
+            UserSettings us = view.getValues();
+            UserSessionServiceFacade facade = new UserSessionServiceFacade();
+            facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
 
-            @Override
-            public void onSuccess(String result) {
-                DEInfo.display(I18N.DISPLAY.save(), I18N.DISPLAY.saveSettings());
-            }
+                @Override
+                public void onSuccess(String result) {
+                    DEInfo.display(I18N.DISPLAY.save(), I18N.DISPLAY.saveSettings());
+                }
 
-            @Override
-            public void onFailure(Throwable caught) {
-                ErrorHandler.post(caught);
-            }
-        });
+                @Override
+                public void onFailure(Throwable caught) {
+                    ErrorHandler.post(caught);
+                }
+            });
+        }
+
+        return view.isValid();
     }
 
     @Override
