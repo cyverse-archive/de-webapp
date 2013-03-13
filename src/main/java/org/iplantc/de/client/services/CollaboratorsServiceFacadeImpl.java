@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.client.services;
 
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade;
@@ -48,6 +50,29 @@ public class CollaboratorsServiceFacadeImpl implements CollaboratorsServiceFacad
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 users.toString());
 
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    public void getUserInfo(List<String> usernames, AsyncCallback<String> callback) {
+        StringBuilder address = new StringBuilder(DEProperties.getInstance().getMuleServiceBaseUrl());
+        address.append("user-info"); //$NON-NLS-1$
+
+        if (usernames != null && !usernames.isEmpty()) {
+            address.append("?"); //$NON-NLS-1$
+            boolean first = true;
+            for (String user : usernames) {
+                if (first) {
+                    first = false;
+                } else {
+                    address.append("&"); //$NON-NLS-1$
+                }
+
+                address.append("username="); //$NON-NLS-1$
+                address.append(URL.encodeQueryString(user.trim()));
+            }
+        }
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address.toString());
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
