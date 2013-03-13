@@ -856,35 +856,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
     String settings();
 
     /**
-     * Localized display text for collaborators
-     * 
-     * @return a string representing the localized text.
-     */
-    String collaborators();
-
-    /**
-     * Localized display text for search collaborators
-     * 
-     * @return a string representing the localized text.
-     */
-    String collabSearchPrompt();
-
-    /**
-     * Localized display text for no collaborators
-     * 
-     * @return a string representing the localized text.
-     */
-
-    String noCollaborators();
-
-    /**
-     * Localized display text for showing current collaborators list
-     * 
-     * @return a string representing the localized text.
-     */
-    String currentCollabList();
-
-    /**
      * Localized display text for 'done'
      * 
      * @return a string representing the localized text.

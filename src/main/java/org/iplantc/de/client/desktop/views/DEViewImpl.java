@@ -12,7 +12,7 @@ import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.collaborators.views.ManageCollaboratorsDailog;
+import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsDailog;
 import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
