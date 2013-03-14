@@ -284,14 +284,6 @@ public interface Icons extends org.iplantc.core.uicommons.client.images.Icons {
      * 
      * @return image.
      */
-    @Source("group.png")
-    ImageResource viewCurrentCollabs();
-
-    /**
-     * Image resource.
-     * 
-     * @return image.
-     */
     @Source("delete_icon.png")
     ImageResource deleteIcon();
 
