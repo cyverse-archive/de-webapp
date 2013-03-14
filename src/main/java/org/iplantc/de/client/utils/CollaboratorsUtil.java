@@ -108,7 +108,7 @@ public class CollaboratorsUtil {
                 return c;
             }
         }
-        return new Collaborator(null, userName, userName, null, null);
+        return new Collaborator(null, userName, userName, null, null, null);
 
     }
 
@@ -215,8 +215,9 @@ public class CollaboratorsUtil {
                         String firstName = JsonUtil.getString(userJson, Collaborator.FIRST_NAME);
                         String lastName = JsonUtil.getString(userJson, Collaborator.LAST_NAME);
                         String email = JsonUtil.getString(userJson, Collaborator.EMAIL);
-
-                        Collaborator user = new Collaborator(id, username, firstName, lastName, email);
+                        String ins = JsonUtil.getString(userJson, Collaborator.INSTITUTION);
+                        Collaborator user = new Collaborator(id, username, firstName, lastName, email,
+                                ins);
                         userResults.put(username, user);
                     }
                 }

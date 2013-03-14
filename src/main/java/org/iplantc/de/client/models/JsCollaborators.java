@@ -36,4 +36,8 @@ public class JsCollaborators extends JavaScriptObject {
 		return this.username;
     }-*/;
 
+    public final native String getInstitution() /*-{
+		return this.institution;
+    }-*/;
+
 }

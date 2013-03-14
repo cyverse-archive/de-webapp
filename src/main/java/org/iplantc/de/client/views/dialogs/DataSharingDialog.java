@@ -305,7 +305,7 @@ public class DataSharingDialog extends Dialog {
                         for (String userName : usernames) {
                             Collaborator user = results.get(userName);
                             if (user == null) {
-                                user = new Collaborator(null, userName, userName, null, null);
+                                user = new Collaborator(null, userName, userName, null, null, null);
                             }
 
                             List<DataSharing> dataShares = new ArrayList<DataSharing>();
