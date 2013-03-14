@@ -4,6 +4,8 @@ import org.iplantc.core.uiapps.client.events.CreateNewAppEvent;
 import org.iplantc.core.uiapps.client.events.CreateNewAppEvent.CreateNewAppEventHandler;
 import org.iplantc.core.uiapps.client.events.EditAppEvent;
 import org.iplantc.core.uiapps.client.events.EditAppEvent.EditAppEventHandler;
+import org.iplantc.core.uiapps.client.events.EditWorkflowEvent;
+import org.iplantc.core.uiapps.client.events.EditWorkflowEvent.EditWorkflowEventHandler;
 import org.iplantc.core.uiapps.client.events.RunAppEvent;
 import org.iplantc.core.uiapps.client.events.RunAppEvent.RunAppEventHandler;
 import org.iplantc.core.uiapps.client.events.handlers.CreateNewWorkflowEventHandler;
@@ -18,12 +20,13 @@ import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
+import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
 
 import com.google.web.bindery.autobean.shared.Splittable;
 
 final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler,
  CreateNewAppEventHandler, CreateNewWorkflowEventHandler, WindowShowRequestEventHandler,
- RunAppEventHandler, EditAppEventHandler {
+        RunAppEventHandler, EditAppEventHandler, EditWorkflowEventHandler {
     private final Desktop desktop;
 
     ShowWindowEventHandler(Desktop desktop) {
@@ -70,5 +73,13 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
     @Override
     public void createNewWorkflow() {
         desktop.showWindow(ConfigFactory.workflowIntegrationWindowConfig());
+    }
+
+    @Override
+    public void onEditWorkflow(EditWorkflowEvent event) {
+        PipelineEditorWindowConfig config = ConfigFactory.workflowIntegrationWindowConfig();
+        Splittable legacyAppTemplate = event.getLegacyAppTemplate();
+        config.setLegacyAppTemplateJson(legacyAppTemplate);
+        desktop.showWindow(config);
     }
 }
