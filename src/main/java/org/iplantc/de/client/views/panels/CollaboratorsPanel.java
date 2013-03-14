@@ -85,8 +85,8 @@ public class CollaboratorsPanel extends ContentPanel {
         ColumnConfig name = new ColumnConfig(Collaborator.NAME, I18N.DISPLAY.name(), 150);
         name.setRenderer(new NameCellRenderer());
 
-        ColumnConfig email = new ColumnConfig(Collaborator.EMAIL, I18N.DISPLAY.email(), 200);
-        return new ColumnModel(Arrays.asList(name, email));
+        ColumnConfig ins = new ColumnConfig(Collaborator.INSTITUTION, I18N.DISPLAY.institution(), 200);
+        return new ColumnModel(Arrays.asList(name, ins));
 
     }
 

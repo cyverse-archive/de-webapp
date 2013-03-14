@@ -176,9 +176,9 @@ public class SelectCollaboratorsDialog extends Dialog {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig name = new ColumnConfig(Collaborator.NAME, I18N.DISPLAY.name(), 150);
-        ColumnConfig email = new ColumnConfig(Collaborator.EMAIL, I18N.DISPLAY.email(), 200);
+        ColumnConfig ins = new ColumnConfig(Collaborator.INSTITUTION, I18N.DISPLAY.institution(), 200);
 
-        columns.addAll(Arrays.asList(sm.getColumn(), name, email));
+        columns.addAll(Arrays.asList(sm.getColumn(), name, ins));
 
         return new ColumnModel(columns);
     }

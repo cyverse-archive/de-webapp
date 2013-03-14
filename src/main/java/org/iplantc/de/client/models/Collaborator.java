@@ -27,15 +27,18 @@ public class Collaborator extends BaseModelData {
     public static final String EMAIL = "email";
     public static final String USERNAME = "username";
     public static final String NAME = "name";
+    public static final String INSTITUTION = "institution";
 
     public Collaborator(JsCollaborators jsCollaborators) {
         set(ID, jsCollaborators.getId());
         set(NAME, jsCollaborators.getFirstName() + " " + jsCollaborators.getLastName());
         set(EMAIL, jsCollaborators.getEmail());
         set(USERNAME, jsCollaborators.getUserName());
+        set(INSTITUTION, jsCollaborators.getInstitution());
     }
 
-    public Collaborator(String id, String username, String firstName, String lastName, String email) {
+    public Collaborator(String id, String username, String firstName, String lastName, String email,
+            String institution) {
         if (id == null) {
             set(ID, "");
         } else {
@@ -55,6 +58,12 @@ public class Collaborator extends BaseModelData {
             set(USERNAME, "");
         } else {
             set(USERNAME, username);
+        }
+
+        if (institution == null) {
+            set(INSTITUTION, "");
+        } else {
+            set(INSTITUTION, institution);
         }
 
     }
@@ -78,6 +87,10 @@ public class Collaborator extends BaseModelData {
 
     public String getUserName() {
         return get(USERNAME);
+    }
+
+    public String getInstitution() {
+        return get(INSTITUTION);
     }
 
     @Override

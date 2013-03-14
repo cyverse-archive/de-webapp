@@ -134,10 +134,11 @@ public class UserSearchField extends ComboBox<Collaborator> {
         template.append("{name}"); //$NON-NLS-1$
         template.append("</h3>"); //$NON-NLS-1$
 
+        template.append("<tpl if=\"institution !=null \">");
         template.append("<h4>"); //$NON-NLS-1$
-        template.append("<span>{email}</span>"); //$NON-NLS-1$
+        template.append("<span>{institution}</span>"); //$NON-NLS-1$
         template.append("</h4>"); //$NON-NLS-1$
-
+        template.append("</tpl>");
         template.append("</div></tpl>"); //$NON-NLS-1$
 
         return template.toString();

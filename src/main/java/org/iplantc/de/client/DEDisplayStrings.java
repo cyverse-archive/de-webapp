@@ -1432,4 +1432,6 @@ public interface DEDisplayStrings extends CommonUIDisplayStrings {
      * @return
      */
     String selfShareWarning();
+
+    String institution();
 }
