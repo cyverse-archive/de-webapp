@@ -43,7 +43,7 @@ public class WindowFactory {
      * @return
      */
     public static <C extends WindowConfig> IPlantWindowInterface  build(C config){
-        EventBus eventBus = EventBus.getInstance();
+        final EventBus eventBus = EventBus.getInstance();
         IPlantWindowInterface ret = null;
         switch (config.getWindowType()) {
             case ABOUT:
@@ -53,7 +53,7 @@ public class WindowFactory {
                 ret = new MyAnalysesWindow((AnalysisWindowConfig)config, eventBus);
                 break;
             case APP_INTEGRATION:
-                ret = new AppIntegrationWindow((AppsIntegrationWindowConfig)config);
+                ret = new AppIntegrationWindow((AppsIntegrationWindowConfig)config, eventBus);
                 break;
             case APP_WIZARD:
                 ret = new AppWizardWindow((AppWizardConfig)config);

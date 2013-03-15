@@ -9,6 +9,7 @@ import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
@@ -34,11 +35,11 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private final AppUserServiceFacade templateService = Services.USER_APP_SERVICE;
     protected List<HandlerRegistration> handlers;
 
-    public AppIntegrationWindow(AppsIntegrationWindowConfig config) {
+    public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus) {
         super(null, config);
 
-        AppsIntegrationView view = new AppsIntegrationViewImpl();
-        presenter = new AppsIntegrationPresenterImpl(view);
+        AppsIntegrationView view = new AppsIntegrationViewImpl(eventBus);
+        presenter = new AppsIntegrationPresenterImpl(view, eventBus);
         setTitle(I18N.DISPLAY.createApps());
         setSize("800", "410");
 
