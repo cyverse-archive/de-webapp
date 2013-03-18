@@ -163,4 +163,11 @@ public interface DEDisplayStaticText extends Constants {
      * @return a String representing the text.
      */
     String notificationCategoryUnseen();
+
+    /**
+     * tool request status update notification
+     * 
+     * @return
+     */
+	String toolRequest();
 }

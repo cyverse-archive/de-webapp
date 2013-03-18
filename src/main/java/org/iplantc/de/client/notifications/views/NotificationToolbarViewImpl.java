@@ -59,6 +59,7 @@ public class NotificationToolbarViewImpl implements NotificationToolbarView {
         cboFilter.add(Category.ALL);
         cboFilter.add(Category.ANALYSIS);
         cboFilter.add(Category.DATA);
+        cboFilter.add(Category.TOOLREQUEST);
         cboFilter.setValue(Category.ALL);
         cboFilter.addSelectionHandler(new SelectionHandler<NotificationHelper.Category>() {
             @Override

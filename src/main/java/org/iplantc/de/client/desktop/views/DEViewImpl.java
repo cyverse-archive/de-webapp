@@ -294,7 +294,7 @@ public class DEViewImpl implements DEView {
 
         public NotificationIndicator(int initialCount) {
             super();
-            setWidth("30px");
+            setWidth("18px");
             setStyleName(resources.css().de_notification_indicator());
             setCount(initialCount);
         }

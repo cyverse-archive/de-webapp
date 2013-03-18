@@ -54,6 +54,9 @@ public class NotificationHelper {
         DATA(I18N.CONSTANT.notificationCategoryData()),
         /** Analysis notifications */
         ANALYSIS(I18N.CONSTANT.notificationCategoryAnalysis()),
+        
+        /** tool rquest status update notification */
+        TOOLREQUEST(I18N.CONSTANT.toolRequest()),
 
         /** unseen notifications */
         NEW(I18N.CONSTANT.notificationCategoryUnseen());
