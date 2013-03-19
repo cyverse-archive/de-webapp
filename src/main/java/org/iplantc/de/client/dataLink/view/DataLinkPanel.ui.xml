@@ -5,10 +5,16 @@
              xmlns:tree="urn:import:com.sencha.gxt.widget.core.client.tree"
              xmlns:toolBar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
              xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button">
+    <ui:style>
+        .background {
+        	background-color: #ffffff;
+        }
 
-   <ui:style>
-      .background {background-color: #ffffff;}
-   </ui:style>
+        .dataLinkWarning {
+        	color: #E34234;
+        	font-weight: bold;
+        }
+    </ui:style>
    <ui:with type="org.iplantc.de.client.DEDisplayStrings" field="display"/>
    <ui:with type="org.iplantc.de.client.dataLink.view.DataLinkResources" field="res"/>
    <ui:with type="com.sencha.gxt.data.shared.TreeStore" field="store" />
@@ -52,11 +58,16 @@
                     valueProvider="{valueProvider}"
                     store="{store}"/>
       </container:child>
-      <container:child>
-           <g:HTMLPanel>
-               <img src="{res.error.getSafeUri}" class="{res.css.dataLinkImfoImg}">&nbsp;   <ui:text from="{display.dataLinkWarning}" /> </img>
-            </g:HTMLPanel>
-            </container:child>
+    <container:child>
+        <g:HTMLPanel styleName="{style.dataLinkWarning}">
+            <img
+                src="{res.error.getSafeUri}"
+                class="{res.css.dataLinkImfoImg}">
+                &nbsp;
+                <ui:text from="{display.dataLinkWarning}" />
+            </img>
+        </g:HTMLPanel>
+    </container:child>
    </container:VBoxLayoutContainer>
 
 </ui:UiBinder> 
