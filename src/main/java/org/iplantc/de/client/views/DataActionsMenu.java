@@ -58,7 +58,6 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HTML;
 
 public final class DataActionsMenu extends Menu {
     private static final String MI_ADD_FOLDER_ID = "idDataActionsMenuAddFolder"; //$NON-NLS-1$
@@ -99,7 +98,6 @@ public final class DataActionsMenu extends Menu {
     private MenuItem itemDeleteResource;
     private MenuItem itemMetaData;
     private MenuItem itemShareResource;
-    @SuppressWarnings("unused")
     private MenuItem itemCopyResource;
     private MenuItem itemPasteResource;
     private MenuItem itemRestore;
@@ -337,8 +335,6 @@ public final class DataActionsMenu extends Menu {
             dlg.setWidth(550);
             dlg.getButtonById(Dialog.OK).setText("Done");
             dlg.add(dlPresenter.getView().getDisplayWidget());
-            dlg.add(new HTML("<span style='color:#E34234;font-weight:bold;'>"
-                    + I18N.DISPLAY.dataLinkWarning() + "</span>"));
 
             ToolButton helpBtn = new ToolButton("x-tool-help");
             ToolTipConfig ttc = new ToolTipConfig();
