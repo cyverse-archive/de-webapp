@@ -350,4 +350,14 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void editWorkflow(String workflowId, AsyncCallback<String> callback) {
+        String address = "org.iplantc.services.zoidberg.edit-workflow/" + workflowId; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
 }
