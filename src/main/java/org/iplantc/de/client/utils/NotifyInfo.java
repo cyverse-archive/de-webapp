@@ -13,7 +13,9 @@ import com.extjs.gxt.ui.client.util.Params;
  * 
  * @see com.extjs.gxt.ui.client.widget.Info
  * @see com.extjs.gxt.ui.client.widget.InfoConfig
+ * @deprecated Class needs to be ported to GXT3
  */
+@Deprecated
 public class NotifyInfo {
     /**
      * Provide an informative message to the user and include as a notification.

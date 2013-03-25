@@ -20,8 +20,9 @@ import com.sencha.gxt.core.client.util.Size;
  * Display info to the user in the lower-right corner.
  * 
  * @author amuir
- * 
+ * @deprecated Class needs to be ported to GXT3
  */
+@Deprecated
 public class DEInfo extends ContentPanel {
     private static Queue<DEInfo> infoQueue = new LinkedList<DEInfo>();
 
