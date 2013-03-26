@@ -14,7 +14,7 @@ public interface PipelineEditorWindowConfig extends WindowConfig {
 
     public void setPipeline(Pipeline pipeline);
 
-    Splittable getLegacyAppTemplateJson();
+    Splittable getServiceWorkflowJson();
 
-    void setLegacyAppTemplateJson(Splittable legacyJson);
+    void setServiceWorkflowJson(Splittable workflowJson);
 }
