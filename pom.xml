@@ -283,6 +283,7 @@
                     <extraJvmArgs>-Xmx1024M -Xms512M -Xss4M</extraJvmArgs>
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <mode>htmlunit</mode> 
+                    <gen>${basedir}/gwt-gen</gen>
                     <module>org.iplantc.de.discoveryenvironment</module>
 		            <!-- compileReport>true</compileReport>
                     <compilerMetrics>true</compilerMetrics>
@@ -306,6 +307,9 @@
                     <filesets>
                         <fileset>
                             <directory>${basedir}/war</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}/gwt-gen</directory>
                         </fileset>
                     </filesets>
                 </configuration>
