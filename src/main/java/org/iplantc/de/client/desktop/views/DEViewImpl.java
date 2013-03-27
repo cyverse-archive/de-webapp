@@ -18,7 +18,7 @@ import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.de.client.images.Resources;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
@@ -132,8 +132,7 @@ public class DEViewImpl implements DEView {
         VerticalLayoutContainer panel = new VerticalLayoutContainer();
         panel.setWidth("80%");
 
-        Resources.ICONS.headerLogo();
-        Image logo = new Image(Resources.ICONS.headerLogo().getSafeUri());
+        Image logo = new Image(IplantResources.RESOURCES.headerLogo().getSafeUri());
         logo.addStyleName(resources.css().iplantcLogo());
         logo.addClickHandler(new ClickHandler() {
 
@@ -188,7 +187,7 @@ public class DEViewImpl implements DEView {
 
     private TextButton buildActionsMenu(String menuHeaderText, final Menu menu) {
         final TextButton button = new TextButton();
-        button.setIcon(Resources.ICONS.userMenu());
+        button.setIcon(IplantResources.RESOURCES.userMenu());
         button.ensureDebugId("id" + menuHeaderText);
         button.setMenu(menu);
         menu.addShowHandler(new ShowHandler() {

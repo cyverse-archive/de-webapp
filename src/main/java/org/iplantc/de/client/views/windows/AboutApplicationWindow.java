@@ -4,7 +4,7 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.images.Resources;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.models.AboutApplicationData;
 import org.iplantc.de.client.models.DeModelAutoBeanFactory;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
@@ -67,7 +67,7 @@ public class AboutApplicationWindow extends IplantWindowBase {
     private void compose() {
         VerticalLayoutContainer vlc = new VerticalLayoutContainer();
         vlc.setBorders(true);
-        Image logo = new Image(Resources.ICONS.iplantAbout().getSafeUri());
+        Image logo = new Image(IplantResources.RESOURCES.iplantAbout().getSafeUri());
 
         vlc.add(logo);
         vlc.add(lblNSFStatement);

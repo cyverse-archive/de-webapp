@@ -9,7 +9,7 @@
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
 	xmlns:paging="urn:import:org.iplantc.de.client.desktop.widget">
 	
-   <ui:with type="org.iplantc.core.uiapps.client.images.Icons" field="icons"/>
+   <ui:with type="org.iplantc.core.resources.client.IplantResources" field="icons"/>
    <ui:with type="org.iplantc.core.uiapps.client.CommonAppDisplayStrings" field="strings" />
 
 	<!-- Main Panel -->

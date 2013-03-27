@@ -8,7 +8,7 @@
 
     <ui:with
         field="icons"
-        type="org.iplantc.de.client.images.Icons" />
+        type="org.iplantc.core.resources.client.IplantResources" />
 
     <ui:with
         field="strings"

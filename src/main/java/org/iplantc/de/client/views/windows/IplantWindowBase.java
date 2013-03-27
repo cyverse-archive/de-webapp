@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.uicommons.client.I18N;
-import org.iplantc.core.uicommons.client.images.Resources;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
@@ -122,7 +122,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         setClosable(false);
 
         getHeader().addStyleName(res.css().windowLayoutTitle3());
-        getHeader().setIcon(Resources.ICONS.whitelogoSmall());
+        getHeader().setIcon(IplantResources.RESOURCES.whitelogoSmall());
 
         setStyleName(res.css().windowBody3());
         setShadow(false);

@@ -32,7 +32,7 @@ import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
-import org.iplantc.de.client.images.Resources;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.utils.ShortcutManager;
 import org.iplantc.de.client.utils.builders.DefaultDesktopBuilder;
@@ -274,7 +274,7 @@ public class Desktop implements IsWidget {
 
     public TextButton buildLayoutSwitchButton() {
         TextButton btn = new TextButton();
-        btn.setIcon(Resources.ICONS.layoutWand());
+        btn.setIcon(IplantResources.RESOURCES.layoutWand());
         btn.addSelectHandler(new SelectHandler() {
 
             @Override

@@ -5,7 +5,7 @@
  */
 package org.iplantc.de.client.desktop.widget;
 
-import org.iplantc.de.client.images.Resources;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.resources.client.ImageResource;
@@ -33,7 +33,7 @@ public class TaskButton extends ToggleButton {
      */
     public TaskButton(IPlantWindowInterface win) {
         super(new TaskButtonCell());
-        ImageResource icon = Resources.ICONS.whitelogoSmall();
+        ImageResource icon = IplantResources.RESOURCES.whitelogoSmall();
         String text = win.getTitle();
         if (text != null) {
             setText(Format.ellipse(text, 26));

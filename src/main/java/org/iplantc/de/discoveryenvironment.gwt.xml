@@ -43,6 +43,7 @@
         <!-- Common Service Interfaces -->
 	<inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
 	<inherits name="org.iplantc.core.JsonUtil"/>
+	<inherits name="org.iplantc.core.ui-resources"/>
     <inherits name="org.iplantc.core.ui-commons"/>
 	<inherits name="org.iplantc.core.Metadata"/>
 	<inherits name="org.iplantc.core.uiapps.Apps"/>
