@@ -78,8 +78,8 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
     @Override
     public void onEditWorkflow(EditWorkflowEvent event) {
         PipelineEditorWindowConfig config = ConfigFactory.workflowIntegrationWindowConfig();
-        Splittable legacyAppTemplate = event.getLegacyAppTemplate();
-        config.setLegacyAppTemplateJson(legacyAppTemplate);
+        Splittable serviceWorkflowJson = event.getServiceWorkflowJson();
+        config.setServiceWorkflowJson(serviceWorkflowJson);
         desktop.showWindow(config);
     }
 }

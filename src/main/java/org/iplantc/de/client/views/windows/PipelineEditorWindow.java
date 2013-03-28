@@ -21,15 +21,21 @@ public class PipelineEditorWindow extends IplantWindowBase {
         setHeadingText(I18N.DISPLAY.pipeline());
         setSize("900", "500"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        Pipeline pipeline = null;
-        if (config instanceof PipelineEditorWindowConfig) {
-            PipelineEditorWindowConfig pipelineConfig = (PipelineEditorWindowConfig)config;
-            pipeline = pipelineConfig.getPipeline();
-        }
-
         PipelineView view = new PipelineViewImpl();
         presenter = new PipelineViewPresenter(view, new PublishCallbackCommand());
-        presenter.go(this, pipeline);
+
+        if (config instanceof PipelineEditorWindowConfig) {
+            PipelineEditorWindowConfig pipelineConfig = (PipelineEditorWindowConfig)config;
+            Pipeline pipeline = pipelineConfig.getPipeline();
+
+            if (pipeline != null) {
+                presenter.setPipeline(pipeline);
+            } else {
+                presenter.setPipeline(pipelineConfig.getServiceWorkflowJson());
+            }
+        }
+
+        presenter.go(this);
     }
 
     class PublishCallbackCommand implements Command {
