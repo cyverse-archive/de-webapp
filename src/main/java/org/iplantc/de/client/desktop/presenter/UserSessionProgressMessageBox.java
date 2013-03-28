@@ -11,7 +11,6 @@ import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEView.Presenter;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
@@ -26,7 +25,7 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox saveSession(DEView.Presenter presenter) {
-        UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(), I18N.DISPLAY.savingSessionWaitNotice(), 
+        UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(), I18N.DISPLAY.savingSessionWaitNotice(),
                 ProgressBoxType.SAVE_SESSION,
                 presenter);
         saveSessionMb.setProgressText(I18N.DISPLAY.savingMask());
@@ -35,7 +34,7 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox restoreSession(DEView.Presenter presenter) {
-        UserSessionProgressMessageBox restoreSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.loadingSession(), I18N.DISPLAY.loadingSessionWaitNotice(), 
+        UserSessionProgressMessageBox restoreSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.loadingSession(), I18N.DISPLAY.loadingSessionWaitNotice(),
                 ProgressBoxType.RESTORE_SESSION,
                 presenter);
         restoreSessionMb.setProgressText(I18N.DISPLAY.loadingMask());
@@ -49,7 +48,7 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     private final GetUserSessionCallback restoreSessionCallback;
     private final UserSessionFactory factory = GWT.create(UserSessionFactory.class);
 
-    private UserSessionProgressMessageBox(SafeHtml headingHtml, SafeHtml messageHtml, ProgressBoxType type, DEView.Presenter presenter) {
+    private UserSessionProgressMessageBox(String headingHtml, String messageHtml, ProgressBoxType type, DEView.Presenter presenter) {
         super(headingHtml, messageHtml);
         this.getProgressBar().setDuration(1000);
         this.getProgressBar().setInterval(100);
@@ -86,16 +85,16 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
 
     private final class SaveUserSessionCallback implements AsyncCallback<String> {
         private final IsHideable msgBox;
-    
+
         public SaveUserSessionCallback(IsHideable msgBox) {
             this.msgBox = msgBox;
         }
-    
+
         @Override
         public void onSuccess(String result) {
             msgBox.hide();
         }
-    
+
         @Override
         public void onFailure(Throwable caught) {
             GWT.log(I18N.ERROR.saveSessionFailed(), caught);

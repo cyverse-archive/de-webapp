@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.gwt.core.client.GWT;
@@ -39,7 +39,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * @author jstroot
- * 
+ *
  */
 public abstract class IplantWindowBase extends Window implements IPlantWindowInterface {
     interface WindowStateFactory extends AutoBeanFactory{
@@ -63,12 +63,12 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     private final Map<Widget, List<HandlerRegistration>> handlerRegMap = new HashMap<Widget, List<HandlerRegistration>>();
 
     private final DeResources res = GWT.create(DeResources.class);
-    
+
     private final WindowStateFactory wsf = GWT.create(WindowStateFactory.class);
 
     /**
      * Constructs an instance of the window.
-     * 
+     *
      * @param tag a unique identifier for the window.
      */
     protected IplantWindowBase(String tag) {
@@ -307,7 +307,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     /**
      * Replaces the maximize icon with the restore icon.
-     * 
+     *
      * The restore icon is only visible to the user when a window is in maximized state.
      */
     private void replaceMaximizeIcon() {
@@ -422,7 +422,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     public int getHeaderOffSetHeight() {
         return getHeader().getOffsetHeight();
     }
-    
+
     @Override
     public <C extends WindowConfig> void update(C config) {
     }

@@ -2,13 +2,13 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form">
-	<ui:with field="strings" type="org.iplantc.de.client.DEDisplayStrings" />
+	<ui:with field="strings" type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
 
 	<ui:style>
 		.user_pref {
 			background-color: #fff;
 		}
-		
+
 		.session_field {
 			padding-left: 5px;
 		}
@@ -96,4 +96,4 @@
 			</container:VerticalLayoutContainer>
 		</form:FieldSet>
 	</container:VerticalLayoutContainer>
-</ui:UiBinder> 
+</ui:UiBinder>

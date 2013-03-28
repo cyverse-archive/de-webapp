@@ -5,20 +5,20 @@
 	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar">
   <ui:with
         field="strings"
-        type="org.iplantc.de.client.DEDisplayStrings" />
-	
+        type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
+
 <container:VerticalLayoutContainer ui:field="contents">
 <toolbar:ToolBar ui:field="toolbar" height="30px">
             <button:TextButton
                 text="{strings.simpleUploadForm}"
-                ui:field="btnSimpleUpld" 
+                ui:field="btnSimpleUpld"
                 enabled="true"
                 visible="false"/>
               <button:TextButton
                 text="{strings.simpleDownloadForm}"
-                ui:field="btnSimpleDwld" 
+                ui:field="btnSimpleDwld"
                 enabled="true"
                 visible="false"/>
         </toolbar:ToolBar>
  </container:VerticalLayoutContainer>
-</ui:UiBinder> 
+</ui:UiBinder>

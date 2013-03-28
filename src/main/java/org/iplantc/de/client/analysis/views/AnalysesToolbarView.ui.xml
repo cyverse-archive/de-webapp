@@ -12,7 +12,7 @@
 
     <ui:with
         field="strings"
-        type="org.iplantc.de.client.DEDisplayStrings" />
+        type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
 
     <container:SimpleContainer>
         <toolbar:ToolBar ui:field="menuToolBar" >
@@ -20,19 +20,19 @@
                 debugId="idBtnCancel"
                 icon="{icons.cancel}"
                 text="{strings.delete}"
-                ui:field="btnDelete" 
+                ui:field="btnDelete"
                 enabled="false"/>
              <button:TextButton
                  debugId="idBtnDelete"
                 icon="{icons.deleteIcon}"
                 text="{strings.cancelAnalysis}"
-                ui:field="btnCancel" 
+                ui:field="btnCancel"
                 enabled="false"/>
               <button:TextButton
                 debugId="idBtnViewParam"
                 icon="{icons.fileView}"
                 text="{strings.viewParamLbl}"
-                ui:field="btnViewParam" 
+                ui:field="btnViewParam"
                 enabled="false"/>
         </toolbar:ToolBar>
     </container:SimpleContainer>

@@ -13,14 +13,14 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * Builder class to create JSON for an upload payload event.
- * 
+ *
  * @author amuir
- * 
+ *
  */
 public class UploadEventJSONBuilder extends AbstractEventJSONBuilder {
     /**
      * Instantiate from an action.
-     * 
+     *
      * @param action action tag to be added to our payload.
      */
     public UploadEventJSONBuilder(String action) {
@@ -33,7 +33,7 @@ public class UploadEventJSONBuilder extends AbstractEventJSONBuilder {
         String filename = file.as().getName();
 
         if (!filename.isEmpty()) {
-            return I18N.DISPLAY.fileUploadSuccess(filename).asString();
+            return I18N.DISPLAY.fileUploadSuccess(filename);
         }
 
         String sourceUrl = JsonUtil.getString(jsonObj, "sourceUrl"); //$NON-NLS-1$

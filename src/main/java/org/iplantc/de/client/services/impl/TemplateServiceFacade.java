@@ -1,12 +1,12 @@
 package org.iplantc.de.client.services.impl;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uiapps.client.I18N;
 import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.shared.services.ConfluenceServiceFacade;
 import org.iplantc.de.shared.services.EmailServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;

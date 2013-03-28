@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package org.iplantc.de.client.notifications.views;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 
@@ -32,11 +32,11 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 /**
- * 
+ *
  * Notification View as grid
- * 
+ *
  * @author sriram
- * 
+ *
  */
 public class NotificationViewImpl implements NotificationView {
 
@@ -93,7 +93,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.google.gwt.user.client.ui.IsWidget#asWidget()
      */
     @Override
@@ -103,7 +103,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.iplantc.de.client.gxt3.views.NotificationView#getSelectedItems()
      */
     @Override
@@ -113,7 +113,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.iplantc.de.client.gxt3.views.NotificationView#setPresenter(org.iplantc.de.client.gxt3.views
      * .NotificationView.Presenter)
@@ -125,7 +125,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.iplantc.de.client.gxt3.views.NotificationView#getListStore()
      */
     @Override
