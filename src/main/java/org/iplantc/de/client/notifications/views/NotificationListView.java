@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.iplantc.de.client.notifications.views;
 
@@ -54,9 +54,9 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 
 /**
  * New notifications as list
- * 
+ *
  * @author sriram
- * 
+ *
  */
 public class NotificationListView implements IsWidget {
 
@@ -207,7 +207,7 @@ public class NotificationListView implements IsWidget {
     /**
      * Process method takes in a JSON String, breaks out the individual messages, transforms them into
      * events, finally the event is fired.
-     * 
+     *
      * @param json string to be processed.
      */
     // public void processMessages(final String json) {

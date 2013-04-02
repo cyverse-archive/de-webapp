@@ -33,15 +33,15 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * helps with notifications for the user.
- * 
- * 
+ *
+ *
  * @author lenards, sriram
- * 
+ *
  */
 public class NotificationHelper {
     /**
      * Represents a notification category.
-     * 
+     *
      * XXX JDS If these enum fields were the same name as what comes in (e.g. ANALYSIS could be
      * Analysis), then they could be deserialized directly into the autobean.
      */
@@ -54,7 +54,7 @@ public class NotificationHelper {
         DATA(I18N.CONSTANT.notificationCategoryData()),
         /** Analysis notifications */
         ANALYSIS(I18N.CONSTANT.notificationCategoryAnalysis()),
-        
+
         /** tool rquest status update notification */
         TOOLREQUEST(I18N.CONSTANT.toolRequest()),
 
@@ -69,7 +69,7 @@ public class NotificationHelper {
 
         /**
          * Null-safe and case insensitive variant of valueOf(String)
-         * 
+         *
          * @param typeString
          * @return
          */
@@ -77,7 +77,8 @@ public class NotificationHelper {
             if (typeString == null || typeString.isEmpty()) {
                 return null;
             }
-            return valueOf(typeString.toUpperCase());
+            String temp = typeString.replaceAll("\\s", "");
+            return valueOf(temp.toUpperCase());
         }
 
         @Override
@@ -132,7 +133,7 @@ public class NotificationHelper {
 
     /**
      * Return the shared, singleton instance of the manager.
-     * 
+     *
      * @return a singleton reference to the notification manager.
      */
     public static NotificationHelper getInstance() {
@@ -168,7 +169,7 @@ public class NotificationHelper {
 
     /**
      * Mark notifications as seen
-     * 
+     *
      */
     public void markAsSeen(List<NotificationMessage> list) {
         if (list != null && list.size() > 0) {
@@ -212,7 +213,7 @@ public class NotificationHelper {
 
     /**
      * Delete a list of notifications.
-     * 
+     *
      * @param notifications notifications to be deleted.
      */
     public void delete(final List<NotificationMessage> notifications, Command callback) {

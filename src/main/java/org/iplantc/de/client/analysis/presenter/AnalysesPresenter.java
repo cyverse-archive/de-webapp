@@ -52,11 +52,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /**
- * 
+ *
  * A presenter for analyses view
- * 
+ *
  * @author sriram
- * 
+ *
  */
 public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolbarView.Presenter {
 
@@ -251,9 +251,9 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
     /**
      * An AsyncCallback for the AnalysisServiceFacade that will load paged results into the AnalysesGrid.
-     * 
+     *
      * @author psarando
-     * 
+     *
      */
     private final class GetAnalysesServiceCallback implements AsyncCallback<String> {
         private final AsyncCallback<PagingLoadResult<Analysis>> callback;

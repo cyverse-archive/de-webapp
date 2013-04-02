@@ -5,19 +5,20 @@ import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Provides access to remote services to acquire messages and notifications.
- * 
+ *
  * @author amuir
- * 
+ *
  */
 public class MessageServiceFacade {
     /**
      * Get notifications from the server.
-     * 
+     *
      * @param maxNotifications the maximum number of notifications to retrieve.
      * @param callback called on RPC completion.
      */
@@ -27,11 +28,11 @@ public class MessageServiceFacade {
         StringBuilder builder = new StringBuilder("notifications/messages?limit=" + limit + "&offset="
                 + offset);
         if (filter != null && !filter.isEmpty()) {
-            builder.append("&filter=" + filter);
+            builder.append("&filter=" + URL.encodeQueryString(filter));
         }
 
         if (sortDir != null && !sortDir.isEmpty() && !sortDir.equalsIgnoreCase("NONE")) {
-            builder.append("&sortDir=" + sortDir);
+            builder.append("&sortDir=" + URL.encodeQueryString(sortDir));
         }
 
         address = address + builder.toString();
@@ -41,7 +42,7 @@ public class MessageServiceFacade {
 
     /**
      * Get messages from the server.
-     * 
+     *
      * @param callback called on RPC completion.
      */
     public void getMessages(AsyncCallback<String> callback) {
@@ -62,7 +63,7 @@ public class MessageServiceFacade {
 
     /**
      * Delete messages from the server.
-     * 
+     *
      * @param arrDeleteIds array of notification ids to delete from the server.
      * @param callback called on RPC completion.
      */
@@ -76,7 +77,7 @@ public class MessageServiceFacade {
 
     /**
      * Get messages from the server.
-     * 
+     *
      * @param callback called on RPC completion.
      */
     public <C extends NotificationCallback> void getRecentMessages(C callback) {

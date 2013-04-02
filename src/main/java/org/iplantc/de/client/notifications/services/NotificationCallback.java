@@ -63,11 +63,15 @@ public class NotificationCallback implements AsyncCallback<String> {
                     break;
 
                 case NEW:
-                    GWT.log("NEW Analysis category: Action = " + payload.getAction());
+                    GWT.log("NEW  category: Action = " + payload.getAction());
                     break;
 
                 case SYSTEM:
-                    GWT.log("SYSTEM Analysis category: Action = " + payload.getAction());
+                    GWT.log("SYSTEM  category: Action = " + payload.getAction());
+                    break;
+
+                case TOOLREQUEST:
+                	GWT.log("SYSTEM  category: Action = " + payload.getAction());
                     break;
 
                 default:
