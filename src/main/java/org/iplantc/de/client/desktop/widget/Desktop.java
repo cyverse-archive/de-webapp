@@ -265,7 +265,6 @@ public class Desktop implements IsWidget {
     public TaskBar getTaskBar() {
         if (taskBar == null) {
             taskBar = new TaskBar();
-            // taskBar.add(buildLayoutSwitchButton());
         }
 
         return taskBar;
