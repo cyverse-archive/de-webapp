@@ -10,7 +10,10 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.Validator;
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -210,6 +213,38 @@ public abstract class DiskResourceSelector implements IDiskResourceSelector {
             txtResourceName.setValidateOnBlur(true);
             txtResourceName.setAllowBlank(!validator.isRequired());
         }
+    }
+
+    /**
+     * Sets the text field's Validator to one that checks the selected path matches the given regex.
+     * 
+     * @param regex A regex to match against the selected path.
+     * @param validationErrorMessage The error message displayed when the regex validation fails.
+     */
+    public void setPathValidator(final String regex, final String validationErrorMessage) {
+        txtResourceName.setAutoValidate(true);
+        txtResourceName.setValidator(new Validator() {
+
+            @Override
+            public String validate(Field<?> field, String value) {
+                if (!Strings.isNullOrEmpty(getSelectedResourceId())) {
+                    if (!getSelectedResourceId().matches(regex)) {
+                        return validationErrorMessage;
+                    }
+                }
+
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Returns whether or not the text field value is currently valid.
+     * 
+     * @return <code>true</code> if the value is valid, otherwise <code>false</code>.
+     */
+    public boolean isValid() {
+        return txtResourceName.isValid();
     }
 
     /**

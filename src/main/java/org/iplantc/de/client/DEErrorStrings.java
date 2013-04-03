@@ -598,4 +598,10 @@ public interface DEErrorStrings extends CommonUIErrorStrings {
      */
     String analysisRelaunchError();
 
+    /**
+     * Validation error message displayed when selected default analysis output folder path is invalid.
+     * 
+     * @return localized error string.
+     */
+    String defaultOutputFolderValidationError();
 }

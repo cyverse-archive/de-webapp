@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.common.base.Strings;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -177,6 +178,8 @@ public class UserSettingPanel extends LayoutContainer {
     private void initDefaultOutputFolder() {
         defaultOutputFolder = new FolderSelector(new checkPermissions(), null);
         defaultOutputFolder.setId(ID_DEFAULT_OUTPUT_FOLDER);
+        // CORE-4079: Paths should not contain spaces.
+        defaultOutputFolder.setPathValidator("[^ ]*", I18N.ERROR.defaultOutputFolderValidationError()); //$NON-NLS-1$
     }
 
     private void setValues() {
@@ -222,8 +225,9 @@ public class UserSettingPanel extends LayoutContainer {
         us.setRememberLastPath(chkRememberLastFileSelectorPath.getValue());
         us.setSaveSession(radioGrp.getValue().getId().equals("id" + I18N.DISPLAY.enabled()) ? true
                 : false);
-        if (defaultOutputFolder.getSelectedFolderId() != null) {
-            us.setDefaultOutputFolder(defaultOutputFolder.getSelectedFolderId());
+        String selectedOutputFolderId = defaultOutputFolder.getSelectedFolderId();
+        if (!Strings.isNullOrEmpty(selectedOutputFolderId) && defaultOutputFolder.isValid()) {
+            us.setDefaultOutputFolder(selectedOutputFolderId);
         }
         UserSessionServiceFacade facade = new UserSessionServiceFacade();
         facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
@@ -246,11 +250,20 @@ public class UserSettingPanel extends LayoutContainer {
             if (!DataUtils.canUploadToThisFolder(defaultOutputFolder.getSelectedFolder())) {
                 MessageBox.alert(I18N.DISPLAY.permissionErrorTitle(),
                         I18N.DISPLAY.permissionErrorMessage(), null);
-                UserSettings us = UserSettings.getInstance();
-                defaultOutputFolder.clearSelection();
-                defaultOutputFolder.displayFolderName(us.getDefaultOutputFolder());
-                defaultOutputFolder.setDefaultFolderId(us.getDefaultOutputFolder());
+                resetDefaultOutputFolder();
             }
+            if (!defaultOutputFolder.isValid()) {
+                MessageBox.alert(I18N.ERROR.error(), I18N.ERROR.defaultOutputFolderValidationError(),
+                        null);
+                resetDefaultOutputFolder();
+            }
+        }
+
+        private void resetDefaultOutputFolder() {
+            UserSettings us = UserSettings.getInstance();
+            defaultOutputFolder.clearSelection();
+            defaultOutputFolder.displayFolderName(us.getDefaultOutputFolder());
+            defaultOutputFolder.setDefaultFolderId(us.getDefaultOutputFolder());
         }
     }
 
