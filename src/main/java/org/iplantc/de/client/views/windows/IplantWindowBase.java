@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
+import org.iplantc.de.client.events.WindowLayoutRequestEvent;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.gwt.core.client.GWT;
@@ -18,6 +21,8 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -36,13 +41,16 @@ import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
 import com.sencha.gxt.widget.core.client.event.RestoreEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /**
  * @author jstroot
- *
+ * 
  */
 public abstract class IplantWindowBase extends Window implements IPlantWindowInterface {
-    interface WindowStateFactory extends AutoBeanFactory{
+    interface WindowStateFactory extends AutoBeanFactory {
         AutoBean<WindowState> windowState();
     }
 
@@ -68,7 +76,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     /**
      * Constructs an instance of the window.
-     *
+     * 
      * @param tag a unique identifier for the window.
      */
     protected IplantWindowBase(String tag) {
@@ -100,6 +108,8 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
             getHeader().addTool(status);
             status.hide();
         }
+
+        getHeader().addTool(createLayoutButton());
 
         if (isMinimizable) {
             btnMinimize = createMinimizeButton();
@@ -146,6 +156,77 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     protected void doHide() {
         hide();
+    }
+
+    private ToolButton createLayoutButton() {
+        final ToolButton layoutBtn = new ToolButton(res.css().xToolLayoutwindow());
+        layoutBtn.setId("idLayout-" + getStateId()); //$NON-NLS-1$
+        layoutBtn.sinkEvents(Event.ONMOUSEOUT);
+        layoutBtn.setToolTip("Layout");
+        final Menu m = new Menu();
+        m.add(buildCascadeLayoutMenuItem());
+        m.add(buildTileLayoutMenuItem());
+
+        ArrayList<HandlerRegistration> hrList = new ArrayList<HandlerRegistration>();
+        HandlerRegistration reg;
+        reg = layoutBtn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                m.showAt(layoutBtn.getAbsoluteLeft() + 10, layoutBtn.getAbsoluteTop() + 15);
+            }
+        });
+        hrList.add(reg);
+
+        reg = layoutBtn.addHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                layoutBtn.addStyleName(res.css().xToolLayoutwindowHover());
+            }
+        }, MouseOverEvent.getType());
+        hrList.add(reg);
+
+        reg = layoutBtn.addHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                layoutBtn.removeStyleName(res.css().xToolLayoutwindowHover());
+            }
+        }, MouseOutEvent.getType());
+        hrList.add(reg);
+
+        handlerRegMap.put(layoutBtn, hrList);
+
+        return layoutBtn;
+    }
+
+    private MenuItem buildCascadeLayoutMenuItem() {
+        MenuItem item = new MenuItem(DesktopLayoutType.CASCADE.toString());
+        item.addSelectionHandler(new SelectionHandler<Item>() {
+
+            @Override
+            public void onSelection(SelectionEvent<Item> event) {
+                fireLayoutRequest(DesktopLayoutType.CASCADE);
+            }
+        });
+
+        return item;
+    }
+
+    private MenuItem buildTileLayoutMenuItem() {
+        MenuItem item = new MenuItem(DesktopLayoutType.TILE.toString());
+        item.addSelectionHandler(new SelectionHandler<Item>() {
+
+            @Override
+            public void onSelection(SelectionEvent<Item> event) {
+                fireLayoutRequest(DesktopLayoutType.TILE);
+            }
+        });
+
+        return item;
+    }
+
+    private void fireLayoutRequest(DesktopLayoutType type) {
+        WindowLayoutRequestEvent event = new WindowLayoutRequestEvent(type);
+        EventBus.getInstance().fireEvent(event);
     }
 
     private ToolButton createMaximizeButton() {
@@ -307,7 +388,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     /**
      * Replaces the maximize icon with the restore icon.
-     *
+     * 
      * The restore icon is only visible to the user when a window is in maximized state.
      */
     private void replaceMaximizeIcon() {
@@ -365,7 +446,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         return index;
     }
 
-    protected <C extends WindowConfig> WindowState createWindowState(C config){
+    protected <C extends WindowConfig> WindowState createWindowState(C config) {
         WindowState ws = wsf.windowState().as();
         ws.setConfigType(config.getWindowType());
         ws.setMaximized(isMaximized());

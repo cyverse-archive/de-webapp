@@ -432,6 +432,19 @@ ul.ux-taskbuttons-strip li.ux-taskbuttons-edge {
 	background-image: url('./images/button_maximize_hover.png');
 }
 
+.x-tool-layoutwindow {
+	background-image: url('./images/window_layout.png');
+	height: 15px;
+	width: 15px;
+	position: relative;
+	top: 2px;
+	padding-right: 2px;
+}
+
+.x-tool-layoutwindow-hover {
+	background-image: url('./images/window_layout_hover.png');
+}
+
 .x-tool-restorewindow {
 	background-image: url('./images/button_restore.png');
 	height: 15px;

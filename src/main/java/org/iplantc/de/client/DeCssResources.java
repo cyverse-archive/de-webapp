@@ -227,6 +227,12 @@ public interface DeCssResources extends CssResource {
     @ClassName("x-tool-maximizewindow-hover")
     String xToolMaximizewindowHover();
 
+    @ClassName("x-tool-layoutwindow")
+    String xToolLayoutwindow();
+
+    @ClassName("x-tool-layoutwindow-hover")
+    String xToolLayoutwindowHover();
+
     @ClassName("x-tool-minimizewindow")
     String xToolMinimizewindow();
 
