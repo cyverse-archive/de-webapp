@@ -511,6 +511,13 @@ img.analysis_remove {
 	background-position: right center;
 }
 
+.x-toolbar .x-btn .more-actions-menu-icon {
+    background-image: url(./images/control_arrow_down.png) !important;
+    background-repeat: no-repeat;
+    background-position: right center;
+    padding-right: 16px;
+}
+
 .required_marker {
 	font-size: 14px;
 	color: #ff4000;

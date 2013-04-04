@@ -74,10 +74,14 @@ public class DataMainToolBar extends ToolBar {
     }
 
     private Button buildActionsButton() {
-        final Button btn = new Button(I18N.DISPLAY.moreActions());
+        final Button btn = new Button(I18N.DISPLAY.moreActions()) {
+            @Override
+            protected String getMenuClass() {
+                return "more-actions-menu-icon"; //$NON-NLS-1$
+            }
+        };
         btn.setId(BTN_ACTIONS_ID);
         btn.setMenu(menuActions);
-        btn.setIcon(AbstractImagePrototype.create(Resources.ICONS.dataActionMenuIcon()));
         btn.disable();
         return btn;
     }
