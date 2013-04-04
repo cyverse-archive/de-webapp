@@ -9,7 +9,6 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.models.Folder;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
@@ -72,7 +71,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
     private ClientDataModel model;
 
     private TreePanelDragSource dndSource;
-    private final AsyncTreeLoaderCallBack callback;
 
     /**
      * 
@@ -83,8 +81,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
         this.mode = mode;
         toolBar = new DataNavToolBar(tag, mode);
         setTopComponent(toolBar);
-
-        callback = new AsyncTreeLoaderCallBack(new Stack<String>());
     }
 
     /**
@@ -268,14 +264,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
             this.model = model;
             initTreePanel(model.getHeirarchy(), selctionChangeListener);
 
-            Stack<String> paths = new Stack<String>();
-            if (UserSettings.getInstance().isRememberLastPath()) {
-                paths.push(UserSettings.getInstance().getDefaultFileSelectorPath());
-            } else {
-                paths.push(getRootFolderId());
-            }
-            callback.setPaths(paths);
-            model.setTreeLoaderCallback(callback);
             setModePrefernces();
 
             compose();
@@ -304,10 +292,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
     }
 
     public boolean selectFolder(final String path) {
-        Stack<String> paths = new Stack<String>();
-        paths.push(path);
-        callback.setPaths(paths);
-        callback.enableCallback();
         Folder target = findFolder(path);
         if (target == null) {
             // the target is not yet loaded into the navigation tree.
@@ -618,8 +602,8 @@ public class DataNavigationPanel extends AbstractDataPanel {
         // start expanding the parent folders in order.
         maskingParent.mask(I18N.DISPLAY.loadingMask());
 
-        callback.enableCallback();
-        callback.setPaths(paths);
+        AsyncTreeLoaderCallBack callback = new AsyncTreeLoaderCallBack(paths);
+        model.setTreeLoaderCallback(callback);
 
         // expand the first parent found that is already loaded in the model to load its children.
         expandFolder(parent);
@@ -685,7 +669,7 @@ public class DataNavigationPanel extends AbstractDataPanel {
                     public void onFailure(Throwable caught) {
                         // There was a problem reloading the target folder, so stop lazy-loading and
                         // display the error message.
-                        selectFolderAndUnmask(target.getId());
+                        unsetCallbackAndSelectFolder(target.getId());
 
                         super.onFailure(caught);
                     }
@@ -702,8 +686,8 @@ public class DataNavigationPanel extends AbstractDataPanel {
                 });
     }
 
-    private void selectFolderAndUnmask(String path) {
-        callback.disableCallback();
+    private void unsetCallbackAndSelectFolder(String path) {
+        model.setTreeLoaderCallback(null);
         selectFolder(path);
         maskingParent.unmask();
     }
@@ -729,37 +713,21 @@ public class DataNavigationPanel extends AbstractDataPanel {
      * 
      */
     private final class AsyncTreeLoaderCallBack implements AsyncCallback<List<Folder>> {
-        private Stack<String> paths;
-        private boolean enabled;
+        private final Stack<String> paths;
 
         private AsyncTreeLoaderCallBack(Stack<String> paths) {
             this.paths = paths;
         }
 
-        public void enableCallback() {
-            enabled = true;
-        }
-
-        public void disableCallback() {
-            enabled = false;
-        }
-
-        public void setPaths(final Stack<String> paths) {
-            this.paths = paths;
-        }
-
         @Override
         public void onSuccess(List<Folder> result) {
-            if (!enabled)
-                return;
-
             String path = paths.pop();
             Folder nextFolder = findFolder(path);
 
             if (nextFolder == null) {
                 // the next folder to expand or select was not found, even after the parent's subfolders
                 // were loaded, so stop the process here and select the deepest folder we could load.
-                selectFolderAndUnmask(DiskResourceUtil.parseParent(path));
+                unsetCallbackAndSelectFolder(DiskResourceUtil.parseParent(path));
                 displayRetrieveFolderError(path);
 
                 return;
@@ -767,7 +735,7 @@ public class DataNavigationPanel extends AbstractDataPanel {
 
             if (paths.isEmpty()) {
                 // we've reached our destination folder, so select it and end this callback process.
-                selectFolderAndUnmask(nextFolder.getId());
+                unsetCallbackAndSelectFolder(nextFolder.getId());
             } else {
                 // nextFolder is a parent of the destination folder.
                 if (nextFolder.hasSubFolders()) {
@@ -776,7 +744,7 @@ public class DataNavigationPanel extends AbstractDataPanel {
                     // This AsyncCallback will not be called again if the next folder to expand does not
                     // have any subfolders, so stop the process here and select the deepest folder we
                     // could load.
-                    selectFolderAndUnmask(path);
+                    unsetCallbackAndSelectFolder(path);
                     displayRetrieveFolderError(paths.pop());
                 }
             }
