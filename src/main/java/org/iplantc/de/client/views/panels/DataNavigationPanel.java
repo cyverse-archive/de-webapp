@@ -30,10 +30,8 @@ import org.iplantc.de.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.client.utils.DataUtils;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
-import com.extjs.gxt.ui.client.dnd.ScrollSupport;
 import com.extjs.gxt.ui.client.dnd.StatusProxy;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.TreePanelDropTarget;
@@ -53,7 +51,6 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -369,31 +366,9 @@ public class DataNavigationPanel extends AbstractDataPanel {
     }
 
     private class TreePanelDropTargetImpl extends TreePanelDropTarget {
-        private ScrollSupport scrollSupport;
 
         public TreePanelDropTargetImpl(TreePanel<Folder> tree) {
             super(tree);
-        }
-
-        @Override
-        public void onDragEnter(DNDEvent e) {
-            if (isAutoScroll()) {
-                if (scrollSupport == null) {
-                    El scroll = getScrollElementId() != null ? new El(
-                            DOM.getElementById(getScrollElementId())) : tree.el();
-                    scrollSupport = new ScrollSupport(scroll);
-                } else if (scrollSupport.getScrollElement() == null) {
-                    El scroll = getScrollElementId() != null ? new El(
-                            DOM.getElementById(getScrollElementId())) : tree.el();
-                    scrollSupport.setScrollElement(scroll);
-                }
-                scrollSupport.start();
-            }
-        }
-
-        @Override
-        protected void onDragCancelled(DNDEvent event) {
-            scrollSupport.stop();
         }
 
         @Override
@@ -446,6 +421,10 @@ public class DataNavigationPanel extends AbstractDataPanel {
         @Override
         @SuppressWarnings("unchecked")
         public void onDragDrop(DNDEvent event) {
+            if (activeItem != null) {
+                tree.getView().onDropChange(activeItem, false);
+            }
+
             @SuppressWarnings("rawtypes")
             TreeNode node = pnlTree.findNode(event.getTarget());
             // call service to move files and folders
@@ -461,16 +440,6 @@ public class DataNavigationPanel extends AbstractDataPanel {
                     facade.moveDiskResources((List<DiskResource>)event.getData(), idDestFolder);
                 }
             }
-        }
-
-        @Override
-        protected void onDragFail(DNDEvent event) {
-            scrollSupport.stop();
-        }
-
-        @Override
-        protected void onDragLeave(DNDEvent e) {
-            scrollSupport.stop();
         }
     }
 
