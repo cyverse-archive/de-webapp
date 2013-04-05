@@ -1,8 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uiapps.client.presenter.AppsViewPresenter;
+import org.iplantc.core.uiapps.client.gin.AppsInjector;
 import org.iplantc.core.uiapps.client.views.AppsView;
-import org.iplantc.core.uiapps.client.views.AppsViewImpl;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppsWindowConfig;
@@ -14,8 +13,7 @@ public class DEAppsWindow extends IplantWindowBase {
 
     public DEAppsWindow(AppsWindowConfig config) {
         super(null, null);
-        AppsView view = new AppsViewImpl();
-        presenter = new AppsViewPresenter(view);
+        presenter = AppsInjector.INSTANCE.getAppsViewPresenter();
 
         setSize("600", "375");
         presenter.go(this, config.getSelectedAppGroup(), config.getSelectedApp());
