@@ -2,6 +2,7 @@ package org.iplantc.de.client.utils.builders.context;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
+import org.iplantc.de.client.models.DataWindowConfig;
 
 import com.google.common.base.Strings;
 import com.google.gwt.json.client.JSONArray;
@@ -108,8 +109,8 @@ public class DataContextBuilder extends AbstractContextBuilder {
         obj.put("id", id); //$NON-NLS-1$
         obj.put("name", name); //$NON-NLS-1$
         obj.put("idParent", idParent); //$NON-NLS-1$
-        obj.put("folderId", idParent); //$NON-NLS-1$
-        obj.put("diskresourceIds", diskresourceIds); //$NON-NLS-1$
+        obj.put(DataWindowConfig.FOLDER_ID, idParent);
+        obj.put(DataWindowConfig.DISK_RESOURCE_IDS, diskresourceIds);
 
         return obj.toString();
     }
