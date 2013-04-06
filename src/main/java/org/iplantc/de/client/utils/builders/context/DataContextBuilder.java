@@ -3,6 +3,7 @@ package org.iplantc.de.client.utils.builders.context;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 
+import com.google.common.base.Strings;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -15,19 +16,6 @@ import com.google.gwt.json.client.JSONString;
  * 
  */
 public class DataContextBuilder extends AbstractContextBuilder {
-    private JSONArray getFiles(final JSONObject objPayload) {
-        JSONArray ret = null; // assume failure
-
-        if (objPayload != null) {
-            JSONObject objData = JsonUtil.getObject(objPayload, "data"); //$NON-NLS-1$
-
-            if (objData != null) {
-                ret = objData.containsKey("created") ? objData.get("created").isArray() : null; //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-
-        return ret;
-    }
 
     private String getParentId(final JSONObject objPayload) {
         String ret = null; // assume failure
@@ -54,28 +42,42 @@ public class DataContextBuilder extends AbstractContextBuilder {
 
         if (action != null) {
             if (action.equals("file_uploaded")) { //$NON-NLS-1$
-                JSONArray arr = getFiles(objPayload);
-
-                if (arr != null) {
-                    JSONObject file = JsonUtil.getObjectAt(arr, 0);
-
-                    if (file != null) {
-                        String id = JsonUtil.getString(file, "id"); //$NON-NLS-1$
-                        String name = JsonUtil.getString(file, "name"); //$NON-NLS-1$
-                        String idParent = getParentId(objPayload);
-                        JSONObject obj = new JSONObject();
-
-                        obj.put("id", new JSONString(id));
-                        obj.put("name", new JSONString(name));
-                        obj.put("idParent", new JSONString(idParent));
-
-                        ret = obj.toString();
-                    }
-                }
+                ret = getUploadedFile(objPayload);
+            } else if (action.equals("share") || action.equals("unshare")) { //$NON-NLS-1$ //$NON-NLS-2$
+                ret = getSharingFile(objPayload);
             }
         }
 
         return ret;
+    }
+
+    private String getUploadedFile(final JSONObject payload) {
+        JSONObject data = JsonUtil.getObject(payload, "data"); //$NON-NLS-1$
+
+        if (data != null) {
+            String id = JsonUtil.getString(data, "id"); //$NON-NLS-1$
+            String name = JsonUtil.getString(data, "name"); //$NON-NLS-1$
+            String idParent = getParentId(payload);
+
+            return buildContext(id, name, idParent);
+        }
+
+        return null;
+    }
+
+    private String getSharingFile(final JSONObject payload) {
+        JSONArray paths = JsonUtil.getArray(payload, "paths"); //$NON-NLS-1$
+
+        if (paths != null && paths.size() > 0) {
+            // TODO Just use the first path found in the array for now.
+            JSONString path = paths.get(0).isString();
+
+            if (path != null) {
+                return build(path.stringValue());
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -85,15 +87,29 @@ public class DataContextBuilder extends AbstractContextBuilder {
      * @return String representation of context JSON. null on failure.
      */
     public String build(final String idDiskResource) {
-        if (idDiskResource == null || idDiskResource.isEmpty()) {
+        if (Strings.isNullOrEmpty(idDiskResource)) {
             return null;
         }
 
-        JSONObject obj = new JSONObject();
+        String resourceName = DiskResourceUtil.parseNameFromPath(idDiskResource);
+        String parentId = DiskResourceUtil.parseParent(idDiskResource);
 
-        obj.put("id", new JSONString(idDiskResource));
-        obj.put("name", new JSONString(DiskResourceUtil.parseNameFromPath(idDiskResource)));
-        obj.put("idParent", new JSONString(DiskResourceUtil.parseParent(idDiskResource)));
+        return buildContext(idDiskResource, resourceName, parentId);
+    }
+
+    private String buildContext(final String idDiskResource, String resourceName, String parentId) {
+        JSONString id = new JSONString(idDiskResource);
+        JSONString name = new JSONString(resourceName);
+        JSONString idParent = new JSONString(parentId);
+        JSONArray diskresourceIds = new JSONArray();
+        diskresourceIds.set(0, id);
+
+        JSONObject obj = new JSONObject();
+        obj.put("id", id); //$NON-NLS-1$
+        obj.put("name", name); //$NON-NLS-1$
+        obj.put("idParent", idParent); //$NON-NLS-1$
+        obj.put("folderId", idParent); //$NON-NLS-1$
+        obj.put("diskresourceIds", diskresourceIds); //$NON-NLS-1$
 
         return obj.toString();
     }

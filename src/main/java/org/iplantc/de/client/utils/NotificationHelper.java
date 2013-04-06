@@ -74,7 +74,7 @@ public class NotificationHelper {
     private DataContextBuilder dataContextBuilder;
     private AnalysisContextBuilder analysisContextBuilder;
 
-    private DataViewContextExecutor dataContextExecutor;
+    private MyDataViewContextExecutor dataContextExecutor;
     private AnalysisViewContextExecutor analysisContextExecutor;
 
     private final MessageServiceFacade facadeMessageService;
@@ -94,7 +94,7 @@ public class NotificationHelper {
     }
 
     private void initContextExecuters() {
-        dataContextExecutor = new DataViewContextExecutor();
+        dataContextExecutor = new MyDataViewContextExecutor();
         analysisContextExecutor = new AnalysisViewContextExecutor();
     }
 
