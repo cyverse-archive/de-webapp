@@ -68,22 +68,22 @@
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>apps-widgets</artifactId>
+         <artifactId>ui-apps-widgets</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>applications</artifactId>
+         <artifactId>ui-applications</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>pipelines</artifactId>
+         <artifactId>ui-pipelines</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>diskresource</artifactId>
+         <artifactId>ui-diskresource</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -98,7 +98,7 @@
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>metadata</artifactId>
+         <artifactId>ui-metadata</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -113,7 +113,7 @@
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>apps-integration</artifactId>
+         <artifactId>ui-apps-integration</artifactId>
          <version>${project.version}</version>
       </dependency>
         
