@@ -40,6 +40,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 
+
 /**
  * Defines the default view of the workspace.
  * 
@@ -277,6 +278,11 @@ public class DEPresenter implements DEView.Presenter {
     public List<WindowState> getOrderedWindowStates() {
         return view.getOrderedWindowStates();
     }
+
+	@Override
+	public final void showSystemNotification(final String msg) {
+		view.showSystemNotification(msg);
+	}
 
     private class DataKBShortCutCmd implements Command {
 

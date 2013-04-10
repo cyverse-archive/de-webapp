@@ -327,4 +327,9 @@ public class DEViewImpl implements DEView {
             desktop.restoreWindow(ws);
         }
     }
+
+	@Override
+	public final void showSystemNotification(final String msg) {
+        // TODO: Implement
+	}
 }

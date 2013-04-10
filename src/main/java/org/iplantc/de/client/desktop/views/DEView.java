@@ -28,6 +28,13 @@ public interface DEView extends IsWidget {
         void restoreWindows(List<WindowState> windowStates);
 
         List<WindowState> getOrderedWindowStates();
+        
+        /**
+         * has the view display a system notification message
+         * 
+         * @param msg The system notification message
+         */
+        void showSystemNotification(String msg);
     }
 
     /**
@@ -53,4 +60,10 @@ public interface DEView extends IsWidget {
 
     void restoreWindows(List<WindowState> windowStates);
 
+    /**
+     * displays a system notification message
+     * 
+     * @param msg The message to display.
+     */
+    void showSystemNotification(String msg);
 }
