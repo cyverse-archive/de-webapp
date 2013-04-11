@@ -4,7 +4,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.iplantc.de.client.GwtTestMultiPartServiceWrapper;
-import org.iplantc.de.client.GwtTestUserInfo;
 
 import com.google.gwt.junit.tools.GWTTestSuite;
 
@@ -23,8 +22,6 @@ public class DETestSuite extends GWTTestSuite {
     public static Test suite() {
         TestSuite suite = new TestSuite("Tests for Discovery Environment"); //$NON-NLS-1$
         suite.addTestSuite(GwtTestMultiPartServiceWrapper.class);
-        suite.addTestSuite(GwtTestUserInfo.class);
-        // suite.addTestSuite(GwtTestNotification.class);
 
         return suite;
     }
