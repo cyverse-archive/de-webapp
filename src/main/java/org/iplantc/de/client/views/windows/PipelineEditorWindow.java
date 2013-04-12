@@ -21,6 +21,8 @@ public class PipelineEditorWindow extends IplantWindowBase {
 
         setHeadingText(I18N.DISPLAY.pipeline());
         setSize("900", "500"); //$NON-NLS-1$ //$NON-NLS-2$
+        setMinWidth(640);
+        setMinHeight(440);
 
         PipelineView view = new PipelineViewImpl();
         presenter = new PipelineViewPresenter(view, new PublishCallbackCommand());
