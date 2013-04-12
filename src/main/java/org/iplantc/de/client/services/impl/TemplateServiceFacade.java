@@ -360,4 +360,11 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
+
+    @Override
+    public void copyWorkflow(String workflowId, AsyncCallback<String> callback) {
+        String address = "org.iplantc.services.zoidberg.copy-workflow/" + workflowId; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
 }
