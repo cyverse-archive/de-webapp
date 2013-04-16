@@ -59,6 +59,7 @@
 
 @sprite .left {
   gwt-image: 'leftBorder';
+  width: 1px;
 }
 
 @sprite .right {
@@ -116,6 +117,7 @@
 
 @sprite .over .left {
   gwt-image: 'leftOverBorder';
+  width: 1px;
 }
 
 /* pressed style */
@@ -168,4 +170,5 @@
 
 @sprite .pressed .left {
   gwt-image: 'leftPressedBorder';
+  width: 1px;
 }
