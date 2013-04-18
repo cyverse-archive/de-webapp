@@ -50,6 +50,7 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.SeparatorMenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 /**
@@ -247,6 +248,8 @@ public class DEViewImpl implements DEView {
             }
         }));
 
+        userMenu.add(new SeparatorMenuItem());
+
         userMenu.add(new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -272,6 +275,8 @@ public class DEViewImpl implements DEView {
                 EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
             }
         }));
+
+        userMenu.add(new SeparatorMenuItem());
 
         userMenu.add(new IPlantAnchor(I18N.DISPLAY.logout(), -1, new ClickHandler() {
             @Override
