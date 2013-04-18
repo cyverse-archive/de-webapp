@@ -16,7 +16,7 @@
 
 	<ui:with field="northData"
 		type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData">
-		<ui:attributes margins="{northMargins}" size="90"
+		<ui:attributes margins="{northMargins}" size="39"
 			collapsible="false" split="false" />
 	</ui:with>
 	<ui:with field="centerData"
@@ -33,9 +33,8 @@
 				ui:field="con" borders="true">
 				<!-- This is the tool bar -->
 				<container:north layoutData="{northData}" >
-					<container:HorizontalLayoutContainer
-						ui:field="headerPanel">
-					</container:HorizontalLayoutContainer>
+					<container:SimpleContainer ui:field="headerPanel">
+					</container:SimpleContainer>
 				</container:north>
 				<!-- This is the main panel -->
 				<container:center layoutData="{centerData}">

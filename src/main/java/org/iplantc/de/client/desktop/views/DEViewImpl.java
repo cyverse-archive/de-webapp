@@ -5,6 +5,8 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
+import org.iplantc.core.resources.client.DEHeaderStyle;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsDailog;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -18,7 +20,6 @@ import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
@@ -26,6 +27,7 @@ import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -34,9 +36,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -60,7 +65,7 @@ public class DEViewImpl implements DEView {
     private static DEViewUiBinder uiBinder = GWT.create(DEViewUiBinder.class);
 
     @UiField
-    HorizontalLayoutContainer headerPanel;
+    SimpleContainer headerPanel;
     @UiField
     SimpleContainer mainPanel;
 
@@ -79,9 +84,16 @@ public class DEViewImpl implements DEView {
 
     private DEView.Presenter presenter;
     private final Desktop desktop;
+    private final HeaderTemplate r;
+    private final DEHeaderStyle headerResources;
 
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
+    }
+
+    interface HeaderTemplate extends XTemplates {
+        @XTemplate(source = "template_de.html")
+        public SafeHtml render(DEHeaderStyle style);
     }
 
     public DEViewImpl(final DeResources resources, final EventBus eventBus) {
@@ -93,8 +105,13 @@ public class DEViewImpl implements DEView {
         con.remove(con.getCenterWidget());
         con.setCenterWidget(desktop, centerData);
 
+        resources.css().ensureInjected();
         con.setStyleName(resources.css().iplantcBackground());
         initEventHandlers();
+
+        headerResources = IplantResources.RESOURCES.getHeaderStyle();
+        headerResources.ensureInjected();
+        r = GWT.create(HeaderTemplate.class);
     }
 
     @Override
@@ -124,8 +141,11 @@ public class DEViewImpl implements DEView {
 
     @Override
     public void drawHeader() {
-        headerPanel.add(buildLogoPanel());
-        headerPanel.add(buildHtmlActionsPanel());
+        // headerPanel.add(buildLogoPanel());
+        HtmlLayoutContainer c = new HtmlLayoutContainer(r.render(headerResources));
+        headerPanel.setWidget(c);
+        c.add(buildHtmlActionsPanel(), new HtmlData(".menu_container"));
+        // headerPanel.add(buildHtmlActionsPanel());
     }
 
     private VerticalLayoutContainer buildLogoPanel() {
