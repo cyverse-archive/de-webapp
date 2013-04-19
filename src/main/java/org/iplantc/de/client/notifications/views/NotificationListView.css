@@ -1,7 +1,16 @@
 .thumb {
+  background: none repeat scroll 0 0 ;
+  padding: 3px;
+  width: 200px;
+  height: 40px;
+  border: 1px solid #DDDDDD;
+}
+
+.thumb_highlight {
   background: none repeat scroll 0 0 #DDDDDD;
   padding: 3px;
   width: 200px;
+  height:40px;
 }
  
 .thumbWrap {

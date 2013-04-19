@@ -17,6 +17,7 @@ import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
+import org.iplantc.de.client.notifications.models.NotificationMessageProperties;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
@@ -45,6 +46,8 @@ import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.resources.CommonStyles;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -54,9 +57,9 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 
 /**
  * New notifications as list
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class NotificationListView implements IsWidget {
 
@@ -76,6 +79,10 @@ public class NotificationListView implements IsWidget {
     interface Renderer extends XTemplates {
         @XTemplate("<div class=\"{style.thumb}\"> {msg.message}</div>")
         public SafeHtml renderItem(NotificationMessage msg, Style style);
+
+        @XTemplate("<div class=\"{style.thumb_highlight}\"> {msg.message}</div>")
+        public SafeHtml renderItemWithHighlight(NotificationMessage msg, Style style);
+
     }
 
     interface Style extends CssResource {
@@ -86,6 +93,8 @@ public class NotificationListView implements IsWidget {
         String thumb();
 
         String thumbWrap();
+
+        String thumb_highlight();
     }
 
     interface Resources extends ClientBundle {
@@ -181,6 +190,7 @@ public class NotificationListView implements IsWidget {
                     int new_count = Integer.parseInt(JsonUtil.getString(obj, "count"));
                     NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(new_count);
                     EventBus.getInstance().fireEvent(event);
+                    view.refresh();
                 }
 
                 @Override
@@ -205,9 +215,8 @@ public class NotificationListView implements IsWidget {
     }
 
     /**
-     * Process method takes in a JSON String, breaks out the individual messages, transforms them into
-     * events, finally the event is fired.
-     *
+     * Process notifications
+     * 
      * @param json string to be processed.
      */
     // public void processMessages(final String json) {
@@ -215,6 +224,7 @@ public class NotificationListView implements IsWidget {
         // cache before removing
         List<NotificationMessage> temp = store.getAll();
         store.clear();
+        store.clearSortInfo();
         boolean displayInfo = false;
 
         for (Notification n : notifications) {
@@ -229,6 +239,9 @@ public class NotificationListView implements IsWidget {
         if (total_unseen > NEW_NOTIFICATIONS_LIMIT && displayInfo) {
             NotifyInfo.display(I18N.DISPLAY.newNotifications(), I18N.DISPLAY.newNotificationsAlert());
         }
+
+        NotificationMessageProperties props = GWT.create(NotificationMessageProperties.class);
+        store.addSortInfo(new StoreSortInfo<NotificationMessage>(props.timestamp(), SortDir.DESC));
         highlightNewNotifications();
     }
 
@@ -347,10 +360,14 @@ public class NotificationListView implements IsWidget {
 
                     @Override
                     public SafeHtml render(NotificationMessage object) {
-                        return r.renderItem(object, style);
+                        if (object.isSeen()) {
+                            return r.renderItem(object, style);
+                        } else {
+                            return r.renderItemWithHighlight(object, style);
+                        }
+
                     }
                 }));
-
         view.setSize("250px", "250px");
         view.setBorders(false);
         container.add(view);
@@ -358,5 +375,4 @@ public class NotificationListView implements IsWidget {
         container.add(hyperlinkPanel);
         return container;
     }
-
 }
