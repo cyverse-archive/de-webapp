@@ -86,7 +86,6 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler,
 
 	@Override
 	public void showSystemMessages(final ShowSystemMessagesEvent event) {
-		System.out.println("ShowWindowEvent.showSystemMessages called");
 		desktop.showWindow(ConfigFactory.systemMessagesWindowConfig());
 	}
 	
