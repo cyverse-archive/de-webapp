@@ -5,6 +5,7 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsDailog;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -18,7 +19,7 @@ import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.client.events.ShowSystemMessagesEvent;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
@@ -226,7 +227,12 @@ public class DEViewImpl implements DEView {
                 dialog.show();
             }
         }));
-
+        userMenu.add(new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+            	EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
+            }
+        }));
         userMenu.add(new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -326,7 +332,7 @@ public class DEViewImpl implements DEView {
         for (WindowState ws : windowStates) {
             desktop.restoreWindow(ws);
         }
-    }
+   }
 
 	@Override
 	public final void showSystemNotification(final String msg) {

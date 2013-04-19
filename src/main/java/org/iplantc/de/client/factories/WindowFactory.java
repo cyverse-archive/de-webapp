@@ -15,6 +15,7 @@ import org.iplantc.de.client.views.windows.MyAnalysesWindow;
 import org.iplantc.de.client.views.windows.NotificationWindow;
 import org.iplantc.de.client.views.windows.PipelineEditorWindow;
 import org.iplantc.de.client.views.windows.SimpleDownloadWindow;
+import org.iplantc.de.client.views.windows.SystemMessagesWindow;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
@@ -25,6 +26,7 @@ import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 import org.iplantc.de.client.views.windows.configs.NotifyWindowConfig;
 import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
+import org.iplantc.de.client.views.windows.configs.SystemMessagesWindowConfig;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.base.Strings;
@@ -82,6 +84,8 @@ public class WindowFactory {
             case WORKFLOW_INTEGRATION:
                 ret = new PipelineEditorWindow(config);
                 break;
+            case SYSTEM_MESSAGES:
+            	ret = new SystemMessagesWindow((SystemMessagesWindowConfig)config);
             default:
                 break;
         }

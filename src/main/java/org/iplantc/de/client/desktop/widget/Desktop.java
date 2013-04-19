@@ -30,6 +30,7 @@ import org.iplantc.de.client.desktop.layout.DesktopLayout.RequestType;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
+import org.iplantc.de.client.events.ShowSystemMessagesEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowLayoutRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
@@ -165,6 +166,7 @@ public class Desktop implements IsWidget {
         eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler);
         eventbus.addHandler(WindowShowRequestEvent.TYPE, showWindowHandler);
         eventbus.addHandler(RunAppEvent.TYPE, showWindowHandler);
+        eventBus.addHandler(ShowSystemMessagesEvent.TYPE, showWindowHandler);
         eventbus.addHandler(WindowCloseRequestEvent.TYPE, closeActiveWindowHandler);
         eventbus.addHandler(WindowLayoutRequestEvent.TYPE, new WindowLayoutRequestEventHandlerImpl());
     }

@@ -78,6 +78,12 @@ public class ConfigFactory {
         return sdwc;
     }
 
+    public static SystemMessagesWindowConfig systemMessagesWindowConfig() {
+    	final AutoBean<SystemMessagesWindowConfig> ab = applyWindowType(WindowType.SYSTEM_MESSAGES, 
+    			factory.systemMessagesWindowConfig());
+    	return ab.as();
+    }
+
     public static WindowConfig getConfig(WindowState ws) {
         WindowConfig config = null;
         switch (ws.getConfigType()) {
@@ -128,6 +134,11 @@ public class ConfigFactory {
                 config = AutoBeanCodex.decode(factory, PipelineEditorWindowConfig.class,
                         ws.getWindowConfig()).as();
                 break;
+                
+            case SYSTEM_MESSAGES:
+            	config = AutoBeanCodex.decode(factory, SystemMessagesWindowConfig.class, 
+            			ws.getWindowConfig()).as();
+            	break;
         }
 
         return config;
