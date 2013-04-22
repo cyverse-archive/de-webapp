@@ -27,6 +27,7 @@
 .iplantc-about-pad-text {
 	font-size: 12px;
 	padding: 5px 2px 5px 2px;
+	background: #fff;
 }
 
 div.iplantc-about-pad-text p {
@@ -547,6 +548,7 @@ img.analysis_remove {
 	border-style: solid;
 	border-color: #0098AA #0098AA;
 	padding: 1px;
+	margin-top: 5px;
 }
 
 .de_notification_indicator {

@@ -376,7 +376,7 @@ public class Desktop implements IsWidget {
                 }
             };
             desktopContainer.add(getDesktop(), new VerticalLayoutData(-1, 1));
-            desktopContainer.add(buildFooterPanel(), new VerticalLayoutData(1, 20));
+           // desktopContainer.add(buildFooterPanel(), new VerticalLayoutData(1, 20));
             desktopContainer.add(getTaskBar(), new VerticalLayoutData(1, -1));
         }
         return desktopContainer;
