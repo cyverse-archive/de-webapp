@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.iplantc.de.client.utils;
 
 import java.util.ArrayList;
@@ -13,10 +10,10 @@ import org.iplantc.core.uicommons.client.models.DEProperties;
 import com.google.gwt.user.client.Timer;
 
 /**
- * @author sriram
- * 
+ * Periodically performs registered tasks.
  */
 public class TaskRunner {
+
     /**
      * The default interval for repeating tasks, in seconds.
      */

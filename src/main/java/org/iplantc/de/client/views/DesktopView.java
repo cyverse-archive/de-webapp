@@ -1,32 +1,33 @@
 // package org.iplantc.de.client.views;
 //
+// import java.util.List;
+//
 // import org.iplantc.core.jsonutil.JsonUtil;
 // import org.iplantc.core.uicommons.client.events.EventBus;
-// import org.iplantc.core.uicommons.client.events.UserEvent;
-// import org.iplantc.core.uicommons.client.events.UserEventHandler;
-// import org.iplantc.core.uicommons.client.models.WindowConfig;
 // import org.iplantc.core.uidiskresource.client.models.FileIdentifier;
 // import org.iplantc.de.client.Constants;
 // import org.iplantc.de.client.I18N;
 // import org.iplantc.de.client.controllers.TitoController;
 // import org.iplantc.de.client.events.LogoutEvent;
 // import org.iplantc.de.client.events.LogoutEventHandler;
+// import org.iplantc.de.client.events.UserEvent;
+// import org.iplantc.de.client.events.UserEventHandler;
 // import org.iplantc.de.client.events.WindowPayloadEvent;
 // import org.iplantc.de.client.events.WindowPayloadEventHandler;
 // import org.iplantc.de.client.factories.WindowConfigFactory;
-//
-// import org.iplantc.de.client.services.callbacks.DiskResourceServiceCallback;
-// import org.iplantc.de.client.services.callbacks.FileEditorServiceFacade;
+// import org.iplantc.de.client.models.WindowConfig;
+// import org.iplantc.de.client.services.DiskResourceServiceCallback;
+// import org.iplantc.de.client.services.FileEditorServiceFacade;
 // import org.iplantc.de.client.utils.DEStateManager;
 // import org.iplantc.de.client.utils.DEWindowManager;
 // import org.iplantc.de.client.utils.LogoutUtil;
+// import org.iplantc.de.client.utils.ShortcutManager;
+// import org.iplantc.de.client.utils.builders.DefaultDesktopBuilder;
 // import org.iplantc.de.client.views.taskbar.IPlantTaskButton;
 // import org.iplantc.de.client.views.taskbar.IPlantTaskbar;
 // import org.iplantc.de.client.views.windows.FileViewerWindow;
 // import org.iplantc.de.client.views.windows.FileWindow;
-// import org.iplantc.de.client.views.windows.Gxt3IplantWindow;
 // import org.iplantc.de.client.views.windows.IPlantWindow;
-// import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 //
 // import com.extjs.gxt.ui.client.core.DomQuery;
 // import com.extjs.gxt.ui.client.core.El;
@@ -48,23 +49,11 @@
 // import com.google.gwt.user.client.DOM;
 // import com.google.gwt.user.client.Element;
 // import com.google.gwt.user.client.Timer;
-// import com.sencha.gxt.widget.core.client.Window;
-// import com.sencha.gxt.widget.core.client.event.ActivateEvent;
-// import com.sencha.gxt.widget.core.client.event.ActivateEvent.ActivateHandler;
-// import com.sencha.gxt.widget.core.client.event.DeactivateEvent;
-// import com.sencha.gxt.widget.core.client.event.DeactivateEvent.DeactivateHandler;
-// import com.sencha.gxt.widget.core.client.event.HideEvent;
-// import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
-// import com.sencha.gxt.widget.core.client.event.MinimizeEvent;
-// import com.sencha.gxt.widget.core.client.event.MinimizeEvent.MinimizeHandler;
-// import com.sencha.gxt.widget.core.client.event.ShowEvent;
-// import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 //
 // /**
 // * Provides user interface for desktop workspace area.
 // */
-// public class DesktopView extends ContentPanel implements ActivateHandler<Window>,
-// DeactivateHandler<Window>, HideHandler, MinimizeHandler, ShowHandler {
+// public class DesktopView extends ContentPanel {
 // @SuppressWarnings("unused")
 // private TitoController controllerTito;
 // private DEWindowManager mgrWindow;
@@ -122,7 +111,7 @@
 // tag += config.getTagSuffix();
 // }
 //
-// IPlantWindowInterface window = mgrWindow.getWindow(tag);
+// IPlantWindow window = mgrWindow.getWindow(tag);
 //
 // // do we already have this window?
 // if (window == null) {
@@ -148,13 +137,13 @@
 // }
 //
 // private void initShortcuts() {
-// // ShortcutManager mgr = new ShortcutManager(new DefaultDesktopBuilder());
-// //
-// // List<Shortcut> shortcuts = mgr.getShortcuts();
-// //
-// // for (Shortcut shortcut : shortcuts) {
-// // addShortcut(shortcut);
-// // }
+// ShortcutManager mgr = new ShortcutManager(new DefaultDesktopBuilder());
+//
+// List<Shortcut> shortcuts = mgr.getShortcuts();
+//
+// for (Shortcut shortcut : shortcuts) {
+// addShortcut(shortcut);
+// }
 // }
 //
 // private void initDesktop() {
@@ -266,7 +255,7 @@
 // }
 //
 // private void markActive(IPlantWindow window) {
-// IPlantWindowInterface activeWindow = mgrWindow.getActiveWindow();
+// IPlantWindow activeWindow = mgrWindow.getActiveWindow();
 //
 // if (activeWindow != null && activeWindow != window) {
 // markInactive(activeWindow);
@@ -280,7 +269,7 @@
 //        window.setData("minimize", null); //$NON-NLS-1$
 // }
 //
-// private void markInactive(IPlantWindowInterface window) {
+// private void markInactive(IPlantWindow window) {
 // if (window == mgrWindow.getActiveWindow()) {
 // mgrWindow.setActiveWindow(null);
 //
@@ -303,49 +292,6 @@
 // private void minimizeWindow(IPlantWindow window) {
 //        window.setData("minimize", true); //$NON-NLS-1$
 // window.hide();
-// }
-//
-// private void minimizeWindow(Gxt3IplantWindow window) {
-//        window.setData("minimize", true); //$NON-NLS-1$
-// window.hide();
-// }
-//
-// @Override
-// public void onShow(ShowEvent event) {
-// Window w = (Window)event.getSource();
-//        IPlantTaskButton btn = w.getData("taskButton"); //$NON-NLS-1$
-//        w.setData("minimize", null); //$NON-NLS-1$
-//
-// if (btn != null && taskBar.getButtons().contains(btn)) {
-// return;
-// }
-//
-// // taskBar.addTaskButton(w);
-//
-// }
-//
-// @Override
-// public void onMinimize(MinimizeEvent event) {
-// minimizeWindow((Gxt3IplantWindow)event.getSource());
-//
-// }
-//
-// @Override
-// public void onHide(HideEvent event) {
-// // TODO Auto-generated method stub
-//
-// }
-//
-// @Override
-// public void onDeactivate(DeactivateEvent<Window> event) {
-// // TODO Auto-generated method stub
-//
-// }
-//
-// @Override
-// public void onActivate(ActivateEvent<Window> event) {
-// // TODO Auto-generated method stub
-//
 // }
 //
 // private void initWindowManager() {
@@ -374,7 +320,7 @@
 // public void windowShow(WindowEvent we) {
 // onShow((IPlantWindow)we.getWindow());
 // }
-// }, this, this, this, this, this);
+// });
 // }
 //
 // private final class DEReloadListener implements Listener<ComponentEvent> {
@@ -536,14 +482,13 @@
 //
 // private void addFileWindow(final String tag, final FileIdentifier file, boolean addTreeTab,
 // WindowConfig config) {
-// IPlantWindowInterface window = mgrWindow.getWindow(tag);
+// IPlantWindow window = mgrWindow.getWindow(tag);
 //
 // // do we already have a window for this file... let's bring it to the front
 // if (window != null) {
 // window.setWindowConfig(config);
 // window.show();
 // window.toFront();
-// window.refresh();
 // } else {
 // retrieveFileManifest(tag, file, addTreeTab, config);
 // }

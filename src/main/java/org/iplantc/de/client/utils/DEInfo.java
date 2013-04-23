@@ -3,13 +3,11 @@ package org.iplantc.de.client.utils;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Params;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.util.Format;
@@ -63,8 +61,6 @@ public class DEInfo extends ContentPanel {
         InfoConfig config = new InfoConfig(title, text, params);
         display(config);
     }
-
-
 
     private static DEInfo peek() {
         return infoQueue.peek();
@@ -145,10 +141,6 @@ public class DEInfo extends ContentPanel {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-
-        if (GXT.isAriaEnabled()) {
-            Accessibility.setRole(getElement(), "alert"); //$NON-NLS-1$
-        }
     }
 
     private void onShowInfo() {

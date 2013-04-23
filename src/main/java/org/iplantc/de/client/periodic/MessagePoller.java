@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.iplantc.de.client.periodic;
 
 import org.iplantc.core.jsonutil.JsonUtil;
@@ -13,11 +10,9 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * @author sriram
- * 
+ * Polls for notification messages.
  */
 public class MessagePoller implements Runnable {
-
     private static MessagePoller instance;
 
     /**
