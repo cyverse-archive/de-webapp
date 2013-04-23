@@ -2,9 +2,11 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.List;
 
+import org.iplantc.core.resources.client.uiapps.integration.AppIntegrationErrorMessages;
 import org.iplantc.core.uiapps.client.Services;
 import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
 import org.iplantc.core.uiapps.integration.client.presenter.AppsIntegrationPresenterImpl;
+import org.iplantc.core.uiapps.integration.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
@@ -39,7 +41,9 @@ public class AppIntegrationWindow extends IplantWindowBase {
         super(null, config);
 
         AppsIntegrationView view = new AppsIntegrationViewImpl(eventBus);
-        presenter = new AppsIntegrationPresenterImpl(view, eventBus);
+        AppTemplateServices atService = GWT.create(AppTemplateServices.class);
+        AppIntegrationErrorMessages appIntErrMsg = I18N.ERROR;
+        presenter = new AppsIntegrationPresenterImpl(view, eventBus, atService, appIntErrMsg);
         setTitle(I18N.DISPLAY.createApps());
         setSize("800", "410");
 
