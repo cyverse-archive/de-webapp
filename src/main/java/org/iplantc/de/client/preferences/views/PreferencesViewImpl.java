@@ -137,9 +137,9 @@ public class PreferencesViewImpl implements PreferencesView {
         us.setEnableEmailNotification(cboNotifyEmail.getValue());
         us.setRememberLastPath(cboLastPath.getValue());
         if (radioNoSaveSession.getValue()) {
-            us.setSaveSession(false);
-        } else {
             us.setSaveSession(true);
+        } else {
+            us.setSaveSession(false);
         }
         us.setDefaultOutputFolder(defaultOpFolder.getValue().getId());
         us.setAppsShortCut(appKbSc.getValue());
