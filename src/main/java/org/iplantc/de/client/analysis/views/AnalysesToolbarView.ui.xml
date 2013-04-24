@@ -4,7 +4,8 @@
     xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
     xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
-    xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form" >
+    xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+    xmlns:analysis="urn:import:org.iplantc.de.client.analysis.widget">
 
     <ui:with
         field="icons"
@@ -34,6 +35,9 @@
                 text="{strings.viewParamLbl}"
                 ui:field="btnViewParam"
                 enabled="false"/>
+            <analysis:AnalysisSearchField
+                ui:field="filterField"
+                emptyText="{strings.filterAnalysesList}" />
         </toolbar:ToolBar>
     </container:SimpleContainer>
 </ui:UiBinder>

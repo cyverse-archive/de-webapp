@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.FramedPanel;
@@ -150,11 +150,10 @@ public class AnalysesViewImpl implements AnalysesView {
     }
 
     @Override
-    public void setLoader(PagingLoader<PagingLoadConfig, PagingLoadResult<Analysis>> loader) {
+    public void setLoader(PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> loader) {
         grid.setLoader(loader);
         toolBar.bind(loader);
         grid.getLoader().load();
-
     }
 
     @Override

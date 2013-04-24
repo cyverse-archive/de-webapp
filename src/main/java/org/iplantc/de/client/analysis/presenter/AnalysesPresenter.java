@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
-import org.iplantc.de.client.analysis.models.AnalysesList;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.models.AnalysisExecutionStatus;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
@@ -34,13 +32,12 @@ import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.core.client.IdentityValueProvider;
-import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
-import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
@@ -63,7 +60,6 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     private final AnalysesView view;
     private final AnalysesToolbarView toolbar;
     private final AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
-    private PagingLoadResult<Analysis> callbackResult;
 
     public AnalysesPresenter(AnalysesView view) {
         this.view = view;
@@ -205,16 +201,16 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     private ColumnModel<AnalysisParameter> buildColumnModel() {
         AnalysisParameterProperties props = GWT.create(AnalysisParameterProperties.class);
         ColumnConfig<AnalysisParameter, AnalysisParameter> param_name = new ColumnConfig<AnalysisParameter, AnalysisParameter>(
-                new IdentityValueProvider<AnalysisParameter>(), 175); //$NON-NLS-1$
+                new IdentityValueProvider<AnalysisParameter>(), 175);
         param_name.setHeader(I18N.DISPLAY.paramName());
         param_name.setCell(new AnalysisParamNameCell());
 
         ColumnConfig<AnalysisParameter, String> param_type = new ColumnConfig<AnalysisParameter, String>(
-                props.type(), 75); //$NON-NLS-1$
+                props.type(), 75);
         param_type.setHeader(I18N.DISPLAY.paramType());
 
         ColumnConfig<AnalysisParameter, AnalysisParameter> param_value = new ColumnConfig<AnalysisParameter, AnalysisParameter>(
-                new IdentityValueProvider<AnalysisParameter>(), 325); //$NON-NLS-1$
+                new IdentityValueProvider<AnalysisParameter>(), 325);
         param_value.setHeader(I18N.DISPLAY.paramValue());
         param_value.setCell(new AnalysisParamValueCell());
 
@@ -225,66 +221,20 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     }
 
     /**
-     * Initializes the RpcProxy and BasePagingLoader to support paging for the AnalysesGrid.
+     * Initializes the toolbar's PagingLoader for use in the AnalysesGrid with paging and filtering
+     * support.
      */
-    private PagingLoader<PagingLoadConfig, PagingLoadResult<Analysis>> initRemoteLoader() {
-        RpcProxy<PagingLoadConfig, PagingLoadResult<Analysis>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<Analysis>>() {
+    private PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> initRemoteLoader() {
+        PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> loader = toolbar.getLoader();
 
-            @Override
-            public void load(PagingLoadConfig loadConfig,
-                    AsyncCallback<PagingLoadResult<Analysis>> callback) {
-                Services.ANALYSIS_SERVICE.getAnalyses(UserInfo.getInstance().getWorkspaceId(),
-                        loadConfig, new GetAnalysesServiceCallback(loadConfig, callback));
-
-            }
-        };
-
-        final PagingLoader<PagingLoadConfig, PagingLoadResult<Analysis>> loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<Analysis>>(
-                proxy);
+        // KLUDGE PagingLoader uses a PagingLoadConfigBean by default, which causes an exception when it
+        // tries to cast it to a FilterPagingLoadConfig on the initial load.
+        loader.useLoadConfig(new FilterPagingLoadConfigBean());
         loader.setRemoteSort(true);
-        loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, Analysis, PagingLoadResult<Analysis>>(
+        loader.addLoadHandler(new LoadResultListStoreBinding<FilterPagingLoadConfig, Analysis, PagingLoadResult<Analysis>>(
                 view.getListStore()));
 
         return loader;
-
-    }
-
-    /**
-     * An AsyncCallback for the AnalysisServiceFacade that will load paged results into the AnalysesGrid.
-     *
-     * @author psarando
-     *
-     */
-    private final class GetAnalysesServiceCallback implements AsyncCallback<String> {
-        private final AsyncCallback<PagingLoadResult<Analysis>> callback;
-        private final PagingLoadConfig loadConfig;
-
-        public GetAnalysesServiceCallback(PagingLoadConfig loadConfig,
-                AsyncCallback<PagingLoadResult<Analysis>> pagingCallback) {
-            this.callback = pagingCallback;
-            this.loadConfig = loadConfig;
-        }
-
-        @Override
-        public void onSuccess(String result) {
-            JSONObject jsonResult = JsonUtil.getObject(result);
-            JSONArray items = JsonUtil.getArray(jsonResult, "analyses"); //$NON-NLS-1$
-            Number total = 0;
-            if (items != null) {
-                total = JsonUtil.getNumber(jsonResult, "total"); //$NON-NLS-1$
-            }
-            AutoBean<AnalysesList> bean = AutoBeanCodex.decode(factory, AnalysesList.class, result);
-            List<Analysis> analyses = bean.as().getAnalysisList();
-            callbackResult = new PagingLoadResultBean<Analysis>(analyses, total.intValue(),
-                    loadConfig.getOffset());
-            callback.onSuccess(callbackResult);
-
-        }
-
-        @Override
-        public void onFailure(Throwable caught) {
-            org.iplantc.core.uicommons.client.ErrorHandler.post(caught);
-        }
 
     }
 

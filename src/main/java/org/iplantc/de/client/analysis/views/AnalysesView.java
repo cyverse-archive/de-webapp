@@ -6,7 +6,7 @@ import org.iplantc.de.client.analysis.models.Analysis;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -39,7 +39,7 @@ public interface AnalysesView extends IsWidget {
 
     public ListStore<Analysis> getListStore();
 
-    public void setLoader(PagingLoader<PagingLoadConfig, PagingLoadResult<Analysis>> initRemoteLoader);
+    public void setLoader(PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> loader);
 
     public TextButton getRefreshButton();
 

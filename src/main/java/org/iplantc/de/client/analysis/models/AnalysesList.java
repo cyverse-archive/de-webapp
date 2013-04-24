@@ -15,4 +15,6 @@ public interface AnalysesList {
 
     @PropertyName("analyses")
     List<Analysis> getAnalysisList();
+
+    int getTotal();
 }
