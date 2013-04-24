@@ -94,12 +94,12 @@
 		<servlet-class>org.iplantc.de.server.service.ProxyServlet</servlet-class>
 	</servlet>
     <servlet>
-        <servlet-name>uuidService</servlet-name>
-        <servlet-class>org.iplantc.de.server.UUIDServiceImpl</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>remoteLogging</servlet-name>
         <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+    </servlet>
+   <servlet>
+        <servlet-name>uuidService</servlet-name>
+        <servlet-class>org.iplantc.de.server.UUIDServiceImpl</servlet-class>
     </servlet>
 
 	<!-- Servlet Mappings -->
@@ -172,12 +172,12 @@
 		<url-pattern>/proxy/*</url-pattern>
 	</servlet-mapping>
     <servlet-mapping>
-         <servlet-name>uuidService</servlet-name>
-         <url-pattern>/discoveryenvironment/uuidService</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>remoteLogging</servlet-name>
         <url-pattern>/discoveryenvironment/remote_logging</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+         <servlet-name>uuidService</servlet-name>
+         <url-pattern>/discoveryenvironment/uuidService</url-pattern>
     </servlet-mapping>
 
 	<!-- Filters -->

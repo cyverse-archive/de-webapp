@@ -2,6 +2,7 @@ package org.iplantc.de.client.services.impl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.iplantc.core.jsonutil.JsonUtil;
@@ -210,7 +211,8 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<String> callback) {
+    public <T extends DiskResource> void deleteDiskResources(Set<T> diskResources,
+            AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix + ".delete"; //$NON-NLS-1$
         List<String> drIds = toStringIdList(diskResources);
         String body = "{\"paths\": " + JsonUtil.buildJsonArrayString(drIds) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -238,9 +240,8 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void setDiskResourceMetaData(DiskResource resource,
-            Set<DiskResourceMetadata> mdToUpdate, Set<DiskResourceMetadata> mdToDelete,
-            AsyncCallback<String> callback) {
+    public void setDiskResourceMetaData(DiskResource resource, Set<DiskResourceMetadata> mdToUpdate,
+            Set<DiskResourceMetadata> mdToDelete, AsyncCallback<String> callback) {
         String fullAddress = serviceNamePrefix
                 + ".metadata-batch" + "?path=" + URL.encodePathSegment(resource.getId()); //$NON-NLS-1$
 
@@ -392,6 +393,77 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String fullAddress = serviceNamePrefix
                 + ".user-trash-dir" + "?path=" + URL.encodePathSegment(userName); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
+        callService(callback, wrapper);
+    }
+
+    /**
+     * Creates a set of public data links for the given disk resources.
+     * 
+     * @param ticketIdToResourceIdMap the id of the disk resource for which the ticket will be created.
+     * @param isPublicTicket
+     * @param callback
+     */
+    @Override
+    public void createDataLinks(Map<String, String> ticketIdToResourceIdMap,
+            AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".add-tickets";
+        String args = "public=1";
+
+        JSONObject body = new JSONObject();
+        JSONArray tickets = new JSONArray();
+        int index = 0;
+        for (String ticketId : ticketIdToResourceIdMap.keySet()) {
+            String resourceId = ticketIdToResourceIdMap.get(ticketId);
+
+            JSONObject subBody = new JSONObject();
+            subBody.put("path", new JSONString(resourceId));
+            subBody.put("ticket-id", new JSONString(ticketId));
+            tickets.set(index, subBody);
+            index++;
+        }
+        body.put("tickets", tickets);
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        wrapper.setArguments(args);
+        callService(callback, wrapper);
+
+    }
+
+    /**
+     * Requests a listing of all the tickets for the given disk resources.
+     * 
+     * @param diskResourceIds the disk resources whose tickets will be listed.
+     * @param callback
+     */
+    @Override
+    public void listDataLinks(List<String> diskResourceIds, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".list-tickets";
+
+        JSONObject body = new JSONObject();
+        body.put("paths", JsonUtil.buildArrayFromStrings(diskResourceIds));
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
+        callService(callback, wrapper);
+
+    }
+
+    /**
+     * Requests that the given Kif Share tickets will be deleted.
+     * 
+     * @param dataLinkIds the tickets which will be deleted.
+     * @param callback
+     */
+    @Override
+    public void deleteDataLinks(List<String> dataLinkIds, AsyncCallback<String> callback) {
+        String fullAddress = serviceNamePrefix + ".delete-tickets";
+
+        JSONObject body = new JSONObject();
+        body.put("tickets", JsonUtil.buildArrayFromStrings(dataLinkIds));
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
+                body.toString());
         callService(callback, wrapper);
     }
 
