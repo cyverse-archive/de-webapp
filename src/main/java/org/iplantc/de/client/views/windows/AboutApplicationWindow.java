@@ -1,10 +1,10 @@
 package org.iplantc.de.client.views.windows;
 
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.models.AboutApplicationData;
 import org.iplantc.de.client.models.DeModelAutoBeanFactory;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
@@ -16,7 +16,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -29,23 +28,15 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
  */
 public class AboutApplicationWindow extends IplantWindowBase {
     private AboutApplicationData model;
-
-    private Label lblNSFStatement;
-    private final DeResources res;
+    private DeResources res;
 
     public AboutApplicationWindow(AboutWindowConfig config) {
         super("");
-        setSize("300", "235");
-        res = GWT.create(DeResources.class);
-        res.css().ensureInjected();
-        setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
+        setSize("320", "260");
         setResizable(false);
-        initComponents();
+        setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
         executeServiceCall();
-    }
-
-    private void initComponents() {
-        lblNSFStatement = new Label(I18N.DISPLAY.nsfProjectText());
+        res = GWT.create(DeResources.class);
     }
 
     private void executeServiceCall() {
@@ -67,10 +58,9 @@ public class AboutApplicationWindow extends IplantWindowBase {
     private void compose() {
         VerticalLayoutContainer vlc = new VerticalLayoutContainer();
         vlc.setBorders(true);
+        vlc.setStyleName(res.css().iplantcAboutPadText());
         Image logo = new Image(IplantResources.RESOURCES.iplantAbout().getSafeUri());
-
         vlc.add(logo);
-        vlc.add(lblNSFStatement);
         vlc.add(buildDetailsContainer());
         add(vlc);
     }
@@ -86,17 +76,17 @@ public class AboutApplicationWindow extends IplantWindowBase {
     private ContentPanel buildDetailsContainer() {
         ContentPanel pnlDetails = new ContentPanel();
         pnlDetails.setHeaderVisible(false);
-        pnlDetails.setBodyStyleName(res.css().iplantcAboutPadText());
 
         HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
-                model.getBuildNumber(), Window.Navigator.getUserAgent()));
+                model.getBuildNumber(), Window.Navigator.getUserAgent(),
+                I18N.DISPLAY.projectCopyrightStatement(), I18N.DISPLAY.nsfProjectText()));
         pnlDetails.add(txt);
 
         return pnlDetails;
     }
 
     private String getAboutTemplate() {
-        return "<p>Release: {0}</p><p> Build #: {1}</p><p>User Agent: {2}</p>"; //$NON-NLS-1$
+        return "<p style='font-style:italic;'> {4} </p><p>Release: {0}</p><p> Build #: {1}</p><p>User Agent: {2}</p> <p style='font-weight:700'> {3}</p>"; //$NON-NLS-1$
     }
 
     @Override

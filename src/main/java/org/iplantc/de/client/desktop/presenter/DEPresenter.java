@@ -68,9 +68,11 @@ public class DEPresenter implements DEView.Presenter {
 
             @Override
             public void onClose(CloseEvent<Window> event) {
-                UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
-                        .saveSession(DEPresenter.this);
-                uspmb.show();
+                if (UserSettings.getInstance().isSaveSession()) {
+                    UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
+                            .saveSession(DEPresenter.this);
+                    uspmb.show();
+                }
             }
         });
 
@@ -145,8 +147,10 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void getUserSession() {
-        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.restoreSession(this);
-        uspmb.show();
+        if (UserSettings.getInstance().isSaveSession()) {
+            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.restoreSession(this);
+            uspmb.show();
+        }
     }
 
     private void doWorkspaceDisplay() {
@@ -261,8 +265,10 @@ public class DEPresenter implements DEView.Presenter {
         // Need to stop polling
         MessagePoller.getInstance().stop();
 
-        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this);
-        uspmb.show();
+        if (UserSettings.getInstance().isSaveSession()) {
+            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this);
+            uspmb.show();
+        }
 
         // Need to perform actual logout redirect.
         Window.Location.assign(Window.Location.getPath() + Constants.CLIENT.logoutUrl());

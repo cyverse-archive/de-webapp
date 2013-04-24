@@ -13,7 +13,7 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class EventJSONFactory {
     public static enum ActionType {
-        UPLOAD_COMPLETE;//, FOLDER_CREATED, SAVE_AS, FOLDER_RENAMED, FILE_RENAMED, DELETE, ANALYSIS_LAUNCHED, DISPLAY_WINDOW, DISPLAY_VIEWER_WINDOWS, DISPLAY_TREE_VIEWER_WINDOWS, LOGOUT
+        UPLOAD_COMPLETE;//, FOLDER_CREATED, SAVE_AS, DISKRESOURCE_RENAMED, DISKRESOURCE_DELETE, ANALYSIS_LAUNCHED, DISPLAY_WINDOW, DISPLAY_VIEWER_WINDOWS, DISPLAY_TREE_VIEWER_WINDOWS, LOGOUT, EMPTYTRASH
     }
 
     private static EventJSONBuilder getBuilder(ActionType type) {
@@ -32,16 +32,16 @@ public class EventJSONFactory {
 //                ret = new BasicEventJSONBuilder("data", "save_as"); //$NON-NLS-1$ //$NON-NLS-2$
 //                break;
 
-//            case FILE_RENAMED:
-//                ret = new BasicEventJSONBuilder("data", "file_renamed"); //$NON-NLS-1$ //$NON-NLS-2$
+//            case DISKRESOURCE_RENAMED:
+//                ret = new BasicEventJSONBuilder("data", "diskresource_renamed"); //$NON-NLS-1$ //$NON-NLS-2$
 //                break;
-
-//            case FOLDER_RENAMED:
-//                ret = new BasicEventJSONBuilder("data", "folder_renamed"); //$NON-NLS-1$ //$NON-NLS-2$
+//
+//            case DISKRESOURCE_DELETE:
+//                ret = new BasicEventJSONBuilder("data", "diskresource_delete"); //$NON-NLS-1$ //$NON-NLS-2$
 //                break;
-
-//            case DELETE:
-//                ret = new BasicEventJSONBuilder("data", "delete"); //$NON-NLS-1$ //$NON-NLS-2$
+//
+//            case EMPTYTRASH:
+//                ret = new BasicEventJSONBuilder("data", "diskresource_delete"); //$NON-NLS-1$ //$NON-NLS-2$
 //                break;
 
 //            case DISPLAY_WINDOW:

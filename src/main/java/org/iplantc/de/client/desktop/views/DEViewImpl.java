@@ -42,6 +42,7 @@ import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
@@ -143,40 +144,25 @@ public class DEViewImpl implements DEView {
 
     @Override
     public void drawHeader() {
-        // headerPanel.add(buildLogoPanel());
         HtmlLayoutContainer c = new HtmlLayoutContainer(r.render(headerResources));
         headerPanel.setWidget(c);
         c.add(buildHtmlActionsPanel(), new HtmlData(".menu_container"));
-        // headerPanel.add(buildHtmlActionsPanel());
     }
 
-    private VerticalLayoutContainer buildLogoPanel() {
-        VerticalLayoutContainer panel = new VerticalLayoutContainer();
-        panel.setWidth("80%");
+    private HtmlLayoutContainer buildHtmlActionsPanel() {
+        HtmlLayoutContainerTemplate templates = GWT.create(HtmlLayoutContainerTemplate.class);
 
-        Image logo = new Image(IplantResources.RESOURCES.headerLogo().getSafeUri());
-        logo.addStyleName(resources.css().iplantcLogo());
-        logo.addClickHandler(new ClickHandler() {
+        HtmlLayoutContainer c = new HtmlLayoutContainer(templates.getTemplate());
+        c.add(buildNotificationMenu(I18N.DISPLAY.notifications()), new HtmlData(".cell1"));
+        c.add(buildActionsMenu(), new HtmlData(".cell2"));
+        c.add(lblNotifications, new HtmlData(".cell3"));
+        return c;
 
-            @Override
-            public void onClick(ClickEvent arg0) {
-                WindowUtil.open(Constants.CLIENT.iplantHome());
-            }
-        });
-
-        panel.add(logo);
-
-        return panel;
     }
 
-    private ToolBar buildHtmlActionsPanel() {
-        ToolBar panel = new ToolBar();
-        panel.setWidth(175);
-        panel.add(buildNotificationMenu(I18N.DISPLAY.notifications()));
-        panel.add(lblNotifications);
-        panel.add(buildActionsMenu(UserInfo.getInstance().getUsername(), buildUserMenu()));
-
-        return panel;
+    public interface HtmlLayoutContainerTemplate extends XTemplates {
+        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\" /><td class=\"cell3\"><td class=\"cell2\" /></tr></tbody></table>")
+        SafeHtml getTemplate();
     }
 
     private TextButton buildNotificationMenu(String menuHeaderText) {
@@ -184,6 +170,7 @@ public class DEViewImpl implements DEView {
         lblNotifications.ensureDebugId("lblNotifyCnt");
 
         final TextButton button = new TextButton(menuHeaderText);
+        button.setHeight(18);
         button.ensureDebugId("id" + menuHeaderText);
         notificationsView = new ViewNotificationMenu(eventBus);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
@@ -191,14 +178,12 @@ public class DEViewImpl implements DEView {
 
             @Override
             public void onShow(ShowEvent event) {
-                button.addStyleName(resources.css().de_header_menu_button_selected());
                 notificationsView.addStyleName(resources.css().de_header_menu());
             }
         });
         notificationsView.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {
-                button.removeStyleName(resources.css().de_header_menu_button_selected());
                 notificationsView.removeStyleName(resources.css().de_header_menu());
             }
         });
@@ -207,16 +192,17 @@ public class DEViewImpl implements DEView {
         return button;
     }
 
-    private TextButton buildActionsMenu(String menuHeaderText, final Menu menu) {
+    private TextButton buildActionsMenu() {
         final TextButton button = new TextButton();
+        button.setHeight(18);
         button.setIcon(IplantResources.RESOURCES.userMenu());
-        button.ensureDebugId("id" + menuHeaderText);
+        button.ensureDebugId("id" + I18N.DISPLAY.settings());
+        final Menu menu = buildUserMenu();
         button.setMenu(menu);
         menu.addShowHandler(new ShowHandler() {
 
             @Override
             public void onShow(ShowEvent event) {
-                button.addStyleName(resources.css().de_header_menu_button_selected());
                 menu.addStyleName(resources.css().de_header_menu());
 
             }
@@ -224,7 +210,6 @@ public class DEViewImpl implements DEView {
         menu.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {
-                button.removeStyleName(resources.css().de_header_menu_button_selected());
                 menu.removeStyleName(resources.css().de_header_menu());
             }
         });

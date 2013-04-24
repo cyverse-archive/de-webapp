@@ -80,11 +80,11 @@ public class DefaultUploadCompleteHandler extends UploadCompleteHandler {
 
         } catch (Exception e) {
             ErrorHandler.post(processXMLErrorMsg(sourceUrl, response), e);
-        } finally {
-            // TODO: consider having onCompletion and onAfterCompletion called by superclass
-            // method to more appropriately confirm w/ Template Method and Command patterns
-            onAfterCompletion();
-        }
+        } /*
+           * finally { // TODO: consider having onCompletion and onAfterCompletion called by superclass
+           * // method to more appropriately confirm w/ Template Method and Command patterns
+           * onAfterCompletion(); }
+           */
     }
 
     private String processXMLErrorMsg(String sourceUrl, String message) {

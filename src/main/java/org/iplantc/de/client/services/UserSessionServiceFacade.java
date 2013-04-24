@@ -61,4 +61,18 @@ public class UserSessionServiceFacade {
 
     }
 
+    public void getSearchHistory(AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "search-history";
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    public void saveSearchHistory(JSONObject body, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "search-history";
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
+                body.toString());
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+
+    }
+
 }
