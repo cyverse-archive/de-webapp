@@ -2,12 +2,12 @@ package org.iplantc.de.client.views.windows.configs;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.HasId;
+import org.iplantc.de.client.analysis.models.Analysis;
 
 public interface AnalysisWindowConfig extends WindowConfig {
 
-    List<HasId> getSelectedAnalyses();
+    List<Analysis> getSelectedAnalyses();
     
-    void setSelectedAnalyses(List<HasId> selectedAnalyses);
+    void setSelectedAnalyses(List<Analysis> selectedAnalyses);
 
 }

@@ -10,6 +10,7 @@ import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -18,6 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.LoadHandler;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.FramedPanel;
@@ -124,14 +126,24 @@ public class AnalysesViewImpl implements AnalysesView {
     }
 
     @Override
-    public void loadAnalyses(List<Analysis> items) {
-        listStore.clear();
-        listStore.addAll(items);
+    public void loadAnalyses() {
+        grid.getLoader().load();
     }
 
     @Override
     public List<Analysis> getSelectedAnalyses() {
         return grid.getSelectionModel().getSelectedItems();
+    }
+
+    @Override
+    public void setSelectedAnalyses(List<Analysis> selectedAnalyses) {
+        if (selectedAnalyses != null) {
+            grid.getSelectionModel().setSelection(selectedAnalyses);
+
+            if (!selectedAnalyses.isEmpty()) {
+                grid.getView().ensureVisible(listStore.indexOf(selectedAnalyses.get(0)), 0, false);
+            }
+        }
     }
 
     @Override
@@ -153,7 +165,6 @@ public class AnalysesViewImpl implements AnalysesView {
     public void setLoader(PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> loader) {
         grid.setLoader(loader);
         toolBar.bind(loader);
-        grid.getLoader().load();
     }
 
     @Override
@@ -161,4 +172,13 @@ public class AnalysesViewImpl implements AnalysesView {
         return toolBar.getRefreshButton();
     }
 
+    @Override
+    public HandlerRegistration addLoadHandler(
+            LoadHandler<FilterPagingLoadConfig, PagingLoadResult<Analysis>> handler) {
+        @SuppressWarnings("unchecked")
+        PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> loader = (PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>>)grid
+                .getLoader();
+
+        return loader.addLoadHandler(handler);
+    }
 }

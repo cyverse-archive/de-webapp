@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.analysis.models.Analysis;
@@ -17,6 +16,7 @@ import org.iplantc.de.client.analysis.views.cells.AnalysisNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisTimeStampCell;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.AbstractCell;
@@ -43,14 +43,18 @@ public class MyAnalysesWindow extends IplantWindowBase {
 
     public MyAnalysesWindow(AnalysisWindowConfig config, EventBus eventBus) {
         super(null, null);
+
         this.eventBus = eventBus;
+
         setTitle(I18N.DISPLAY.analyses());
         setSize("600", "375");
+
         AnalysisKeyProvider provider = new AnalysisKeyProvider();
         ListStore<Analysis> listStore = new ListStore<Analysis>(provider);
         AnalysesView view = new AnalysesViewImpl(listStore, buildColumnModel(), checkBoxModel, expander);
         presenter = new AnalysesPresenter(view);
-        presenter.go(this);
+
+        presenter.go(this, config.getSelectedAnalyses());
     }
 
     @SuppressWarnings("unchecked")
@@ -114,7 +118,7 @@ public class MyAnalysesWindow extends IplantWindowBase {
     @Override
     public WindowState getWindowState() {
         AnalysisWindowConfig config = ConfigFactory.analysisWindowConfig();
-        List<HasId> selectedAnalyses = Lists.newArrayList();
+        List<Analysis> selectedAnalyses = Lists.newArrayList();
         selectedAnalyses.addAll(presenter.getSelectedAnalyses());
         config.setSelectedAnalyses(selectedAnalyses);
         return createWindowState(config);
@@ -129,4 +133,13 @@ public class MyAnalysesWindow extends IplantWindowBase {
 
     }
 
+    @Override
+    public <C extends WindowConfig> void update(C config) {
+        super.update(config);
+
+        if (config instanceof AnalysisWindowConfig) {
+            AnalysisWindowConfig analysisWindowConfig = (AnalysisWindowConfig)config;
+            presenter.setSelectedAnalyses(analysisWindowConfig.getSelectedAnalyses());
+        }
+    }
 }
