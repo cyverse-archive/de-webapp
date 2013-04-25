@@ -7,15 +7,16 @@ import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.FilterConfig;
-import com.extjs.gxt.ui.client.data.FilterPagingLoadConfig;
+import com.google.common.base.Strings;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfo;
+import com.sencha.gxt.data.shared.loader.FilterConfig;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 
 /**
  * Provides access to remote services for analyses management operations.
@@ -26,10 +27,10 @@ public class AnalysisServiceFacade {
      * Get all the analyses for a given workspace.
      * 
      * @param workspaceId unique id for a user's workspace.
-     * @param pagingConfig optional remote paging and sorting configs.
+     * @param loadConfig optional remote paging and sorting configs.
      * @param callback executed when RPC call completes.
      */
-    public void getAnalyses(String workspaceId, PagingLoadConfig pagingConfig,
+    public void getAnalyses(String workspaceId, FilterPagingLoadConfig loadConfig,
             AsyncCallback<String> callback) {
         StringBuilder address = new StringBuilder(DEProperties.getInstance().getMuleServiceBaseUrl());
 
@@ -37,68 +38,53 @@ public class AnalysisServiceFacade {
         address.append(workspaceId);
         address.append("/executions/list"); //$NON-NLS-1$
 
-        if (pagingConfig != null) {
+        if (loadConfig != null) {
             address.append("?limit="); //$NON-NLS-1$
-            address.append(pagingConfig.getLimit());
+            address.append(loadConfig.getLimit());
 
             address.append("&offset="); //$NON-NLS-1$
-            address.append(pagingConfig.getOffset());
-        }
+            address.append(loadConfig.getOffset());
 
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(address.toString());
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
+            List<? extends SortInfo> sortInfoList = loadConfig.getSortInfo();
+            if (sortInfoList != null && !sortInfoList.isEmpty()) {
+                SortInfo sortInfo = sortInfoList.get(0);
 
-    /**
-     * Get all the analyses for a given workspace.
-     * 
-     * @param workspaceId unique id for a user's workspace.
-     * @param pagingConfig optional remote paging and sorting configs.
-     * @param callback executed when RPC call completes.
-     */
-    public void getAnalyses(String workspaceId, FilterPagingLoadConfig pagingConfig,
-            AsyncCallback<String> callback) {
-        StringBuilder address = new StringBuilder(DEProperties.getInstance().getMuleServiceBaseUrl());
-
-        address.append("workspaces/"); //$NON-NLS-1$
-        address.append(workspaceId);
-        address.append("/executions/list"); //$NON-NLS-1$
-
-        if (pagingConfig != null) {
-            address.append("?limit="); //$NON-NLS-1$
-            address.append(pagingConfig.getLimit());
-
-            address.append("&offset="); //$NON-NLS-1$
-            address.append(pagingConfig.getOffset());
-
-            String sortField = pagingConfig.getSortField();
-            if (sortField != null && !sortField.isEmpty()) {
-                address.append("&sort-field="); //$NON-NLS-1$
-                address.append(sortField);
-            }
-
-            SortDir sortDir = pagingConfig.getSortDir();
-            if (sortDir == SortDir.ASC || sortDir == SortDir.DESC) {
-                address.append("&sort-order="); //$NON-NLS-1$
-                address.append(sortDir.toString());
-            }
-
-            List<FilterConfig> filters = pagingConfig.getFilterConfigs();
-            if (filters != null && !filters.isEmpty()) {
-                address.append("&filter="); //$NON-NLS-1$
-
-                JSONArray jsonFilters = new JSONArray();
-                int filterIndex = 0;
-                for (FilterConfig filter : filters) {
-                    JSONObject jsonFilter = new JSONObject();
-
-                    jsonFilter.put("field", new JSONString(filter.getField()));
-                    jsonFilter.put("value", new JSONString((String)filter.getValue()));
-
-                    jsonFilters.set(filterIndex++, jsonFilter);
+                String sortField = sortInfo.getSortField();
+                if (!Strings.isNullOrEmpty(sortField)) {
+                    address.append("&sort-field="); //$NON-NLS-1$
+                    address.append(sortField);
                 }
 
-                address.append(URL.encodeQueryString(jsonFilters.toString()));
+                SortDir sortDir = sortInfo.getSortDir();
+                if (sortDir == SortDir.ASC || sortDir == SortDir.DESC) {
+                    address.append("&sort-order="); //$NON-NLS-1$
+                    address.append(sortDir.toString());
+                }
+            }
+
+            List<FilterConfig> filters = loadConfig.getFilters();
+            if (filters != null && !filters.isEmpty()) {
+                JSONArray jsonFilters = new JSONArray();
+                int filterIndex = 0;
+
+                for (FilterConfig filter : filters) {
+                    String field = filter.getField();
+                    String value = filter.getValue();
+
+                    if (!Strings.isNullOrEmpty(field) && !Strings.isNullOrEmpty(value)) {
+                        JSONObject jsonFilter = new JSONObject();
+
+                        jsonFilter.put("field", new JSONString(field)); //$NON-NLS-1$
+                        jsonFilter.put("value", new JSONString(value)); //$NON-NLS-1$
+
+                        jsonFilters.set(filterIndex++, jsonFilter);
+                    }
+                }
+
+                if (jsonFilters.size() > 0) {
+                    address.append("&filter="); //$NON-NLS-1$
+                    address.append(URL.encodeQueryString(jsonFilters.toString()));
+                }
             }
         }
 
