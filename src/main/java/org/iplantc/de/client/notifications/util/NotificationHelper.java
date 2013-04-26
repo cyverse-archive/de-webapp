@@ -13,6 +13,8 @@ import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
+import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
@@ -93,6 +95,7 @@ public class NotificationHelper {
 
     private final DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
     private final CommonModelAutoBeanFactory cFactory = GWT.create(CommonModelAutoBeanFactory.class);
+    private final AnalysesAutoBeanFactory analysesFactory = GWT.create(AnalysesAutoBeanFactory.class);
 
     private NotificationHelper() {
     }
@@ -120,7 +123,8 @@ public class NotificationHelper {
                         diskResourceWindowConfig.setSelectedDiskResources(newArrayList);
                         EventBus.getInstance().fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig, true));
                     } else if (category == NotificationHelper.Category.ANALYSIS) {
-                        AutoBean<HasId> hAb = AutoBeanCodex.decode(cFactory, HasId.class, context);
+                        AutoBean<Analysis> hAb = AutoBeanCodex.decode(analysesFactory, Analysis.class,
+                                context);
 
                         AnalysisWindowConfig analysisWindowConfig = ConfigFactory.analysisWindowConfig();
                         analysisWindowConfig.setSelectedAnalyses(Lists.newArrayList(hAb.as()));

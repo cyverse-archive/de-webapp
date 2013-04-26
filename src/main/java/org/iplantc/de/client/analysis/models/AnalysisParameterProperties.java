@@ -15,7 +15,4 @@ public interface AnalysisParameterProperties extends PropertyAccess<AnalysisPara
     ValueProvider<AnalysisParameter, String> name();
 
     ValueProvider<AnalysisParameter, String> type();
-
-    ValueProvider<AnalysisParameter, String> value();
-
 }

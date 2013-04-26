@@ -48,6 +48,8 @@ public interface NotificationPayload {
     @PropertyName("description")
     String getDescription();
 
+    // TODO the service is returning a string, sometimes empty, which will throw an exception when
+    // re-encoding with AutoBeanCodex.
     @PropertyName("enddate")
     long getEndDate();
 

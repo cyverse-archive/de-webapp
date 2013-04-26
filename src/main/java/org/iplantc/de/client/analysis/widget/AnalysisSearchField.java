@@ -35,12 +35,20 @@ public class AnalysisSearchField extends SearchField<Analysis> {
         appNameFilter.setField("analysis_name"); //$NON-NLS-1$
     }
 
+    /**
+     * Loads the loader with a FilterConfig with the given analysisId, setting the field's text to the
+     * given analysisName. This filter will be cleared once this field is cleared or another query is
+     * triggered.
+     * 
+     * @param analysisId
+     * @param analysisName
+     */
     public void filterByAnalysisId(String analysisId, String analysisName) {
         setValue(analysisName);
         idFilter.setValue(analysisId);
 
         FilterPagingLoadConfig loadConfig = getParams(analysisId);
-        List<FilterConfig> filters = getConfigFilters(loadConfig);
+        List<FilterConfig> filters = super.getConfigFilters(loadConfig);
         filters.clear();
         filters.add(idFilter);
 

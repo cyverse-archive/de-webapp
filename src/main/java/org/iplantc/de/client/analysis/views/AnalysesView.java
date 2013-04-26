@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.iplantc.de.client.analysis.models.Analysis;
 
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.LoadHandler;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -21,19 +24,24 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 public interface AnalysesView extends IsWidget {
     public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
 
+        void go(final HasOneWidget container, List<Analysis> selectedAnalyses);
+
         void onAnalysesSelection(List<Analysis> selectedItems);
         
         List<Analysis> getSelectedAnalyses();
-        
+
+        void setSelectedAnalyses(List<Analysis> selectedAnalyses);
     }
 
     public void setPresenter(final Presenter presenter);
 
     void setNorthWidget(IsWidget widget);
 
-    public void loadAnalyses(List<Analysis> items);
+    public void loadAnalyses();
 
     public List<Analysis> getSelectedAnalyses();
+
+    public void setSelectedAnalyses(List<Analysis> selectedAnalyses);
 
     public void removeFromStore(List<Analysis> items);
 
@@ -43,4 +51,6 @@ public interface AnalysesView extends IsWidget {
 
     public TextButton getRefreshButton();
 
+    public HandlerRegistration addLoadHandler(
+            LoadHandler<FilterPagingLoadConfig, PagingLoadResult<Analysis>> handler);
 }

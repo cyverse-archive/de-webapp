@@ -4,12 +4,13 @@
 package org.iplantc.de.client.analysis.models;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
  * @author sriram
  * 
  */
-public interface AnalysisParameter {
+public interface AnalysisParameter extends Cloneable {
 
     @PropertyName("param_id")
     void setId(String ig);
@@ -30,10 +31,10 @@ public interface AnalysisParameter {
     String getType();
 
     @PropertyName("param_value")
-    void setValue(String value);
+    void setValue(Splittable value);
 
     @PropertyName("param_value")
-    String getValue();
+    Splittable getValue();
 
     @PropertyName("info_type")
     String getInfoType();
@@ -46,4 +47,8 @@ public interface AnalysisParameter {
 
     @PropertyName("data_format")
     void setDataFormat(String format);
+
+    void setDisplayValue(String value);
+
+    String getDisplayValue();
 }

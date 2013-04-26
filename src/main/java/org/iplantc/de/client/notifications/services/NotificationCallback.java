@@ -3,11 +3,11 @@ package org.iplantc.de.client.notifications.services;
 import java.util.Collections;
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.notifications.models.Notification;
+import org.iplantc.de.client.notifications.models.NotificationAnalysisContext;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationList;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
@@ -49,7 +49,14 @@ public class NotificationCallback implements AsyncCallback<String> {
 
                 case ANALYSIS:
                     if (payload.getAction().equals("job_status_change")) {
-                        msg.setContext("{\"id\": " + JsonUtil.quoteString(id) + "}");
+                        AutoBean<NotificationAnalysisContext> contextBean = notFactory
+                                .getNotificationAnalysisContext();
+
+                        NotificationAnalysisContext context = contextBean.as();
+                        context.setId(payload.getId());
+                        context.setName(payload.getName());
+
+                        msg.setContext(AutoBeanCodex.encode(contextBean).getPayload());
                     } else {
                         GWT.log("Unhandled Analysis action type!!");
                     }
