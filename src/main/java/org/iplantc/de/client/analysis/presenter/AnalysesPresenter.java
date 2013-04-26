@@ -14,6 +14,7 @@ import org.iplantc.de.client.analysis.models.AnalysisExecutionStatus;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.analysis.models.AnalysisParameterProperties;
 import org.iplantc.de.client.analysis.models.AnalysisParametersList;
+import org.iplantc.de.client.analysis.util.AnalysisParameterValueParser;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarView;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarViewImpl;
 import org.iplantc.de.client.analysis.views.AnalysesView;
@@ -49,11 +50,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /**
- *
+ * 
  * A presenter for analyses view
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolbarView.Presenter {
 
@@ -101,7 +102,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
                 public void onSuccess(String result) {
                     AutoBean<AnalysisParametersList> bean = AutoBeanCodex.decode(factory,
                             AnalysisParametersList.class, result);
-                    apv.loadParameters(bean.as().getParameterList());
+                    apv.loadParameters(AnalysisParameterValueParser.parse(bean.as().getParameterList()));
                 }
 
                 @Override

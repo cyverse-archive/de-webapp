@@ -34,14 +34,13 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
             SafeHtmlBuilder sb) {
         String info_type = value.getInfoType();
         // // At present,reference genome info types are not supported by DE viewers
-        boolean valid_info_type = !info_type.equalsIgnoreCase("ReferenceGenome")
-                && !info_type.equalsIgnoreCase("ReferenceSequence")
-                && !info_type.equalsIgnoreCase("ReferenceAnnotation");
+        boolean valid_info_type = isValidInputType(info_type);
         if (value.getType().equalsIgnoreCase("Input") && valid_info_type) {
             sb.appendHtmlConstant("<div style=\"cursor:pointer;text-decoration:underline;white-space:pre-wrap;\">"
-                    + value.getValue() + "</div>");
+                    + value.getDisplayValue() + "</div>");
         } else {
-            sb.appendHtmlConstant("<div style=\"white-space:pre-wrap;\">" + value.getValue() + "</div>");
+            sb.appendHtmlConstant("<div style=\"white-space:pre-wrap;\">" + value.getDisplayValue()
+                    + "</div>");
         }
 
     }
@@ -59,9 +58,7 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
 
         if ("click".equals(event.getType())) {
             String info_type = value.getInfoType();
-            boolean valid_info_type = !info_type.equalsIgnoreCase("ReferenceGenome")
-                    && !info_type.equalsIgnoreCase("ReferenceSequence")
-                    && !info_type.equalsIgnoreCase("ReferenceAnnotation");
+            boolean valid_info_type = isValidInputType(info_type);
             if (value.getType().equalsIgnoreCase("Input") && valid_info_type) {
                 launchViewer(value);
 
@@ -72,9 +69,16 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
 
     private void launchViewer(AnalysisParameter value) {
         DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
-        AutoBean<File> bean = AutoBeanCodex.decode(factory, File.class, "{\"id\": \"" + value.getValue() + "\"}");
-        bean.as().setName(DiskResourceUtil.parseNameFromPath(value.getValue()));
+        AutoBean<File> bean = AutoBeanCodex.decode(factory, File.class, "{\"id\": \"" + value.getValue()
+                + "\"}");
+        bean.as().setName(DiskResourceUtil.parseNameFromPath(value.getDisplayValue()));
         EventBus.getInstance().fireEvent(new ShowFilePreviewEvent(bean.as(), this));
+    }
+
+    public boolean isValidInputType(String info_type) {
+        return !info_type.equalsIgnoreCase("ReferenceGenome")
+                && !info_type.equalsIgnoreCase("ReferenceSequence")
+                && !info_type.equalsIgnoreCase("ReferenceAnnotation");
     }
 
 }
