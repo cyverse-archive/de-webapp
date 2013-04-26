@@ -21,10 +21,13 @@ import org.iplantc.de.client.analysis.views.AnalysesView;
 import org.iplantc.de.client.analysis.views.AnalysisParamView;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamValueCell;
+import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -37,6 +40,8 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+import com.sencha.gxt.data.shared.loader.LoadEvent;
+import com.sencha.gxt.data.shared.loader.LoadHandler;
 import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
@@ -61,6 +66,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     private final AnalysesView view;
     private final AnalysesToolbarView toolbar;
     private final AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
+    private HandlerRegistration handlerFirstLoad;
 
     public AnalysesPresenter(AnalysesView view) {
         this.view = view;
@@ -69,12 +75,22 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
         toolbar.setPresenter(this);
         view.setNorthWidget(toolbar);
         setRefreshButton(view.getRefreshButton());
+        view.setLoader(initRemoteLoader());
     }
 
     @Override
-    public void go(HasOneWidget container) {
+    public void go(final HasOneWidget container, final List<Analysis> selectedAnalyses) {
+        go(container);
+
+        if (selectedAnalyses != null && !selectedAnalyses.isEmpty()) {
+            handlerFirstLoad = view.addLoadHandler(new FirstLoadHandler(selectedAnalyses));
+        }
+    }
+
+    @Override
+    public void go(final HasOneWidget container) {
         container.setWidget(view.asWidget());
-        view.setLoader(initRemoteLoader());
+        view.loadAnalyses();
     }
 
     @Override
@@ -335,5 +351,57 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     @Override
     public List<Analysis> getSelectedAnalyses() {
         return view.getSelectedAnalyses();
+    }
+
+    @Override
+    public void setSelectedAnalyses(List<Analysis> selectedAnalyses) {
+        if (selectedAnalyses == null || selectedAnalyses.isEmpty()) {
+            return;
+        }
+
+        ListStore<Analysis> store = view.getListStore();
+        ArrayList<Analysis> selectNow = Lists.newArrayList();
+
+        for (Analysis select : selectedAnalyses) {
+            Analysis storeModel = store.findModel(select);
+            if (storeModel != null) {
+                selectNow.add(storeModel);
+            }
+        }
+
+        if (selectNow.isEmpty()) {
+            Analysis first = selectedAnalyses.get(0);
+            toolbar.getFilterField().filterByAnalysisId(first.getId(), first.getName());
+        } else {
+            view.setSelectedAnalyses(selectNow);
+        }
+    }
+
+    /**
+     * A LoadHandler needed to set selected analyses after the initial view load, since settings like
+     * page size are only set in the reused config by the loader after an initial grid load, which may be
+     * by-passed by the {@link AnalysisSearchField#filterByAnalysisId} call in
+     * {@link AnalysesPresenter#setSelectedAnalyses}.
+     * 
+     * A benefit of selecting analyses with this LoadHandler is if the analysis to select has already
+     * loaded when this handler is called, then it can be selected immediately without filtering.
+     * 
+     * @author psarando
+     * 
+     */
+    private class FirstLoadHandler implements
+            LoadHandler<FilterPagingLoadConfig, PagingLoadResult<Analysis>> {
+
+        private final List<Analysis> selectedAnalyses;
+
+        public FirstLoadHandler(List<Analysis> selectedAnalyses) {
+            this.selectedAnalyses = selectedAnalyses;
+        }
+
+        @Override
+        public void onLoad(LoadEvent<FilterPagingLoadConfig, PagingLoadResult<Analysis>> event) {
+            handlerFirstLoad.removeHandler();
+            setSelectedAnalyses(selectedAnalyses);
+        }
     }
 }
