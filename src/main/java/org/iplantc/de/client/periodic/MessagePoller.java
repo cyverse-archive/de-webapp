@@ -10,18 +10,32 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Polls for notification messages.
+ * Polls for messages from the backend.
  */
-public class MessagePoller implements Runnable {
+public final class MessagePoller {
+	
+	private static final class GetUnseenNotifications implements Runnable {
+
+		@Override
+		public void run() {
+			new MessageServiceFacade().getUnSeenMessageCount(new AsyncCallback<String>() {
+	            @Override
+	            public void onFailure(final Throwable caught) {
+	                // currently we do nothing on failure
+	            }
+	            @Override
+	            public void onSuccess(final String result) {
+	                JSONObject obj = JsonUtil.getObject(result);
+	                NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(Integer
+	                        .parseInt(JsonUtil.getString(obj, "total")));
+	                EventBus.getInstance().fireEvent(event);
+	            }
+	        });
+		}
+		
+	}
+	
     private static MessagePoller instance;
-
-    /**
-     * Ensures only 1 MessagePoller at a time is added to the TaskRunner.
-     */
-    private boolean polling = false;
-
-    private MessagePoller() {
-    }
 
     /**
      * Retrieve singleton instance.
@@ -36,12 +50,22 @@ public class MessagePoller implements Runnable {
         return instance;
     }
 
+    private final GetUnseenNotifications getUnseenNotifications = new GetUnseenNotifications();
+    
+    /**
+     * Ensures only 1 MessagePoller at a time is added to the TaskRunner.
+     */
+    private boolean polling = false;
+
+    private MessagePoller() {
+    }
+
     /**
      * Starts polling.
      */
     public void start() {
         if (!polling) {
-            TaskRunner.getInstance().addTask(this);
+            TaskRunner.getInstance().addTask(getUnseenNotifications);
             polling = true;
         }
     }
@@ -51,30 +75,9 @@ public class MessagePoller implements Runnable {
      */
     public void stop() {
         if (polling) {
-            TaskRunner.getInstance().removeTask(this);
+            TaskRunner.getInstance().removeTask(getUnseenNotifications);
             polling = false;
         }
-    }
-
-    /**
-     * Polls for notification messages if notification polling is enabled.
-     */
-    @Override
-    public void run() {
-        new MessageServiceFacade().getUnSeenMessageCount(new AsyncCallback<String>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                // currently we do nothing on failure
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject obj = JsonUtil.getObject(result);
-                NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(Integer
-                        .parseInt(JsonUtil.getString(obj, "total")));
-                EventBus.getInstance().fireEvent(event);
-            }
-        });
     }
 
 }
