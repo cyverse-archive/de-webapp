@@ -1,41 +1,16 @@
 package org.iplantc.de.client.periodic;
 
-import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.de.client.events.NotificationCountUpdateEvent;
-import org.iplantc.de.client.notifications.services.MessageServiceFacade;
+import java.util.ArrayList;
+
 import org.iplantc.de.client.utils.TaskRunner;
 
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Polls for messages from the backend.
  */
 public final class MessagePoller {
 	
-	private static final class GetUnseenNotifications implements Runnable {
-
-		@Override
-		public void run() {
-			new MessageServiceFacade().getUnSeenMessageCount(new AsyncCallback<String>() {
-	            @Override
-	            public void onFailure(final Throwable caught) {
-	                // currently we do nothing on failure
-	            }
-	            @Override
-	            public void onSuccess(final String result) {
-	                JSONObject obj = JsonUtil.getObject(result);
-	                NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(Integer
-	                        .parseInt(JsonUtil.getString(obj, "total")));
-	                EventBus.getInstance().fireEvent(event);
-	            }
-	        });
-		}
-		
-	}
-	
-    private static MessagePoller instance;
+	private static MessagePoller instance;
 
     /**
      * Retrieve singleton instance.
@@ -50,7 +25,7 @@ public final class MessagePoller {
         return instance;
     }
 
-    private final GetUnseenNotifications getUnseenNotifications = new GetUnseenNotifications();
+    private final ArrayList<Runnable> tasks = new ArrayList<Runnable>();
     
     /**
      * Ensures only 1 MessagePoller at a time is added to the TaskRunner.
@@ -61,11 +36,22 @@ public final class MessagePoller {
     }
 
     /**
+     * Adds a task to be run periodically
+     * 
+     * @param task The task to run
+     */
+    public void addTask(final Runnable task) {
+    	tasks.add(task);
+    }
+    
+    /**
      * Starts polling.
      */
     public void start() {
         if (!polling) {
-            TaskRunner.getInstance().addTask(getUnseenNotifications);
+        	for (Runnable task: tasks) {
+        		TaskRunner.getInstance().addTask(task);
+        	}
             polling = true;
         }
     }
@@ -75,7 +61,9 @@ public final class MessagePoller {
      */
     public void stop() {
         if (polling) {
-            TaskRunner.getInstance().removeTask(getUnseenNotifications);
+        	for (Runnable task: tasks) {
+        		TaskRunner.getInstance().removeTask(task);
+        	}
             polling = false;
         }
     }
