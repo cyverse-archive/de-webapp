@@ -8,31 +8,31 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.sencha.gxt.core.client.XTemplates;
 
-import org.iplantc.de.client.sysmsgs.model.SystemMessage;
+import org.iplantc.de.client.sysmsgs.model.MessageDTO;
 
 /**
  * TODO document
  */
-final class SystemMessageSummaryCell extends AbstractSafeHtmlCell<SystemMessage> {
+final class SystemMessageSummaryCell extends AbstractSafeHtmlCell<MessageDTO> {
 	
 	interface MessageSummaryTemplate extends XTemplates {
 		@XTemplate(source="MessageSummary.html")
-		SafeHtml make(SystemMessage msg);
+		SafeHtml make(MessageDTO msg);
 	}
 	
 	private static final MessageSummaryTemplate msgSummaryTpl = GWT.create(
 			MessageSummaryTemplate.class);
 
 	SystemMessageSummaryCell() {
-		super(new SafeHtmlRenderer<SystemMessage>() {
+		super(new SafeHtmlRenderer<MessageDTO>() {
 
 			@Override
-			public SafeHtml render(final SystemMessage msg) {
+			public SafeHtml render(final MessageDTO msg) {
 				return msgSummaryTpl.make(msg);
 			}
 
 			@Override
-			public void render(final SystemMessage msg, final SafeHtmlBuilder builder) {
+			public void render(final MessageDTO msg, final SafeHtmlBuilder builder) {
 				builder.append(render(msg));
 			}});
 	}

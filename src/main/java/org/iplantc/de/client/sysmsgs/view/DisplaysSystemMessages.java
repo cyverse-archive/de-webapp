@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 
-import org.iplantc.de.client.sysmsgs.model.SystemMessage;
+import org.iplantc.de.client.sysmsgs.model.MessageDTO;
 
 /**
  * TODO document
@@ -14,9 +14,9 @@ public interface DisplaysSystemMessages extends IsWidget {
 
 	public interface Presenter {
 		
-		ListViewSelectionModel<SystemMessage> getMessageSelectionModel();
+		ListViewSelectionModel<MessageDTO> getMessageSelectionModel();
 		
-		ListStore<SystemMessage> getMessageStore();
+		ListStore<MessageDTO> getMessageStore();
 		
 		void handleDeleteButtonClick();
 		

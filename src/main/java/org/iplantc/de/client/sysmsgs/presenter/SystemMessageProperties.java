@@ -2,7 +2,7 @@ package org.iplantc.de.client.sysmsgs.presenter;
 
 import java.util.Date;
 
-import org.iplantc.de.client.sysmsgs.model.SystemMessage;
+import org.iplantc.de.client.sysmsgs.model.MessageDTO;
 
 import com.google.gwt.core.client.GWT;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -12,12 +12,12 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 /**
  * TODO document
  */
-public interface SystemMessageProperties extends PropertyAccess<SystemMessage> {
+public interface SystemMessageProperties extends PropertyAccess<MessageDTO> {
 	
-	static final SystemMessageProperties instance = GWT.create(SystemMessageProperties.class);
+	static final SystemMessageProperties INSTANCE = GWT.create(SystemMessageProperties.class);
 	
-	ModelKeyProvider<SystemMessage> id();
+	ModelKeyProvider<MessageDTO> id();
 	
-	ValueProvider<SystemMessage, Date> startTime();
+	ValueProvider<MessageDTO, Date> activationTime();
 	
 }

@@ -1,7 +1,7 @@
 package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.core.resources.client.messages.I18N;
-import org.iplantc.de.client.sysmsgs.model.SystemMessage;
+import org.iplantc.de.client.sysmsgs.model.MessageDTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -26,6 +26,9 @@ import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 
+/**
+ * TODO document
+ */
 public final class SystemMessagesView extends Composite implements DisplaysSystemMessages {
 
 	interface Binder extends UiBinder<BorderLayoutContainer, SystemMessagesView> {
@@ -33,10 +36,10 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 
 	private static final Binder binder = GWT.create(Binder.class);
 	
-	private static final ListStore<SystemMessage> makeDefaultStore() {
-		return new ListStore<SystemMessage>(new ModelKeyProvider<SystemMessage>() {
+	private static final ListStore<MessageDTO> makeDefaultStore() {
+		return new ListStore<MessageDTO>(new ModelKeyProvider<MessageDTO>() {
 				@Override
-				public String getKey(final SystemMessage item) {
+				public String getKey(final MessageDTO item) {
 					return "";
 				}});
 	}
@@ -57,7 +60,7 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 	HTML messageView;
 	
 	@UiField(provided = true)
-	final ListView<SystemMessage, SystemMessage> messageList;
+	final ListView<MessageDTO, MessageDTO> messageList;
 	
 	@UiField(provided = true)
 	final BorderLayoutContainer.BorderLayoutData messageListLayoutData;
@@ -68,8 +71,8 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 	private Presenter presenter = null;
 	
 	public SystemMessagesView() {
-		messageList = new ListView<SystemMessage, SystemMessage>(makeDefaultStore(), 
-				new IdentityValueProvider<SystemMessage>(), new SystemMessageSummaryCell());
+		messageList = new ListView<MessageDTO, MessageDTO>(makeDefaultStore(), 
+				new IdentityValueProvider<MessageDTO>(), new SystemMessageSummaryCell());
 		messageListLayoutData = new BorderLayoutData();
 		binder.createAndBindUi(this);
 		basePanel = new SimpleContainer();
