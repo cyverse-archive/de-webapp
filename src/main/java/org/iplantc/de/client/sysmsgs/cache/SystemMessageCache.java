@@ -8,10 +8,10 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.sysmsgs.events.NewSystemMessagesEvent;
-import org.iplantc.de.client.sysmsgs.model.IdListDTO;
-import org.iplantc.de.client.sysmsgs.model.MessageDTO;
+import org.iplantc.de.client.sysmsgs.model.IdList;
+import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
-import org.iplantc.de.client.sysmsgs.model.MessageListDTO;
+import org.iplantc.de.client.sysmsgs.model.MessageList;
 import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
 
 import com.google.gwt.core.client.Callback;
@@ -25,7 +25,7 @@ import com.sencha.gxt.data.shared.loader.ListLoadResult;
  * TODO document
  */
 public final class SystemMessageCache 
-		implements DataProxy<ListLoadConfig, ListLoadResult<MessageDTO>> {
+		implements DataProxy<ListLoadConfig, ListLoadResult<Message>> {
 	
 	private static SystemMessageCache instance = null;
 	
@@ -37,9 +37,9 @@ public final class SystemMessageCache
  	}
 
 	private final ServiceFacade services = new ServiceFacade();
-	private final HashMap<String, MessageDTO> messages = new HashMap<String, MessageDTO>();
-	private final ArrayList<Callback<ListLoadResult<MessageDTO>, Throwable>> loadCallbacks 
-			= new ArrayList<Callback<ListLoadResult<MessageDTO>, Throwable>>();
+	private final HashMap<String, Message> messages = new HashMap<String, Message>();
+	private final ArrayList<Callback<ListLoadResult<Message>, Throwable>> loadCallbacks 
+			= new ArrayList<Callback<ListLoadResult<Message>, Throwable>>();
 	
 	private boolean amPolling = false;
 	private boolean syncedOnce = false;
@@ -49,7 +49,7 @@ public final class SystemMessageCache
 	
 	@Override
 	public void load(final ListLoadConfig unused, 
-			final Callback<ListLoadResult<MessageDTO>, Throwable> callback) {
+			final Callback<ListLoadResult<Message>, Throwable> callback) {
 		if (syncedOnce) {
 			callback.onSuccess(makeLoadResult());
 		} else {
@@ -71,7 +71,7 @@ public final class SystemMessageCache
 	
 	public long countUnseen() {
 		long count = 0;
-		for (MessageDTO msg: messages.values()) {
+		for (Message msg: messages.values()) {
 			if (!msg.isSeen()) {
 				count++;
 			}
@@ -94,7 +94,7 @@ public final class SystemMessageCache
 	
 	public void hideMessage(final String msgId, final Callback<Void, Throwable> callback) {
 		if (messages.containsKey(msgId)) {
-			final MessageDTO msg = messages.get(msgId);
+			final Message msg = messages.get(msgId);
 			if (msg.isDismissable()) {
 				hideHideableMessage(msg, callback);
 			} else {
@@ -107,9 +107,9 @@ public final class SystemMessageCache
 		}
 	}
 
-	private void hideHideableMessage(final MessageDTO msg, 
+	private void hideHideableMessage(final Message msg, 
 			final Callback<Void, Throwable> callback) {
-		final IdListDTO idsDTO = MessageFactory.INSTANCE.makeIdList().as();
+		final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
 		idsDTO.setUUIDs(Arrays.asList(msg.getId()));
 		services.hideMessages(idsDTO, new AsyncCallback<Void>() {
 			@Override
@@ -124,7 +124,7 @@ public final class SystemMessageCache
 	}
 	
 	private void markMessagesAsAcknowledged() {
-		for (MessageDTO msg : messages.values()) {
+		for (Message msg : messages.values()) {
 			msg.setSeen(true);
 		}
 	}
@@ -138,37 +138,37 @@ public final class SystemMessageCache
 	}
 	
 	private void requestAllMessages() {
-		services.getAllMessages(new AsyncCallback<MessageListDTO>() {
+		services.getAllMessages(new AsyncCallback<MessageList>() {
 			@Override
 			public void onFailure(final Throwable exn) {
 				notifyLoadersOfFailure(exn);
 			}
 			@Override
-			public void onSuccess(final MessageListDTO messages) {
+			public void onSuccess(final MessageList messages) {
 				addMessagesAndNotifyLoaders(messages);
 			}});
 	}
 
 	private void requestUnseenMessages() {
-		services.getUnseenMessages(new AsyncCallback<MessageListDTO>() {
+		services.getUnseenMessages(new AsyncCallback<MessageList>() {
 			@Override
 			public void onFailure(final Throwable unused) {
 			}
 			@Override
-			public void onSuccess(final MessageListDTO messages) {
+			public void onSuccess(final MessageList messages) {
 				addMessages(messages);
 			}});
 	}
 
-	private void addMessagesAndNotifyLoaders(final MessageListDTO newMessages) {
+	private void addMessagesAndNotifyLoaders(final MessageList newMessages) {
 		addMessages(newMessages);
 		syncedOnce = true;
-		final ArrayList<MessageDTO> msgLst = new ArrayList<MessageDTO>(messages.values());
-		for (Callback<ListLoadResult<MessageDTO>, Throwable> callback : loadCallbacks) {
-			callback.onSuccess(new ListLoadResult<MessageDTO>() {
+		final ArrayList<Message> msgLst = new ArrayList<Message>(messages.values());
+		for (Callback<ListLoadResult<Message>, Throwable> callback : loadCallbacks) {
+			callback.onSuccess(new ListLoadResult<Message>() {
 					private static final long serialVersionUID = 8785407136143469894L;
 					@Override
-					public List<MessageDTO> getData() {
+					public List<Message> getData() {
 						return msgLst;
 					}});
 		}
@@ -176,15 +176,15 @@ public final class SystemMessageCache
 	}
 	
 	private void notifyLoadersOfFailure(final Throwable exn) {
-		for (Callback<ListLoadResult<MessageDTO>, Throwable> callback : loadCallbacks) {
+		for (Callback<ListLoadResult<Message>, Throwable> callback : loadCallbacks) {
 			callback.onFailure(exn);
 		}
 		loadCallbacks.clear();
 	}
 	
-	private void addMessages(final MessageListDTO msgsDTO) {
+	private void addMessages(final MessageList msgsDTO) {
 		final long initNumUnseen = countUnseen();
-		for (MessageDTO msg: msgsDTO.getList()) {
+		for (Message msg: msgsDTO.getList()) {
 			if (!isMessageStateDated(msg)) {
 				messages.put(msg.getId(), msg);
 			}
@@ -194,17 +194,17 @@ public final class SystemMessageCache
 		}
 	}
 	
-	private boolean isMessageStateDated(final MessageDTO msg) {
-		final MessageDTO oldMsg = messages.get(msg.getId());
+	private boolean isMessageStateDated(final Message msg) {
+		final Message oldMsg = messages.get(msg.getId());
 		return oldMsg != null && oldMsg.isSeen() && !msg.isSeen();
 	}
 	
-	private ListLoadResult<MessageDTO> makeLoadResult() {
-		final ArrayList<MessageDTO> msgLst = new ArrayList<MessageDTO>(messages.values());
-		return new ListLoadResult<MessageDTO>() {
+	private ListLoadResult<Message> makeLoadResult() {
+		final ArrayList<Message> msgLst = new ArrayList<Message>(messages.values());
+		return new ListLoadResult<Message>() {
 				private static final long serialVersionUID = 8785407136143469894L;
 				@Override
-				public List<MessageDTO> getData() {
+				public List<Message> getData() {
 					return msgLst;
 				}};
 	}

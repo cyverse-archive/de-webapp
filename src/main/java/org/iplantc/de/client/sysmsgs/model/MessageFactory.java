@@ -11,12 +11,12 @@ public interface MessageFactory extends AutoBeanFactory {
 
 	static final MessageFactory INSTANCE = GWT.create(MessageFactory.class);
 
-	AutoBean<IdListDTO> makeIdList();
+	AutoBean<IdList> makeIdList();
 
-	AutoBean<IdListDTO> makeIdList(IdListDTO lst);
+	AutoBean<IdList> makeIdList(IdList lst);
 
-	AutoBean<MessageListDTO> makeMessageList();
+	AutoBean<MessageList> makeMessageList();
 		
-	AutoBean<UserDTO> makeUser();
+	AutoBean<User> makeUser();
 	
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.NewSystemMessagesEvent;
-import org.iplantc.de.client.sysmsgs.model.MessageDTO;
+import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.view.DisplaysSystemMessages;
 
 import com.google.gwt.core.client.Callback;
@@ -25,21 +25,21 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
  */
 public final class SystemMessagePresenter implements DisplaysSystemMessages.Presenter {
 
-	private final ListStore<MessageDTO> messageListViewModel;
+	private final ListStore<Message> messageListViewModel;
 	private final DisplaysSystemMessages view;
-	private final ListViewSelectionModel<MessageDTO> messageSelectionModel;
+	private final ListViewSelectionModel<Message> messageSelectionModel;
 	
 	public SystemMessagePresenter(final DisplaysSystemMessages view) {
 		this.view = view;
-		messageListViewModel = new ListStore<MessageDTO>(SystemMessageProperties.INSTANCE.id());
-		messageSelectionModel = new ListViewSelectionModel<MessageDTO>();
+		messageListViewModel = new ListStore<Message>(SystemMessageProperties.INSTANCE.id());
+		messageSelectionModel = new ListViewSelectionModel<Message>();
 		initMessageListViewModel();
 		initMessageSelectionModel();
         view.setPresenter(this);
 	}
 	
 	private void initMessageListViewModel() {
-		messageListViewModel.addSortInfo(new StoreSortInfo<MessageDTO>(
+		messageListViewModel.addSortInfo(new StoreSortInfo<Message>(
 				SystemMessageProperties.INSTANCE.activationTime(), SortDir.DESC));
 		SystemMessageCache.instance().startSyncing();
 		EventBus.getInstance().addHandler(NewSystemMessagesEvent.TYPE, 
@@ -53,11 +53,11 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 	private void initMessageSelectionModel() {
 		messageSelectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
 		messageSelectionModel.addSelectionChangedHandler(
-				new SelectionChangedHandler<MessageDTO>() {
+				new SelectionChangedHandler<Message>() {
 					@Override
-					public void onSelectionChanged(final SelectionChangedEvent<MessageDTO> event) 
+					public void onSelectionChanged(final SelectionChangedEvent<Message> event) 
 							{
-						final List<MessageDTO> selection = event.getSelection();
+						final List<Message> selection = event.getSelection();
 						if (!selection.isEmpty()) {
 							selectMessage(selection.get(0));
 						}}});
@@ -65,19 +65,19 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 	
 	// TODO invert this
 	@Override
-	public ListViewSelectionModel<MessageDTO> getMessageSelectionModel() {
+	public ListViewSelectionModel<Message> getMessageSelectionModel() {
 		return messageSelectionModel;
 	}
 
 	// TODO invert this
 	@Override
-	public ListStore<MessageDTO> getMessageStore() {
+	public ListStore<Message> getMessageStore() {
 		return messageListViewModel;
 	}
 		
 	@Override
 	public void handleDeleteButtonClick() {
-		final MessageDTO selectedMsg = messageSelectionModel.getSelectedItem();
+		final Message selectedMsg = messageSelectionModel.getSelectedItem();
 		if (selectedMsg != null) {
 			final int msgIdx = messageListViewModel.indexOf(selectedMsg);
 			final int newSelectedIdx = (msgIdx + 1 == messageListViewModel.size()) ? msgIdx - 1 : msgIdx;
@@ -93,7 +93,7 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 		view.showNoMessages(false);
 	}
 	
-	private void selectMessage(final MessageDTO msg) {
+	private void selectMessage(final Message msg) {
 		messageSelectionModel.select(false, msg);
 		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
 		bodyBuilder.appendHtmlConstant(msg.getBody());
@@ -103,14 +103,14 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 
 	private void updateMessageListViewModel() {
 		SystemMessageCache.instance().load(null, 
-				new Callback<ListLoadResult<MessageDTO>, Throwable>() {
+				new Callback<ListLoadResult<Message>, Throwable>() {
 					@Override
 					public void onFailure(final Throwable reason) {
 						// TODO implement
 					}
 		
 					@Override
-					public void onSuccess(final ListLoadResult<MessageDTO> result) {
+					public void onSuccess(final ListLoadResult<Message> result) {
 						messageListViewModel.replaceAll(result.getData());
 					}});
 	}

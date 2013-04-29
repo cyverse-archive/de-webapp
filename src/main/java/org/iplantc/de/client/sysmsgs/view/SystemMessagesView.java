@@ -1,7 +1,7 @@
 package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.core.resources.client.messages.I18N;
-import org.iplantc.de.client.sysmsgs.model.MessageDTO;
+import org.iplantc.de.client.sysmsgs.model.Message;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -36,10 +36,10 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 
 	private static final Binder binder = GWT.create(Binder.class);
 	
-	private static final ListStore<MessageDTO> makeDefaultStore() {
-		return new ListStore<MessageDTO>(new ModelKeyProvider<MessageDTO>() {
+	private static final ListStore<Message> makeDefaultStore() {
+		return new ListStore<Message>(new ModelKeyProvider<Message>() {
 				@Override
-				public String getKey(final MessageDTO item) {
+				public String getKey(final Message item) {
 					return "";
 				}});
 	}
@@ -60,7 +60,7 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 	HTML messageView;
 	
 	@UiField(provided = true)
-	final ListView<MessageDTO, MessageDTO> messageList;
+	final ListView<Message, Message> messageList;
 	
 	@UiField(provided = true)
 	final BorderLayoutContainer.BorderLayoutData messageListLayoutData;
@@ -71,8 +71,8 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 	private Presenter presenter = null;
 	
 	public SystemMessagesView() {
-		messageList = new ListView<MessageDTO, MessageDTO>(makeDefaultStore(), 
-				new IdentityValueProvider<MessageDTO>(), new SystemMessageSummaryCell());
+		messageList = new ListView<Message, Message>(makeDefaultStore(), 
+				new IdentityValueProvider<Message>(), new SystemMessageSummaryCell());
 		messageListLayoutData = new BorderLayoutData();
 		binder.createAndBindUi(this);
 		basePanel = new SimpleContainer();

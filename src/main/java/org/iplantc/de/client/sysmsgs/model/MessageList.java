@@ -7,9 +7,9 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 /**
  * TODO document
  */
-public interface IdListDTO {
-	
-	@PropertyName("uuids")
-	void setUUIDs(List<String> ids);
+public interface MessageList {
+
+	@PropertyName("system-messages")
+	List<Message> getList();
 	
 }
