@@ -90,7 +90,7 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 	
 	public void go(final AcceptsOneWidget container) {
 		container.setWidget(view);
-		view.showNoMessages(false);
+		view.showLoading();
 	}
 	
 	private void selectMessage(final Message msg) {

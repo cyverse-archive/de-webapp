@@ -28,5 +28,9 @@ public interface DisplaysSystemMessages extends IsWidget {
 
 	public void setMessageBody(SafeHtml msgBody);
 	
-	public void showNoMessages(boolean show);
+	public void showLoading();
+	
+	public void showMessages();
+	
+	public void showNoMessages();
 }

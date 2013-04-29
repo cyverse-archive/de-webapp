@@ -18,6 +18,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -66,7 +67,8 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 	final BorderLayoutContainer.BorderLayoutData messageListLayoutData;
 	
 	private final SimpleContainer basePanel;
-	private final CenterLayoutContainer noMessagesPanel;
+	private final CenterLayoutContainer statusPanel;
+	private final Status status;
 	
 	private Presenter presenter = null;
 	
@@ -76,13 +78,13 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 		messageListLayoutData = new BorderLayoutData();
 		binder.createAndBindUi(this);
 		basePanel = new SimpleContainer();
-		noMessagesPanel = new CenterLayoutContainer();
-		noMessagesPanel.setWidget(new Label(I18N.DISPLAY.noSystemMessages()));
+		statusPanel = new CenterLayoutContainer();
+		status = new Status();
+		statusPanel.add(status);
 		deleteButton.setText("Delete");
 		initWidget(basePanel);
-		showNoMessages(true);
+		showNoMessages();
 		addAttachHandler(new AttachEvent.Handler() {
-
 			@Override
 			public void onAttachOrDetach(final AttachEvent event) {
 				layout();
@@ -108,8 +110,21 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 	}
 
 	@Override
-	public void showNoMessages(final boolean show) {
-		basePanel.setWidget(show ? noMessagesPanel : messagesPanel);
+	public void showLoading() {
+		basePanel.setWidget(statusPanel);
+		status.clearStatus("");
+		status.setBusy("");
+	}
+	
+	@Override
+	public void showMessages() {
+		basePanel.setWidget(messagesPanel);
+	}
+	
+	@Override
+	public void showNoMessages() {
+		basePanel.setWidget(statusPanel);
+		status.clearStatus(I18N.DISPLAY.noSystemMessages());
 	}
 	
 	@UiHandler("deleteButton")
@@ -141,4 +156,5 @@ public final class SystemMessagesView extends Composite implements DisplaysSyste
 		messageListLayoutData.setMaxSize(maxWidth);
 		messageListLayoutData.setSize(maxWidth);			
 	}
+	
 }
