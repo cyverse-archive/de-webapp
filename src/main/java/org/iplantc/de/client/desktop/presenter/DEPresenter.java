@@ -158,6 +158,10 @@ public class DEPresenter implements DEView.Presenter {
         initMessagePoller();
     }
 
+    public static native void doIntro() /*-{
+		$wnd.introJs().start();
+    }-*/;
+
     private void setUpKBShortCuts() {
         UserSettings us = UserSettings.getInstance();
         keyboardShortCuts.put(us.getDataShortCut(), new DataKBShortCutCmd());

@@ -34,6 +34,9 @@ public class Shortcut extends IconButton {
         this.tag = desc.getTag();
 
         this.addSelectHandler(handler);
+        getElement().setAttribute("data-step", desc.getIndex());
+        getElement().setAttribute("data-intro", desc.getCaption());
+        getElement().setAttribute("data-position", "right");
         setBorders(false);
     }
 
