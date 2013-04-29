@@ -114,59 +114,5 @@ public class MessageServiceFacade {
 
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
-
-    /**
-     * Retrieves all of the active system messages for a given user.
-     *
-     * @param callback called on RPC completion.
-     */
-    public final void getAllSystemMessages(final AsyncCallback<String> callback) {
-        final String address = DEProperties.getInstance().getMuleServiceBaseUrl() 
-        		+ "system/messages"; //$NON-NLS-1$
-        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, 
-        		address);
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
-
-    /**
-     * Retrieves all of the unseen, active system messages for a given user.
-     *
-     * @param callback called on RPC completion.
-     */
-    public final void getUnseenSystemMessages(final AsyncCallback<String> callback) {
-        final String address = DEProperties.getInstance().getMuleServiceBaseUrl() 
-        		+ "system/unseen-messages"; //$NON-NLS-1$
-        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, 
-        		address);
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
-
-    /**
-     * Marks all of the user's system messages as seen.
-     * 
-     * @param user the user name
-     * @param callback called on RPC completion.
-     */
-    public void acknowledgeAllSystemMessages(final JSONObject user, 
-    		final AsyncCallback<String> callback) {
-        final String address = DEProperties.getInstance().getMuleServiceBaseUrl() 
-        		+ "system/mark-all-seen"; //$NON-NLS-1$
-        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, 
-        		address, user.toString());
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
-
-    /**
-     * Hides a list of active system messages from a user
-     * 
-     * @param msgIds
-     * @param callback called on RPC completion.
-     */
-    public void hideSystemMessages(final JSONObject msgIds, final AsyncCallback<String> callback) {
-        final String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "system/delete"; //$NON-NLS-1$
-        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, 
-        		address, msgIds.toString());
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-    }
     
 }
