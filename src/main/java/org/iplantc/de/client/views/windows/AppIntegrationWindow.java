@@ -46,6 +46,10 @@ public class AppIntegrationWindow extends IplantWindowBase {
         setSize("800", "410");
 
         init(presenter, config);
+
+        // JDS Add presenter as a before hide handler to determine if user has changes before closing.
+        HandlerRegistration hr = this.addBeforeHideHandler(presenter);
+        presenter.setBeforeHideHandlerRegistration(hr);
     }
 
     private void init(final AppsIntegrationView.Presenter presenter, AppsIntegrationWindowConfig config) {
