@@ -1,4 +1,4 @@
-package org.iplantc.de.client.sysmsgs.model;
+package org.iplantc.de.client.sysmsgs.cache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +8,10 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.sysmsgs.events.NewSystemMessagesEvent;
+import org.iplantc.de.client.sysmsgs.model.IdListDTO;
+import org.iplantc.de.client.sysmsgs.model.MessageDTO;
+import org.iplantc.de.client.sysmsgs.model.MessageFactory;
+import org.iplantc.de.client.sysmsgs.model.MessageListDTO;
 import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
 
 import com.google.gwt.core.client.Callback;

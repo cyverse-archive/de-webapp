@@ -3,9 +3,9 @@ package org.iplantc.de.client.sysmsgs.presenter;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.sysmsgs.model.MessageDTO;
-import org.iplantc.de.client.sysmsgs.model.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.view.DisplaysSystemMessages;
 
 import com.google.gwt.core.client.Callback;
