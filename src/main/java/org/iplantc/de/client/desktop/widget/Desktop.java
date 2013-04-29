@@ -22,7 +22,6 @@ import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.CascadeDesktopLayout;
 import org.iplantc.de.client.desktop.layout.CenterDesktopLayout;
 import org.iplantc.de.client.desktop.layout.DesktopLayout;
@@ -32,8 +31,8 @@ import org.iplantc.de.client.desktop.layout.TileDesktopLayout;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowLayoutRequestEvent;
-import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.events.WindowLayoutRequestEvent.WindowLayoutRequestEventHandler;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.utils.ShortcutManager;
 import org.iplantc.de.client.utils.builders.DefaultDesktopBuilder;
@@ -42,21 +41,15 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.Padding;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
-import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer.VBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -230,33 +223,6 @@ public class Desktop implements IsWidget {
 
     }
 
-    private HorizontalLayoutContainer buildFooterPanel() {
-
-        HorizontalLayoutContainer pnlFooter = new HorizontalLayoutContainer();
-        pnlFooter.setWidth("100%"); //$NON-NLS-1$
-
-        CopyRightLayoutContainerTemplate copy_template = GWT
-                .create(CopyRightLayoutContainerTemplate.class);
-        HtmlLayoutContainer copyright = new HtmlLayoutContainer(copy_template.getTemplate());
-        HTML copyRight = new HTML();
-        copyRight.setHTML(I18N.DISPLAY.projectCopyrightStatement());
-        copyright.add(copyRight, new HtmlData(".cell1"));
-        copyright.setStyleName(resources.css().copyright());
-        pnlFooter.add(copyright);
-
-        NsfLayoutContainerTemplate nsf_template = GWT.create(NsfLayoutContainerTemplate.class);
-        HtmlLayoutContainer nsftext = new HtmlLayoutContainer(nsf_template.getTemplate());
-
-        Label nsfLabel = new Label();
-        nsfLabel.setText(I18N.DISPLAY.nsfProjectText());
-        nsftext.add(nsfLabel, new HtmlData(".cell1"));
-        nsftext.getElement().addClassName(resources.css().nsfText());
-
-        pnlFooter.add(nsftext);
-
-        return pnlFooter;
-    }
-
     /**
      * Returns the desktop's task bar.
      * 
@@ -376,7 +342,7 @@ public class Desktop implements IsWidget {
                 }
             };
             desktopContainer.add(getDesktop(), new VerticalLayoutData(-1, 1));
-           // desktopContainer.add(buildFooterPanel(), new VerticalLayoutData(1, 20));
+            // desktopContainer.add(buildFooterPanel(), new VerticalLayoutData(1, 20));
             desktopContainer.add(getTaskBar(), new VerticalLayoutData(1, -1));
         }
         return desktopContainer;
