@@ -93,7 +93,7 @@ html,body {
 	font-size: 12px;
 	font-family: Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro",
 		Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L",
-		Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+		Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	margin: 0;
 	padding: 0;
 	border: 0 none;
