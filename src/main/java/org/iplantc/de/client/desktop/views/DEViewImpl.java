@@ -154,7 +154,7 @@ public class DEViewImpl implements DEView {
     }
 
     public interface HtmlLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\" /><td class=\"cell3\"><td class=\"cell2\" /></tr></tbody></table>")
+        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\" data-intro=\"You will get all notifications here!\" data-step='1' data-position=\"left\"/><td class=\"cell3\"><td class=\"cell2\" data-intro=\"Preferences,help and support can be accessed from here!\" data-step='2' data-position=\"left\"/></tr></tbody></table>")
         SafeHtml getTemplate();
     }
 

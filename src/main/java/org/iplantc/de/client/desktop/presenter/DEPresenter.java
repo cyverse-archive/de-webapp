@@ -29,6 +29,8 @@ import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -156,6 +158,14 @@ public class DEPresenter implements DEView.Presenter {
         view.drawHeader();
         RootPanel.get().add(view.asWidget());
         initMessagePoller();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                doIntro();
+            }
+        });
+
     }
 
     public static native void doIntro() /*-{

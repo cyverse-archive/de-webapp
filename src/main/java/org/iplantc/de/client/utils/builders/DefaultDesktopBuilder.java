@@ -21,14 +21,16 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
                 "Manage and organize all your data here.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.diskResourceWindowConfig());
 
-        addShortcut(res.css().iplantcCatalogShortcut(), "4",
-                "Find and runs scientific apps. You can create new apps.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+        addShortcut(
+                res.css().iplantcCatalogShortcut(),
+                "4",
+                "Find and runs scientific apps. You can also create new apps.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.appsWindowConfig());
 
         addShortcut(
                 res.css().iplantcMyanalysisShortcut(),
                 "5",
-                "Find status of your submitted app runs. You can also access results for the completed or failed ones.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
+                "Find status of your submitted analyses. You can also access results for the completed or failed ones.", Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.analysisWindowConfig());
     }
 }
