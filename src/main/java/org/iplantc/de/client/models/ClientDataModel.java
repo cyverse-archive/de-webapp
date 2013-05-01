@@ -241,7 +241,7 @@ public class ClientDataModel {
         }
     }
 
-    private void updateFilePath(String pathNew) {
+    private void updateFilePaths(String pathNew) {
         for (DiskResource dr : page.getResources()) {
             if (dr instanceof File) {
                 ((File)dr).setPath(pathNew);
@@ -264,8 +264,13 @@ public class ClientDataModel {
             ret.setName(DiskResourceUtil.parseNameFromPath(pathNew));
 
             heirarchy.update(ret);
-            page.setPath(pathNew);
-            updateFilePath(pathNew);
+
+            // Check if the currently viewed folder was renamed.
+            if (isCurrentPage(pathOrig)) {
+                page.setPath(pathNew);
+                updateFilePaths(pathNew);
+            }
+
             updateSubtreeIds(subfolders, pathOrig, pathNew);
         }
 
