@@ -65,8 +65,6 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
     @Override
     public void onEditApp(EditAppEvent event) {
         AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig(event.getAppToEdit().getId());
-        Splittable legacyAppTemplate = event.getLegacyAppTemplate();
-        config.setLegacyAppTemplateJson(legacyAppTemplate);
         desktop.showWindow(config);
     }
 

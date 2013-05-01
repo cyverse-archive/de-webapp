@@ -89,6 +89,10 @@
       <when-type-is class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance"/>
    </replace-with>
    
+   <replace-with class="org.iplantc.de.client.services.impl.AppTemplateServicesImpl">
+      <when-type-is class="org.iplantc.core.uiapps.integration.client.services.AppTemplateServices" />
+   </replace-with>
+   
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.iplantc.de.client.DiscoveryEnvironment' />
 	

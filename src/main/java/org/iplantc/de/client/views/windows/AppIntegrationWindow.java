@@ -2,15 +2,15 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.List;
 
-import org.iplantc.core.uiapps.client.Services;
-import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
 import org.iplantc.core.uiapps.integration.client.presenter.AppsIntegrationPresenterImpl;
 import org.iplantc.core.uiapps.integration.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
+import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
@@ -21,7 +21,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.Splittable;
-import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 /**
  * A window for the App Integration editor
@@ -33,15 +32,15 @@ import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 public class AppIntegrationWindow extends IplantWindowBase {
 
     private final AppsIntegrationView.Presenter presenter;
-    private final AppUserServiceFacade templateService = Services.USER_APP_SERVICE;
     protected List<HandlerRegistration> handlers;
+    private final AppTemplateServices templateService;
 
     public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus) {
         super(null, config);
 
         AppsIntegrationView view = new AppsIntegrationViewImpl(eventBus);
-        AppTemplateServices atService = GWT.create(AppTemplateServices.class);
-        presenter = new AppsIntegrationPresenterImpl(view, eventBus, atService, I18N.ERROR, I18N.DISPLAY);
+        templateService = GWT.create(AppTemplateServices.class);
+        presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY);
         setTitle(I18N.DISPLAY.createApps());
         setSize("800", "410");
 
@@ -63,7 +62,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
             presenter.go(this, factory.appTemplate().as());
         }else {
-            templateService.getTemplate(config.getAppId(), new AsyncCallback<String>() {
+            templateService.getAppTemplate(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     AppIntegrationWindow.this.hide();
@@ -71,12 +70,12 @@ public class AppIntegrationWindow extends IplantWindowBase {
                 }
 
                 @Override
-                public void onSuccess(String json) {
-                    presenter.goLegacy(AppIntegrationWindow.this, StringQuoter.split(json));
+                public void onSuccess(AppTemplate result) {
+                    presenter.go(AppIntegrationWindow.this, result);
+                    AppIntegrationWindow.this.forceLayout();
                 }
             });
         }
-
     }
 
     @Override
@@ -85,12 +84,9 @@ public class AppIntegrationWindow extends IplantWindowBase {
     }
 
     /**
-     * TBI JDS This method needs to query the presenter in order to create a current config.
-     * 
      * @return
      */
     private AppsIntegrationWindowConfig getUpdatedConfig() {
-        
         AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig("");
         config.setAppTemplate(presenter.getAppTemplate());
         return config;
