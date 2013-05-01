@@ -22,7 +22,7 @@ response.setDateHeader("Expires", 0);
 <link type="text/css" rel="stylesheet" href="gxt/css/gxt-all.css">
 <link type="text/css" rel="stylesheet" href="gxt/css/gxt-gray.css">
 <link type="image/x-icon" rel="shortcut icon" href="images/favicon.ico">
-<link type ="text/css" rel="stylesheet" href="./intro.min.css">
+<link type ="text/css" rel="stylesheet" href="./introjs.min.css">
 
 
 
