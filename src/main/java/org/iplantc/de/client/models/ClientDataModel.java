@@ -268,8 +268,9 @@ public class ClientDataModel {
             // Check if the currently viewed folder was renamed.
             if (isCurrentPage(pathOrig)) {
                 page.setPath(pathNew);
+                updateFilePaths(pathNew);
             }
-            updateFilePaths(pathNew);
+
             updateSubtreeIds(subfolders, pathOrig, pathNew);
         }
 
