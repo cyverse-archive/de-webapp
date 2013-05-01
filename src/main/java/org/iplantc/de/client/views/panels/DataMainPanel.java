@@ -343,50 +343,31 @@ public class DataMainPanel extends AbstractDataPanel implements DataContainer {
         }
     }
 
-    private void updatePath(final String pathOrig, final String path) {
-        if (model == null) {
+    public void rename(final String pathOrig, final String pathNew) {
+        if (grid == null) {
             return;
         }
 
-        if (model.isCurrentPage(pathOrig)) {
+        if (model != null && model.isCurrentPage(pathOrig)) {
             // The currently viewed folder was renamed.
-            model.getPage().setPath(path);
-
             // Update the IDs of all disk resources loaded in the grid's store.
             ListStore<DiskResource> store = grid.getStore();
             for (DiskResource resource : store.getModels()) {
-                resource.setId(path + "/" + DiskResourceUtil.parseNameFromPath(resource.getId())); //$NON-NLS-1$
+                resource.setId(pathNew + "/" + DiskResourceUtil.parseNameFromPath(resource.getId())); //$NON-NLS-1$
             }
-        } else if (model.isCurrentPage(DiskResourceUtil.parseParent(path))) {
-            // A folder inside the currently viewed folder was renamed.
+        } else {
+            // A resource inside the currently viewed folder was renamed.
             DiskResource resource = findDiskResource(pathOrig);
 
             if (resource != null) {
-                resource.setId(path);
-                resource.setName(DiskResourceUtil.parseNameFromPath(path));
-
-                grid.getStore().update(resource);
-            }
-        }
-    }
-
-    public void rename(final String nameOrig, final String nameNew) {
-        if (grid != null) {
-            DiskResource resource = findDiskResource(nameOrig);
-
-            if (resource != null) {
                 // drop the path from our name
-                resource.setName(DiskResourceUtil.parseNameFromPath(nameNew));
+                resource.setName(DiskResourceUtil.parseNameFromPath(pathNew));
 
                 // our id is the fully qualified path and name
-                resource.setId(nameNew);
+                resource.setId(pathNew);
 
                 grid.getStore().update(resource);
-                if (resource instanceof Folder) {
-                    updatePath(nameOrig, nameNew);
-                }
             }
-
         }
     }
 
