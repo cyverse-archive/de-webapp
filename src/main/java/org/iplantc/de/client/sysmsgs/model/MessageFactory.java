@@ -15,6 +15,8 @@ public interface MessageFactory extends AutoBeanFactory {
 
 	AutoBean<IdList> makeIdList(IdList lst);
 
+	AutoBean<Message> makeMessage();
+	
 	AutoBean<MessageList> makeMessageList();
 		
 	AutoBean<User> makeUser();

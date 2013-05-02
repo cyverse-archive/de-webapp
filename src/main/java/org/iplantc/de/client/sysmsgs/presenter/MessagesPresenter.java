@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
-import org.iplantc.de.client.sysmsgs.events.NewSystemMessagesEvent;
+import org.iplantc.de.client.sysmsgs.events.NewMessagesEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.DisplaysSystemMessages;
+import org.iplantc.de.client.sysmsgs.view.DisplaysMessages;
+import org.iplantc.de.client.sysmsgs.view.SelectionModel;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -23,36 +24,37 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 /**
  * The system messages presenter.
  */
-public final class SystemMessagePresenter implements DisplaysSystemMessages.Presenter {
+public final class MessagesPresenter implements DisplaysMessages.Presenter {
 
-	private final ListStore<Message> messageListViewModel;
-	private final DisplaysSystemMessages view;
-	private final ListViewSelectionModel<Message> messageSelectionModel;
+	private final ListStore<Message> store;
+	private final DisplaysMessages view;
+	private final ListViewSelectionModel<Message> selectionModel;
 	
-	public SystemMessagePresenter(final DisplaysSystemMessages view) {
+	public MessagesPresenter(final DisplaysMessages view) {
 		this.view = view;
-		messageListViewModel = new ListStore<Message>(SystemMessageProperties.INSTANCE.id());
-		messageSelectionModel = new ListViewSelectionModel<Message>();
-		initMessageListViewModel();
-		initMessageSelectionModel();
+		store = new ListStore<Message>(MessageProperties.INSTANCE.id());
+		selectionModel = new SelectionModel();
+		initStore();
+		initSelectionModel();
         view.setPresenter(this);
 	}
 	
-	private void initMessageListViewModel() {
-		messageListViewModel.addSortInfo(new StoreSortInfo<Message>(
-				SystemMessageProperties.INSTANCE.activationTime(), SortDir.DESC));
+	private void initStore() {
+		store.addSortInfo(new StoreSortInfo<Message>(MessageProperties.INSTANCE.creationTime(), 
+				SortDir.DESC));
+		updateStore();
 		SystemMessageCache.instance().startSyncing();
-		EventBus.getInstance().addHandler(NewSystemMessagesEvent.TYPE, 
-				new NewSystemMessagesEvent.Handler() {
+		EventBus.getInstance().addHandler(NewMessagesEvent.TYPE, 
+				new NewMessagesEvent.Handler() {
 					@Override
-					public void onNewMessage(final NewSystemMessagesEvent event) {
-						updateMessageListViewModel();
+					public void onNewMessage(final NewMessagesEvent event) {
+						updateStore();
 					}});
-	}
+		}
 	
-	private void initMessageSelectionModel() {
-		messageSelectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
-		messageSelectionModel.addSelectionChangedHandler(
+	private void initSelectionModel() {
+		selectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
+		selectionModel.addSelectionChangedHandler(
 				new SelectionChangedHandler<Message>() {
 					@Override
 					public void onSelectionChanged(final SelectionChangedEvent<Message> event) 
@@ -66,24 +68,24 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 	// TODO invert this
 	@Override
 	public ListViewSelectionModel<Message> getMessageSelectionModel() {
-		return messageSelectionModel;
+		return selectionModel;
 	}
 
 	// TODO invert this
 	@Override
 	public ListStore<Message> getMessageStore() {
-		return messageListViewModel;
+		return store;
 	}
 		
 	@Override
 	public void handleDeleteButtonClick() {
-		final Message selectedMsg = messageSelectionModel.getSelectedItem();
+		final Message selectedMsg = selectionModel.getSelectedItem();
 		if (selectedMsg != null) {
-			final int msgIdx = messageListViewModel.indexOf(selectedMsg);
-			final int newSelectedIdx = (msgIdx + 1 == messageListViewModel.size()) ? msgIdx - 1 : msgIdx;
-			messageListViewModel.remove(msgIdx);
-			if (messageListViewModel.size() > 0) {
-				messageSelectionModel.select(false, messageListViewModel.get(newSelectedIdx));
+			final int msgIdx = store.indexOf(selectedMsg);
+			final int newSelectedIdx = (msgIdx + 1 == store.size()) ? msgIdx - 1 : msgIdx;
+			store.remove(msgIdx);
+			if (store.size() > 0) {
+				selectionModel.select(false, store.get(newSelectedIdx));
 			}
 		}
 	}
@@ -94,24 +96,28 @@ public final class SystemMessagePresenter implements DisplaysSystemMessages.Pres
 	}
 	
 	private void selectMessage(final Message msg) {
-		messageSelectionModel.select(false, msg);
+		selectionModel.select(false, msg);
 		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
 		bodyBuilder.appendHtmlConstant(msg.getBody());
 		view.setMessageBody(bodyBuilder.toSafeHtml());
 		view.setExpiryText(msg.getDeactivationTime().toString());
 	}
 
-	private void updateMessageListViewModel() {
+	private void updateStore() {
 		SystemMessageCache.instance().load(null, 
 				new Callback<ListLoadResult<Message>, Throwable>() {
 					@Override
 					public void onFailure(final Throwable reason) {
 						// TODO implement
 					}
-		
 					@Override
 					public void onSuccess(final ListLoadResult<Message> result) {
-						messageListViewModel.replaceAll(result.getData());
+						store.replaceAll(result.getData());
+						if (store.size() > 0) {
+							view.showMessages();
+						} else {
+							view.showNoMessages();
+						}
 					}});
 	}
 	

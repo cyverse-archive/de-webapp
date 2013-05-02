@@ -17,24 +17,24 @@ public interface Message {
 	
 	@PropertyName("date_created")
 	Date getCreationTime();
-	
+
 	@PropertyName("activation_date")
 	Date getActivationTime();
 	
 	@PropertyName("deactivation_date")
 	Date getDeactivationTime();
 
-	@PropertyName("seen")
-	boolean isSeen();
+//	@PropertyName("seen")
+//	boolean isSeen();
+//	
+//	@PropertyName("seen")
+//	void setSeen(boolean seen);
 	
-	@PropertyName("seen")
-	void setSeen(boolean seen);
-	
-	@PropertyName("dismissable")
-	boolean isDismissable();
+	@PropertyName("dismissible")
+	boolean isDismissible();
 	
 	@PropertyName("logins_disabled")
-	boolean loginsDisabled();
+	boolean isLoginsDisabled();
 
 	@PropertyName("message")
 	String getBody();

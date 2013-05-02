@@ -9,15 +9,18 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
+
 /**
  * TODO document
  */
-public interface SystemMessageProperties extends PropertyAccess<Message> {
+public interface MessageProperties extends PropertyAccess<Message> {
 	
-	static final SystemMessageProperties INSTANCE = GWT.create(SystemMessageProperties.class);
+	public static final MessageProperties INSTANCE = GWT.create(MessageProperties.class);
 	
 	ModelKeyProvider<Message> id();
 	
-	ValueProvider<Message, Date> activationTime();
+	ValueProvider<Message, Date> creationTime();
+	
+	ValueProvider<Message, Boolean> dismissible();
 	
 }

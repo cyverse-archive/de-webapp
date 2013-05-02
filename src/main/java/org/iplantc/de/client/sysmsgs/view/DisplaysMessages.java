@@ -10,7 +10,7 @@ import org.iplantc.de.client.sysmsgs.model.Message;
 /**
  * TODO document
  */
-public interface DisplaysSystemMessages extends IsWidget {
+public interface DisplaysMessages extends IsWidget {
 
 	public interface Presenter {
 		

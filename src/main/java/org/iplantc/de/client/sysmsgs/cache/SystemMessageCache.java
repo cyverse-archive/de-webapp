@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.periodic.MessagePoller;
-import org.iplantc.de.client.sysmsgs.events.NewSystemMessagesEvent;
+import org.iplantc.de.client.sysmsgs.events.NewMessagesEvent;
 import org.iplantc.de.client.sysmsgs.model.IdList;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
@@ -72,10 +72,11 @@ public final class SystemMessageCache
 	public long countUnseen() {
 		long count = 0;
 		for (Message msg: messages.values()) {
-			if (!msg.isSeen()) {
+// TODO when seen works, remove this
+//			if (!msg.isSeen()) {
 				count++;
 			}
-		}
+//		}
 		return count;
 	}
 	
@@ -95,7 +96,7 @@ public final class SystemMessageCache
 	public void hideMessage(final String msgId, final Callback<Void, Throwable> callback) {
 		if (messages.containsKey(msgId)) {
 			final Message msg = messages.get(msgId);
-			if (msg.isDismissable()) {
+			if (msg.isDismissible()) {
 				hideHideableMessage(msg, callback);
 			} else {
 				// TODO Should an exception be returned when a message cannot be hidden?
@@ -125,7 +126,8 @@ public final class SystemMessageCache
 	
 	private void markMessagesAsAcknowledged() {
 		for (Message msg : messages.values()) {
-			msg.setSeen(true);
+// TODO fix this when seen works
+//			msg.setSeen(true);
 		}
 	}
 
@@ -182,21 +184,23 @@ public final class SystemMessageCache
 		loadCallbacks.clear();
 	}
 	
-	private void addMessages(final MessageList msgsDTO) {
+	private void addMessages(final MessageList messagesDTO) {
 		final long initNumUnseen = countUnseen();
-		for (Message msg: msgsDTO.getList()) {
+		for (Message msg: messagesDTO.getList()) {
 			if (!isMessageStateDated(msg)) {
 				messages.put(msg.getId(), msg);
 			}
 		}
 		if (initNumUnseen < countUnseen()) {
-			EventBus.getInstance().fireEvent(new NewSystemMessagesEvent());
+			EventBus.getInstance().fireEvent(new NewMessagesEvent());
 		}
 	}
 	
 	private boolean isMessageStateDated(final Message msg) {
 		final Message oldMsg = messages.get(msg.getId());
-		return oldMsg != null && oldMsg.isSeen() && !msg.isSeen();
+// TODO fix this when seen works
+//		return oldMsg != null && oldMsg.isSeen() && !msg.isSeen();
+return false;
 	}
 	
 	private ListLoadResult<Message> makeLoadResult() {

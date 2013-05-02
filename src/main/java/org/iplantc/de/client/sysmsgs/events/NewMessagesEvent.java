@@ -6,11 +6,11 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * TODO document
  */
-public final class NewSystemMessagesEvent extends GwtEvent<NewSystemMessagesEvent.Handler> {
+public final class NewMessagesEvent extends GwtEvent<NewMessagesEvent.Handler> {
 
 	public interface Handler extends EventHandler {
 		
-		void onNewMessage(NewSystemMessagesEvent event);
+		void onNewMessage(NewMessagesEvent event);
 		
 	}
 
