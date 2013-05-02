@@ -5,11 +5,8 @@
 		xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
 		xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button">
  
- 	<ui:with field="messageListLayoutData"
- 			type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData"/>
- 
 	<container:BorderLayoutContainer ui:field="messagesPanel">
-		<container:west layoutData="{messageListLayoutData}">
+		<container:west>
 			<gxt:ListView ui:field="messageList"/>
 		</container:west>
 		<container:center>
@@ -20,7 +17,7 @@
 					</container:FlowLayoutContainer>
 				</container:center>
 				<container:south>
-					<container:CenterLayoutContainer ui:field="expirationContainer">
+					<container:CenterLayoutContainer>
 						<g:Label ui:field="expirationLabel"/>
 					</container:CenterLayoutContainer>
 				</container:south>

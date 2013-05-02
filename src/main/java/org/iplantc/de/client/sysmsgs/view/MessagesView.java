@@ -17,9 +17,7 @@ import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 /**
@@ -44,9 +42,6 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	BorderLayoutContainer messagesPanel;
 	
 	@UiField
-	ResizeContainer expirationContainer;
-	
-	@UiField
 	Label expirationLabel;
 	
 	@UiField
@@ -55,9 +50,6 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	@UiField(provided = true)
 	final ListView<Message, Message> messageList;
 	
-	@UiField(provided = true)
-	final BorderLayoutContainer.BorderLayoutData messageListLayoutData;
-	
 	private final SimpleContainer basePanel;
 	private final CenterLayoutContainer statusPanel;
 	private final Status status;
@@ -65,7 +57,6 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	public MessagesView() {
 		messageList = new ListView<Message, Message>(makeDefaultStore(), 
 				new IdentityValueProvider<Message>(), new MessageSummaryCell());
-		messageListLayoutData = new BorderLayoutData();
 		binder.createAndBindUi(this);
 		basePanel = new SimpleContainer();
 		statusPanel = new CenterLayoutContainer();
@@ -89,7 +80,6 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	@Override
 	public void setExpiryText(final String expiryText) {
 		expirationLabel.setText(expiryText);
-		expirationContainer.forceLayout();
 	}
 
 	@Override
@@ -107,6 +97,7 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	@Override
 	public void showMessages() {
 		basePanel.setWidget(messagesPanel);
+		basePanel.forceLayout();
 	}
 	
 	@Override

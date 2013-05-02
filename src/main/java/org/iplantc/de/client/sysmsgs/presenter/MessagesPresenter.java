@@ -104,6 +104,7 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 					public void onSuccess(final ListLoadResult<Message> result) {
 						store.replaceAll(result.getData());
 						if (store.size() > 0) {
+							view.getMessageSelectionModel().select(0, false);
 							view.showMessages();
 						} else {
 							view.showNoMessages();
