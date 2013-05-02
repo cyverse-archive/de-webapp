@@ -14,6 +14,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -71,13 +72,18 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 		status = new Status();
 		statusPanel.add(status);
 		initWidget(basePanel);
+		messageList.setSelectionModel(new SelectionModel());
 		showNoMessages();
+	}
+	
+	@Override
+	public ListViewSelectionModel<Message> getMessageSelectionModel() {
+		return messageList.getSelectionModel();
 	}
 	
 	@Override
 	public void setPresenter(final Presenter presenter) {
 		messageList.setStore(presenter.getMessageStore());
-		messageList.setSelectionModel(presenter.getMessageSelectionModel());
 	}
 	
 	@Override

@@ -14,14 +14,14 @@ public interface DisplaysMessages extends IsWidget {
 
 	public interface Presenter {
 		
-		ListViewSelectionModel<Message> getMessageSelectionModel();
-		
 		ListStore<Message> getMessageStore();
 		
 		void handleDeleteButtonClick();
 		
 	}
 	
+	ListViewSelectionModel<Message> getMessageSelectionModel();
+
 	public void setPresenter(Presenter presenter);
 		
 	public void setExpiryText(String expiryText);

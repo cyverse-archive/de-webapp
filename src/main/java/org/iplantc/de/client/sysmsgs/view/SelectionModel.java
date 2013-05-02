@@ -7,7 +7,7 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.event.XEvent;
 
-public final class SelectionModel extends ListViewSelectionModel<Message> {
+final class SelectionModel extends ListViewSelectionModel<Message> {
 
 	private static final MessageCellStyle CSS;
 
