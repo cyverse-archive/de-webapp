@@ -12,6 +12,7 @@ import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.ButtonBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -25,9 +26,12 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class PreferencesDialog extends Dialog {
 
     private Presenter presenter;
+    private ToolButton help_tool;
 
     public PreferencesDialog() {
         setHeadingText(I18N.DISPLAY.preferences());
+        help_tool = new ToolButton(ToolButton.QUESTION);
+        getHeader().addTool(help_tool);
         setPixelSize(450, 380);
         setButtons();
         PreferencesView view = new PreferencesViewImpl();
