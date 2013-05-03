@@ -41,10 +41,8 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.Padding;
 import com.sencha.gxt.core.shared.FastMap;
@@ -79,16 +77,6 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  */
 public class Desktop implements IsWidget {
 
-    public interface CopyRightLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<div style='float:left;'><div class='cell1'></div></div>")
-        SafeHtml getTemplate();
-    }
-
-    public interface NsfLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<div style='float:right;'><div class='cell1'></div></div>")
-        SafeHtml getTemplate();
-    }
-
     /**
      * The default desktop layout type.
      */
@@ -112,20 +100,18 @@ public class Desktop implements IsWidget {
     private DesktopLayout desktopLayout;
     private FastMap<DesktopLayout> desktopLayouts;
     private DEWindowManager windowManager;
-    private final DeResources resources;
-
     private final EventBus eventBus;
 
     /**
      * Creates a new Desktop window.
      */
     public Desktop(final DeResources resources, EventBus eventBus) {
-        this.resources = resources;
         this.eventBus = eventBus;
         initShortcuts();
         initEventHandlers(eventBus);
 
         initWindowEventHandlers(eventBus);
+
     }
 
     /**
@@ -136,6 +122,7 @@ public class Desktop implements IsWidget {
     private void addShortcut(Shortcut shortcut) {
         getShortcuts().add(shortcut);
         getDesktop().add(shortcut, new BoxLayoutData(new Margins(5)));
+
     }
 
     /**

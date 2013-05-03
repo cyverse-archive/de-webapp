@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -17,6 +18,8 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
+import org.iplantc.de.client.desktop.views.DEFeedbackView;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
@@ -29,18 +32,25 @@ import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.core.client.util.Size;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
@@ -54,6 +64,7 @@ public class DEPresenter implements DEView.Presenter {
     private final EventBus eventBus;
     private HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
+    private TextButton feedbackBtn;
 
     /**
      * Constructs a default instance of the object.
@@ -156,16 +167,58 @@ public class DEPresenter implements DEView.Presenter {
 
     private void doWorkspaceDisplay() {
         view.drawHeader();
-        RootPanel.get().add(view.asWidget());
-        initMessagePoller();
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        RootLayoutPanel.get().add(view.asWidget());
+        addFeedbackButton();
+        Window.addResizeHandler(new ResizeHandler() {
 
             @Override
-            public void execute() {
-                doIntro();
+            public void onResize(ResizeEvent event) {
+                positionFButton(getViewPortSize());
             }
         });
 
+        initMessagePoller();
+        // Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        //
+        // @Override
+        // public void execute() {
+        // doIntro();
+        // }
+        // });
+
+    }
+
+    private void addFeedbackButton() {
+        DeResources resources = GWT.create(DeResources.class);
+        resources.css().ensureInjected();
+        feedbackBtn = new TextButton("Feedback");
+        feedbackBtn.setIcon(IplantResources.RESOURCES.feedback());
+        feedbackBtn.setWidth(40);
+        feedbackBtn.addSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                DEFeedbackDialog d = new DEFeedbackDialog();
+                DEFeedbackView view = new DEFeedbackView();
+                d.add(view.asWidget());
+                d.show();
+
+            }
+        });
+        positionFButton(getViewPortSize());
+        feedbackBtn.addStyleName(resources.css().rotate90());
+        feedbackBtn.getElement().updateZIndex(0);
+        RootPanel.get().add(feedbackBtn);
+    }
+
+    private void positionFButton(Size s) {
+        int left = s.getWidth() - 35 + XDOM.getBodyScrollLeft();
+        feedbackBtn.getElement().setLeftTop(left, s.getHeight() / 2);
+    }
+
+    private Size getViewPortSize() {
+        Size s = XDOM.getViewportSize();
+        return s;
     }
 
     public static native void doIntro() /*-{
