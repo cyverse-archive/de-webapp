@@ -7,18 +7,19 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.notifications.models.Notification;
-import org.iplantc.de.client.notifications.models.NotificationAnalysisContext;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationList;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
-import org.iplantc.de.client.notifications.models.NotificationPayload;
+import org.iplantc.de.client.notifications.models.payload.PayloadAnalysis;
+import org.iplantc.de.client.notifications.models.payload.PayloadData;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
  * @author jstroot
@@ -37,48 +38,51 @@ public class NotificationCallback implements AsyncCallback<String> {
         for (Notification n : notifications) {
             NotificationMessage msg = n.getMessage();
             msg.setCategory(Category.fromTypeString(n.getCategory()));
-            NotificationPayload payload = n.getNotificationPayload();
-            if (Strings.isNullOrEmpty(payload.getAction())) {
+            Splittable payload = n.getNotificationPayload();
+
+            if (payload == null) {
                 continue;
             }
-            String id = payload.getId();
+
             switch (msg.getCategory()) {
                 case ALL:
-                    GWT.log("ALL Analysis category: Action = " + payload.getAction());
+                    GWT.log("ALL Analysis category");
                     break;
 
                 case ANALYSIS:
-                    if (payload.getAction().equals("job_status_change")) {
-                        AutoBean<NotificationAnalysisContext> contextBean = notFactory
-                                .getNotificationAnalysisContext();
+                    PayloadAnalysis analysisPayload = AutoBeanCodex.decode(notFactory,
+                            PayloadAnalysis.class, payload).as();
+                    String analysisAction = analysisPayload.getAction();
 
-                        NotificationAnalysisContext context = contextBean.as();
-                        context.setId(payload.getId());
-                        context.setName(payload.getName());
-
-                        msg.setContext(AutoBeanCodex.encode(contextBean).getPayload());
+                    if ("job_status_change".equals(analysisAction)) {
+                        msg.setContext(payload.getPayload());
                     } else {
                         GWT.log("Unhandled Analysis action type!!");
                     }
                     break;
 
                 case DATA:
-                    if (payload.getAction().equals("file_uploaded")) {
-                        AutoBean<File> fileAb = AutoBeanCodex.decode(drFactory, File.class, payload.getData());
+                    PayloadData dataPayload = AutoBeanCodex.decode(notFactory,
+                            PayloadData.class, payload).as();
+                    String dataAction = dataPayload.getAction();
+
+                    if ("file_uploaded".equals(dataAction)) {
+                        AutoBean<File> fileAb = AutoBeanUtils.getAutoBean(dataPayload.getData());
                         msg.setContext(AutoBeanCodex.encode(fileAb).getPayload());
                     }
                     break;
 
                 case NEW:
-                    GWT.log("NEW  category: Action = " + payload.getAction());
+                    GWT.log("NEW  category");
                     break;
 
                 case SYSTEM:
-                    GWT.log("SYSTEM  category: Action = " + payload.getAction());
+                    GWT.log("SYSTEM  category");
                     break;
 
                 case TOOLREQUEST:
-                	GWT.log("SYSTEM  category: Action = " + payload.getAction());
+                    GWT.log("TOOLREQUEST  category");
+                    msg.setContext(payload.getPayload());
                     break;
 
                 default:
