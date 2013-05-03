@@ -256,4 +256,7 @@ public interface DeCssResources extends CssResource {
 
     @ClassName("x-window-header-text")
     String xWindowHeaderText();
+
+    @ClassName("feedback_rotate")
+    String rotate90();
 }

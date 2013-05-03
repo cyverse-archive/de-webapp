@@ -758,3 +758,19 @@ img.analysis_remove {
 	width: 16px;
 	vertical-align:top;
 	}
+	
+.feedback_rotate {
+
+/* Safari */
+-webkit-transform: rotate(90deg);
+
+/* Firefox */
+-moz-transform: rotate(90deg);
+
+/* IE */
+-ms-transform: rotate(90deg);
+
+/* Opera */
+-o-transform: rotate(90deg);
+
+}
