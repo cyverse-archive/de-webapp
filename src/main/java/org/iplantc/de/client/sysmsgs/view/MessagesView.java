@@ -53,10 +53,12 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	private final SimpleContainer basePanel;
 	private final CenterLayoutContainer statusPanel;
 	private final Status status;
-	
+	private final MessageSummaryCell summaryCell;
+		
 	public MessagesView() {
+		summaryCell = new MessageSummaryCell(); 
 		messageList = new ListView<Message, Message>(makeDefaultStore(), 
-				new IdentityValueProvider<Message>(), new MessageSummaryCell());
+				new IdentityValueProvider<Message>(), summaryCell);
 		binder.createAndBindUi(this);
 		basePanel = new SimpleContainer();
 		statusPanel = new CenterLayoutContainer();
@@ -75,6 +77,11 @@ public final class MessagesView extends Composite implements DisplaysMessages {
 	@Override
 	public void setPresenter(final Presenter presenter) {
 		messageList.setStore(presenter.getMessageStore());
+		summaryCell.addHandler(new DismissMessageEvent.Handler() {
+			@Override
+			public void handleDismiss(final DismissMessageEvent event) {
+					presenter.handleDismissMessageEvent(event.getMessage());
+				}}, DismissMessageEvent.TYPE);
 	}
 	
 	@Override

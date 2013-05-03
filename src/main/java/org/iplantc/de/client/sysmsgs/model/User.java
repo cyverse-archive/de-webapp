@@ -5,6 +5,8 @@ package org.iplantc.de.client.sysmsgs.model;
  */
 public interface User {
 
-	void setUser(String user);
+	String getUser();
+	
+	void setUser(String u);
 	
 }

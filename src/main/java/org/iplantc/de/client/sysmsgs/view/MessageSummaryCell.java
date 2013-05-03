@@ -1,12 +1,5 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
-import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.Resources.MessageCellStyle;
-
-import com.google.gwt.cell.client.AbstractSafeHtmlCell;
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
@@ -16,15 +9,20 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.Event;
+
+import com.sencha.gxt.cell.core.client.AbstractEventCell;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.widget.core.client.event.XEvent;
+
+import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.view.Resources.MessageCellStyle;
 
 
 /**
  * TODO document
  */
-final class MessageSummaryCell extends AbstractSafeHtmlCell<Message> {
+final class MessageSummaryCell extends AbstractEventCell<Message> {
 	
 	interface Templates extends XTemplates {
 		@XTemplate("<span style='white-space:nowrap;'>"
@@ -65,8 +63,10 @@ final class MessageSummaryCell extends AbstractSafeHtmlCell<Message> {
     	CSS.ensureInjected();
     }
  
+    private final Renderer renderer = new Renderer();
+    
 	MessageSummaryCell() {
-		super(new Renderer(), BrowserEvents.CLICK, BrowserEvents.MOUSEOVER, BrowserEvents.MOUSEOUT);
+		super(BrowserEvents.CLICK, BrowserEvents.MOUSEOVER, BrowserEvents.MOUSEOUT);
 	}
 
 	@Override
@@ -96,14 +96,14 @@ final class MessageSummaryCell extends AbstractSafeHtmlCell<Message> {
 	}
 	
 	@Override
-	protected void render(final Cell.Context unused, final SafeHtml data, final SafeHtmlBuilder sb) 
-			{
-		sb.append(data);
+	public void render(final Context context, final Message message, 
+			final SafeHtmlBuilder builder) {
+		renderer.render(message, builder);
 	}	
 
 	private void onClick(final XElement target, final Message message) {
 		if (isDismisser(target)) {
-			EventBus.getInstance().fireEvent(new DismissMessageEvent(message));
+			fireEvent(new DismissMessageEvent(message));
 		} 
 	}
 

@@ -10,6 +10,9 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 public interface IdList {
 	
 	@PropertyName("uuids")
-	void setUUIDs(List<String> ids);
+	List<String> getIds();
+	
+	@PropertyName("uuids")
+	void setIds(List<String> ids);
 	
 }

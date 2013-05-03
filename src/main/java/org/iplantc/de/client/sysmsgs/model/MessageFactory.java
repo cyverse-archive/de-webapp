@@ -20,5 +20,5 @@ public interface MessageFactory extends AutoBeanFactory {
 	AutoBean<MessageList> makeMessageList();
 		
 	AutoBean<User> makeUser();
-	
+
 }

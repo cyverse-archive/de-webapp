@@ -11,7 +11,6 @@ import org.iplantc.de.client.sysmsgs.view.DisplaysMessages;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-
 import com.sencha.gxt.core.client.Style;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.SortDir;
@@ -39,13 +38,13 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 	private void initStore() {
 		store.addSortInfo(new StoreSortInfo<Message>(MessageProperties.INSTANCE.creationTime(), 
 				SortDir.DESC));
-		updateStore();
+		updateStoreAsync();
 		SystemMessageCache.instance().startSyncing();
 		EventBus.getInstance().addHandler(NewMessagesEvent.TYPE, 
 				new NewMessagesEvent.Handler() {
 					@Override
 					public void onNewMessage(final NewMessagesEvent event) {
-						updateStore();
+						updateStoreAsync();
 					}});
 		}
 	
@@ -68,16 +67,22 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 	}
 		
 	@Override
-	public void handleDeleteButtonClick() {
-		final Message selectedMsg = view.getMessageSelectionModel().getSelectedItem();
-		if (selectedMsg != null) {
-			final int msgIdx = store.indexOf(selectedMsg);
-			final int newSelectedIdx = (msgIdx + 1 == store.size()) ? msgIdx - 1 : msgIdx;
-			store.remove(msgIdx);
-			if (store.size() > 0) {
-				view.getMessageSelectionModel().select(false, store.get(newSelectedIdx));
-			}
+	public void handleDismissMessageEvent(final Message message) {
+		// TODO mask view
+		if (message == null) {
+			return;
 		}
+		SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
+			@Override
+			public void onFailure(final Throwable reason) {
+				// TODO Auto-generated method stub
+			}
+			@Override
+			public void onSuccess(Void unused) {
+				// TODO implement this correctly
+				updateStoreAsync();
+				// TODO unmask  view
+			}});
 	}
 	
 	public void go(final AcceptsOneWidget container) {
@@ -93,7 +98,7 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 		view.setExpiryText(msg.getDeactivationTime().toString());
 	}
 
-	private void updateStore() {
+	private void updateStoreAsync() {
 		SystemMessageCache.instance().load(null, 
 				new Callback<ListLoadResult<Message>, Throwable>() {
 					@Override
@@ -102,14 +107,35 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 					}
 					@Override
 					public void onSuccess(final ListLoadResult<Message> result) {
-						store.replaceAll(result.getData());
-						if (store.size() > 0) {
-							view.getMessageSelectionModel().select(0, false);
-							view.showMessages();
-						} else {
-							view.showNoMessages();
-						}
+						updateStore(result.getData());
 					}});
+	}
+	
+	private void updateStore(final List<Message> updatedMessages) {
+		final Message curSelect = view.getMessageSelectionModel().getSelectedItem();
+		store.replaceAll(updatedMessages);
+		if (store.size() > 0) {
+			int newSelectIdx = 0;
+			if (curSelect != null && store.hasRecord(curSelect)) {
+				newSelectIdx = store.indexOf(curSelect);
+			}
+			view.getMessageSelectionModel().select(newSelectIdx, false);
+			view.showMessages();
+			acknowledgeAllMessages();
+		} else {
+			view.showNoMessages();
+		}
+	}
+	
+	private void acknowledgeAllMessages() {
+		SystemMessageCache.instance().acknowledgeAllMessages(new Callback<Void, Throwable>() {
+			@Override
+			public void onFailure(final Throwable reason) {
+				// TODO Auto-generated method stub
+			}
+			@Override
+			public void onSuccess(Void unused) {
+			}});		
 	}
 	
 }

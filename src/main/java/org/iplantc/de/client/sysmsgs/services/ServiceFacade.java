@@ -1,11 +1,5 @@
 package org.iplantc.de.client.sysmsgs.services;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.google.web.bindery.autobean.shared.Splittable;
-
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
@@ -15,6 +9,12 @@ import org.iplantc.de.client.sysmsgs.model.MessageList;
 import org.iplantc.de.client.sysmsgs.model.User;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
  * Provides access to remote services to acquire system messages.
@@ -55,9 +55,9 @@ public class ServiceFacade {
      */
     public void acknowledgeAllMessages(final AsyncCallback<Void> callback) {
         final String address = baseURL + "/mark-all-seen"; //$NON-NLS-1$
-        final AutoBean<User> bean = MessageFactory.INSTANCE.makeUser();
-        bean.as().setUser(UserInfo.getInstance().getUsername());
-        final Splittable split = AutoBeanCodex.encode(bean);
+        final AutoBean<User> userDTO = MessageFactory.INSTANCE.makeUser();
+        userDTO.as().setUser(UserInfo.getInstance().getUsername());
+        final Splittable split = AutoBeanCodex.encode(userDTO);
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, 
         		split.getPayload());
         final AsyncCallback<String> voidedCallback = callbackConverter.voidResponse(callback);        

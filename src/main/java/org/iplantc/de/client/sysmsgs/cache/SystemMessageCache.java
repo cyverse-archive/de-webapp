@@ -93,11 +93,10 @@ public final class SystemMessageCache
 			}});
 	}
 	
-	public void hideMessage(final String msgId, final Callback<Void, Throwable> callback) {
-		if (messages.containsKey(msgId)) {
-			final Message msg = messages.get(msgId);
-			if (msg.isDismissible()) {
-				hideHideableMessage(msg, callback);
+	public void dismissMessage(final Message message, final Callback<Void, Throwable> callback) {
+		if (messages.containsValue(message)) {
+			if (message.isDismissible()) {
+				dismissDismissibleMessage(message, callback);
 			} else {
 				// TODO Should an exception be returned when a message cannot be hidden?
 				callback.onSuccess(null);
@@ -108,10 +107,10 @@ public final class SystemMessageCache
 		}
 	}
 
-	private void hideHideableMessage(final Message msg, 
+	private void dismissDismissibleMessage(final Message message, 
 			final Callback<Void, Throwable> callback) {
 		final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
-		idsDTO.setUUIDs(Arrays.asList(msg.getId()));
+		idsDTO.setIds(Arrays.asList(message.getId()));
 		services.hideMessages(idsDTO, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(final Throwable caught) {
@@ -119,7 +118,7 @@ public final class SystemMessageCache
 			}
 			@Override
 			public void onSuccess(final Void unused) {
-				messages.remove(msg.getId());
+				messages.remove(message.getId());
 				callback.onSuccess(null);
 			}});
 	}

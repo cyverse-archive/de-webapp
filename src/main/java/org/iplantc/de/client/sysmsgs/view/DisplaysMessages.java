@@ -16,7 +16,7 @@ public interface DisplaysMessages extends IsWidget {
 		
 		ListStore<Message> getMessageStore();
 
-		void handleDeleteButtonClick();
+		void handleDismissMessageEvent(Message message);
 
 	}
 	
