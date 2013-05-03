@@ -63,7 +63,7 @@ public final class SystemMessageCache
 			MessagePoller.getInstance().addTask(new Runnable() {
 				@Override
 				public void run() {
-					sync();
+					requestAllMessages();
 				}});
 			amPolling = true;
 		}
@@ -130,14 +130,6 @@ public final class SystemMessageCache
 		}
 	}
 
-	private void sync() {
-		if (syncedOnce) {
-			requestUnseenMessages();
-		} else {
-			requestAllMessages();
-		}		
-	}
-	
 	private void requestAllMessages() {
 		services.getAllMessages(new AsyncCallback<MessageList>() {
 			@Override
@@ -147,17 +139,6 @@ public final class SystemMessageCache
 			@Override
 			public void onSuccess(final MessageList messages) {
 				addMessagesAndNotifyLoaders(messages);
-			}});
-	}
-
-	private void requestUnseenMessages() {
-		services.getUnseenMessages(new AsyncCallback<MessageList>() {
-			@Override
-			public void onFailure(final Throwable unused) {
-			}
-			@Override
-			public void onSuccess(final MessageList messages) {
-				addMessages(messages);
 			}});
 	}
 

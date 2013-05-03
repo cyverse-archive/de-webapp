@@ -10,6 +10,7 @@ import org.iplantc.de.client.sysmsgs.view.DisplaysMessages;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.core.client.Style;
 import com.sencha.gxt.data.shared.ListStore;
@@ -75,12 +76,12 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 		SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
 			@Override
 			public void onFailure(final Throwable reason) {
-				// TODO Auto-generated method stub
+				// FIXME handle failure
+				Window.alert(reason.getMessage());
 			}
 			@Override
 			public void onSuccess(Void unused) {
-				// TODO implement this correctly
-				updateStoreAsync();
+				removeMessage(message);
 				// TODO unmask  view
 			}});
 	}
@@ -104,6 +105,7 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 					@Override
 					public void onFailure(final Throwable reason) {
 						// TODO implement
+						Window.alert("Failed to retrieve messages");
 					}
 					@Override
 					public void onSuccess(final ListLoadResult<Message> result) {
@@ -114,28 +116,44 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 	private void updateStore(final List<Message> updatedMessages) {
 		final Message curSelect = view.getMessageSelectionModel().getSelectedItem();
 		store.replaceAll(updatedMessages);
+		if (curSelect != null && store.findModel(curSelect) == null) {
+			store.add(curSelect);
+		}
 		if (store.size() > 0) {
-			int newSelectIdx = 0;
-			if (curSelect != null && store.hasRecord(curSelect)) {
-				newSelectIdx = store.indexOf(curSelect);
+			if (curSelect != null) {
+				showMessageSelected(store.indexOf(curSelect));
+			} else {
+				showMessageSelected(0);
 			}
-			view.getMessageSelectionModel().select(newSelectIdx, false);
-			view.showMessages();
 			acknowledgeAllMessages();
 		} else {
 			view.showNoMessages();
 		}
 	}
-	
+
+	private void removeMessage(final Message message) {
+		store.remove(message);
+		if (store.size() <= 0) {
+			view.showNoMessages();
+		}
+	}
+
 	private void acknowledgeAllMessages() {
 		SystemMessageCache.instance().acknowledgeAllMessages(new Callback<Void, Throwable>() {
 			@Override
 			public void onFailure(final Throwable reason) {
-				// TODO Auto-generated method stub
+				// TODO implement
+				Window.alert("Failed to acknowledge messages");
 			}
 			@Override
 			public void onSuccess(Void unused) {
 			}});		
+	}
+	
+	private void showMessageSelected(final int index) {
+		view.getMessageSelectionModel().deselectAll();
+		view.getMessageSelectionModel().select(index, false);
+		view.showMessages();
 	}
 	
 }

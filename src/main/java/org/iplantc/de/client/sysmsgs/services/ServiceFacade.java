@@ -35,17 +35,12 @@ public class ServiceFacade {
      * @param callback called on RPC completion.
      */
     public final void getAllMessages(final AsyncCallback<MessageList> callback) {
-        getMessagesFrom("/messages", callback);  //$NON-NLS-1$
+        final String address = baseURL + "/messages";
+		final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.GET, address);
+		final AsyncCallback<String> convertedCallback = callbackConverter.convert(callback, 
+				MessageList.class);
+		DEServiceFacade.getInstance().getServiceData(wrapper, convertedCallback);  //$NON-NLS-1$
     }	
-
-    /**
-     * Retrieves all of the unseen, active system messages for a given user.
-     *
-     * @param callback called on RPC completion.
-     */
-    public final void getUnseenMessages(final AsyncCallback<MessageList> callback) {
-        getMessagesFrom("/unseen-messages", callback);  //$NON-NLS-1$
-    }
 
     /**
      * Marks all of the user's system messages as seen.
@@ -77,15 +72,6 @@ public class ServiceFacade {
         		split.getPayload());
         final AsyncCallback<String> voidedCallback = callbackConverter.voidResponse(callback);        
         DEServiceFacade.getInstance().getServiceData(wrapper, voidedCallback);
-    }
-    
-    private void getMessagesFrom(final String systemEndPoint, 
-    		final AsyncCallback<MessageList> callback) {
-        final String address = baseURL + systemEndPoint;
-        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.GET, address);
-        final AsyncCallback<String> convertedCallback = callbackConverter.convert(callback, 
-        		MessageList.class);
-        DEServiceFacade.getInstance().getServiceData(wrapper, convertedCallback);
     }
     
 }

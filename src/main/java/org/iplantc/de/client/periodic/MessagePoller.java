@@ -42,6 +42,9 @@ public final class MessagePoller {
      */
     public void addTask(final Runnable task) {
     	tasks.add(task);
+    	if (polling) {
+    		TaskRunner.getInstance().addTask(task);
+    	}
     }
     
     /**

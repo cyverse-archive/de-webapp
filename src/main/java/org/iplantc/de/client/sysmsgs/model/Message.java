@@ -8,7 +8,7 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
  * TODO document
  */
 public interface Message {
-
+	
 	@PropertyName("uuid")
 	String getId();
 	
