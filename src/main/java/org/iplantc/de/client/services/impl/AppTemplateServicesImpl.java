@@ -23,8 +23,15 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() 
                 + "app/" + appId.getId(); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-        AppTemplateCallbackConverter cbCnvt = new AppTemplateCallbackConverter(callback);
-        DEServiceFacade.getInstance().getServiceData(wrapper, cbCnvt);
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AppTemplateCallbackConverter(callback));
+    }
+
+    @Override
+    public void getAppTemplateForEdit(HasId appId, AsyncCallback<AppTemplate> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
+                + "edit-app/" + appId.getId(); //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AppTemplateCallbackConverter(callback));
     }
 
     @Override
@@ -64,6 +71,16 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
 
         DEServiceFacade.getInstance().getServiceData(wrapper, new AppTemplateCallbackConverter(callback));
+    }
+
+    @Override
+    public void cmdLinePreview(AppTemplate at, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl()
+               + "arg-preview"; //$NON-NLS-1$
+        Splittable split = appTemplateToSplittable(at);
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, 
+                address, split.getPayload());
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
 }

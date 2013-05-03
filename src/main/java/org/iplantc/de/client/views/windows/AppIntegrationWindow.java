@@ -42,7 +42,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
         templateService = GWT.create(AppTemplateServices.class);
         presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY);
         setTitle(I18N.DISPLAY.createApps());
-        setSize("800", "410");
+        setSize("890", "500");
 
         init(presenter, config);
 
@@ -62,7 +62,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
             presenter.go(this, factory.appTemplate().as());
         }else {
-            templateService.getAppTemplate(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
+            templateService.getAppTemplateForEdit(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     AppIntegrationWindow.this.hide();
