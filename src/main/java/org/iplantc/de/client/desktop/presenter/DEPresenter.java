@@ -19,7 +19,6 @@ import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
-import org.iplantc.de.client.desktop.views.DEFeedbackView;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
@@ -199,10 +198,7 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onSelect(SelectEvent event) {
                 DEFeedbackDialog d = new DEFeedbackDialog();
-                DEFeedbackView view = new DEFeedbackView();
-                d.add(view.asWidget());
                 d.show();
-
             }
         });
         positionFButton(getViewPortSize());
