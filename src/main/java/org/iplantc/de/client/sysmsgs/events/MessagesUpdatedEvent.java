@@ -6,11 +6,11 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * TODO document
  */
-public final class NewMessagesEvent extends GwtEvent<NewMessagesEvent.Handler> {
+public final class MessagesUpdatedEvent extends GwtEvent<MessagesUpdatedEvent.Handler> {
 
 	public interface Handler extends EventHandler {
 		
-		void onNewMessage(NewMessagesEvent event);
+		void onUpdate(MessagesUpdatedEvent event);
 		
 	}
 
@@ -23,7 +23,7 @@ public final class NewMessagesEvent extends GwtEvent<NewMessagesEvent.Handler> {
 
 	@Override
 	protected void dispatch(final Handler handler) {
-		handler.onNewMessage(this);
+		handler.onUpdate(this);
 	}
 	
 }

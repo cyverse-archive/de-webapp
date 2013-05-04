@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.periodic.MessagePoller;
-import org.iplantc.de.client.sysmsgs.events.NewMessagesEvent;
+import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.IdList;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
@@ -16,6 +16,9 @@ import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.core.java.util.Collections;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.sencha.gxt.data.shared.loader.DataProxy;
 import com.sencha.gxt.data.shared.loader.ListLoadConfig;
 import com.sencha.gxt.data.shared.loader.ListLoadResult;
@@ -164,23 +167,21 @@ public final class SystemMessageCache
 		loadCallbacks.clear();
 	}
 	
-	private void addMessages(final MessageList messagesDTO) {
-		final long initNumUnseen = countUnseen();
-		for (Message msg: messagesDTO.getList()) {
-			if (!isMessageStateDated(msg)) {
+	private void addMessages(final MessageList updatedDTO) {
+		updatedDTO.sortById();
+		final AutoBean<MessageList> updatedBean = MessageFactory.INSTANCE.makeMessageList(
+				updatedDTO);
+		final AutoBean<MessageList> bean = MessageFactory.INSTANCE.makeMessageList();
+		bean.as().setList(new ArrayList<Message>(messages.values()));
+		bean.as().sortById();
+		
+		if (!AutoBeanUtils.deepEquals(updatedBean, bean)) {
+			messages.clear();
+			for (Message msg: updatedDTO.getList()) {
 				messages.put(msg.getId(), msg);
 			}
+			EventBus.getInstance().fireEvent(new MessagesUpdatedEvent());
 		}
-		if (initNumUnseen < countUnseen()) {
-			EventBus.getInstance().fireEvent(new NewMessagesEvent());
-		}
-	}
-	
-	private boolean isMessageStateDated(final Message msg) {
-		final Message oldMsg = messages.get(msg.getId());
-// TODO fix this when seen works
-//		return oldMsg != null && oldMsg.isSeen() && !msg.isSeen();
-return false;
 	}
 	
 	private ListLoadResult<Message> makeLoadResult() {

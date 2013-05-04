@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
-import org.iplantc.de.client.sysmsgs.events.NewMessagesEvent;
+import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.view.DisplaysMessages;
 
@@ -41,10 +41,10 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 				SortDir.DESC));
 		updateStoreAsync();
 		SystemMessageCache.instance().startSyncing();
-		EventBus.getInstance().addHandler(NewMessagesEvent.TYPE, 
-				new NewMessagesEvent.Handler() {
+		EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, 
+				new MessagesUpdatedEvent.Handler() {
 					@Override
-					public void onNewMessage(final NewMessagesEvent event) {
+					public void onUpdate(final MessagesUpdatedEvent event) {
 						updateStoreAsync();
 					}});
 		}
