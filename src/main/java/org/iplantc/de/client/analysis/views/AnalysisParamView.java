@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.client.I18N;
@@ -21,7 +22,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -57,7 +57,7 @@ public class AnalysisParamView implements IsWidget {
     BorderLayoutData northData;
 
     @UiField
-    Dialog dialog;
+    IPlantDialog dialog;
 
     @UiField
     TextButton btnSave;
@@ -96,7 +96,8 @@ public class AnalysisParamView implements IsWidget {
             @Override
             public void onSelect(SelectEvent event) {
                 String fileContents = writeTabFile();
-                saveFile(saveDialog.getSelectedFolder().getId() + "/" + saveDialog.getFileName(), fileContents);
+                saveFile(saveDialog.getSelectedFolder().getId() + "/" + saveDialog.getFileName(),
+                        fileContents);
 
             }
         });
