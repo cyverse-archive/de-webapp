@@ -1,7 +1,8 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -12,7 +13,6 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.ToggleGroup;
-import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -119,12 +119,12 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
 
     @Override
     public boolean validate() {
-        if (validateQ1() && validateQ2() && validateQ3()) {
+        boolean validate1 = validateQ1();
+        boolean validate2 = validateQ2();
+        boolean validate3 = validateQ3();
+        if (validate1 && validate2 && validate3) {
             return true;
         } else {
-            AlertMessageBox amb = new AlertMessageBox(I18N.DISPLAY.warning(),
-                    I18N.DISPLAY.publicSubmitTip());
-            amb.show();
             return false;
         }
     }
@@ -141,10 +141,13 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
         boolean ret = (expField.getValue() || mngField.getValue() || runField.getValue()
                 || chkField.getValue() || appField.getValue());
 
-        if (otrField.getValue() && otherField.getValue() == null) {
-            otherField.markInvalid("");
-            return false;
+        if (otrField.getValue()) {
+            otherField.setAllowBlank(false);
+            return otherField.validate();
+
         } else {
+            otherField.setAllowBlank(true);
+            otherField.clearInvalid();
             return ret;
         }
     }
@@ -153,10 +156,12 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
         boolean ret = (yesField.getValue() || swField.getValue() || noField.getValue() || notField
                 .getValue());
 
-        if (tskOtrField.getValue() && otherCompField.getValue() == null) {
-            otherCompField.markInvalid("");
-            return false;
+        if (tskOtrField.getValue()) {
+            otherCompField.setAllowBlank(false);
+            return otherCompField.validate();
         } else {
+            otherCompField.setAllowBlank(true);
+            otherCompField.clearInvalid();
             return ret;
         }
 
@@ -165,9 +170,11 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
     private boolean validateQ3() {
         boolean ret = (vastField.getValue() || swsatField.getValue() || okField.getValue()
                 || swdField.getValue() || nsField.getValue());
-        if (otsatField.getValue() && otherSatisfiedField.getValue() == null) {
-            return false;
+        if (otsatField.getValue()) {
+            otherSatisfiedField.setAllowBlank(false);
+            return otherSatisfiedField.validate();
         } else {
+            otherSatisfiedField.clearInvalid();
             return ret;
         }
     }
@@ -175,6 +182,8 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
     @Override
     public JSONObject toJson() {
         JSONObject obj = new JSONObject();
+        obj.put(UserInfo.ATTR_USERNAME, new JSONString(UserInfo.getInstance().getUsername()));
+        obj.put("User-agent", new JSONString(GXT.getUserAgent()));
         obj.put(reasonField.getText(), getAnswer1());
         obj.put(compelteField.getText(), getAnswer2());
         if (getAnswer3() != null) {

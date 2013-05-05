@@ -24,6 +24,7 @@
 		<ui:attributes height="-1" width=".90" margins="{centerMargins}" />
 
 	</ui:with>
+	<form:FormPanel ui:field="formPanel" method="POST"  action="discoveryenvironment/feedback">
 	<con:VerticalLayoutContainer ui:field="container">
 		<con:child layoutData="{layoutData}">
 			<form:FieldLabel ui:field="reasonField" labelAlign="TOP" labelSeparator=""
@@ -99,4 +100,5 @@
 			</form:FieldLabel>
 		</con:child>
 	</con:VerticalLayoutContainer>
+	</form:FormPanel>
 </ui:UiBinder> 
