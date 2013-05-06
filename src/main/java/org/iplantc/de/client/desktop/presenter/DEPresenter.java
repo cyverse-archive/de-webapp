@@ -190,7 +190,7 @@ public class DEPresenter implements DEView.Presenter {
     private void addFeedbackButton() {
         DeResources resources = GWT.create(DeResources.class);
         resources.css().ensureInjected();
-        feedbackBtn = new TextButton("Feedback");
+        feedbackBtn = new TextButton(I18N.DISPLAY.feedback());
         feedbackBtn.setIcon(IplantResources.RESOURCES.feedback());
         feedbackBtn.setWidth(40);
         feedbackBtn.addSelectHandler(new SelectHandler() {
