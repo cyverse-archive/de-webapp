@@ -1,6 +1,5 @@
-package org.iplantc.de.client.desktop.views;
+package org.iplantc.de.client.desktop.widget;
 
-import com.extjs.gxt.ui.client.core.XDOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -10,6 +9,7 @@ import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -26,7 +26,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * 
  * TODO handle styling
  */
-final class Announcer {
+public final class Announcer {
 
 	private static final int DEFAULT_TIMEOUT_ms = 10000;
 	private static final int TOP_INSET = 16;
@@ -83,7 +83,7 @@ final class Announcer {
 	 * 
 	 * @param content the message widget
 	 */
-	Announcer(final IsWidget content) {
+	public Announcer(final IsWidget content) {
 		this(content, true, DEFAULT_TIMEOUT_ms);
 	}
 	
@@ -93,7 +93,7 @@ final class Announcer {
 	 * @param content the message widget
 	 * @param closable a flag indicating whether or not the message is user closable.
 	 */
-	Announcer(final IsWidget content, final boolean closable) {
+	public Announcer(final IsWidget content, final boolean closable) {
 		this(content, closable, DEFAULT_TIMEOUT_ms);
 	}
 	
@@ -109,7 +109,7 @@ final class Announcer {
 	 * @param timeout_ms the amount of time in milliseconds to wait before automatically closing the
 	 * message.
 	 */
-	Announcer(final IsWidget content, final boolean closable, final int timeout_ms) {
+	public Announcer(final IsWidget content, final boolean closable, final int timeout_ms) {
 		this.panel = new BorderLayoutContainer();
 		this.content = content.asWidget();
 		this.contentLayout = new BorderLayoutData(-1);
@@ -129,7 +129,7 @@ final class Announcer {
 	/**
 	 * closes the message
 	 */
-	void hide() {
+	public void hide() {
 		timer.cancel();
 		panel.hide();
 	}
@@ -137,7 +137,7 @@ final class Announcer {
 	/**
 	 * shows the message
 	 */
-	void show() {
+	public void show() {
 		setCurrentAnnouncer(this);
 		final XElement elmt = panel.getElement();
 		elmt.updateZIndex(XDOM.getTopZIndex());
@@ -170,4 +170,5 @@ final class Announcer {
 				: contentWidth;
 		return Integer.toString(innerWidth);
 	}
+	
 }
