@@ -1,15 +1,23 @@
 package org.iplantc.de.client.desktop.widget;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.core.client.dom.XElement;
+import com.sencha.gxt.widget.core.client.Popup;
+import com.sencha.gxt.widget.core.client.button.IconButton.IconConfig;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer.CssFloatData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -23,14 +31,52 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * 
  * FIXME Due to time pressure, Announcer itself guarantees that there is only one Announcer
  * displayed at a time. This is not very MVP design.
- * 
- * TODO handle styling
  */
 public final class Announcer {
 
-	private static final int DEFAULT_TIMEOUT_ms = 10000;
-	private static final int TOP_INSET = 16;
+	/**
+	 * TODO externalize this interface
+	 */
+	interface Resources extends ClientBundle {
+		
+		interface Style extends CssResource {
+		
+			String closeButton();
+		
+			String closeButtonOver();
+			
+			String panel();
+			
+			String content();
+		
+		}		
+		
+		@Source("button_exit.png")
+		ImageResource closeButtonImg();
+		
+		@Source("button_exit_hover.png")
+		ImageResource closeButtonOverImg();
+		
+		@Source("Announcer.css")
+		Style style();
+		
+	}
+	
+	private static final Resources RESOURCES;
+	private static final Resources.Style STYLE;
+	private static final IconConfig CLOSER_CFG;
+	private static final int DEFAULT_TIMEOUT_ms;
+	private static final int TOP_INSET;
 
+	static {
+		RESOURCES = GWT.create(Resources.class);
+		STYLE = RESOURCES.style();
+		STYLE.ensureInjected();
+		CLOSER_CFG = new IconConfig(STYLE.closeButton(), STYLE.closeButtonOver());
+		DEFAULT_TIMEOUT_ms = 10000;
+		TOP_INSET = 16;
+	}
+	
 	private static Announcer currentAnnouncer = null;
 	
 	private static void setCurrentAnnouncer(final Announcer current) {
@@ -39,16 +85,6 @@ public final class Announcer {
 		}
 		
 		currentAnnouncer = current;		
-	}
-	
-	private static int computeWidgetHeight(final Widget widget) {
-		final XElement elmt = XElement.as(widget.getElement());
-		return elmt.getOffsetHeight() + elmt.getMargins(Side.TOP, Side.BOTTOM);
-	}
-	
-	private static int computeWidgetWidth(final Widget widget) {
-		final XElement elmt = XElement.as(widget.getElement());
-		return elmt.getOffsetWidth() + elmt.getMargins(Side.LEFT, Side.RIGHT);
 	}
 	
 	private final class CloseHandler implements SelectHandler {
@@ -69,12 +105,31 @@ public final class Announcer {
 		
 	}
 	
-	private final BorderLayoutContainer panel;
-	private final Widget content;
-	private final BorderLayoutData contentLayout;
-	private final ToolButton closeButton;
-	private final BorderLayoutData closeButtonLayout;
-	private final boolean closable;
+	private static final Popup makePanel(final IsWidget content, final boolean closable, 
+			final CloseHandler closer) {
+		final SimpleContainer contentContainer = new SimpleContainer();
+		contentContainer.setWidget(content);
+		contentContainer.addStyleName(STYLE.content());
+
+		final CssFloatLayoutContainer layout = new CssFloatLayoutContainer();
+		layout.add(contentContainer, new CssFloatData(-1));
+		
+		if (closable) {
+			final ToolButton closeButton = new ToolButton(CLOSER_CFG, closer);
+			layout.add(closeButton, new CssFloatData(-1));
+			closeButton.getElement().getStyle().setFloat(Float.RIGHT);
+		}
+		
+		final Popup panel = new Popup();
+		panel.setWidget(layout);
+		panel.setAutoHide(false);
+		panel.addStyleName(STYLE.panel());
+		
+		return panel;
+	}
+	
+	
+	private final Popup panel;
 	private final Timer timer;
 	private final int timeout_ms;
 	
@@ -110,20 +165,15 @@ public final class Announcer {
 	 * message.
 	 */
 	public Announcer(final IsWidget content, final boolean closable, final int timeout_ms) {
-		this.panel = new BorderLayoutContainer();
-		this.content = content.asWidget();
-		this.contentLayout = new BorderLayoutData(-1);
-		this.closeButton = new ToolButton(ToolButton.CLOSE, new CloseHandler());
-		this.closeButtonLayout = new BorderLayoutData(-1);
-		this.closable = closable;
+		this.panel = makePanel(content, closable, new CloseHandler());
 		this.timer = new CloseTimer();
-		this.timeout_ms = (!closable && timeout_ms <= 0) ? DEFAULT_TIMEOUT_ms : timeout_ms;	
-
-		panel.setWestWidget(content, contentLayout);
+		this.timeout_ms = (!closable && timeout_ms <= 0) ? DEFAULT_TIMEOUT_ms : timeout_ms;
 		
-		if (closable) {
-			panel.setEastWidget(closeButton, closeButtonLayout);
-		}
+		Window.addResizeHandler(new ResizeHandler() {
+			@Override
+			public void onResize(final ResizeEvent event) {
+				positionPanel();
+			}});
 	}
 	
 	/**
@@ -139,36 +189,18 @@ public final class Announcer {
 	 */
 	public void show() {
 		setCurrentAnnouncer(this);
-		final XElement elmt = panel.getElement();
-		elmt.updateZIndex(XDOM.getTopZIndex());
-		RootPanel.get().add(panel);
-		panel.setSize(computeWidth(), computeHeight());
-		contentLayout.setSize(computeWidgetWidth(content));
-		closeButtonLayout.setMinSize(closeButton.getOffsetWidth());
-		closeButtonLayout.setMaxSize(closeButton.getOffsetWidth());
-		closeButtonLayout.setSize(computeWidgetWidth(closeButton));
-		elmt.center();
-		elmt.setY(TOP_INSET);
-		
+		panel.show();
+		positionPanel();
 		if (timeout_ms > 0) {
 			timer.schedule(timeout_ms);
 		}
 	}
 	
-	private String computeHeight() {
-		final int contentHeight = computeWidgetHeight(content);
-		final int innerHeight = closable
-				? Math.max(contentHeight, computeWidgetHeight(closeButton)) 
-				: contentHeight;
-		return Integer.toString(innerHeight);
-	}
-
-	private String computeWidth() {
-		final int contentWidth = computeWidgetWidth(content);
-		final int innerWidth = closable
-				? contentWidth + computeWidgetWidth(closeButton)
-				: contentWidth;
-		return Integer.toString(innerWidth);
+	private void positionPanel() {
+		final XElement panElmt = panel.getElement();
+		final int panelWid = panElmt.getMargins(Side.LEFT, Side.RIGHT) + panElmt.getOffsetWidth();
+		panel.getElement().setX((Window.getClientWidth() - panelWid)/2);
+		panel.getElement().setY(TOP_INSET);		
 	}
 	
 }

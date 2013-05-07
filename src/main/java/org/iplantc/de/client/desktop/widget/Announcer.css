@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+
+/* The Announcer widget styling */
+
+/* This is the style for an active close button when the mouse cursor is not over it. */
+@sprite .closeButton {
+	gwt-image: "closeButtonImg";
+	cursor: pointer;
+}
+
+/* This is the style for an active close button when the mouse cursor is over it. */
+@sprite .closeButtonOver {
+	gwt-image: "closeButtonOverImg";
+	cursor: pointer;
+}
+
+/* This is the styling applied to the main announcer panel */
+.panel {
+	background-color: gray;
+	padding: 1mm;
+}
+
+/* This is the styling applied to the content */
+.content {
+	padding-right: 1mm !important;
+}
