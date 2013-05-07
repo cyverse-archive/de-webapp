@@ -3,6 +3,7 @@ package org.iplantc.de.client;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.services.FileEditorServiceFacade;
 import org.iplantc.de.client.analysis.services.AnalysisServiceFacade;
+import org.iplantc.de.client.desktop.services.DEFeedbackServiceFacade;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.services.impl.FileEditorServiceFacadeImpl;
@@ -21,4 +22,6 @@ public class Services {
             .create(DiskResourceServiceFacade.class);
 
     public static final FileEditorServiceFacade FILE_EDITOR_SERVICE = new FileEditorServiceFacadeImpl();
+
+    public static final DEFeedbackServiceFacade DE_FEEDBACK_SERVICE = new DEFeedbackServiceFacade();
 }

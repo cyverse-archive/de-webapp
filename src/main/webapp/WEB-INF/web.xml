@@ -101,10 +101,6 @@
         <servlet-name>uuidService</servlet-name>
         <servlet-class>org.iplantc.de.server.UUIDServiceImpl</servlet-class>
     </servlet>
-    <servlet>
-    	 <servlet-name>feedbackService</servlet-name>
-        <servlet-class>org.iplantc.de.server.DEFeedbackServiceImpl</servlet-class>
-    </servlet>
 
 	<!-- Servlet Mappings -->
 	<servlet-mapping>
@@ -182,10 +178,6 @@
     <servlet-mapping>
          <servlet-name>uuidService</servlet-name>
          <url-pattern>/discoveryenvironment/uuidService</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>feedbackService</servlet-name>
-    	<url-pattern>/discoveryenvironment/feedbackService</url-pattern>
     </servlet-mapping>
 
 	<!-- Filters -->
