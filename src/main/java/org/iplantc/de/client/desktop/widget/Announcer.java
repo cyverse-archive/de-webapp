@@ -47,6 +47,9 @@ public final class Announcer {
 			
 			String panel();
 			
+			@ClassName("multiple-panels")
+			String multiplePanels();
+			
 			String content();
 		
 		}		
@@ -66,7 +69,6 @@ public final class Announcer {
 	private static final Resources.Style STYLE;
 	private static final IconConfig CLOSER_CFG;
 	private static final int DEFAULT_TIMEOUT_ms;
-	private static final int TOP_INSET;
 
 	static {
 		RESOURCES = GWT.create(Resources.class);
@@ -74,7 +76,6 @@ public final class Announcer {
 		STYLE.ensureInjected();
 		CLOSER_CFG = new IconConfig(STYLE.closeButton(), STYLE.closeButtonOver());
 		DEFAULT_TIMEOUT_ms = 10000;
-		TOP_INSET = 16;
 	}
 	
 	private static Announcer currentAnnouncer = null;
@@ -124,6 +125,7 @@ public final class Announcer {
 		panel.setWidget(layout);
 		panel.setAutoHide(false);
 		panel.addStyleName(STYLE.panel());
+		panel.setShadow(true);
 		
 		return panel;
 	}
@@ -200,7 +202,7 @@ public final class Announcer {
 		final XElement panElmt = panel.getElement();
 		final int panelWid = panElmt.getMargins(Side.LEFT, Side.RIGHT) + panElmt.getOffsetWidth();
 		panel.getElement().setX((Window.getClientWidth() - panelWid)/2);
-		panel.getElement().setY(TOP_INSET);		
+		panel.getElement().setY(0);		
 	}
 	
 }
