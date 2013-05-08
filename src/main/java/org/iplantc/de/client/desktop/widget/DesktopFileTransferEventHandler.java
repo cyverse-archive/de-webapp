@@ -46,21 +46,25 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     @Override
     public void onRequestSimpleUpload(RequestSimpleUploadEvent event) {
         Folder uploadDest = event.getDestinationFolder();
-        SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, 
-                drService, 
-                EventBus.getInstance(),
-                UriUtils.fromTrustedString(Constants.CLIENT.fileUploadServlet()), 
-                UserInfo.getInstance().getUsername());
-        dlg.show();
+        if (canUpload(uploadDest)) {
+            SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, 
+                    drService, 
+                    EventBus.getInstance(),
+                    UriUtils.fromTrustedString(Constants.CLIENT.fileUploadServlet()), 
+                    UserInfo.getInstance().getUsername());
+            dlg.show();
+        }
     }
 
     @Override
     public void onRequestUploadFromUrl(RequestImportFromUrlEvent event) {
         Folder uploadDest = event.getDestinationFolder();
         
-        String userName = UserInfo.getInstance().getUsername();
-        FileUploadByUrlDialog dlg = new FileUploadByUrlDialog(uploadDest, drService, userName);
-        dlg.show();
+        if (canUpload(uploadDest)) {
+            String userName = UserInfo.getInstance().getUsername();
+            FileUploadByUrlDialog dlg = new FileUploadByUrlDialog(uploadDest, drService, userName);
+            dlg.show();
+        }
     }
 
     @Override

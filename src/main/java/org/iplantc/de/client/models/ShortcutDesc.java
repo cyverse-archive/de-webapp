@@ -13,15 +13,16 @@ public class ShortcutDesc {
     private final String caption;
     private String action;
     private String tag;
+    private String index;
     private final WindowConfig config;
 
-    public ShortcutDesc(String id, String caption, String action, WindowConfig config) {
+    public ShortcutDesc(String id, String index, String caption, String action, WindowConfig config) {
         this.id = id;
         this.caption = caption;
         if (action != null) {
             this.action = action;
         }
-
+        this.index = index;
         this.config = config;
     }
 
@@ -63,5 +64,19 @@ public class ShortcutDesc {
      */
     public String getTag() {
         return tag;
+    }
+
+    /**
+     * @return the index
+     */
+    public String getIndex() {
+        return index;
+    }
+
+    /**
+     * @param index the index to set
+     */
+    public void setIndex(String index) {
+        this.index = index;
     }
 }

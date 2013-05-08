@@ -18,7 +18,11 @@ import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
+import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
+import org.iplantc.de.client.notifications.models.payload.PayloadToolRequest;
+import org.iplantc.de.client.notifications.models.payload.ToolRequestHistory;
+import org.iplantc.de.client.notifications.views.dialogs.ToolRequestHistoryDialog;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
@@ -96,6 +100,8 @@ public class NotificationHelper {
     private final DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
     private final CommonModelAutoBeanFactory cFactory = GWT.create(CommonModelAutoBeanFactory.class);
     private final AnalysesAutoBeanFactory analysesFactory = GWT.create(AnalysesAutoBeanFactory.class);
+    private final NotificationAutoBeanFactory notificationFactory = GWT
+            .create(NotificationAutoBeanFactory.class);
 
     private NotificationHelper() {
     }
@@ -103,35 +109,60 @@ public class NotificationHelper {
 
     /** View a notification */
     public void view(NotificationMessage msg) {
-        if (msg != null) {
-            NotificationHelper.Category category = msg.getCategory();
+        if (msg == null) {
+            return;
+        }
 
-            // did we get a category?
-            if (category != null) {
-                String context = msg.getContext();
+        // did we get a category?
+        NotificationHelper.Category category = msg.getCategory();
+        if (category == null) {
+            return;
+        }
 
-                // did we get a context to execute?
-                if (context != null) {
-                    if (category == NotificationHelper.Category.DATA) {
-                        // execute data context
-                        AutoBean<File> fAb = AutoBeanCodex.decode(drFactory, File.class, context);
-                        ArrayList<HasId> newArrayList = Lists.newArrayList();
-                        newArrayList.add(fAb.as());
+        // did we get a context to execute?
+        String context = msg.getContext();
+        if (context == null) {
+            return;
+        }
 
-                        DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory.diskResourceWindowConfig();
-                        diskResourceWindowConfig.setSelectedFolder(DiskResourceUtil.getFolderIdFromFile(cFactory, fAb.as()));
-                        diskResourceWindowConfig.setSelectedDiskResources(newArrayList);
-                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig, true));
-                    } else if (category == NotificationHelper.Category.ANALYSIS) {
-                        AutoBean<Analysis> hAb = AutoBeanCodex.decode(analysesFactory, Analysis.class,
-                                context);
+        switch (category) {
+            case DATA:
+                // execute data context
+                AutoBean<File> fAb = AutoBeanCodex.decode(drFactory, File.class, context);
+                ArrayList<HasId> newArrayList = Lists.newArrayList();
+                newArrayList.add(fAb.as());
 
-                        AnalysisWindowConfig analysisWindowConfig = ConfigFactory.analysisWindowConfig();
-                        analysisWindowConfig.setSelectedAnalyses(Lists.newArrayList(hAb.as()));
-                        EventBus.getInstance().fireEvent(new WindowShowRequestEvent(analysisWindowConfig, true));
-                    }
-                }
-            }
+                DiskResourceWindowConfig dataWindowConfig = ConfigFactory.diskResourceWindowConfig();
+                HasId folderId = DiskResourceUtil.getFolderIdFromFile(cFactory, fAb.as());
+                dataWindowConfig.setSelectedFolder(folderId);
+                dataWindowConfig.setSelectedDiskResources(newArrayList);
+                EventBus.getInstance().fireEvent(new WindowShowRequestEvent(dataWindowConfig, true));
+
+                break;
+
+            case ANALYSIS:
+                AutoBean<Analysis> hAb = AutoBeanCodex.decode(analysesFactory, Analysis.class, context);
+
+                AnalysisWindowConfig analysisWindowConfig = ConfigFactory.analysisWindowConfig();
+                analysisWindowConfig.setSelectedAnalyses(Lists.newArrayList(hAb.as()));
+                EventBus.getInstance().fireEvent(new WindowShowRequestEvent(analysisWindowConfig, true));
+
+                break;
+
+            case TOOLREQUEST:
+                PayloadToolRequest toolRequest = AutoBeanCodex.decode(notificationFactory,
+                        PayloadToolRequest.class, context).as();
+
+                List<ToolRequestHistory> history = toolRequest.getHistory();
+
+                ToolRequestHistoryDialog dlg = new ToolRequestHistoryDialog(toolRequest.getName(),
+                        history);
+                dlg.show();
+
+                break;
+
+            default:
+                break;
         }
     }
 

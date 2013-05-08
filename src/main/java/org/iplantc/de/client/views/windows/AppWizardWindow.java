@@ -1,31 +1,30 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uiapps.client.Services;
-import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
+import org.iplantc.core.uiapps.integration.client.services.AppTemplateServices;
+import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.analysis.services.AnalysisServiceFacade;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 public class AppWizardWindow extends IplantWindowBase {
 
-    private final class LegacyAppTemplateCallback implements AsyncCallback<String> {
+    private final class AppTemplateCallback implements AsyncCallback<AppTemplate> {
         private final AppWizardView.Presenter presenter;
 
-        private LegacyAppTemplateCallback(AppWizardView.Presenter presenter) {
+        private AppTemplateCallback(AppWizardView.Presenter presenter) {
             this.presenter = presenter;
         }
 
         @Override
-        public void onSuccess(String result) {
-            presenter.goLegacy(AppWizardWindow.this, StringQuoter.split(result));
+        public void onSuccess(AppTemplate result) {
+            presenter.go(AppWizardWindow.this, result);
             AppWizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
             // KLUDGE JDS This call to forceLayout should not be necessary.
             AppWizardWindow.this.forceLayout();
@@ -38,8 +37,7 @@ public class AppWizardWindow extends IplantWindowBase {
     }
 
     private final AppWizardView.Presenter presenter;
-    private final AppUserServiceFacade templateService = Services.USER_APP_SERVICE;
-    private final AnalysisServiceFacade analysisService = org.iplantc.de.client.Services.ANALYSIS_SERVICE;
+    private final AppTemplateServices templateService = GWT.create(AppTemplateServices.class);
     private final String appId;
 
     public AppWizardWindow(AppWizardConfig config) {
@@ -64,10 +62,10 @@ public class AppWizardWindow extends IplantWindowBase {
             setHeadingText(presenter.getAppTemplate().getLabel());
             forceLayout();
         } else if (config.isRelaunchAnalysis()) {
-            analysisService.relaunchAnalysis(config.getAnalysisId(), new LegacyAppTemplateCallback(
+            templateService.rerunAnalysis(config.getAnalysisId(), new AppTemplateCallback(
                     presenter));
         } else {
-            templateService.getTemplate(config.getAppId(), new LegacyAppTemplateCallback(presenter));
+            templateService.getAppTemplate(CommonModelUtils.createHasIdFromString(config.getAppId()), new AppTemplateCallback(presenter));
         }
     }
 

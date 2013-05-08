@@ -2,6 +2,7 @@ package org.iplantc.de.client.notifications.models;
 
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+import com.google.web.bindery.autobean.shared.Splittable;
 
 public interface Notification {
 
@@ -24,9 +25,8 @@ public interface Notification {
     String getCategory();
 
     @PropertyName("payload")
-    NotificationPayload getNotificationPayload();
+    Splittable getNotificationPayload();
 
     @PropertyName("payload")
-    void setNotificationPayload(NotificationPayload payload);
-
+    void setNotificationPayload(Splittable payload);
 }

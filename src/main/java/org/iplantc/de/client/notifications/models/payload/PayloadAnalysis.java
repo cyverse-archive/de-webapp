@@ -1,18 +1,16 @@
 /**
  * 
  */
-package org.iplantc.de.client.notifications.models;
+package org.iplantc.de.client.notifications.models.payload;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
-import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
  * @author sriram
  * 
  */
-public interface NotificationPayload {
+public interface PayloadAnalysis {
 
-    Splittable getData();
     /**
      * XXX JDS This could be turned into an enum
      * 

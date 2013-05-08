@@ -1,5 +1,6 @@
 package org.iplantc.de.client;
 
+import org.iplantc.core.resources.client.messages.IplantContextualHelpStrings;
 import org.iplantc.core.resources.client.messages.IplantDisplayStrings;
 import org.iplantc.core.resources.client.messages.IplantErrorStrings;
 
@@ -19,4 +20,5 @@ public class I18N {
             .create(DEDisplayStaticText.class);
     /** Error messages */
     public static final IplantErrorStrings ERROR = org.iplantc.core.resources.client.messages.I18N.ERROR;
+    public static final IplantContextualHelpStrings HELP = org.iplantc.core.resources.client.messages.I18N.HELP;
 }

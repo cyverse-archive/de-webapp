@@ -1,14 +1,4 @@
 /** Add css rules here for your application. */
-.copyright {
-	font-size: 10px;
-	padding-left: 8px;
-}
-
-.nsf-text {
-	font-size: 10px;
-	position: absolute;
-	right: 8px;
-}
 
 .iplantc-portal-component {
 	background-color: transparent;
@@ -35,9 +25,6 @@ div.iplantc-about-pad-text p {
 	margin: 0px;
 }
 
-.iplantc-select-trait-grid .x-grid3-cell-inner {
-	cursor: pointer;
-}
 
 .iplantc-mydata-shortcut {
 	background-image: url(./images/shortcut_data.png);
@@ -93,124 +80,12 @@ html,body {
 	font-size: 12px;
 	font-family: Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro",
 		Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L",
-		Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+		Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	margin: 0;
 	padding: 0;
 	border: 0 none;
 	overflow: hidden;
 	height: 100%;
-}
-
-.x-panel-header {
-	height: 12px;
-	font-size: 10px;
-}
-
-.x-toolbar {
-	height: 20px;
-}
-
-.x-toolbar .x-btn button {
-	font-size: 10px;
-}
-
-#x-desktop {
-	width: 100%;
-	height: 100%;
-	border: 0 none;
-	position: relative;
-	overflow: hidden;
-	zoom: 1;
-}
-
-#ux-taskbar .x-btn {
-	float: left;
-	margin: 1px 0 0 1px;
-	position: relative;
-}
-
-#ux-taskbar button { /* width: 150px;
-	overflow: ellipsis; */
-	text-align: left;
-	color: #ffffff;
-}
-
-#ux-taskbar {
-	background: transparent none;
-	height: 30px;
-	margin: 0;
-	padding: 0;
-	position: relative;
-	z-index: 12001;
-}
-
-.ux-taskbutton-left {
-	width: 4px;
-	height: 28px;
-	background: url( ./images/taskbar/taskbutton.gif ) no-repeat 0 -84px;
-}
-
-.ux-taskbutton-right {
-	width: 4px;
-	height: 28px;
-	background: url( ./images/taskbar/taskbutton.gif ) no-repeat 0 -112px;
-}
-
-.ux-taskbutton-left i,.ux-taskbutton-right i {
-	display: block;
-	width: 4px;
-	overflow: hidden;
-	font-size: 1px;
-	line-height: 1px;
-}
-
-.ux-taskbutton-center {
-	background: url( ./images/taskbar/taskbutton.gif ) repeat-x 0 -140px;
-	vertical-align: middle;
-	text-align: center;
-	padding: 0 5px;
-	cursor: pointer;
-	white-space: nowrap;
-}
-
-#ux-taskbar .x-btn-over .ux-taskbutton-center button {
-	color: #0098AA;
-}
-
-#ux-taskbar .x-btn-click .ux-taskbutton-left {
-	background-image: url( ./images/taskbar/grey/taskbutton.gif );
-	background-position: 0 -252px;
-}
-
-#ux-taskbar .x-btn-click  .ux-taskbutton-right {
-	background-image: url( ./images/taskbar/grey/taskbutton.gif );
-	background-position: 0 -280px;
-}
-
-#ux-taskbar .x-btn-click .ux-taskbutton-center {
-	background-image: url( ./images/taskbar/grey/taskbutton.gif );
-	background-position: 0 -308px;
-}
-
-#ux-taskbar .active-win .ux-taskbutton-left {
-	background: url( ./images/taskbar/grey/taskbutton.gif ) no-repeat 0 0;
-}
-
-#ux-taskbar .active-win  .ux-taskbutton-right {
-	background: url( ./images/taskbar/grey/taskbutton.gif ) no-repeat 0
-		-28px;
-}
-
-#ux-taskbar .active-win .ux-taskbutton-center {
-	background: url( ./images/taskbar/grey/taskbutton.gif ) repeat-x 0 -56px;
-}
-
-#ux-taskbar .active-win .ux-taskbutton-center button {
-	color: #fff;
-}
-
-#ux-taskbar #ux-taskbuttons-panel button.x-btn-text {
-	padding: 7px 0px 7px 23px !important;
 }
 
 .x-window-body p,.x-panel-body p {
@@ -218,53 +93,7 @@ html,body {
 	margin: 0;
 }
 
-#ux-taskbuttons-panel {
-	background: #000000 url( ./images/taskbar/taskbuttons-panel-bg.jpg )
-		repeat-x left top;
-	padding-top: 0;
-	position: relative;
-}
 
-.ux-taskbuttons-strip-wrap { /* overflow:hidden;
-	position:relative;
-	width:100%; */
-	width: 100%;
-	overflow: hidden;
-	position: relative;
-	zoom: 1;
-}
-
-ul.ux-taskbuttons-strip {
-	display: block;
-	width: 5000px;
-	zoom: 1;
-}
-
-ul.ux-taskbuttons-strip li {
-	float: left;
-	margin-left: 2px;
-}
-
-ul.ux-taskbuttons-strip li.ux-taskbuttons-edge {
-	float: left;
-	margin: 0 !important;
-	padding: 0 !important;
-	border: 0 none !important;
-	font-size: 1px !important;
-	line-height: 1px !important;
-	overflow: hidden;
-	zoom: 1;
-	background: transparent !important;
-	width: 1px;
-}
-
-.x-clear {
-	clear: both;
-	height: 0;
-	overflow: hidden;
-	line-height: 0;
-	font-size: 0;
-}
 
 .x-window-header-text {
 	cursor: default;
@@ -276,90 +105,6 @@ ul.ux-taskbuttons-strip li.ux-taskbuttons-edge {
 	height: 0px !important;
 }
 
-/* Desktop Shortcuts */
-#x-shortcuts dt {
-	margin: 15px 0 0 15px;
-	clear: left;
-	width: 101px;
-	font: normal 10px tahoma, arial, verdana, sans-serif;
-	text-align: center;
-	zoom: 1;
-	display: block;
-	float: left;
-}
-
-#x-shortcuts dt a {
-	width: 101px;
-	display: block;
-	color: black;
-	text-decoration: none;
-}
-
-#x-shortcuts dt div {
-	width: 100%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	cursor: pointer;
-}
-
-#x-shortcuts dt a:hover {
-	text-decoration: underline;
-	color: black;
-}
-
-.accordianTitle {
-	height: 14px;
-	font-size: 12px;
-	background-image: url('./images/bevel_greybar.jpg');
-	background-repeat: repeat-x;
-	padding: 3px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
-	color: white;
-	line-height: 14px;
-	background-color: #d7d7d7;
-}
-
-.accordianBody {
-	background-color: #EDEDED;
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
-	outline: none;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-}
-
-.windowBody {
-	background-color: #EDEDED;
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
-	outline: none;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-	}
-
-.windowLayoutTitle {
-	font-size: 12px;
-	background-repeat: repeat;
-	background-image: url('./images/bevel_greybar.jpg');
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
-	line-height: 14px;
-	height: 14px !important;
-	color: #ffffff;
-	padding: 4px;
-	background-color: #222222;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-khtml-border-radius: 10px;
-	border-radius: 10px 10px 0px 0px;
-}
 
 .windowBody3 {
 	background-color: #EDEDED;
@@ -468,52 +213,6 @@ a.x-menu-item {
 	color: black !important;
 }
 
-.mydata_name {
-	cursor: pointer;
-	text-decoration: none;
-	font-size: 12px;
-	height: 15px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	color: black;
-}
-
-.data_details_label {
-	font-size: 11px;
-	font-weight: bold;
-}
-
-.data_details_value {
-	font-size: 11px;
-}
-
-
-.analysis_name {
-	cursor: pointer;
-	text-decoration: none;
-	color: black;
-	font-size: 12px;
-	height: 15px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-
-img.analysis_remove {
-	padding-right: 10px;
-}
-
-.menu-row-over .x-grid3-row-over {
-	background-image: url(./images/control_arrow_down.png) !important;
-	background-repeat: no-repeat;
-	background-position: right center;
-}
-
-.required_marker {
-	font-size: 14px;
-	color: #ff4000;
-	top: -5px;
-}
-
 
 .de_header_menu_body {
 	background-color: white; 
@@ -561,40 +260,6 @@ img.analysis_remove {
 .de_notification_indicator_highlight {
 	background-color: #DB6619;
 	color: white;
-}
-
-.apps_rating_gold_button {
-	background-image: url('./images/star-gold.gif');
-	height: 16px;
-	width: 16px;
-}
-
-.apps_rating_red_button {
-	background-image: url('./images/star-red.gif');
-	height: 16px;
-	width: 16px;
-}
-
-.apps_rating_white_button {
-	background-image: url('./images/star-white.gif');
-	height: 16px;
-	width: 16px;
-}
-
-.apps_rating_unrate_button {
-	background-image: url('./images/delete_rating.png');
-	height: 16px;
-	width: 16px;
-}
-
-.apps_rating_unrate_button_hover {
-	background-image: url('./images/delete_rating_hover.png');
-	height: 16px;
-	width: 16px;
-}
-
-.x-form-textarea {
-	font-family: courier !important;
 }
 
 .x-unselectable-single {
@@ -654,16 +319,6 @@ img.analysis_remove {
 
 .search-item h4 span {
 	font-style: italic;
-}
-
-.analysis-param-value {
-	cursor: pointer;
-	text-decoration: none;
-	font-size: 11px;
-	height: 15px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	color: #0098AA;
 }
 
 .add_button {
@@ -758,3 +413,19 @@ img.analysis_remove {
 	width: 16px;
 	vertical-align:top;
 	}
+	
+.feedback_rotate {
+
+/* Safari */
+-webkit-transform: rotate(-90deg);
+
+/* Firefox */
+-moz-transform: rotate(-90deg);
+
+/* IE */
+-ms-transform: rotate(-90deg);
+
+/* Opera */
+-o-transform: rotate(-90deg);
+
+}
