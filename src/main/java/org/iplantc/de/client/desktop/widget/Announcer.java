@@ -1,7 +1,7 @@
 package org.iplantc.de.client.desktop.widget;
 
-import org.iplantc.core.resources.client.AnnouncerStyle;
-import org.iplantc.core.resources.client.IplantResources;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -9,6 +9,8 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.widget.core.client.Popup;
@@ -20,86 +22,79 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import org.iplantc.core.resources.client.AnnouncerStyle;
+import org.iplantc.core.resources.client.IplantResources;
+
 /**
- * Objects of this class display a message in the top center of the view port. The message may be a
- * widget, allowing a user to interact with the message to obtain more information. By default, the
- * message is closable by the user and will close automatically after 10 seconds. 
+ * Objects of this class display a message in the top center of the view port. The message may be a 
+ * widget, allowing a user to interact with the message to obtain more information. By default, the 
+ * message is closable by the user and will close automatically after 10 seconds.
  * 
- * Only one message can be displayed at time. If a second message is displayed, the first one will
- * be replaced.
- * 
- * FIXME Due to time pressure, Announcer itself guarantees that there is only one Announcer
- * displayed at a time. This is not very MVP design.
+ * Only one message can be displayed at time. If a second message is scheduled, it will be shown 
+ * once the first one times out.
  */
 public final class Announcer {
 	
 	private static final AnnouncerStyle STYLE;
 	private static final IconConfig CLOSER_CFG;
 	private static final int DEFAULT_TIMEOUT_ms;
+	private static final Queue<Announcer> announcers;
 
 	static {
 		STYLE = IplantResources.RESOURCES.getAnnouncerStyle();
 		STYLE.ensureInjected();
 		CLOSER_CFG = new IconConfig(STYLE.closeButton(), STYLE.closeButtonOver());
 		DEFAULT_TIMEOUT_ms = 10000;
+		announcers = new LinkedList<Announcer>();
 	}
 	
-	private static Announcer currentAnnouncer = null;
-	
-	private static void setCurrentAnnouncer(final Announcer current) {
-		if (currentAnnouncer != null) {
-			currentAnnouncer.hide();
+	private static void removeAnnouncer(final Announcer oldAnnouncer) {
+		if (announcers.contains(oldAnnouncer)) {
+			announcers.remove(oldAnnouncer);
 		}
-		
-		currentAnnouncer = current;		
+		showNextAnnouncer();
+	}
+
+	private static void scheduleAnnouncer(final Announcer newAnnouncer) {
+		if (announcers.contains(newAnnouncer)) {
+			return;
+		}
+		announcers.add(newAnnouncer);
+		showNextAnnouncer();
 	}
 	
+	private static void showNextAnnouncer() {
+		if (announcers.isEmpty()) {
+			return;
+		}
+		announcers.peek().show();
+		if (announcers.size() > 1) {
+			announcers.peek().indicateMore();
+		} else {
+			announcers.peek().indicateNoMore();
+		}
+	}
+
 	private final class CloseHandler implements SelectHandler {
-		
 		@Override
 		public void onSelect(final SelectEvent event) {
-			hide();
+			remove();
 		}
-		
 	}
 	
 	private final class CloseTimer extends Timer {
-
 		@Override
 		public void run() {
-			hide();
+			remove();
 		};
-		
 	}
-	
-	private static final Popup makePanel(final IsWidget content, final boolean closable, 
-			final CloseHandler closer) {
-		final SimpleContainer contentContainer = new SimpleContainer();
-		contentContainer.setWidget(content);
-		contentContainer.addStyleName(STYLE.content());
 
-		final CssFloatLayoutContainer layout = new CssFloatLayoutContainer();
-		layout.add(contentContainer, new CssFloatData(-1));
-		
-		if (closable) {
-			final ToolButton closeButton = new ToolButton(CLOSER_CFG, closer);
-			layout.add(closeButton, new CssFloatData(-1));
-			closeButton.getElement().getStyle().setFloat(Float.RIGHT);
-		}
-		
-		final Popup panel = new Popup();
-		panel.setWidget(layout);
-		panel.setAutoHide(false);
-		panel.addStyleName(STYLE.panel());
-		panel.setShadow(true);
-		
-		return panel;
-	}
-	
-	
 	private final Popup panel;
 	private final Timer timer;
 	private final int timeout_ms;
+	
+	private boolean showing;
+	private HandlerRegistration positionerRegistration;
 	
 	/**
 	 * Constructs a user closable announcer that will close automatically after 10 seconds.
@@ -133,34 +128,85 @@ public final class Announcer {
 	 * message.
 	 */
 	public Announcer(final IsWidget content, final boolean closable, final int timeout_ms) {
-		this.panel = makePanel(content, closable, new CloseHandler());
+		this.panel = new Popup();
 		this.timer = new CloseTimer();
 		this.timeout_ms = (!closable && timeout_ms <= 0) ? DEFAULT_TIMEOUT_ms : timeout_ms;
-		
-		Window.addResizeHandler(new ResizeHandler() {
+		this.showing = false;
+		this.positionerRegistration = null;
+		initPanel(content, closable);
+	}
+	
+	private void initPanel(final IsWidget content, final boolean closable) {
+		final SimpleContainer contentContainer = new SimpleContainer();
+		contentContainer.setWidget(content);
+		contentContainer.addStyleName(STYLE.content());
+
+		final CssFloatLayoutContainer layout = new CssFloatLayoutContainer();
+		layout.add(contentContainer, new CssFloatData(-1));
+
+		if (closable) {
+			final ToolButton closeButton = new ToolButton(CLOSER_CFG, new CloseHandler());
+			layout.add(closeButton, new CssFloatData(-1));
+			closeButton.getElement().getStyle().setFloat(Float.RIGHT);
+		}
+
+		panel.setWidget(layout);
+		panel.setAutoHide(false);
+		panel.addStyleName(STYLE.panel());
+		panel.setShadow(true);
+	}
+
+	/**
+	 * closes the message
+	 */
+	public void remove() {
+		showing = false;
+		unregisterPositioner();
+		timer.cancel();
+		panel.hide();
+		removeAnnouncer(this);
+	}
+	
+	/**
+	 * Schedules a message to be shown.
+	 */
+	public void schedule() {
+		scheduleAnnouncer(this);
+	}
+
+	private void indicateMore() {
+		panel.addStyleName(STYLE.panelMultiple());
+	}
+
+	private void indicateNoMore() {
+		panel.removeStyleName(STYLE.panelMultiple());
+	}
+
+	private void show() {
+		if (!showing) {
+			panel.show();
+			positionPanel();
+			registerPositioner();
+			if (timeout_ms > 0) {
+				timer.schedule(timeout_ms);
+			}
+			showing = true;
+		}
+	}
+
+	private void registerPositioner() {
+		unregisterPositioner();
+		positionerRegistration = Window.addResizeHandler(new ResizeHandler() {
 			@Override
 			public void onResize(final ResizeEvent event) {
 				positionPanel();
 			}});
 	}
 	
-	/**
-	 * closes the message
-	 */
-	public void hide() {
-		timer.cancel();
-		panel.hide();
-	}
-	
-	/**
-	 * shows the message
-	 */
-	public void show() {
-		setCurrentAnnouncer(this);
-		panel.show();
-		positionPanel();
-		if (timeout_ms > 0) {
-			timer.schedule(timeout_ms);
+	private void unregisterPositioner() {
+		if (positionerRegistration != null) {
+			positionerRegistration.removeHandler();
+			positionerRegistration = null;
 		}
 	}
 	
