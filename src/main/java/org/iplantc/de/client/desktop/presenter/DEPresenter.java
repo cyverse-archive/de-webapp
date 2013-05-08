@@ -341,11 +341,6 @@ public class DEPresenter implements DEView.Presenter {
         return view.getOrderedWindowStates();
     }
 
-	@Override
-	public final void showSystemNotification(final String msg) {
-		view.showSystemNotification(msg);
-	}
-
     private class DataKBShortCutCmd implements Command {
 
         @Override

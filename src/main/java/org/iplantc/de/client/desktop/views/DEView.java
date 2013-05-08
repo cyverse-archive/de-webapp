@@ -2,9 +2,9 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.WindowState;
-
 import com.google.gwt.user.client.ui.IsWidget;
+
+import org.iplantc.core.uicommons.client.models.WindowState;
 
 /**
  * DE Main view
@@ -28,13 +28,6 @@ public interface DEView extends IsWidget {
         void restoreWindows(List<WindowState> windowStates);
 
         List<WindowState> getOrderedWindowStates();
-        
-        /**
-         * has the view display a system notification message
-         * 
-         * @param msg The system notification message
-         */
-        void showSystemNotification(String msg);
     }
 
     /**
@@ -60,10 +53,4 @@ public interface DEView extends IsWidget {
 
     void restoreWindows(List<WindowState> windowStates);
 
-    /**
-     * displays a system notification message
-     * 
-     * @param msg The message to display.
-     */
-    void showSystemNotification(String msg);
 }
