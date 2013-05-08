@@ -16,15 +16,13 @@ public class ToolRequestStatusCell extends AbstractCell<ToolRequestStatus> {
 
     @Override
     public void render(Context context, ToolRequestStatus value, SafeHtmlBuilder sb) {
-        String style = "cursor:pointer;"; //$NON-NLS-1$
         String qtip = ""; //$NON-NLS-1$
 
         if (value != null) {
             qtip = Format.substitute("qtip=\"{0}\"", value.getHelpText()); //$NON-NLS-1$
         }
 
-        sb.appendHtmlConstant(Format.substitute("<div {0} style=\"{1}\">{2}</div>", //$NON-NLS-1$
-                qtip, style, value));
+        sb.appendHtmlConstant(Format.substitute("<div {0}>{1}</div>", qtip, value)); //$NON-NLS-1$
     }
 
 }

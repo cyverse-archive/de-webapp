@@ -155,7 +155,8 @@ public class NotificationHelper {
 
                 List<ToolRequestHistory> history = toolRequest.getHistory();
 
-                ToolRequestHistoryDialog dlg = new ToolRequestHistoryDialog(history);
+                ToolRequestHistoryDialog dlg = new ToolRequestHistoryDialog(toolRequest.getName(),
+                        history);
                 dlg.show();
 
                 break;
