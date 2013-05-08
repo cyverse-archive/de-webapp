@@ -8,6 +8,8 @@ import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
+import org.iplantc.core.uiapps.widgets.client.models.Argument;
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
@@ -17,6 +19,7 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,7 +63,15 @@ public class AppIntegrationWindow extends IplantWindowBase {
         } else if(config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())){
             // Create empty AppTemplate
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
-            presenter.go(this, factory.appTemplate().as());
+
+            AppTemplate newAppTemplate = factory.appTemplate().as();
+            newAppTemplate.setName("New App");
+            ArgumentGroup argGrp = factory.argumentGroup().as();
+            argGrp.setName("");
+            argGrp.setLabel("New Group");
+            argGrp.setArguments(Lists.<Argument> newArrayList());
+            newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
+            presenter.go(this, newAppTemplate);
         }else {
             templateService.getAppTemplateForEdit(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
                 @Override
