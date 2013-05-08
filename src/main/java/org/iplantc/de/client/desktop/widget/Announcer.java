@@ -1,12 +1,11 @@
 package org.iplantc.de.client.desktop.widget;
 
-import com.google.gwt.core.client.GWT;
+import org.iplantc.core.resources.client.AnnouncerStyle;
+import org.iplantc.core.resources.client.IplantResources;
+
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -33,46 +32,13 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * displayed at a time. This is not very MVP design.
  */
 public final class Announcer {
-
-	/**
-	 * TODO externalize this interface
-	 */
-	interface Resources extends ClientBundle {
-		
-		interface Style extends CssResource {
-		
-			String closeButton();
-		
-			String closeButtonOver();
-			
-			String panel();
-			
-			@ClassName("multiple-panels")
-			String multiplePanels();
-			
-			String content();
-		
-		}		
-		
-		@Source("button_exit.png")
-		ImageResource closeButtonImg();
-		
-		@Source("button_exit_hover.png")
-		ImageResource closeButtonOverImg();
-		
-		@Source("Announcer.css")
-		Style style();
-		
-	}
 	
-	private static final Resources RESOURCES;
-	private static final Resources.Style STYLE;
+	private static final AnnouncerStyle STYLE;
 	private static final IconConfig CLOSER_CFG;
 	private static final int DEFAULT_TIMEOUT_ms;
 
 	static {
-		RESOURCES = GWT.create(Resources.class);
-		STYLE = RESOURCES.style();
+		STYLE = IplantResources.RESOURCES.getAnnouncerStyle();
 		STYLE.ensureInjected();
 		CLOSER_CFG = new IconConfig(STYLE.closeButton(), STYLE.closeButtonOver());
 		DEFAULT_TIMEOUT_ms = 10000;
