@@ -28,9 +28,9 @@ public class TaskBar extends ToolBar {
      * Creates a task bar.
      */
     public TaskBar() {
-        setHeight(30);
+        super(new TaskbarAppearance());
+        setHeight(31);
         setSpacing(-1);
-        getElement().getStyle().setProperty("border", "none");
         setPadding(new Padding(0));
 
     }
