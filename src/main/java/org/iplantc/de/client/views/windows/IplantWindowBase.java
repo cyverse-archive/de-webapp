@@ -131,10 +131,8 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         setMinimizable(false);
         setClosable(false);
 
-        getHeader().addStyleName(res.css().windowLayoutTitle3());
         getHeader().setIcon(IplantResources.RESOURCES.whitelogoSmall());
 
-        setStyleName(res.css().windowBody3());
         setShadow(false);
         setBodyBorder(false);
         setBorders(false);
