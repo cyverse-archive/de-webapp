@@ -1,27 +1,16 @@
 package org.iplantc.de.client.periodic;
 
-import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.de.client.events.NotificationCountUpdateEvent;
-import org.iplantc.de.client.notifications.services.MessageServiceFacade;
+import java.util.ArrayList;
+
 import org.iplantc.de.client.utils.TaskRunner;
 
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Polls for notification messages.
+ * Polls for messages from the backend.
  */
-public class MessagePoller implements Runnable {
-    private static MessagePoller instance;
-
-    /**
-     * Ensures only 1 MessagePoller at a time is added to the TaskRunner.
-     */
-    private boolean polling = false;
-
-    private MessagePoller() {
-    }
+public final class MessagePoller {
+	
+	private static MessagePoller instance;
 
     /**
      * Retrieve singleton instance.
@@ -36,12 +25,36 @@ public class MessagePoller implements Runnable {
         return instance;
     }
 
+    private final ArrayList<Runnable> tasks = new ArrayList<Runnable>();
+    
+    /**
+     * Ensures only 1 MessagePoller at a time is added to the TaskRunner.
+     */
+    private boolean polling = false;
+
+    private MessagePoller() {
+    }
+
+    /**
+     * Adds a task to be run periodically
+     * 
+     * @param task The task to run
+     */
+    public void addTask(final Runnable task) {
+    	tasks.add(task);
+    	if (polling) {
+    		TaskRunner.getInstance().addTask(task);
+    	}
+    }
+    
     /**
      * Starts polling.
      */
     public void start() {
         if (!polling) {
-            TaskRunner.getInstance().addTask(this);
+        	for (Runnable task: tasks) {
+        		TaskRunner.getInstance().addTask(task);
+        	}
             polling = true;
         }
     }
@@ -51,30 +64,11 @@ public class MessagePoller implements Runnable {
      */
     public void stop() {
         if (polling) {
-            TaskRunner.getInstance().removeTask(this);
+        	for (Runnable task: tasks) {
+        		TaskRunner.getInstance().removeTask(task);
+        	}
             polling = false;
         }
-    }
-
-    /**
-     * Polls for notification messages if notification polling is enabled.
-     */
-    @Override
-    public void run() {
-        new MessageServiceFacade().getUnSeenMessageCount(new AsyncCallback<String>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                // currently we do nothing on failure
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject obj = JsonUtil.getObject(result);
-                NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(Integer
-                        .parseInt(JsonUtil.getString(obj, "total")));
-                EventBus.getInstance().fireEvent(event);
-            }
-        });
     }
 
 }

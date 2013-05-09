@@ -4,6 +4,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+
+import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.core.client.util.Size;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
@@ -30,26 +51,6 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.sencha.gxt.core.client.dom.XDOM;
-import com.sencha.gxt.core.client.util.Size;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
@@ -177,14 +178,6 @@ public class DEPresenter implements DEView.Presenter {
         });
 
         initMessagePoller();
-        // Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-        //
-        // @Override
-        // public void execute() {
-        // doIntro();
-        // }
-        // });
-
     }
 
     private void addFeedbackButton() {
@@ -258,6 +251,7 @@ public class DEPresenter implements DEView.Presenter {
 
     private void initMessagePoller() {
         MessagePoller poller = MessagePoller.getInstance();
+        poller.addTask(new CountUnseenNotifications());
         poller.start();
     }
 
@@ -315,7 +309,7 @@ public class DEPresenter implements DEView.Presenter {
 		$doc.oncontextmenu = function() {
 			return enabled;
 		};
-    }-*/;
+	}-*/;
 
     @Override
     public void go(HasOneWidget container) {/* Do Nothing */

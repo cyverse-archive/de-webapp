@@ -27,4 +27,7 @@ public interface ConfigAutoBeanFactory extends AutoBeanFactory {
     AutoBean<SimpleDownloadWindowConfig> simpleDownloadWindowConfig();
 
     AutoBean<PipelineEditorWindowConfig> pipelineEditorWindowConfig();
+    
+    AutoBean<SystemMessagesWindowConfig> systemMessagesWindowConfig();
+    
 }

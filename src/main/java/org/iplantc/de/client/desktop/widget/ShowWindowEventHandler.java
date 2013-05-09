@@ -14,6 +14,7 @@ import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFi
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.ShowAboutWindowEvent.ShowAboutWindowEventHandler;
+import org.iplantc.de.client.events.ShowSystemMessagesEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent.WindowShowRequestEventHandler;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
@@ -24,9 +25,11 @@ import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
 
 import com.google.web.bindery.autobean.shared.Splittable;
 
-final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler,
- CreateNewAppEventHandler, CreateNewWorkflowEventHandler, WindowShowRequestEventHandler,
-        RunAppEventHandler, EditAppEventHandler, EditWorkflowEventHandler {
+final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, 
+		ShowFilePreviewEventHandler, CreateNewAppEventHandler, CreateNewWorkflowEventHandler, 
+		WindowShowRequestEventHandler, RunAppEventHandler, EditAppEventHandler, 
+		EditWorkflowEventHandler, ShowSystemMessagesEvent.Handler {
+	
     private final Desktop desktop;
 
     ShowWindowEventHandler(Desktop desktop) {
@@ -43,8 +46,6 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
         FileViewerWindowConfig fileViewerWindowConfig = ConfigFactory.fileViewerWindowConfig(event.getFile(), false);
         desktop.showWindow(fileViewerWindowConfig);
     }
-
-
 
     @Override
     public void onWindowShowRequest(WindowShowRequestEvent event) {
@@ -80,4 +81,10 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowF
         config.setServiceWorkflowJson(serviceWorkflowJson);
         desktop.showWindow(config);
     }
+
+	@Override
+	public void showSystemMessages(final ShowSystemMessagesEvent event) {
+		desktop.showWindow(ConfigFactory.systemMessagesWindowConfig());
+	}
+	
 }
