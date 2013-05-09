@@ -1,19 +1,5 @@
 /** Add css rules here for your application. */
 
-.iplantc-portal-component {
-	background-color: transparent;
-}
-
-.iplantc-header-actions {
-	position: fixed;
-	top: 15px;
-	right: 40px;
-}
-
-.iplantc-logo {
-	cursor: pointer;
-}
-
 .iplantc-about-pad-text {
 	font-size: 12px;
 	padding: 5px 2px 5px 2px;
@@ -40,13 +26,6 @@ div.iplantc-about-pad-text p {
 
 .iplantc-background {
 	background: url(./images/background.png) repeat-x top center !important;
-}
-
-.iplantc-centerlogo {
-	background-image: url('images/iplant_logo.png');
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: transparent;
 }
 
 .iplantc-blue {
@@ -88,24 +67,13 @@ html,body {
 	height: 100%;
 }
 
-.x-window-body p,.x-panel-body p {
-	padding: 10px;
-	margin: 0;
-}
 
-
-
-.x-window-header-text {
-	cursor: default;
-}
 
 /** Fix for IE not displaying shadows correctly: don't show them at all */
 .x-ie-shadow {
 	width: 0px !important;
 	height: 0px !important;
 }
-
-
 
 .x-tool-collapse {
 	background-image: url('./images/accordian/arrow_down_unhover.png');
@@ -194,15 +162,6 @@ html,body {
 	background-image: url('./images/button_restore_hover.png');
 }
 
-.x-menu {
-	border: none !important;
-	outline: none !important;
-}
-
-a.x-menu-item {
-	color: black !important;
-}
-
 
 .de_header_menu_body {
 	background-color: white; 
@@ -250,17 +209,6 @@ a.x-menu-item {
 .de_notification_indicator_highlight {
 	background-color: #DB6619;
 	color: white;
-}
-
-.x-unselectable-single {
-	user-select: text;
-	-moz-user-select: text;
-	-khtml-user-select: text;
-	-webkit-user-select: text;
-}
-
-.disabled_app_background {
-	background-color: #DCDCDC !important;
 }
 
 .tag {

@@ -24,8 +24,6 @@ public interface DeCssResources extends CssResource {
 
     String delete_button();
 
-    String disabled_app_background();
-
     String done_button();
 
     String form_prompt();
@@ -47,20 +45,11 @@ public interface DeCssResources extends CssResource {
     @ClassName("iplantc-catalog-shortcut")
     String iplantcCatalogShortcut();
 
-    @ClassName("iplantc-centerlogo")
-    String iplantcCenterlogo();
-
     @ClassName("iplantc-green")
     String iplantcGreen();
 
     @ClassName("iplantc-green-highlight")
     String iplantcGreenHighlight();
-
-    @ClassName("iplantc-header-actions")
-    String iplantcHeaderActions();
-
-    @ClassName("iplantc-logo")
-    String iplantcLogo();
 
     @ClassName("iplantc-myanalysis-shortcut")
     String iplantcMyanalysisShortcut();
@@ -70,9 +59,6 @@ public interface DeCssResources extends CssResource {
 
     @ClassName("iplantc-orange")
     String iplantcOrange();
-
-    @ClassName("iplantc-portal-component")
-    String iplantcPortalComponent();
 
     @ClassName("iplantc-tan")
     String iplantcTan();
@@ -95,15 +81,6 @@ public interface DeCssResources extends CssResource {
 
     @ClassName("x-ie-shadow")
     String xIeShadow();
-
-    @ClassName("x-menu")
-    String xMenu();
-
-    @ClassName("x-menu-item")
-    String xMenuItem();
-
-    @ClassName("x-panel-body")
-    String xPanelBody();
 
     @ClassName("x-tool-closewindow")
     String xToolClosewindow();
@@ -146,15 +123,6 @@ public interface DeCssResources extends CssResource {
 
     @ClassName("x-tool-restorewindow-hover")
     String xToolRestorewindowHover();
-
-    @ClassName("x-unselectable-single")
-    String xUnselectableSingle();
-
-    @ClassName("x-window-body")
-    String xWindowBody();
-
-    @ClassName("x-window-header-text")
-    String xWindowHeaderText();
 
     @ClassName("feedback_rotate")
     String rotate90();
