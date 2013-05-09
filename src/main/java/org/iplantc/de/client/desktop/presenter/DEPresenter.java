@@ -192,7 +192,6 @@ public class DEPresenter implements DEView.Presenter {
         resources.css().ensureInjected();
         feedbackBtn = new TextButton(I18N.DISPLAY.feedback());
         feedbackBtn.setIcon(IplantResources.RESOURCES.feedback());
-        feedbackBtn.setWidth(40);
         feedbackBtn.addSelectHandler(new SelectHandler() {
 
             @Override
@@ -208,8 +207,8 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void positionFButton(Size s) {
-        int left = s.getWidth() - 35 + XDOM.getBodyScrollLeft();
-        feedbackBtn.getElement().setLeftTop(left, s.getHeight() / 2);
+        int left = s.getWidth() - 50 + XDOM.getBodyScrollLeft();
+        feedbackBtn.setPosition(left, s.getHeight() / 2);
     }
 
     private Size getViewPortSize() {
