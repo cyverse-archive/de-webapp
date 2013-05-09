@@ -83,8 +83,6 @@ public interface DeCssResources extends CssResource {
 
     String remove_button();
 
-    String request_tool_installation();
-
     @ClassName("search-item")
     String searchItem();
 
@@ -94,10 +92,6 @@ public interface DeCssResources extends CssResource {
     String tagRemove();
 
     String unshare_button();
-
-    String windowBody3();
-
-    String windowLayoutTitle3();
 
     @ClassName("x-ie-shadow")
     String xIeShadow();
