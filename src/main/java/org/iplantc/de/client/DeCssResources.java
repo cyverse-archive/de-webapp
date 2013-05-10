@@ -45,6 +45,9 @@ public interface DeCssResources extends CssResource {
     @ClassName("iplantc-catalog-shortcut")
     String iplantcCatalogShortcut();
 
+    @ClassName("iplantc-catalog-shortcut-hover")
+    String iplantcCatalogShortcutHover();
+
     @ClassName("iplantc-green")
     String iplantcGreen();
 
@@ -56,6 +59,12 @@ public interface DeCssResources extends CssResource {
 
     @ClassName("iplantc-mydata-shortcut")
     String iplantcMydataShortcut();
+
+    @ClassName("iplantc-myanalysis-shortcut-hover")
+    String iplantcMyanalysisShortcutHover();
+
+    @ClassName("iplantc-mydata-shortcut-hover")
+    String iplantcMydataShortcutHover();
 
     @ClassName("iplantc-orange")
     String iplantcOrange();

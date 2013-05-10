@@ -27,9 +27,9 @@ public abstract class DesktopBuilder {
      */
     protected abstract void buildShortcuts();
 
-    protected void addShortcut(String id, String index, String caption, String action,
-            WindowConfig config) {
-        shortcuts.add(new ShortcutDesc(id, index, caption, action, config));
+    protected void addShortcut(String id, String hoverStyle, String index, String caption,
+            String action, WindowConfig config) {
+        shortcuts.add(new ShortcutDesc(id, hoverStyle, index, caption, action, config));
     }
 
     /**

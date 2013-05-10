@@ -1,5 +1,4 @@
 /** Add css rules here for your application. */
-
 .iplantc-about-pad-text {
 	font-size: 12px;
 	padding: 5px 2px 5px 2px;
@@ -11,17 +10,34 @@ div.iplantc-about-pad-text p {
 	margin: 0px;
 }
 
-
 .iplantc-mydata-shortcut {
-	background-image: url(./images/shortcut_data.png);
+	background-image: url(./images/data.png);
+	border: none !important;
 }
 
 .iplantc-myanalysis-shortcut {
-	background-image: url(./images/shortcut_analyses.png);
+	background-image: url(./images/analyses.png);
+	border: none !important;
 }
 
 .iplantc-catalog-shortcut {
-	background-image: url(./images/shortcut_apps.png);
+	background-image: url(./images/apps.png);
+	border: none !important;
+}
+
+.iplantc-mydata-shortcut-hover {
+	background-image: url(./images/data_hover.png);
+	border: none !important;
+}
+
+.iplantc-myanalysis-shortcut-hover {
+	background-image: url(./images/analyses_hover.png);
+	border: none !important;
+}
+
+.iplantc-catalog-shortcut-hover {
+	background-image: url(./images/apps_hover.png);
+	border: none !important;
 }
 
 .iplantc-background {
@@ -59,15 +75,14 @@ html,body {
 	font-size: 12px;
 	font-family: Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro",
 		Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L",
-		Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+		Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial,
+		sans-serif !important;
 	margin: 0;
 	padding: 0;
 	border: 0 none;
 	overflow: hidden;
 	height: 100%;
 }
-
-
 
 /** Fix for IE not displaying shadows correctly: don't show them at all */
 .x-ie-shadow {
@@ -162,9 +177,8 @@ html,body {
 	background-image: url('./images/button_restore_hover.png');
 }
 
-
 .de_header_menu_body {
-	background-color: white; 
+	background-color: white;
 	outline: none;
 }
 
@@ -178,7 +192,6 @@ html,body {
 .de_header_menu_hyperlink_hover {
 	background-color: #ededed;
 }
-
 
 .de_header_menu_label_hover {
 	cursor: pointer;
@@ -236,7 +249,7 @@ html,body {
 	color: #555555;
 	padding: 3px 10px;
 	white-space: normal;
-	cursor:default;
+	cursor: default;
 }
 
 .search-item h3 {
@@ -295,7 +308,7 @@ html,body {
 
 .notification_context {
 	text-decoration: underline;
-	cursor: pointer; 
+	cursor: pointer;
 }
 
 .new_notification {
@@ -306,21 +319,16 @@ html,body {
 	background-image: url('./images/help.png');
 	height: 16px;
 	width: 16px;
-	vertical-align:top;
-	}
-	
+	vertical-align: top;
+}
+
 .feedback_rotate {
-
-/* Safari */
--webkit-transform: rotate(-90deg);
-
-/* Firefox */
--moz-transform: rotate(-90deg);
-
-/* IE */
--ms-transform: rotate(-90deg);
-
-/* Opera */
--o-transform: rotate(-90deg);
-
+	/* Safari */
+	-webkit-transform: rotate(-90deg);
+	/* Firefox */
+	-moz-transform: rotate(-90deg);
+	/* IE */
+	-ms-transform: rotate(-90deg);
+	/* Opera */
+	-o-transform: rotate(-90deg);
 }

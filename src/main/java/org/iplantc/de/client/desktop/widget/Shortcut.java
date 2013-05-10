@@ -5,10 +5,20 @@
  */
 package org.iplantc.de.client.desktop.widget;
 
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.models.ShortcutDesc;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
+import com.extjs.gxt.ui.client.event.Events;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Event;
 import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.event.AddEvent.AddHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
@@ -19,15 +29,17 @@ public class Shortcut extends IconButton {
     private final String action;
     private final String tag;
     private final WindowConfig windowConfig;
+    DeResources res = GWT.create(DeResources.class);
 
     /**
      * Creates a new shortcut.
      */
-    public Shortcut(ShortcutDesc desc, SelectHandler handler) {
+    public Shortcut(final ShortcutDesc desc, SelectHandler handler) {
         super(desc.getId());
         setId(desc.getId());
         setSize("64px", "64px");
         setToolTip(desc.getCaption());
+
         this.windowConfig = desc.getWindowConfig();
 
         this.action = desc.getAction();
@@ -38,6 +50,22 @@ public class Shortcut extends IconButton {
         getElement().setAttribute("data-intro", desc.getCaption());
         getElement().setAttribute("data-position", "right");
         setBorders(false);
+        addHandler(new MouseOverHandler() {
+
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                changeStyle(desc.getHoverStyle());
+            }
+        }, MouseOverEvent.getType());
+
+        addHandler(new MouseOutHandler() {
+
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                changeStyle(desc.getId());
+            }
+        }, MouseOutEvent.getType());
+
     }
 
     public WindowConfig getWindowConfig() {

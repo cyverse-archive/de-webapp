@@ -10,14 +10,17 @@ import org.iplantc.de.client.views.windows.configs.WindowConfig;
  */
 public class ShortcutDesc {
     private final String id;
+    private final String hoverStyle;
     private final String caption;
     private String action;
     private String tag;
     private String index;
     private final WindowConfig config;
 
-    public ShortcutDesc(String id, String index, String caption, String action, WindowConfig config) {
+    public ShortcutDesc(String id, String hoverStyle, String index, String caption, String action,
+            WindowConfig config) {
         this.id = id;
+        this.hoverStyle = hoverStyle;
         this.caption = caption;
         if (action != null) {
             this.action = action;
@@ -78,5 +81,12 @@ public class ShortcutDesc {
      */
     public void setIndex(String index) {
         this.index = index;
+    }
+
+    /**
+     * @return the hoverStyle
+     */
+    public String getHoverStyle() {
+        return hoverStyle;
     }
 }
