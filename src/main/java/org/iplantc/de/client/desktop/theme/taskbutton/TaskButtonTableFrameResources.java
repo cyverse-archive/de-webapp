@@ -1,8 +1,6 @@
 /**
- * Sencha GXT 3.0.1 - Sencha for GWT
- * Copyright(c) 2007-2012, Sencha, Inc.
- * licensing@sencha.com
- *
+ * Sencha GXT 3.0.1 - Sencha for GWT Copyright(c) 2007-2012, Sencha, Inc. licensing@sencha.com
+ * 
  * http://www.sencha.com/products/gxt/license/
  */
 package org.iplantc.de.client.desktop.theme.taskbutton;
@@ -15,91 +13,91 @@ import com.sencha.gxt.theme.base.client.frame.TableFrame.TableFrameResources;
 import com.sencha.gxt.theme.base.client.frame.TableFrame.TableFrameStyle;
 
 public interface TaskButtonTableFrameResources extends TableFrameResources, ClientBundle {
-  /**
-   * Provides unique scoping for task button styles.
-   */
-  public interface TaskButtonTableFrameStyle extends TableFrameStyle {
-  }
+    /**
+     * Provides unique scoping for task button styles.
+     */
+    public interface TaskButtonTableFrameStyle extends TableFrameStyle {
+    }
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource background();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource background();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource backgroundOverBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundOverBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource backgroundPressedBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundPressedBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  @Override
-  ImageResource bottomBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    @Override
+    ImageResource bottomBorder();
 
-  @Override
-  ImageResource bottomLeftBorder();
+    @Override
+    ImageResource bottomLeftBorder();
 
-  ImageResource bottomLeftOverBorder();
+    ImageResource bottomLeftOverBorder();
 
-  ImageResource bottomLeftPressedBorder();
+    ImageResource bottomLeftPressedBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource bottomOverBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource bottomOverBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource bottomPressedBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource bottomPressedBorder();
 
-  @Override
-  ImageResource bottomRightBorder();
+    @Override
+    ImageResource bottomRightBorder();
 
-  ImageResource bottomRightOverBorder();
+    ImageResource bottomRightOverBorder();
 
-  ImageResource bottomRightPressedBorder();
+    ImageResource bottomRightPressedBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-  @Override
-  ImageResource leftBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    @Override
+    ImageResource leftBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-  ImageResource leftOverBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource leftOverBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-  ImageResource leftPressedBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource leftPressedBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-  @Override
-  ImageResource rightBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    @Override
+    ImageResource rightBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-  ImageResource rightOverBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource rightOverBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-  ImageResource rightPressedBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
+    ImageResource rightPressedBorder();
 
-  @Source({"com/sencha/gxt/theme/base/client/frame/TableFrame.css", "TaskButtonTableFrame.css"})
-  @Override
-  TaskButtonTableFrameStyle style();
+    @Source({"com/sencha/gxt/theme/base/client/frame/TableFrame.css", "TaskButtonTableFrame.css"})
+    @Override
+    TaskButtonTableFrameStyle style();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  @Override
-  ImageResource topBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    @Override
+    ImageResource topBorder();
 
-  @Override
-  ImageResource topLeftBorder();
+    @Override
+    ImageResource topLeftBorder();
 
-  ImageResource topLeftOverBorder();
+    ImageResource topLeftOverBorder();
 
-  ImageResource topLeftPressedBorder();
+    ImageResource topLeftPressedBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource topOverBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource topOverBorder();
 
-  @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-  ImageResource topPressedBorder();
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource topPressedBorder();
 
-  @Override
-  ImageResource topRightBorder();
+    @Override
+    ImageResource topRightBorder();
 
-  ImageResource topRightOverBorder();
+    ImageResource topRightOverBorder();
 
-  ImageResource topRightPressedBorder();
+    ImageResource topRightPressedBorder();
 
 }
