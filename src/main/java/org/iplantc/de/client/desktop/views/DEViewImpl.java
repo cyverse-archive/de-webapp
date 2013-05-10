@@ -30,6 +30,7 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.SeparatorMenuItem;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import org.iplantc.core.resources.client.DEHeaderStyle;
 import org.iplantc.core.resources.client.IplantResources;
@@ -150,17 +151,17 @@ public class DEViewImpl implements DEView {
         HtmlLayoutContainer c = new HtmlLayoutContainer(templates.getTemplate());
         c.add(buildNotificationMenu(I18N.DISPLAY.notifications()), new HtmlData(".cell1"));
         c.add(buildActionsMenu(), new HtmlData(".cell2"));
-        c.add(lblNotifications, new HtmlData(".cell3"));
+        c.add(new HTML("&nbsp;&nbsp;"), new HtmlData(".cell3"));
         return c;
 
     }
 
     public interface HtmlLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\" data-intro=\"You will get all notifications here!\" data-step='1' data-position=\"left\"/><td class=\"cell3\"><td class=\"cell2\" data-intro=\"Preferences,help and support can be accessed from here!\" data-step='2' data-position=\"left\"/></tr></tbody></table>")
+        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\" data-intro=\"You will get all notifications here!\" data-step='1' data-position=\"left\"/><td class=\" cell3\"/><td class=\"cell2\" data-intro=\"Preferences,help and support can be accessed from here!\" data-step='2' data-position=\"left\"/></tr></tbody></table>")
         SafeHtml getTemplate();
     }
 
-    private TextButton buildNotificationMenu(String menuHeaderText) {
+    private ToolBar buildNotificationMenu(String menuHeaderText) {
         lblNotifications = new NotificationIndicator(0);
         lblNotifications.ensureDebugId("lblNotifyCnt");
 
@@ -183,11 +184,14 @@ public class DEViewImpl implements DEView {
             }
         });
         button.setMenu(notificationsView);
-
-        return button;
+        ToolBar bar = new ToolBar();
+        bar.setPixelSize(120, 30);
+        bar.add(button);
+        bar.add(lblNotifications);
+        return bar;
     }
 
-    private TextButton buildActionsMenu() {
+    private ToolBar buildActionsMenu() {
         final TextButton button = new TextButton();
         button.setHeight(18);
         button.setIcon(IplantResources.RESOURCES.userMenu());
@@ -209,7 +213,10 @@ public class DEViewImpl implements DEView {
             }
         });
 
-        return button;
+        ToolBar bar = new ToolBar();
+        bar.setPixelSize(50, 30);
+        bar.add(button);
+        return bar;
     }
 
     private Menu buildUserMenu() {
@@ -231,7 +238,7 @@ public class DEViewImpl implements DEView {
         userMenu.add(new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-            	EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
+                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
             }
         }));
 
@@ -338,6 +345,6 @@ public class DEViewImpl implements DEView {
         for (WindowState ws : windowStates) {
             desktop.restoreWindow(ws);
         }
-   }
+    }
 
 }
