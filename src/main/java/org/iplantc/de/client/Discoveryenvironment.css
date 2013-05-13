@@ -41,7 +41,7 @@ div.iplantc-about-pad-text p {
 }
 
 .iplantc-background {
-	background: url(./images/background.png) repeat-x top center !important;
+	background: url(./images/background.png) repeat-x top center,url(./images/de_desktop_background_repeat-all.png) !important;
 }
 
 .iplantc-blue {

@@ -9,7 +9,7 @@
 
 .x-toolbar-mark {
 	border-width: 0 0 1px 0;
-	border: 1px solid #d0d0d0;
+	border: 1px solid #d0d0d0 ;
 	background: rgb(255, 255, 255);  /*Old browsers */
 	background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%,
 		rgba(241, 241, 241, 1) 50%, rgba(225, 225, 225, 1) 51%,
