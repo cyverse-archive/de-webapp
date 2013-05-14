@@ -90,7 +90,7 @@
    </replace-with>
    
    <replace-with class="org.iplantc.de.client.services.impl.AppTemplateServicesImpl">
-      <when-type-is class="org.iplantc.core.uiapps.integration.client.services.AppTemplateServices" />
+      <when-type-is class="org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices" />
    </replace-with>
    
 	<!-- Specify the app entry point class.                         -->

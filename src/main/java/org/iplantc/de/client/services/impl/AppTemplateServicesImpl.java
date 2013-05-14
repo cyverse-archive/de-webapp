@@ -1,8 +1,12 @@
 package org.iplantc.de.client.services.impl;
 
-import org.iplantc.core.uiapps.integration.client.services.AppTemplateServices;
+import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uiapps.integration.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
+import org.iplantc.core.uiapps.widgets.client.models.Argument;
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
+import org.iplantc.core.uiapps.widgets.client.models.JobExecution;
+import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.HasId;
@@ -10,11 +14,13 @@ import org.iplantc.de.shared.SharedServiceFacade;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 public class AppTemplateServicesImpl implements AppTemplateServices {
 
@@ -80,6 +86,36 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         Splittable split = appTemplateToSplittable(at);
         ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, 
                 address, split.getPayload());
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    @Override
+    public void launchAnalysis(AppTemplate at, JobExecution je, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() 
+                + "workspaces/" + je.getWorkspaceId() + "/newexperiment"; //$NON-NLS-1$
+        Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(je));
+        Splittable configSplit = StringQuoter.createSplittable();
+        for (ArgumentGroup ag : at.getArgumentGroups()) {
+            for (Argument arg : ag.getArguments()) {
+                if (arg.getValue() != null) {
+                    if (arg.getValue().isKeyed()) {
+                        for(String key : arg.getValue().getPropertyKeys()){
+                            if(key.equals("id")){
+                                // JDS When we encounter anything has an "ID" key, we use the value of that key instead of the object.
+                                // For example, we do not need to pass in an entire "Folder" object, we just need the path.
+                                arg.getValue().get("id").assign(configSplit, arg.getId());
+                            }
+                        }
+                    } else {
+                        arg.getValue().assign(configSplit, arg.getId());
+                    }
+                }
+            }
+        }
+        configSplit.assign(split, "config");
+        GWT.log("LaunchAnalysis Json:\n" + JsonUtil.prettyPrint(split));
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.PUT, address, split.getPayload());
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 

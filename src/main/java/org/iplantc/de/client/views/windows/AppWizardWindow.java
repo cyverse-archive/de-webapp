@@ -1,7 +1,9 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uiapps.integration.client.services.AppTemplateServices;
+import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent;
+import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent.AnalysisLaunchEventHandler;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
+import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
@@ -13,7 +15,7 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AppWizardWindow extends IplantWindowBase {
+public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchEventHandler {
 
     private final class AppTemplateCallback implements AsyncCallback<AppTemplate> {
         private final AppWizardView.Presenter presenter;
@@ -46,6 +48,7 @@ public class AppWizardWindow extends IplantWindowBase {
         setBorders(false);
 
         presenter = GWT.create(AppWizardView.Presenter.class);
+        presenter.addAnalysisLaunchHandler(this);
         appId = config.getAppId();
         init(presenter, config);
     }
@@ -74,6 +77,14 @@ public class AppWizardWindow extends IplantWindowBase {
         AppWizardConfig config = ConfigFactory.appWizardConfig(appId);
         config.setAppTemplate(presenter.getAppTemplate());
         return createWindowState(config);
+    }
+
+    @Override
+    public void onAnalysisLaunch(AnalysisLaunchEvent analysisLaunchEvent) {
+        if (analysisLaunchEvent.getAppTemplateId().getId().equalsIgnoreCase(appId)) {
+            hide();
+            // TODO JDS Need to kick off notification
+        }
     }
 
 }
