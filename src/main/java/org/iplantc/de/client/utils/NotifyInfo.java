@@ -1,5 +1,6 @@
 package org.iplantc.de.client.utils;
 
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 
 import com.extjs.gxt.ui.client.util.Params;
@@ -39,16 +40,12 @@ public class NotifyInfo {
      * @param text represents the message text to display.
      */
     public static void display(final String title, final String text) {
-        doDisplay(title, text, null);
-    }
-
-    private static void doDisplay(final String title, final String text, Params parameters) {
-        makeInfoCall(title, text, parameters);
+        IplantAnnouncer.schedule(text);
     }
 
     private static void doDisplay(NotificationHelper.Category category, final String title,
             final String text, Params parameters) {
-        makeInfoCall(title, text, parameters);
+        IplantAnnouncer.schedule(text);
 
         includeAsNotification(category, text, parameters);
     }
@@ -63,14 +60,6 @@ public class NotifyInfo {
             // mgr.add(category, new Notification(text));
         } else {
             // mgr.add(category, new Notification(Format.substitute(text, parameters)));
-        }
-    }
-
-    private static void makeInfoCall(final String title, final String text, Params parameters) {
-        if (parameters == null) {
-            DEInfo.display(title, text);
-        } else {
-            DEInfo.display(title, text, parameters);
         }
     }
 }
