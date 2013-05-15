@@ -7,6 +7,7 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.shared.SharedDataApiServiceFacade;
 import org.iplantc.de.shared.SharedServiceFacade;
 import org.iplantc.de.shared.SharedUnsecuredServiceFacade;
+import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.core.client.GWT;
@@ -44,6 +45,13 @@ public class FileEditorServiceFacadeImpl implements FileEditorServiceFacade {
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
         SharedUnsecuredServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    @Override
+    public void getDataChunk(String url, JSONObject body, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + url;
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, body.toString());
+        SharedDataApiServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
     @Override
