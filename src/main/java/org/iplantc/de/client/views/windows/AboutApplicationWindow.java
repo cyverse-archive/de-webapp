@@ -1,59 +1,50 @@
 package org.iplantc.de.client.views.windows;
 
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.de.client.Constants;
+import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
-import org.iplantc.de.client.factories.WindowConfigFactory;
 import org.iplantc.de.client.models.AboutApplicationData;
+import org.iplantc.de.client.models.DeModelAutoBeanFactory;
+import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
-import com.extjs.gxt.ui.client.util.Format;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
  * Models a user interface for "about" application information.
  * 
  * @author lenards
  */
-public class AboutApplicationWindow extends IPlantWindow {
+public class AboutApplicationWindow extends IplantWindowBase {
     private AboutApplicationData model;
+    private DeResources res;
 
-    private Label lblNSFStatement;
-
-    /**
-     * Constructs an instance given a unique identifier.
-     * 
-     * @param tag string that serves as an identifier, or window handle.
-     */
-    public AboutApplicationWindow(String tag) {
-        super(tag);
-
-        setLayout(new RowLayout());
-        setId(tag);
-        setHeading(I18N.DISPLAY.aboutDiscoveryEnvironment());
+    public AboutApplicationWindow(AboutWindowConfig config) {
+        super("");
+        setSize("320", "260");
         setResizable(false);
-        setAutoHeight(true);
-        initComponents();
+        setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
         executeServiceCall();
-    }
-
-    private void initComponents() {
-        lblNSFStatement = new Label(I18N.DISPLAY.nsfProjectText());
+        res = GWT.create(DeResources.class);
     }
 
     private void executeServiceCall() {
         AboutApplicationServiceFacade.getInstance().getAboutInfo(new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                model = new AboutApplicationData(result);
+                DeModelAutoBeanFactory factory = GWT.create(DeModelAutoBeanFactory.class);
+                model = AutoBeanCodex.decode(factory, AboutApplicationData.class, result).as();
                 compose();
             }
 
@@ -65,12 +56,13 @@ public class AboutApplicationWindow extends IPlantWindow {
     }
 
     private void compose() {
-        Image logo = new Image(Constants.CLIENT.iplantAboutImage());
-
-        add(logo);
-        add(lblNSFStatement);
-        add(buildDetailsContainer());
-        layout();
+        VerticalLayoutContainer vlc = new VerticalLayoutContainer();
+        vlc.setBorders(true);
+        vlc.setStyleName(res.css().iplantcAboutPadText());
+        Image logo = new Image(IplantResources.RESOURCES.iplantAbout().getSafeUri());
+        vlc.add(logo);
+        vlc.add(buildDetailsContainer());
+        add(vlc);
     }
 
     /**
@@ -84,33 +76,21 @@ public class AboutApplicationWindow extends IPlantWindow {
     private ContentPanel buildDetailsContainer() {
         ContentPanel pnlDetails = new ContentPanel();
         pnlDetails.setHeaderVisible(false);
-        pnlDetails.setBodyStyleName("iplantc-about-pad-text"); //$NON-NLS-1$
 
         HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
-                model.getBuildNumber(), model.getUserAgent()));
+                model.getBuildNumber(), Window.Navigator.getUserAgent(),
+                I18N.DISPLAY.projectCopyrightStatement(), I18N.DISPLAY.nsfProjectText()));
         pnlDetails.add(txt);
 
         return pnlDetails;
     }
 
     private String getAboutTemplate() {
-        return "<p>Release: {0}</p><p> Build #: {1}</p><p>User Agent: {2}</p>"; //$NON-NLS-1$
+        return "<p style='font-style:italic;'> {4} </p><p>Release: {0}</p><p> Build #: {1}</p><p>User Agent: {2}</p> <p style='font-weight:700'> {3}</p>"; //$NON-NLS-1$
     }
 
     @Override
-    public JSONObject getWindowState() {
-        // Build window config
-        JSONObject configData = config;
-        if (configData == null) {
-            configData = new JSONObject();
-        }
-
-        storeWindowViewState(configData);
-
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.myAboutTag(), configData);
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-
-        return dispatcher.getDispatchJson(Constants.CLIENT.myAboutTag(), ActionType.DISPLAY_WINDOW);
+    public WindowState getWindowState() {
+        return createWindowState(ConfigFactory.aboutWindowConfig());
     }
 }

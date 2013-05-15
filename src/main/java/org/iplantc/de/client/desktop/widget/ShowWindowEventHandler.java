@@ -1,0 +1,90 @@
+package org.iplantc.de.client.desktop.widget;
+
+import org.iplantc.core.uiapps.client.events.CreateNewAppEvent;
+import org.iplantc.core.uiapps.client.events.CreateNewAppEvent.CreateNewAppEventHandler;
+import org.iplantc.core.uiapps.client.events.EditAppEvent;
+import org.iplantc.core.uiapps.client.events.EditAppEvent.EditAppEventHandler;
+import org.iplantc.core.uiapps.client.events.EditWorkflowEvent;
+import org.iplantc.core.uiapps.client.events.EditWorkflowEvent.EditWorkflowEventHandler;
+import org.iplantc.core.uiapps.client.events.RunAppEvent;
+import org.iplantc.core.uiapps.client.events.RunAppEvent.RunAppEventHandler;
+import org.iplantc.core.uiapps.client.events.handlers.CreateNewWorkflowEventHandler;
+import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
+import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
+import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.events.ShowAboutWindowEvent;
+import org.iplantc.de.client.events.ShowAboutWindowEvent.ShowAboutWindowEventHandler;
+import org.iplantc.de.client.events.ShowSystemMessagesEvent;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.events.WindowShowRequestEvent.WindowShowRequestEventHandler;
+import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
+import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
+import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
+
+import com.google.web.bindery.autobean.shared.Splittable;
+
+final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, 
+		ShowFilePreviewEventHandler, CreateNewAppEventHandler, CreateNewWorkflowEventHandler, 
+		WindowShowRequestEventHandler, RunAppEventHandler, EditAppEventHandler, 
+		EditWorkflowEventHandler, ShowSystemMessagesEvent.Handler {
+	
+    private final Desktop desktop;
+
+    ShowWindowEventHandler(Desktop desktop) {
+        this.desktop = desktop;
+    }
+
+    @Override
+    public void showAboutWindowRequested(ShowAboutWindowEvent event) {
+        desktop.showWindow(ConfigFactory.aboutWindowConfig());
+    }
+
+    @Override
+    public void showFilePreview(ShowFilePreviewEvent event) {
+        FileViewerWindowConfig fileViewerWindowConfig = ConfigFactory.fileViewerWindowConfig(event.getFile(), false);
+        desktop.showWindow(fileViewerWindowConfig);
+    }
+
+    @Override
+    public void onWindowShowRequest(WindowShowRequestEvent event) {
+        desktop.showWindow(event.getWindowConfig(), event.updateWithConfig());
+    }
+
+    @Override
+    public void onRunAppActionInitiated(RunAppEvent event) {
+        AppWizardConfig config = ConfigFactory.appWizardConfig(event.getAppToRun().getId());
+        desktop.showWindow(config);
+    }
+
+    @Override
+    public void createNewApp(CreateNewAppEvent event) {
+        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig(Constants.CLIENT.newAppTemplate()));
+    }
+
+    @Override
+    public void onEditApp(EditAppEvent event) {
+        AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig(event.getAppToEdit().getId());
+        desktop.showWindow(config);
+    }
+
+    @Override
+    public void createNewWorkflow() {
+        desktop.showWindow(ConfigFactory.workflowIntegrationWindowConfig());
+    }
+
+    @Override
+    public void onEditWorkflow(EditWorkflowEvent event) {
+        PipelineEditorWindowConfig config = ConfigFactory.workflowIntegrationWindowConfig();
+        Splittable serviceWorkflowJson = event.getServiceWorkflowJson();
+        config.setServiceWorkflowJson(serviceWorkflowJson);
+        desktop.showWindow(config);
+    }
+
+	@Override
+	public void showSystemMessages(final ShowSystemMessagesEvent event) {
+		desktop.showWindow(ConfigFactory.systemMessagesWindowConfig());
+	}
+	
+}

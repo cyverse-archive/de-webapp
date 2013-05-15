@@ -21,20 +21,6 @@ public interface DEClientConstants extends CommonUiConstants {
     String fileDownloadServlet();
 
     /**
-     * The path to the iPlant logo used in heading of web application.
-     * 
-     * @return a string representation of the path to iPlant logo
-     */
-    String iplantLogo();
-
-    /**
-     * The path to the iPlant image used in the "About Discovery Environment" window.
-     * 
-     * @return a string representation of the path to iPlant image used in "About."
-     */
-    String iplantAboutImage();
-
-    /**
      * The tag used by the window manager to identify the My Data window.
      * 
      * @return a string representing the handle for the My Data window
@@ -42,60 +28,11 @@ public interface DEClientConstants extends CommonUiConstants {
     String myDataTag();
 
     /**
-     * The tag used by the window manager to identify the My Analysis window.
-     * 
-     * @return a string representing the handle for the My Analyis window
-     */
-    String myAnalysisTag();
-
-    /**
-     * The tag used by the window manager to identify the My Notifications window.
-     * 
-     * @return a string representing the handle for My Notifications window
-     */
-    String myNotifyTag();
-
-    /**
      * The tag use by the window manager to identify the Help - User Manual window.
      * 
      * @return a string representing the handle for the Help - User Manual window
      */
     String myHelpTag();
-
-    /**
-     * The tag use by the window manager to identify the About Discovery Environment window.
-     * 
-     * @return a string representing the handle for the About Discovery Environment window
-     */
-    String myAboutTag();
-
-    /**
-     * The tag used by the window manager to identify the File Editor window.
-     * 
-     * @return a string representing the handle for the File Editor window
-     */
-    String fileEditorTag();
-
-    /**
-     * The tag used by the window manager to identify the wizard window.
-     * 
-     * @return a string representing the handle for the wizard window
-     */
-    String wizardTag();
-
-    /**
-     * The default tag prefix used by the window manager when creating a "handle" for a window.
-     * 
-     * @return a string representing the default prefix used for a window
-     */
-    String windowTag();
-
-    /**
-     * The history token for the logout operation.
-     * 
-     * @return a string representing the history token for logout
-     */
-    String logoutTag();
 
     /**
      * Width for desktop shortcut width
@@ -140,13 +77,6 @@ public interface DEClientConstants extends CommonUiConstants {
     String deHelpFile();
 
     /**
-     * The tag for DE catalog
-     * 
-     * @return path to help file
-     */
-    String deCatalog();
-
-    /**
      * The unique tag used to identify a viewer window.
      * 
      * @return the tag.
@@ -187,4 +117,11 @@ public interface DEClientConstants extends CommonUiConstants {
      * @return the tag.
      */
     String simpleDownloadTag();
+    
+    /**
+     * A constant to represent a request to create a new AppTemplate
+     * 
+     * @return
+     */
+    String newAppTemplate();
 }

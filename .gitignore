@@ -16,6 +16,9 @@ target
 # ignore war directory
 war
 
+# ignore gwt generated java files
+gwt-gen
+
 # ignore directories related to GWT Unit Tests
 tomcat
 www-test

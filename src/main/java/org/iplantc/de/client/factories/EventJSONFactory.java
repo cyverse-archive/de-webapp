@@ -1,10 +1,7 @@
 package org.iplantc.de.client.factories;
 
-import org.iplantc.de.client.utils.builders.event.json.AnalysisLaunchedEventJSONBuilder;
-import org.iplantc.de.client.utils.builders.event.json.BasicEventJSONBuilder;
 import org.iplantc.de.client.utils.builders.event.json.EventJSONBuilder;
 import org.iplantc.de.client.utils.builders.event.json.UploadEventJSONBuilder;
-import org.iplantc.de.client.utils.builders.event.json.ViewerWindowLaunchEventJSONBuilder;
 
 import com.google.gwt.json.client.JSONObject;
 
@@ -16,7 +13,7 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class EventJSONFactory {
     public static enum ActionType {
-        UPLOAD_COMPLETE, FOLDER_CREATED, SAVE_AS, DISKRESOURCE_RENAMED, DISKRESOURCE_DELETE, ANALYSIS_LAUNCHED, DISPLAY_WINDOW, DISPLAY_VIEWER_WINDOWS, DISPLAY_TREE_VIEWER_WINDOWS, LOGOUT, EMPTYTRASH
+        UPLOAD_COMPLETE;//, FOLDER_CREATED, SAVE_AS, DISKRESOURCE_RENAMED, DISKRESOURCE_DELETE, ANALYSIS_LAUNCHED, DISPLAY_WINDOW, DISPLAY_VIEWER_WINDOWS, DISPLAY_TREE_VIEWER_WINDOWS, LOGOUT, EMPTYTRASH
     }
 
     private static EventJSONBuilder getBuilder(ActionType type) {
@@ -27,45 +24,45 @@ public class EventJSONFactory {
                 ret = new UploadEventJSONBuilder("file_uploaded"); //$NON-NLS-1$
                 break;
 
-            case FOLDER_CREATED:
-                ret = new BasicEventJSONBuilder("data", "folder_created"); //$NON-NLS-1$ //$NON-NLS-2$
-                break;
+//            case FOLDER_CREATED:
+//                ret = new BasicEventJSONBuilder("data", "folder_created"); //$NON-NLS-1$ //$NON-NLS-2$
+//                break;
 
-            case SAVE_AS:
-                ret = new BasicEventJSONBuilder("data", "save_as"); //$NON-NLS-1$ //$NON-NLS-2$
-                break;
+//            case SAVE_AS:
+//                ret = new BasicEventJSONBuilder("data", "save_as"); //$NON-NLS-1$ //$NON-NLS-2$
+//                break;
 
-            case DISKRESOURCE_RENAMED:
-                ret = new BasicEventJSONBuilder("data", "diskresource_renamed"); //$NON-NLS-1$ //$NON-NLS-2$
-                break;
+//            case DISKRESOURCE_RENAMED:
+//                ret = new BasicEventJSONBuilder("data", "diskresource_renamed"); //$NON-NLS-1$ //$NON-NLS-2$
+//                break;
+//
+//            case DISKRESOURCE_DELETE:
+//                ret = new BasicEventJSONBuilder("data", "diskresource_delete"); //$NON-NLS-1$ //$NON-NLS-2$
+//                break;
+//
+//            case EMPTYTRASH:
+//                ret = new BasicEventJSONBuilder("data", "diskresource_delete"); //$NON-NLS-1$ //$NON-NLS-2$
+//                break;
 
-            case DISKRESOURCE_DELETE:
-                ret = new BasicEventJSONBuilder("data", "diskresource_delete"); //$NON-NLS-1$ //$NON-NLS-2$
-                break;
+//            case DISPLAY_WINDOW:
+//                ret = new ViewerWindowLaunchEventJSONBuilder("display_window"); //$NON-NLS-1$
+//                break;
 
-            case EMPTYTRASH:
-                ret = new BasicEventJSONBuilder("data", "diskresource_delete"); //$NON-NLS-1$ //$NON-NLS-2$
-                break;
+//            case DISPLAY_VIEWER_WINDOWS:
+//                ret = new ViewerWindowLaunchEventJSONBuilder("display_viewer"); //$NON-NLS-1$
+//                break;
 
-            case DISPLAY_WINDOW:
-                ret = new ViewerWindowLaunchEventJSONBuilder("display_window"); //$NON-NLS-1$
-                break;
+//            case DISPLAY_TREE_VIEWER_WINDOWS:
+//                ret = new ViewerWindowLaunchEventJSONBuilder("display_viewer_add_treetab"); //$NON-NLS-1$
+//                break;
 
-            case DISPLAY_VIEWER_WINDOWS:
-                ret = new ViewerWindowLaunchEventJSONBuilder("display_viewer"); //$NON-NLS-1$
-                break;
+//            case ANALYSIS_LAUNCHED:
+//                ret = new AnalysisLaunchedEventJSONBuilder("analysis_launched"); //$NON-NLS-1$
+//                break;
 
-            case DISPLAY_TREE_VIEWER_WINDOWS:
-                ret = new ViewerWindowLaunchEventJSONBuilder("display_viewer_add_treetab"); //$NON-NLS-1$
-                break;
-
-            case ANALYSIS_LAUNCHED:
-                ret = new AnalysisLaunchedEventJSONBuilder("analysis_launched"); //$NON-NLS-1$
-                break;
-
-            case LOGOUT:
-                ret = new BasicEventJSONBuilder("system", "logout"); //$NON-NLS-1$ //$NON-NLS-2$
-                break;
+//            case LOGOUT:
+//                ret = new BasicEventJSONBuilder("system", "logout"); //$NON-NLS-1$ //$NON-NLS-2$
+//                break;
         }
 
         return ret;

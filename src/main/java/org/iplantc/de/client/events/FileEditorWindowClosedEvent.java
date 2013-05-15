@@ -1,5 +1,8 @@
 package org.iplantc.de.client.events;
 
+import org.iplantc.de.client.events.FileEditorWindowClosedEvent.FileEditorWindowClosedEventHandler;
+
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -10,13 +13,23 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class FileEditorWindowClosedEvent extends GwtEvent<FileEditorWindowClosedEventHandler> {
     /**
+     * Defines a handler for FileEditorWindowClosedEvents.
+     */
+    public interface FileEditorWindowClosedEventHandler extends EventHandler {
+        /**
+         * Handle when a file editor window has been closed.
+         * 
+         * @param event event to be handled.
+         */
+        public void onClosed(FileEditorWindowClosedEvent event);
+    }
+
+    /**
      * Defines the GWT Event Type.
-     * 
-     * @see org.iplantc.de.client.events.FileEditorWindowClosedEventHandler
      */
     public static final GwtEvent.Type<FileEditorWindowClosedEventHandler> TYPE = new GwtEvent.Type<FileEditorWindowClosedEventHandler>();
 
-    private String id;
+    private final String id;
 
     /**
      * Instantiate from id.
@@ -27,17 +40,11 @@ public class FileEditorWindowClosedEvent extends GwtEvent<FileEditorWindowClosed
         this.id = id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void dispatch(FileEditorWindowClosedEventHandler handler) {
         handler.onClosed(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Type<FileEditorWindowClosedEventHandler> getAssociatedType() {
         return TYPE;

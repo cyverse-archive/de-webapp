@@ -1,5 +1,8 @@
 package org.iplantc.de.client.utils;
 
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.de.client.notifications.util.NotificationHelper;
+
 import com.extjs.gxt.ui.client.util.Params;
 
 /**
@@ -11,7 +14,9 @@ import com.extjs.gxt.ui.client.util.Params;
  * 
  * @see com.extjs.gxt.ui.client.widget.Info
  * @see com.extjs.gxt.ui.client.widget.InfoConfig
+ * @deprecated Class needs to be ported to GXT3
  */
+@Deprecated
 public class NotifyInfo {
     /**
      * Provide an informative message to the user and include as a notification.
@@ -35,24 +40,26 @@ public class NotifyInfo {
      * @param text represents the message text to display.
      */
     public static void display(final String title, final String text) {
-        doDisplay(title, text, null);
-    }
-
-    private static void doDisplay(final String title, final String text, Params parameters) {
-        makeInfoCall(title, text, parameters);
+        IplantAnnouncer.schedule(text);
     }
 
     private static void doDisplay(NotificationHelper.Category category, final String title,
             final String text, Params parameters) {
-        makeInfoCall(title, text, parameters);
+        IplantAnnouncer.schedule(text);
 
+        includeAsNotification(category, text, parameters);
     }
 
-    private static void makeInfoCall(final String title, final String text, Params parameters) {
+    private static void includeAsNotification(NotificationHelper.Category category, final String text,
+            Params parameters) {
+        // NotificationHelper mgr = NotificationHelper.getInstance();
+
+        // only add to the notification manager when we want inclusion
+        // TODO: fix add notification add
         if (parameters == null) {
-            DEInfo.display(title, text);
+            // mgr.add(category, new Notification(text));
         } else {
-            DEInfo.display(title, text, parameters);
+            // mgr.add(category, new Notification(Format.substitute(text, parameters)));
         }
     }
 }

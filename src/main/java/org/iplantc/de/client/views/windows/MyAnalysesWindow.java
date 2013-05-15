@@ -1,137 +1,145 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
-import org.iplantc.de.client.factories.WindowConfigFactory;
-import org.iplantc.de.client.models.AnalysesWindowConfig;
-import org.iplantc.de.client.models.WindowConfig;
-import org.iplantc.de.client.views.panels.MyAnalysesPanel;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Element;
+import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.analysis.models.Analysis;
+import org.iplantc.de.client.analysis.models.AnalysisProperties;
+import org.iplantc.de.client.analysis.presenter.AnalysesPresenter;
+import org.iplantc.de.client.analysis.views.AnalysesView;
+import org.iplantc.de.client.analysis.views.AnalysesViewImpl;
+import org.iplantc.de.client.analysis.views.cells.AnalysisAppNameCell;
+import org.iplantc.de.client.analysis.views.cells.AnalysisNameCell;
+import org.iplantc.de.client.analysis.views.cells.AnalysisTimeStampCell;
+import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
+
+import com.google.common.collect.Lists;
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.RowExpander;
 
 /**
- * A window thats acts as a container for MyAnalysesPanel
- * 
  * @author sriram
  * 
  */
-public class MyAnalysesWindow extends IPlantWindow {
-    private BorderLayoutData centerData;
-    private MyAnalysesPanel pnlAnlys;
+public class MyAnalysesWindow extends IplantWindowBase {
 
-    /**
-     * Instantiate from a tag.
-     * 
-     * @param tag unique tag identifying this window.
-     * @param config a window configuration
-     */
-    public MyAnalysesWindow(String tag, WindowConfig config) {
-        super(tag, false, true, true, true);
+    private CheckBoxSelectionModel<Analysis> checkBoxModel;
+    private RowExpander<Analysis> expander;
+    private final EventBus eventBus;
+    private final AnalysesView.Presenter presenter;
 
-        this.config = config;
-        init(tag);
+    public MyAnalysesWindow(AnalysisWindowConfig config, EventBus eventBus) {
+        super(null, null);
+
+        this.eventBus = eventBus;
+
+        setTitle(I18N.DISPLAY.analyses());
+        setSize("600", "375");
+
+        AnalysisKeyProvider provider = new AnalysisKeyProvider();
+        ListStore<Analysis> listStore = new ListStore<Analysis>(provider);
+        AnalysesView view = new AnalysesViewImpl(listStore, buildColumnModel(), checkBoxModel, expander);
+        presenter = new AnalysesPresenter(view);
+
+        presenter.go(this, config.getSelectedAnalyses());
     }
 
-    private void init(String tag) {
-        setId(tag);
-        setHeading(I18N.DISPLAY.analyses());
-        setSize(700, 410);
+    @SuppressWarnings("unchecked")
+    private ColumnModel<Analysis> buildColumnModel() {
+        AnalysisProperties props = GWT.create(AnalysisProperties.class);
 
-        centerData = buildCenterData();
+        List<ColumnConfig<Analysis, ?>> configs = new LinkedList<ColumnConfig<Analysis, ?>>();
 
-        BorderLayout layout = new BorderLayout();
-        setLayout(layout);
+        IdentityValueProvider<Analysis> valueProvider = new IdentityValueProvider<Analysis>();
+        checkBoxModel = new CheckBoxSelectionModel<Analysis>(valueProvider);
+        @SuppressWarnings("rawtypes")
+        ColumnConfig colCheckBox = checkBoxModel.getColumn();
+        configs.add(colCheckBox);
+
+        expander = new RowExpander<Analysis>(valueProvider, new AbstractCell<Analysis>() {
+
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, Analysis value,
+                    SafeHtmlBuilder sb) {
+                sb.appendHtmlConstant("<p style='margin: 5px 5px 10px'><b>Description:</b>"
+                        + value.getDescription() + "</p>");
+
+            }
+        });
+
+        configs.add(expander);
+
+        ColumnConfig<Analysis, Analysis> name = new ColumnConfig<Analysis, Analysis>(valueProvider, 100);
+        name.setHeader(I18N.DISPLAY.name());
+        configs.add(name);
+        name.setMenuDisabled(true);
+        name.setCell(new AnalysisNameCell(eventBus));
+
+        ColumnConfig<Analysis, Analysis> app = new ColumnConfig<Analysis, Analysis>(valueProvider, 100);
+        app.setHeader(I18N.DISPLAY.appName());
+        configs.add(app);
+        app.setMenuDisabled(true);
+        app.setCell(new AnalysisAppNameCell(eventBus));
+
+        ColumnConfig<Analysis, Analysis> startdate = new ColumnConfig<Analysis, Analysis>(valueProvider,
+                150);
+        startdate.setCell(new AnalysisTimeStampCell());
+        startdate.setHeader(I18N.DISPLAY.startDate());
+        configs.add(startdate);
+
+        ColumnConfig<Analysis, Analysis> enddate = new ColumnConfig<Analysis, Analysis>(valueProvider,
+                150);
+        enddate.setCell(new AnalysisTimeStampCell());
+        enddate.setHeader(I18N.DISPLAY.endDate());
+        configs.add(enddate);
+
+        ColumnConfig<Analysis, String> status = new ColumnConfig<Analysis, String>(props.status(), 100);
+        status.setHeader(I18N.DISPLAY.status());
+        configs.add(status);
+        status.setMenuDisabled(true);
+
+        return new ColumnModel<Analysis>(configs);
+
     }
 
-    /**
-     * Build center data for BorderLayout.
-     * 
-     * @return an object describing the layout for the panel.
-     */
-    protected BorderLayoutData buildCenterData() {
-        BorderLayoutData ret = new BorderLayoutData(LayoutRegion.CENTER, 400);
-        ret.setMargins(new Margins(5, 5, 5, 5));
-
-        return ret;
-    }
-
-    /**
-     * Release resources allocated by this window.
-     */
     @Override
-    public void cleanup() {
-        super.cleanup();
-
-        pnlAnlys.cleanup();
+    public WindowState getWindowState() {
+        AnalysisWindowConfig config = ConfigFactory.analysisWindowConfig();
+        List<Analysis> selectedAnalyses = Lists.newArrayList();
+        selectedAnalyses.addAll(presenter.getSelectedAnalyses());
+        config.setSelectedAnalyses(selectedAnalyses);
+        return createWindowState(config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
+    private class AnalysisKeyProvider implements ModelKeyProvider<Analysis> {
 
-        AnalysesWindowConfig analysesConfig = (AnalysesWindowConfig)config;
-        String idCurrentSelection = (analysesConfig == null) ? null : analysesConfig.getAnalysisId();
-
-        pnlAnlys = new MyAnalysesPanel(I18N.DISPLAY.analysisOverview(), idCurrentSelection);
-
-        if (analysesConfig != null) {
-            pnlAnlys.updateSelection(idCurrentSelection, analysesConfig.getAnalysisName());
+        @Override
+        public String getKey(Analysis item) {
+            return item.getId();
         }
 
-        add(pnlAnlys, centerData);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setWindowConfig(WindowConfig config) {
-        if (config != null) {
-            this.config = config;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void show() {
-        super.show();
-
-        if (pnlAnlys != null && config != null) {
-            AnalysesWindowConfig analysesConfig = (AnalysesWindowConfig)config;
-            pnlAnlys.updateSelection(analysesConfig.getAnalysisId(), analysesConfig.getAnalysisName());
-            setWindowViewState();
-            config = null;
-        }
-
     }
 
     @Override
-    public JSONObject getWindowState() {
-        // Build config data
-        AnalysesWindowConfig configData = new AnalysesWindowConfig(config);
-        storeWindowViewState(configData);
+    public <C extends WindowConfig> void update(C config) {
+        super.update(config);
 
-        if (pnlAnlys.getIdCurrentSelection() != null) {
-            configData.setAnalysisId(pnlAnlys.getIdCurrentSelection());
+        if (config instanceof AnalysisWindowConfig) {
+            AnalysisWindowConfig analysisWindowConfig = (AnalysisWindowConfig)config;
+            presenter.setSelectedAnalyses(analysisWindowConfig.getSelectedAnalyses());
         }
-
-        // Build window config
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.myAnalysisTag(),
-                configData);
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-        return dispatcher.getDispatchJson(Constants.CLIENT.myAnalysisTag(), ActionType.DISPLAY_WINDOW);
     }
 }
