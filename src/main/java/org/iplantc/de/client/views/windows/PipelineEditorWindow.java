@@ -4,9 +4,9 @@ import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
 import org.iplantc.core.pipelines.client.presenter.PipelineViewPresenter;
 import org.iplantc.core.pipelines.client.views.PipelineView;
 import org.iplantc.core.pipelines.client.views.PipelineViewImpl;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.utils.DEInfo;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
@@ -44,7 +44,7 @@ public class PipelineEditorWindow extends IplantWindowBase {
     class PublishCallbackCommand implements Command {
         @Override
         public void execute() {
-            DEInfo.display(I18N.DISPLAY.publishToWorkspace(), I18N.DISPLAY.publishWorkflowSuccess());
+            IplantAnnouncer.schedule(I18N.DISPLAY.publishWorkflowSuccess());
         }
 
     }

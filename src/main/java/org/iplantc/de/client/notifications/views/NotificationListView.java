@@ -8,6 +8,7 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
@@ -51,7 +52,6 @@ import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -295,7 +295,7 @@ public class NotificationListView implements IsWidget {
 
                     @Override
                     public void onSuccess(String result) {
-                        Info.display(I18N.DISPLAY.notifications(), I18N.DISPLAY.markAllasSeenSuccess());
+                        IplantAnnouncer.schedule(I18N.DISPLAY.markAllasSeenSuccess());
                     }
                 });
 
