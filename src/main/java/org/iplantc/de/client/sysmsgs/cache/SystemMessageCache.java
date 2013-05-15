@@ -5,6 +5,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.core.client.Callback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+
+import com.sencha.gxt.data.shared.loader.DataProxy;
+import com.sencha.gxt.data.shared.loader.ListLoadConfig;
+import com.sencha.gxt.data.shared.loader.ListLoadResult;
+
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
@@ -14,24 +23,28 @@ import org.iplantc.de.client.sysmsgs.model.MessageFactory;
 import org.iplantc.de.client.sysmsgs.model.MessageList;
 import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
 
-import com.google.gwt.core.client.Callback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.core.java.util.Collections;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.sencha.gxt.data.shared.loader.DataProxy;
-import com.sencha.gxt.data.shared.loader.ListLoadConfig;
-import com.sencha.gxt.data.shared.loader.ListLoadResult;
-
-
 /**
- * TODO document
+ * This class manages a local cache of the user's system messages. 
+ * 
+ * It is a singleton class. The singleton is lazily constructed the first time the instance() class 
+ * method is called.
+ * 
+ * The cache needs to synchronize itself with the back end. The startSyncing() method begins this
+ * process.
+ * 
+ * TODO refactor this class.  It does too much.
  */
 public final class SystemMessageCache 
 		implements DataProxy<ListLoadConfig, ListLoadResult<Message>> {
 	
 	private static SystemMessageCache instance = null;
 	
+	/**
+	 * Retrieves the the singleton instance. The instance will be constructed if it hasn't already
+	 * been.
+	 * 
+	 * @return the cache instance.
+	 */
 	public static SystemMessageCache instance() {
 		if (instance == null) {
 			instance = new SystemMessageCache();
@@ -50,6 +63,9 @@ public final class SystemMessageCache
 	private SystemMessageCache() {
 	}
 	
+	/**
+	 * @see DataProxy#load(ListLoadConfig, Callback)
+	 */
 	@Override
 	public void load(final ListLoadConfig unused, 
 			final Callback<ListLoadResult<Message>, Throwable> callback) {
@@ -60,6 +76,9 @@ public final class SystemMessageCache
 		}
 	}
 
+	/**
+	 * Tells the cache to start periodically synchronizing itself with the back end.
+	 */
 	public void startSyncing() {
 		if (!amPolling) {
 			requestAllMessages();
@@ -72,17 +91,27 @@ public final class SystemMessageCache
 		}
 	}
 	
+	/**
+	 * Returns the current number of message that the user has not acknowledged.
+	 * 
+	 * @return the number of unacknowledged messages
+	 */
 	public long countUnseen() {
 		long count = 0;
 		for (Message msg: messages.values()) {
-// TODO when seen works, remove this
-//			if (!msg.isSeen()) {
+			if (!msg.isSeen()) {
 				count++;
 			}
-//		}
+		}
 		return count;
 	}
 	
+	/**
+	 * Acknowledges all of the messages for the user. This calls through to the back end. The 
+	 * provided callback is executed when the back end responds.
+ 	 * 
+	 * @param callback The callback to execute when the back end responds.
+	 */
 	public void acknowledgeAllMessages(final Callback<Void, Throwable> callback) {
 		services.acknowledgeAllMessages(new AsyncCallback<Void>() {
 			@Override
@@ -96,6 +125,13 @@ public final class SystemMessageCache
 			}});
 	}
 	
+	/**
+	 * Dismisses a particular message for the user. This calls through to the back end. The provide
+	 * callback is executed when the back end responds.
+	 * 
+	 * @param message the message to dismiss
+	 * @param callback the callback to execute when the back end responds.
+	 */
 	public void dismissMessage(final Message message, final Callback<Void, Throwable> callback) {
 		if (messages.containsValue(message)) {
 			if (message.isDismissible()) {
@@ -128,8 +164,7 @@ public final class SystemMessageCache
 	
 	private void markMessagesAsAcknowledged() {
 		for (Message msg : messages.values()) {
-// TODO fix this when seen works
-//			msg.setSeen(true);
+			msg.setSeen(true);
 		}
 	}
 
@@ -176,12 +211,25 @@ public final class SystemMessageCache
 		bean.as().sortById();
 		
 		if (!AutoBeanUtils.deepEquals(updatedBean, bean)) {
+			final boolean newUnseen = anyNewUnseen(updatedDTO);
 			messages.clear();
 			for (Message msg: updatedDTO.getList()) {
 				messages.put(msg.getId(), msg);
 			}
-			EventBus.getInstance().fireEvent(new MessagesUpdatedEvent());
+			EventBus.getInstance().fireEvent(new MessagesUpdatedEvent(newUnseen));
 		}
+	}
+	
+	private boolean anyNewUnseen(final MessageList newMessages) {
+		for (Message newMsg : newMessages.getList()) {
+			if (!newMsg.isSeen()) {
+				final String newId = newMsg.getId();
+				if (!messages.containsKey(newId) || messages.get(newMsg.getId()).isSeen()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	private ListLoadResult<Message> makeLoadResult() {
