@@ -22,7 +22,6 @@ import org.iplantc.de.client.analysis.views.AnalysisParamView;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamValueCell;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
-import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.utils.NotifyInfo;
 
 import com.google.common.collect.Lists;
@@ -296,8 +295,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
         @Override
         public void onSuccess(String result) {
-            NotifyInfo.notify(NotificationHelper.Category.ANALYSIS, I18N.DISPLAY.success(),
-                    I18N.DISPLAY.analysisStopSuccess(ae.getName()), null);
+            NotifyInfo.displayWarning(I18N.DISPLAY.analysisStopSuccess(ae.getName()));
         }
 
         @Override
