@@ -17,8 +17,10 @@ import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
 import org.iplantc.de.client.notifications.models.Notification;
+import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.models.NotificationMessageProperties;
+import org.iplantc.de.client.notifications.models.payload.PayloadAnalysis;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
@@ -41,6 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.XTemplates;
@@ -74,6 +77,7 @@ public class NotificationListView implements IsWidget {
     final DeResources deRes = GWT.create(DeResources.class);
     final Style style = resources.css();
     final Renderer r = GWT.create(Renderer.class);
+    private final NotificationAutoBeanFactory notificationFactory = GWT.create(NotificationAutoBeanFactory.class);
     private final EventBus eventBus;
 
     interface Renderer extends XTemplates {
@@ -237,7 +241,7 @@ public class NotificationListView implements IsWidget {
             }
         }
         if (total_unseen > NEW_NOTIFICATIONS_LIMIT && displayInfo) {
-            NotifyInfo.display(I18N.DISPLAY.newNotifications(), I18N.DISPLAY.newNotificationsAlert());
+            NotifyInfo.display(I18N.DISPLAY.newNotificationsAlert());
         }
 
         NotificationMessageProperties props = GWT.create(NotificationMessageProperties.class);
@@ -248,9 +252,16 @@ public class NotificationListView implements IsWidget {
     private void displayNotificationPopup(NotificationMessage n) {
         if (!n.isSeen()) {
             if (n.getCategory().equals(Category.DATA)) {
-                NotifyInfo.display(Category.DATA.toString(), n.getMessage());
+                NotifyInfo.display(n.getMessage());
             } else if (n.getCategory().equals(Category.ANALYSIS)) {
-                NotifyInfo.display(Category.ANALYSIS.toString(), n.getMessage());
+                PayloadAnalysis analysisPayload = AutoBeanCodex.decode(notificationFactory,
+                        PayloadAnalysis.class, n.getContext()).as();
+
+                if ("Failed".equals(analysisPayload.getStatus())) { //$NON-NLS-1$
+                    NotifyInfo.displayWarning(n.getMessage());
+                } else {
+                    NotifyInfo.display(n.getMessage());
+                }
             }
         }
     }

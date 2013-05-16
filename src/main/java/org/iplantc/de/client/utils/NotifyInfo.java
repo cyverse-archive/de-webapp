@@ -1,5 +1,6 @@
 package org.iplantc.de.client.utils;
 
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 
@@ -36,11 +37,17 @@ public class NotifyInfo {
     /**
      * Provide an informative message to the user and optionally include as a notification.
      * 
-     * @param title represents a title for the message.
      * @param text represents the message text to display.
      */
-    public static void display(final String title, final String text) {
+    public static void display(final String text) {
         IplantAnnouncer.schedule(text);
+    }
+
+    /**
+     * @param text represents the message text to display.
+     */
+    public static void displayWarning(String text) {
+        IplantAnnouncer.schedule(text, new ErrorAnnouncementConfig());
     }
 
     private static void doDisplay(NotificationHelper.Category category, final String title,
