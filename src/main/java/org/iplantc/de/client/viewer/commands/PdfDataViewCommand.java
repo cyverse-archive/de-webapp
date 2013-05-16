@@ -1,8 +1,8 @@
 package org.iplantc.de.client.viewer.commands;
 
+import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.viewer.views.FileViewer;
 
 /**
@@ -16,7 +16,7 @@ public class PdfDataViewCommand implements ViewCommand {
         String fileId = file.getId();
         if (fileId != null && !fileId.isEmpty()) {
             // // we got the url of the PDF file, so open it in a new window
-            WindowUtil.open(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(fileId) + "&attachment=0");
+            WindowUtil.open(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(fileId) + "&attachment=0"); //$NON-NLS-1$
         }
 
         return null;

@@ -77,10 +77,6 @@
       <when-type-is class="org.iplantc.core.uiapps.client.services.AppServiceFacade"/>
    </replace-with>
    
-   <replace-with class="org.iplantc.de.client.services.impl.DiskResourceServiceFacadeImpl">
-      <when-type-is class="org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade"/>
-   </replace-with>
-   
    <replace-with class="org.iplantc.de.client.services.CollaboratorsServiceFacadeImpl">
       <when-type-is class="org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade"/>
    </replace-with>

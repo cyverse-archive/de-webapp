@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.client.notifications.models.payload;
 
+import java.util.Date;
+
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
 /**
@@ -46,13 +48,11 @@ public interface PayloadAnalysis {
     @PropertyName("description")
     String getDescription();
 
-    // TODO the service is returning a string, sometimes empty, which will throw an exception when
-    // re-encoding with AutoBeanCodex.
     @PropertyName("enddate")
-    long getEndDate();
+    Date getEndDate();
 
     @PropertyName("enddate")
-    void setEndDate(long date);
+    void setEndDate(Date date);
 
     @PropertyName("id")
     void setId(String id);
@@ -73,10 +73,10 @@ public interface PayloadAnalysis {
     String getResultFolderId();
 
     @PropertyName("startdate")
-    long getStartDate();
+    Date getStartDate();
 
     @PropertyName("startdate")
-    void setStartDate(long startdate);
+    void setStartDate(Date startdate);
 
     @PropertyName("status")
     String getStatus();

@@ -1,5 +1,6 @@
 package org.iplantc.de.client;
 
+import org.iplantc.core.uidiskresource.client.gin.DiskResourceInjector;
 import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uidiskresource.client.services.FileEditorServiceFacade;
 import org.iplantc.de.client.analysis.services.AnalysisServiceFacade;
@@ -7,8 +8,6 @@ import org.iplantc.de.client.desktop.services.DEFeedbackServiceFacade;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.services.impl.FileEditorServiceFacadeImpl;
-
-import com.google.gwt.core.shared.GWT;
 
 public class Services {
 
@@ -18,8 +17,7 @@ public class Services {
 
     public static final UserSessionServiceFacade USER_SESSION_SERVICE = new UserSessionServiceFacade();
 
-    public static final DiskResourceServiceFacade DISK_RESOURCE_SERVICE = GWT
-            .create(DiskResourceServiceFacade.class);
+    public static final DiskResourceServiceFacade DISK_RESOURCE_SERVICE = DiskResourceInjector.INSTANCE.getDiskResourceServiceFacade();
 
     public static final FileEditorServiceFacade FILE_EDITOR_SERVICE = new FileEditorServiceFacadeImpl();
 
