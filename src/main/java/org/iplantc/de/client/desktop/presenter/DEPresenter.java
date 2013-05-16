@@ -58,7 +58,6 @@ import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.periodic.MessagePoller;
-import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
@@ -274,7 +273,7 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void initMessagePoller() {
-        SystemMessageCache.instance().startSyncing();
+//        SystemMessageCache.instance().startSyncing();
         MessagePoller poller = MessagePoller.getInstance();
         poller.addTask(new CountUnseenNotifications());
         poller.start();

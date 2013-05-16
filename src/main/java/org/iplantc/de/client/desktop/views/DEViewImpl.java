@@ -46,7 +46,6 @@ import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.de.client.events.ShowSystemMessagesEvent;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import org.iplantc.de.client.utils.WindowUtil;
 import org.iplantc.de.client.views.panels.ViewNotificationMenu;
@@ -235,12 +234,12 @@ public class DEViewImpl implements DEView {
                 dialog.show();
             }
         }));
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
-            }
-        }));
+//        userMenu.add(new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
+//            }
+//        }));
 
         userMenu.add(new SeparatorMenuItem());
 
