@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.iplantc.clavin.spring.ConfigAliasResolver;
-import org.iplantc.de.server.service.IplantEmailClient;
+import org.iplantc.de.server.service.DonkeyClient;
 
 /**
  * A class to accept files from the client.
@@ -37,9 +37,9 @@ public class NewToolRequestServlet extends UploadServlet {
     private Properties props;
 
     /**
-     * Used to communicate with the iPlant e-mail service.
+     * Used to communicate with Donkey services.
      */
-    private IplantEmailClient emailClient;
+    private DonkeyClient donkeyClient;
 
     /**
      * The default constructor.
@@ -49,12 +49,12 @@ public class NewToolRequestServlet extends UploadServlet {
     /**
      * @param serviceResolver used to resolve calls to aliased services.
      * @param props the configuration settings for the application.
-     * @param emailClient the client used to communicate with the iPlant e-mail service.
+     * @param donkeyClient the client used to communicate with Donkey services.
      */
-    public NewToolRequestServlet(ServiceCallResolver serviceResolver, Properties props, IplantEmailClient emailClient) {
+    public NewToolRequestServlet(ServiceCallResolver serviceResolver, Properties props, DonkeyClient donkeyClient) {
         super(serviceResolver);
         this.props = props;
-        this.emailClient = emailClient;
+        this.donkeyClient = donkeyClient;
     }
 
     /**
@@ -66,9 +66,9 @@ public class NewToolRequestServlet extends UploadServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        if (props == null && emailClient == null) {
+        if (props == null && donkeyClient == null) {
             props = ConfigAliasResolver.getRequiredAliasedConfigFrom(getServletContext(), "webapp");
-            emailClient = IplantEmailClient.getClient(getServletContext());
+            donkeyClient = DonkeyClient.securedClient(props);
         }
     }
 
@@ -86,15 +86,10 @@ public class NewToolRequestServlet extends UploadServlet {
 
         if (!jsonErrors.containsKey("error")) {
             try {
-                SimpleMessageSender msgSender = new SimpleMessageSender(props, emailClient);
-                LOG.debug("executeAction - Attempting to send email.");
-                msgSender.send(user, email, jsonInfo.toString(2));
-
+                donkeyClient.put(request, "tool-request", jsonInfo.toString());
                 jsonErrors.put("success", "Your tool request was successfully submitted.");
             } catch (Exception e) {
-                LOG.error(
-                        "executeAction - Exception while sending email to support about tool request.",
-                        e);
+                LOG.error("executeAction - Exception while sending email to support about tool request.", e);
                 jsonErrors.put("error", e.getMessage() == null ? e.toString() : e.getMessage());
             }
         }

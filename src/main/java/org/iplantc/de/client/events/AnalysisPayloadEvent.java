@@ -1,5 +1,8 @@
 package org.iplantc.de.client.events;
 
+import org.iplantc.de.client.events.AnalysisPayloadEvent.AnalysisPayloadEventHandler;
+
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.json.client.JSONObject;
 
@@ -10,10 +13,17 @@ import com.google.gwt.json.client.JSONObject;
  * 
  */
 public class AnalysisPayloadEvent extends MessagePayloadEvent<AnalysisPayloadEventHandler> {
+
+    public interface AnalysisPayloadEventHandler extends EventHandler {
+        /**
+         * Called when an analysis payload event has fired.
+         * 
+         * @param event fired event.
+         */
+        void onFire(AnalysisPayloadEvent event);
+    }
     /**
      * Defines the GWT Event Type.
-     * 
-     * @see org.iplantc.de.client.events.AnalysisPayloadEventHandler
      */
     public static final GwtEvent.Type<AnalysisPayloadEventHandler> TYPE = new GwtEvent.Type<AnalysisPayloadEventHandler>();
 
@@ -39,7 +49,7 @@ public class AnalysisPayloadEvent extends MessagePayloadEvent<AnalysisPayloadEve
      * {@inheritDoc}
      */
     @Override
-    public com.google.gwt.event.shared.GwtEvent.Type<AnalysisPayloadEventHandler> getAssociatedType() {
+    public GwtEvent.Type<AnalysisPayloadEventHandler> getAssociatedType() {
         return TYPE;
     }
 }

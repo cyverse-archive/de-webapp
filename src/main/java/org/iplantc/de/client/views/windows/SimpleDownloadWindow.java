@@ -1,27 +1,20 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.List;
-
-import org.iplantc.core.client.widgets.Hyperlink;
+import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
+import org.iplantc.core.uidiskresource.client.models.DiskResource;
 import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
-import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
-import org.iplantc.de.client.factories.WindowConfigFactory;
-import org.iplantc.de.client.models.SimpleDownloadWindowConfig;
-import org.iplantc.de.client.models.WindowConfig;
-import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.Services;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
  * An iPlant window for displaying simple download links.
@@ -29,93 +22,57 @@ import com.google.gwt.user.client.Element;
  * @author psarando
  * 
  */
-public class SimpleDownloadWindow extends IPlantWindow {
+public class SimpleDownloadWindow extends IplantWindowBase {
 
-    private SimpleDownloadWindowConfig config;
-    private LayoutContainer contents;
+    private final DeResources res = GWT.create(DeResources.class);
 
-    public SimpleDownloadWindow(String tag, SimpleDownloadWindowConfig config) {
-        super(tag, false, true, true, true);
+    public SimpleDownloadWindow(SimpleDownloadWindowConfig config) {
+        super(null, false, true, true, true);
+        res.css().ensureInjected();
+        setHeadingText(I18N.DISPLAY.download());
+        setSize("320", "320");
 
-        this.config = config;
-
-        init();
+        init(config);
     }
 
-    private void init() {
-        setHeading(I18N.DISPLAY.download());
-        setSize(320, 320);
-        setLayout(new FitLayout());
-        setScrollMode(Scroll.AUTO);
-
+    private void init(SimpleDownloadWindowConfig config) {
         // Add window contents container for the simple download links
-        contents = new LayoutContainer();
+        VerticalLayoutContainer contents = new VerticalLayoutContainer();
 
-        // TODO use a CSS class instead of hard-coding?
-        contents.setStyleAttribute("padding", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        add(new Label("&nbsp;" + I18N.DISPLAY.simpleDownloadNotice()));
+        contents.add(new Label("" + I18N.DISPLAY.simpleDownloadNotice()));
+        buildLinks(config, contents);
         add(contents);
+
     }
 
-    @Override
-    public void setWindowConfig(WindowConfig config) {
-        if (config instanceof SimpleDownloadWindowConfig) {
-            this.config = (SimpleDownloadWindowConfig)config;
+    private void buildLinks(SimpleDownloadWindowConfig config, VerticalLayoutContainer vlc) {
+        for (final DiskResource dr : config.getResourcesToDownload()) {
+            IPlantAnchor link2 = new IPlantAnchor(DiskResourceUtil.parseNameFromPath(dr.getId()), 120, new ClickHandler() {
 
-            contents.removeAll();
-
-            if (isRendered()) {
-                compose();
-            }
-        }
-    }
-
-    @Override
-    protected void onRender(Element parent, int pos) {
-        super.onRender(parent, pos);
-
-        compose();
-    }
-
-    private void compose() {
-        contents.add(buildLinks());
-        layout();
-    }
-
-    private LayoutContainer buildLinks() {
-        VerticalPanel pnlLinks = new VerticalPanel();
-
-        List<String> downloadPaths = config.getDownloadPaths();
-        for (final String path : downloadPaths) {
-            Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(path), "de_hyperlink"); //$NON-NLS-1$
-
-            link.addClickListener(new Listener<ComponentEvent>() {
                 @Override
-                public void handleEvent(ComponentEvent be) {
-                    DiskResourceServiceFacade service = new DiskResourceServiceFacade();
-                    service.simpleDownload(path);
+                public void onClick(ClickEvent event) {
+                    Services.DISK_RESOURCE_SERVICE.simpleDownload(dr.getId());
+
                 }
             });
+            // Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(dr.getId()),
+            // res.css().de_hyperlink());
+            //
+            // link.addClickListener(new Listener<ComponentEvent>() {
+            // @Override
+            // public void handleEvent(ComponentEvent be) {
+            // Services.DISK_RESOURCE_SERVICE.simpleDownload(dr.getId());
+            // }
+            // });
 
-            pnlLinks.add(link);
+            vlc.add(link2);
         }
-
-        return pnlLinks;
     }
 
     @Override
-    public JSONObject getWindowState() {
-        SimpleDownloadWindowConfig configData = new SimpleDownloadWindowConfig(config);
-        storeWindowViewState(configData);
-
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.simpleDownloadTag(),
-                configData);
-
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-        return dispatcher.getDispatchJson(Constants.CLIENT.simpleDownloadTag(),
-                ActionType.DISPLAY_WINDOW);
+    public WindowState getWindowState() {
+        SimpleDownloadWindowConfig config = ConfigFactory.simpleDownloadWindowConfig();
+        return createWindowState(config);
     }
 
 }

@@ -1,5 +1,8 @@
 package org.iplantc.de.client.events;
 
+import org.iplantc.de.client.events.SystemPayloadEvent.SystemPayloadEventHandler;
+
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.json.client.JSONObject;
 
@@ -11,9 +14,22 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class SystemPayloadEvent extends MessagePayloadEvent<SystemPayloadEventHandler> {
     /**
-     * Defines the GWT Event Type.
+     * Handler for system payload events.
      * 
-     * @see org.iplantc.de.client.events.SystemPayloadEventHandler
+     * @author amuir
+     * 
+     */
+    public interface SystemPayloadEventHandler extends EventHandler {
+        /**
+         * Called when an system payload event has fired.
+         * 
+         * @param event fired event.
+         */
+        void onFire(SystemPayloadEvent event);
+    }
+
+    /**
+     * Defines the GWT Event Type.
      */
     public static final GwtEvent.Type<SystemPayloadEventHandler> TYPE = new GwtEvent.Type<SystemPayloadEventHandler>();
 
@@ -27,20 +43,13 @@ public class SystemPayloadEvent extends MessagePayloadEvent<SystemPayloadEventHa
         super(message, payload);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void dispatch(SystemPayloadEventHandler handler) {
         handler.onFire(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public com.google.gwt.event.shared.GwtEvent.Type<SystemPayloadEventHandler> getAssociatedType() {
-        // TODO Auto-generated method stub
+    public GwtEvent.Type<SystemPayloadEventHandler> getAssociatedType() {
         return TYPE;
     }
 }

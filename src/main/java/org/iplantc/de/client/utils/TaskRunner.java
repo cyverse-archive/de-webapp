@@ -55,14 +55,14 @@ public class TaskRunner {
         interval *= 1000;
 
         timer = new Timer() {
-            
+
             @Override
             public void run() {
                 runTasks();
                 timer.schedule(interval);
             }
         };
-        
+
         timer.schedule(interval);
     }
 
@@ -104,8 +104,7 @@ public class TaskRunner {
         for (Runnable task : tasks) {
             try {
                 task.run();
-            }
-            catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 logger.log(Level.SEVERE, "timed task failed", e);
             }
         }

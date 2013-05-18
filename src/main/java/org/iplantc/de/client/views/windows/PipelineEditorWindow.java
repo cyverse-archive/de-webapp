@@ -1,132 +1,58 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.client.pipelines.views.panels.PipelineEditorPanel;
-import org.iplantc.core.uiapplications.client.store.AnalysisToolGroupStoreWrapper;
-import org.iplantc.core.uiapplications.client.views.panels.AbstractCatalogCategoryPanel;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.de.client.Constants;
+import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
+import org.iplantc.core.pipelines.client.presenter.PipelineViewPresenter;
+import org.iplantc.core.pipelines.client.views.PipelineView;
+import org.iplantc.core.pipelines.client.views.PipelineViewImpl;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.dispatchers.WindowDispatcher;
-import org.iplantc.de.client.factories.EventJSONFactory.ActionType;
-import org.iplantc.de.client.factories.WindowConfigFactory;
-import org.iplantc.de.client.models.PipelineEditorWindowConfig;
-import org.iplantc.de.client.models.WindowConfig;
-import org.iplantc.de.client.services.TemplateServiceFacade;
-import org.iplantc.de.client.views.panels.CatalogCategoryPanel;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class PipelineEditorWindow extends IPlantWindow {
-    private PipelineEditorPanel editorPanel;
-    private AbstractCatalogCategoryPanel categoryPanel;
-    private WindowConfig config;
+public class PipelineEditorWindow extends IplantWindowBase {
+    private final PipelineView.Presenter presenter;
 
-    public PipelineEditorWindow(String tag) {
-        super(tag);
+    public PipelineEditorWindow(WindowConfig config) {
+        super(null, null);
 
-        init();
-        compose();
-    }
+        setHeadingText(I18N.DISPLAY.pipeline());
+        setSize("900", "500"); //$NON-NLS-1$ //$NON-NLS-2$
+        setMinWidth(640);
+        setMinHeight(440);
 
-    private void init() {
-        setHeading(I18N.DISPLAY.pipeline());
-        setLayout(new FitLayout());
-        setSize(800, 410);
-    }
+        PipelineView view = new PipelineViewImpl();
+        presenter = new PipelineViewPresenter(view, new PublishCallbackCommand());
 
-    private void compose() {
-        categoryPanel = new CatalogCategoryPanel(tag);
-        editorPanel = new PipelineEditorPanel(tag, categoryPanel, new TemplateServiceFacade(),
-                new PublishCallbackCommand());
-        add(editorPanel);
-    }
-
-    private void getData() {
-        TemplateServiceFacade facade = new TemplateServiceFacade();
-
-        facade.getAnalysisCategories(UserInfo.getInstance().getWorkspaceId(),
-                new AsyncCallback<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        AnalysisToolGroupStoreWrapper wrapper = new AnalysisToolGroupStoreWrapper();
-                        wrapper.updateWrapper(result);
-                        categoryPanel.seed(wrapper.getStore());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        ErrorHandler.post(I18N.ERROR.analysisGroupsLoadFailure(), caught);
-                    }
-                });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void afterRender() {
-        super.afterRender();
-        getData();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void show() {
-        super.show();
-        if (config != null) {
-            editorPanel.configure(((PipelineEditorWindowConfig)config).getPipelineConfig());
-            setWindowViewState();
-            // reset config
-            config = null;
-        }
-
-    }
-
-    /**
-     * Applies a window configuration to the window.
-     * 
-     * @param config
-     */
-    @Override
-    public void setWindowConfig(WindowConfig config) {
         if (config instanceof PipelineEditorWindowConfig) {
-            this.config = config;
-        }
-    }
+            PipelineEditorWindowConfig pipelineConfig = (PipelineEditorWindowConfig)config;
+            Pipeline pipeline = pipelineConfig.getPipeline();
 
-    @Override
-    public void cleanup() {
-        super.cleanup();
-        editorPanel.cleanup();
+            if (pipeline != null) {
+                presenter.setPipeline(pipeline);
+            } else {
+                presenter.setPipeline(pipelineConfig.getServiceWorkflowJson());
+            }
+        }
+
+        presenter.go(this);
     }
 
     class PublishCallbackCommand implements Command {
         @Override
         public void execute() {
-            hide();
+            IplantAnnouncer.schedule(I18N.DISPLAY.publishWorkflowSuccess());
         }
 
     }
 
     @Override
-    public JSONObject getWindowState() {
-        PipelineEditorWindowConfig configData = new PipelineEditorWindowConfig(config);
-        storeWindowViewState(configData);
-
-        configData.setPipelineConfig(editorPanel.toJson());
-
-        // Build window config
-        WindowConfigFactory configFactory = new WindowConfigFactory();
-        JSONObject windowConfig = configFactory.buildWindowConfig(Constants.CLIENT.pipelineEditorTag(),
-                configData);
-        WindowDispatcher dispatcher = new WindowDispatcher(windowConfig);
-        return dispatcher.getDispatchJson(Constants.CLIENT.pipelineEditorTag(),
-                ActionType.DISPLAY_WINDOW);
+    public WindowState getWindowState() {
+        PipelineEditorWindowConfig configData = ConfigFactory.workflowIntegrationWindowConfig();
+        configData.setPipeline(presenter.getPipeline());
+        return createWindowState(configData);
     }
 }

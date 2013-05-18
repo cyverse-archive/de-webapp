@@ -1,5 +1,8 @@
 package org.iplantc.de.client.events;
 
+import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
+
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -10,8 +13,20 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  */
 public class NotificationCountUpdateEvent extends GwtEvent<NotificationCountUpdateEventHandler> {
+    /**
+     * @author sriram
+     * 
+     */
+    public interface NotificationCountUpdateEventHandler extends EventHandler {
 
-    private int total;
+        /**
+         * Handler when notification count changes
+         */
+        public void onCountUpdate(NotificationCountUpdateEvent ncue);
+
+    }
+
+    private final int total;
 
     /**
      * Defines the GWT Event Type.

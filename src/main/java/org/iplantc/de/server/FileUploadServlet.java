@@ -18,7 +18,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.iplantc.de.client.views.panels.FileUploadDialogPanel;
+import org.iplantc.core.uidiskresource.client.views.dialogs.SimpleFileUploadDialog;
 import org.iplantc.de.shared.services.MultiPartServiceWrapper;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
@@ -105,16 +105,16 @@ public class FileUploadServlet extends UploadAction {
                 String name = item.getFieldName();
                 String contents = new String(item.get());
 
-                if (name.equals(FileUploadDialogPanel.HDN_PARENT_ID_KEY)) {
+                if (name.equals(SimpleFileUploadDialog.HDN_PARENT_ID_KEY)) {
                     idFolder = contents;
                 }
-                else if (name.equals(FileUploadDialogPanel.HDN_USER_ID_KEY)) {
+                else if (name.equals(SimpleFileUploadDialog.HDN_USER_ID_KEY)) {
                     user = contents;
                 }
-                else if (name.equals(FileUploadDialogPanel.FILE_TYPE)) {
+                else if (name.equals(SimpleFileUploadDialog.FILE_TYPE)) {
                     type = contents;
                 }
-                else if (name.equals(FileUploadDialogPanel.URL_FIELD)) {
+                else if (name.equals(SimpleFileUploadDialog.URL_FIELD)) {
                     urlItems.add(contents);
                 }
             }
