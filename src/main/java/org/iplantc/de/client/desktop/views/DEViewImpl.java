@@ -46,8 +46,8 @@ import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
+import org.iplantc.de.client.notifications.views.ViewNotificationMenu;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
-import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 
 /**
  * Default DE View as Desktop
