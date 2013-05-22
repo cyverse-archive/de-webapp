@@ -23,8 +23,8 @@ final class CountUnseenNotifications implements Runnable {
             @Override
             public void onSuccess(final String result) {
                 JSONObject obj = JsonUtil.getObject(result);
-                NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(Integer
-                        .parseInt(JsonUtil.getString(obj, "total")));
+                final int cnt = JsonUtil.getNumber(obj, "user-total").intValue();
+                NotificationCountUpdateEvent event = new NotificationCountUpdateEvent(cnt);
                 EventBus.getInstance().fireEvent(event);
             }
         });
