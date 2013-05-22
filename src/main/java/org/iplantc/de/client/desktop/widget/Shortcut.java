@@ -9,16 +9,12 @@ import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.models.ShortcutDesc;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
-import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Event;
 import com.sencha.gxt.widget.core.client.button.IconButton;
-import com.sencha.gxt.widget.core.client.event.AddEvent.AddHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
