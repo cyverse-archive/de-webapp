@@ -80,7 +80,8 @@
       <when-type-is class="org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade"/>
    </replace-with>
    
-   <replace-with class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorDefaultAppearance">
+   <replace-with 
+         class="org.iplantc.core.uicommons.client.appearance.widgets.IPlantAnchorDefaultAppearance">
       <when-type-is class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance"/>
    </replace-with>
    

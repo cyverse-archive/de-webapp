@@ -1,6 +1,7 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.core.uicommons.client.widgets.IPlantAnchorDefaultAppearance;
+import org.iplantc.core.uicommons.client.appearance.widgets.AnchorDefaultResources;
+import org.iplantc.core.uicommons.client.appearance.widgets.IPlantAnchorDefaultAppearance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -9,7 +10,7 @@ public class DEHeaderMenuAppearance extends IPlantAnchorDefaultAppearance {
 
     public interface HeaderResources extends ClientBundle {
         @Source("DEHeaderMenuAppearance.css")
-        Style style();
+        AnchorDefaultResources.Style style();
     }
 
     public DEHeaderMenuAppearance() {
