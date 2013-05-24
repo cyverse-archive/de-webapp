@@ -2,26 +2,22 @@ package org.iplantc.de.client.sysmsgs.cache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.gwt.core.client.Callback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-
-import com.sencha.gxt.data.shared.loader.DataProxy;
-import com.sencha.gxt.data.shared.loader.ListLoadConfig;
-import com.sencha.gxt.data.shared.loader.ListLoadResult;
-
-import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.periodic.MessagePoller;
-import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.IdList;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
 import org.iplantc.de.client.sysmsgs.model.MessageList;
 import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
+
+import com.google.gwt.core.client.Callback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.data.shared.loader.DataProxy;
+import com.sencha.gxt.data.shared.loader.ListLoadConfig;
+import com.sencha.gxt.data.shared.loader.ListLoadResult;
 
 /**
  * This class manages a local cache of the user's system messages. 
@@ -52,15 +48,36 @@ public final class SystemMessageCache
 		return instance;
  	}
 
-	private final ServiceFacade services = new ServiceFacade();
-	private final HashMap<String, Message> messages = new HashMap<String, Message>();
-	private final ArrayList<Callback<ListLoadResult<Message>, Throwable>> loadCallbacks 
-			= new ArrayList<Callback<ListLoadResult<Message>, Throwable>>();
+    private static IdList filterIds(final Collection<Message> messages) {
+        final ArrayList<String> ids = new ArrayList<String>();
+        for (Message msg : messages) {
+            ids.add(msg.getId());
+        }
+        final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
+        idsDTO.setIds(ids);
+        return idsDTO;
+    }
+
+    private final ServiceFacade services;
+    private final HashMap<String, Message> messages;
+    private final ArrayList<Callback<ListLoadResult<Message>, Throwable>> loadCallbacks;
+    private final Runnable syncTask;
 	
-	private boolean amPolling = false;
-	private boolean syncedOnce = false;
+    private boolean amPolling;
+    private boolean syncedOnce;
 	
 	private SystemMessageCache() {
+        services = new ServiceFacade();
+        messages = new HashMap<String, Message>();
+        loadCallbacks = new ArrayList<Callback<ListLoadResult<Message>, Throwable>>();
+        syncTask = new Runnable() {
+            @Override
+            public void run() {
+                requestAllMessages();
+            }
+        };
+        amPolling = false;
+        syncedOnce = false;
 	}
 	
 	/**
@@ -82,15 +99,21 @@ public final class SystemMessageCache
 	public void startSyncing() {
 		if (!amPolling) {
 			requestAllMessages();
-			MessagePoller.getInstance().addTask(new Runnable() {
-				@Override
-				public void run() {
-					requestAllMessages();
-				}});
+            MessagePoller.getInstance().addTask(syncTask);
 			amPolling = true;
 		}
 	}
-	
+
+    /**
+     * Tells the cache to stop periodically synchronizing itself with the back end.
+     */
+    public void stopSyncing() {
+        if (amPolling) {
+            MessagePoller.getInstance().removeTask(syncTask);
+            amPolling = false;
+        }
+    }
+
 	/**
 	 * Returns the current number of message that the user has not acknowledged.
 	 * 
@@ -176,12 +199,12 @@ public final class SystemMessageCache
 			}
 			@Override
 			public void onSuccess(final MessageList messages) {
-				addMessagesAndNotifyLoaders(messages);
+				replaceMessagesAndNotifyLoaders(messages);
 			}});
 	}
 
-	private void addMessagesAndNotifyLoaders(final MessageList newMessages) {
-		addMessages(newMessages);
+	private void replaceMessagesAndNotifyLoaders(final MessageList newMessages) {
+		replaceMessages(newMessages);
 		syncedOnce = true;
 		final ArrayList<Message> msgLst = new ArrayList<Message>(messages.values());
 		for (Callback<ListLoadResult<Message>, Throwable> callback : loadCallbacks) {
@@ -193,6 +216,21 @@ public final class SystemMessageCache
 					}});
 		}
 		loadCallbacks.clear();
+        markReceived(messages.values());
+    }
+
+    private void markReceived(final Collection<Message> messages) {
+        services.markReceived(filterIds(messages), new AsyncCallback<Void>() {
+
+            @Override
+            public void onFailure(final Throwable caught) {
+                // TODO figure out how to handle this
+            }
+
+            @Override
+            public void onSuccess(final Void unused) {
+            }
+        });
 	}
 	
 	private void notifyLoadersOfFailure(final Throwable exn) {
@@ -202,34 +240,11 @@ public final class SystemMessageCache
 		loadCallbacks.clear();
 	}
 	
-	private void addMessages(final MessageList updatedDTO) {
-		updatedDTO.sortById();
-		final AutoBean<MessageList> updatedBean = MessageFactory.INSTANCE.makeMessageList(
-				updatedDTO);
-		final AutoBean<MessageList> bean = MessageFactory.INSTANCE.makeMessageList();
-		bean.as().setList(new ArrayList<Message>(messages.values()));
-		bean.as().sortById();
-		
-		if (!AutoBeanUtils.deepEquals(updatedBean, bean)) {
-			final boolean newUnseen = anyNewUnseen(updatedDTO);
-			messages.clear();
-			for (Message msg: updatedDTO.getList()) {
-				messages.put(msg.getId(), msg);
-			}
-			EventBus.getInstance().fireEvent(new MessagesUpdatedEvent(newUnseen));
-		}
-	}
-	
-	private boolean anyNewUnseen(final MessageList newMessages) {
-		for (Message newMsg : newMessages.getList()) {
-			if (!newMsg.isSeen()) {
-				final String newId = newMsg.getId();
-				if (!messages.containsKey(newId) || messages.get(newMsg.getId()).isSeen()) {
-					return true;
-				}
-			}
-		}
-		return false;
+	private void replaceMessages(final MessageList updatedDTO) {
+        messages.clear();
+        for (Message msg : updatedDTO.getList()) {
+            messages.put(msg.getId(), msg);
+        }
 	}
 	
 	private ListLoadResult<Message> makeLoadResult() {

@@ -6,9 +6,10 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.DisplaysMessages;
+import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
 import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -23,14 +24,14 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 /**
  * The system messages presenter.
  */
-public final class MessagesPresenter implements DisplaysMessages.Presenter {
+public final class MessagesPresenter implements MessagesView.Presenter {
 
 	private final ListStore<Message> store;
-	private final DisplaysMessages view;
+	private final MessagesView view;
 	
-	public MessagesPresenter(final DisplaysMessages view) {
-		this.view = view;
-		store = new ListStore<Message>(MessageProperties.INSTANCE.id());
+    public MessagesPresenter() {
+        store = new ListStore<Message>(MessageProperties.INSTANCE.id());
+        view = GWT.create(MessagesView.class);
 		initStore();
 		initSelectionModel();
         view.setPresenter(this);
@@ -40,7 +41,6 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 		store.addSortInfo(new StoreSortInfo<Message>(MessageProperties.INSTANCE.creationTime(), 
 				SortDir.DESC));
 		updateStoreAsync();
-		SystemMessageCache.instance().startSyncing();
 		EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, 
 				new MessagesUpdatedEvent.Handler() {
 					@Override
@@ -87,10 +87,15 @@ public final class MessagesPresenter implements DisplaysMessages.Presenter {
 	}
 	
 	public void go(final AcceptsOneWidget container) {
+        SystemMessageCache.instance().startSyncing();
 		container.setWidget(view);
 		view.showLoading();
 	}
 	
+    public void stop() {
+        SystemMessageCache.instance().stopSyncing();
+    }
+
 	private void selectMessage(final Message msg) {
 		view.getMessageSelectionModel().select(false, msg);
 		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();

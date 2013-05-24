@@ -89,6 +89,10 @@
       <when-type-is class="org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices" />
    </replace-with>
    
+   <replace-with class="org.iplantc.de.client.sysmsgs.view.DefaultMessagesView">
+   	  <when-type-is class="org.iplantc.de.client.sysmsgs.view.MessagesView"/>
+   </replace-with>
+   
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.iplantc.de.client.DiscoveryEnvironment' />
 	
