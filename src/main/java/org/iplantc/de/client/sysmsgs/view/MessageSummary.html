@@ -1,0 +1,8 @@
+<!-- This is the XTemplates template used to render a message summary. -->
+
+<tpl if="msg.dismissible"><span class="{style.dismiss}"></span></tpl>
+<tpl if="msg.seen"><span class="{style.seenMessageSummary}"></tpl>
+<tpl if="!msg.seen"><span class="{style.unseenMessageSummary}"></tpl>
+  <div>{msg.type}</div>
+  <div>{msg.creationTime:date("dd MMMM yyyy")}</div>
+</span>

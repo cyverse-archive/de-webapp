@@ -1,0 +1,22 @@
+/* This is the styling of the messages view. */
+
+@sprite .dismiss {
+	gwt-image: "dismissImg";
+	float: right;
+}
+
+@sprite .dismiss:hover {
+	gwt-image: "dismissOnHoverImg";
+	cursor: pointer;
+}
+
+.seenMessageSummary {
+}
+
+.unseenMessageSummary {
+	font-weight: bold;
+}
+
+.seenMessageSummary, .unseenMessageSummary {
+	white-space: nowrap;
+}

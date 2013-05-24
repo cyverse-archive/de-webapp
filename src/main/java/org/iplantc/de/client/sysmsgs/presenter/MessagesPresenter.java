@@ -130,7 +130,6 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 			} else {
 				showMessageSelected(0);
 			}
-			acknowledgeAllMessages();
 		} else {
 			view.showNoMessages();
 		}

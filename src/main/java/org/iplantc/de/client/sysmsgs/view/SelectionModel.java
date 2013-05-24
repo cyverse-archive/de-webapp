@@ -1,18 +1,19 @@
 package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.Resources.MessageCellStyle;
+import org.iplantc.de.client.sysmsgs.view.Resources.Style;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.event.XEvent;
 
 final class SelectionModel extends ListViewSelectionModel<Message> {
 
-	private static final MessageCellStyle CSS;
+	private static final Style CSS;
 
     static {
-    	CSS = Resources.INSTANCE.messageCellCSS();
+        CSS = GWT.<Resources> create(Resources.class).style();
     	CSS.ensureInjected();
     }
  
