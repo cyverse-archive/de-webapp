@@ -48,6 +48,18 @@ public final class MessagePoller {
     }
     
     /**
+     * Stops a task from being run periodically.
+     * 
+     * @param task the task to no longer run
+     */
+    public void removeTask(final Runnable task) {
+        if (polling) {
+            TaskRunner.getInstance().removeTask(task);
+        }
+        tasks.remove(task);
+    }
+
+    /**
      * Starts polling.
      */
     public void start() {
