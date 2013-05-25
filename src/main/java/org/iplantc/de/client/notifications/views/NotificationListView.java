@@ -330,8 +330,7 @@ public class NotificationListView implements IsWidget {
 
 							@Override
 							public void onSuccess(String result) {
-								IplantAnnouncer.schedule(I18N.DISPLAY
-										.markAllasSeenSuccess());
+							    IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.markAllasSeenSuccess());
 							}
 						});
 

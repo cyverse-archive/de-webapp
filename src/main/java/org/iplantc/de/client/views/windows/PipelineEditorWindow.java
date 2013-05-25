@@ -44,7 +44,7 @@ public class PipelineEditorWindow extends IplantWindowBase {
     class PublishCallbackCommand implements Command {
         @Override
         public void execute() {
-            IplantAnnouncer.schedule(I18N.DISPLAY.publishWorkflowSuccess());
+            IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.publishWorkflowSuccess());
         }
 
     }

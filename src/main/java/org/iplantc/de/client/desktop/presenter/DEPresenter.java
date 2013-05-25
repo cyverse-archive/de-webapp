@@ -73,7 +73,7 @@ public class DEPresenter implements DEView.Presenter {
     private final DEView view;
     private final DeResources res;
     private final EventBus eventBus;
-    private HashMap<String, Command> keyboardShortCuts;
+    private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
     private TextButton feedbackBtn;
     
@@ -375,7 +375,7 @@ public class DEPresenter implements DEView.Presenter {
         private static final InternalAnchorDefaultAppearance ANCHOR_APPEARANCE
     			= new InternalAnchorDefaultAppearance(true);
     	
-    	private InternalAnchor<Void> anchor;
+    	private final InternalAnchor<Void> anchor;
     	
     	NewSystemMessageAnnouncement() {
     		super(FACTORY.make(ANCHOR_APPEARANCE.render("Read it.")));
@@ -391,7 +391,7 @@ public class DEPresenter implements DEView.Presenter {
     
     private void indicateNewSysMessages() {
     	final NewSystemMessageAnnouncement announcement = new NewSystemMessageAnnouncement();
-    	IplantAnnouncer.schedule(announcement, new IplantAnnouncementConfig(true, 0));
+        IplantAnnouncer.getInstance().schedule(announcement, new IplantAnnouncementConfig(true, 0));
 	}
     
     private class DataKBShortCutCmd implements Command {
