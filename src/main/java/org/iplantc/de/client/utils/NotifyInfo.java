@@ -1,72 +1,60 @@
 package org.iplantc.de.client.utils;
 
 import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncement;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
-import org.iplantc.de.client.notifications.util.NotificationHelper;
 
-import com.extjs.gxt.ui.client.util.Params;
+import com.sencha.gxt.core.client.dom.XDOM;
 
 /**
- * Provides a uniform way of presenting notification information to the user.
+ * Provides a custom queue and location for presenting notifications to the user.
  * 
- * Optionally, this notification information may be included in a user's My Notification.
+ * @author psarando
  * 
- * Implementation essentially wraps functionality provided in GXT by Info & InfoConfig.
- * 
- * @see com.extjs.gxt.ui.client.widget.Info
- * @see com.extjs.gxt.ui.client.widget.InfoConfig
- * @deprecated Class needs to be ported to GXT3
  */
-@Deprecated
-public class NotifyInfo {
-    /**
-     * Provide an informative message to the user and include as a notification.
-     * 
-     * Allows for the text argument to be a parameterized message.
-     * 
-     * @param category notification category
-     * @param title represents a title for the message.
-     * @param text represents the message text to display.
-     * @param parameters parameters to be merged into the text argument.
-     */
-    public static void notify(NotificationHelper.Category category, final String title,
-            final String text, Params parameters) {
-        doDisplay(category, title, text, parameters);
+public class NotifyInfo extends IplantAnnouncer {
+    private static NotifyInfo instance;
+
+    protected NotifyInfo() {
+
+    }
+
+    public static NotifyInfo getInstance() {
+        if (instance == null) {
+            instance = new NotifyInfo();
+        }
+
+        return instance;
     }
 
     /**
-     * Provide an informative message to the user and optionally include as a notification.
+     * Schedule a notification to display to the user.
      * 
      * @param text represents the message text to display.
      */
     public static void display(final String text) {
-        IplantAnnouncer.schedule(text);
+        getInstance().schedule(text);
     }
 
     /**
-     * @param text represents the message text to display.
+     * Schedule a notification containing a warning or alert to display to the user.
+     * 
+     * @param text represents the warning text to display.
      */
     public static void displayWarning(String text) {
-        IplantAnnouncer.schedule(text, new ErrorAnnouncementConfig());
+        getInstance().schedule(text, new ErrorAnnouncementConfig());
     }
 
-    private static void doDisplay(NotificationHelper.Category category, final String title,
-            final String text, Params parameters) {
-        IplantAnnouncer.schedule(text);
-
-        includeAsNotification(category, text, parameters);
-    }
-
-    private static void includeAsNotification(NotificationHelper.Category category, final String text,
-            Params parameters) {
-        // NotificationHelper mgr = NotificationHelper.getInstance();
-
-        // only add to the notification manager when we want inclusion
-        // TODO: fix add notification add
-        if (parameters == null) {
-            // mgr.add(category, new Notification(text));
-        } else {
-            // mgr.add(category, new Notification(Format.substitute(text, parameters)));
+    @Override
+    protected void positionAnnouncer() {
+        if (announcements.isEmpty()) {
+            return;
         }
+
+        IplantAnnouncement popup = announcements.peek();
+
+        int x = XDOM.getViewportWidth() - popup.getOffsetWidth() - 10;
+        int y = XDOM.getViewportHeight() - popup.getOffsetHeight() - 64;
+        popup.setPagePosition(x, y);
     }
 }
