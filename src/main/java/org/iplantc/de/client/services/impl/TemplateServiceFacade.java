@@ -1,6 +1,10 @@
 package org.iplantc.de.client.services.impl;
 
+import java.util.List;
+
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uiapps.client.models.autobeans.AppGroup;
+import org.iplantc.core.uiapps.client.services.AppGroupListCallbackConverter;
 import org.iplantc.core.uiapps.client.services.AppUserServiceFacade;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
@@ -32,17 +36,25 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void getAppGroups(String workspaceId, AsyncCallback<String> callback) {
+    public void getAppGroups(String workspaceId, AsyncCallback<List<AppGroup>> callback) {
 		String address = DEProperties.getInstance()
 				.getUnproctedMuleServiceBaseUrl()
 				+ "get-only-analysis-groups/" + workspaceId; //$NON-NLS-1$
 		ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-		DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AppGroupListCallbackConverter(callback));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+    @Override
+    public void getAppGroups(AsyncCallback<List<AppGroup>> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() 
+                + "app-groups"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AppGroupListCallbackConverter(callback));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
 	@Override
 	public void getApps(String analysisGroupId, AsyncCallback<String> callback) {
 		String address = DEProperties.getInstance().getMuleServiceBaseUrl()
