@@ -4,12 +4,15 @@ import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.de.client.sysmsgs.model.Message;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.Composite;
@@ -17,6 +20,7 @@ import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
@@ -48,6 +52,9 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	HTML messageView;
 	
 	@UiField(provided = true)
+    final BorderLayoutData expireLayoutData;
+
+    @UiField(provided = true)
 	final ListView<Message, Message> messageList;
 	
 	private final SimpleContainer basePanel;
@@ -56,6 +63,8 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	private final MessageSummaryCell summaryCell;
 		
 	public DefaultMessagesView() {
+        expireLayoutData = new BorderLayoutData();
+        expireLayoutData.setMinSize(2);
 		summaryCell = new MessageSummaryCell(); 
 		messageList = new ListView<Message, Message>(makeDefaultStore(), 
 				new IdentityValueProvider<Message>(), summaryCell);
@@ -87,6 +96,9 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	@Override
 	public void setExpiryText(final String expiryText) {
 		expirationLabel.setText(expiryText);
+        if (messagesPanel.isAttached()) {
+            layoutMessagesPanel();
+        }
 	}
 
 	@Override
@@ -104,7 +116,7 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	@Override
 	public void showMessages() {
 		basePanel.setWidget(messagesPanel);
-		basePanel.forceLayout();
+        layoutMessagesPanel();
 	}
 	
 	@Override
@@ -112,5 +124,16 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 		basePanel.setWidget(statusPanel);
 		status.clearStatus(I18N.DISPLAY.noSystemMessages());
 	}
-	
+
+    private void layoutMessagesPanel() {
+        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                final XElement lblElmt = XElement.as(expirationLabel.getElement());
+                expireLayoutData.setSize(lblElmt.getBounds().getHeight());
+                basePanel.forceLayout();
+            }
+        });
+    }
+
 }

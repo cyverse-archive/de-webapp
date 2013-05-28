@@ -246,16 +246,7 @@ public class DEViewImpl implements DEView {
                 dialog.show();
             }
         }));
-<<<<<<< HEAD
         userMenu.add(sysMsgsMenuItem);
-=======
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
-            }
-        }));
->>>>>>> CORE-4296 Re-enabled Desktop Systems Messages menu item.
 
         userMenu.add(new SeparatorMenuItem());
 

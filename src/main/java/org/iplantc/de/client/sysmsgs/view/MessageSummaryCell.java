@@ -1,7 +1,7 @@
 package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.Resources.Style;
+import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -42,7 +42,7 @@ final class MessageSummaryCell extends AbstractEventCell<Message> {
 
     static {
         FACTORY = GWT.create(Templates.class);
-        CSS = GWT.<Resources> create(Resources.class).style();
+        CSS = GWT.<DefaultMessagesViewResources> create(DefaultMessagesViewResources.class).style();
     	CSS.ensureInjected();
     }
  

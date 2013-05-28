@@ -7,7 +7,7 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * This defines the resources required for displaying system messages.
  */
-public interface Resources extends ClientBundle {
+public interface DefaultMessagesViewResources extends ClientBundle {
 
     /**
      * This is the interface of the style used for rendering the system messages view.
@@ -27,6 +27,11 @@ public interface Resources extends ClientBundle {
          * The styling of a message that has not already been seen
          */
         String unseenMessageSummary();
+
+        /**
+         * The styling of applied to the view of the body of the selected message.
+         */
+        String messageView();
 	}
 	
     /**
@@ -44,7 +49,7 @@ public interface Resources extends ClientBundle {
     /**
      * The style used to render the system messages view.
      */
-    @Source("MessagesView.css")
+    @Source("DefaultMessagesView.css")
 	Style style();
 
 }

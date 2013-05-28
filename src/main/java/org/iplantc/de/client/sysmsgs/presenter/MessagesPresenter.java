@@ -141,18 +141,6 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 			view.showNoMessages();
 		}
 	}
-
-	private void acknowledgeAllMessages() {
-		SystemMessageCache.instance().acknowledgeAllMessages(new Callback<Void, Throwable>() {
-			@Override
-			public void onFailure(final Throwable reason) {
-				// TODO implement
-				Window.alert("Failed to acknowledge messages");
-			}
-			@Override
-			public void onSuccess(Void unused) {
-			}});		
-	}
 	
 	private void showMessageSelected(final int index) {
 		view.getMessageSelectionModel().deselectAll();

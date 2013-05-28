@@ -2,9 +2,17 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 		xmlns:g="urn:import:com.google.gwt.user.client.ui"
 		xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
-		xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
-		xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button">
+		xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
  
+ 	<ui:with field="res" type="org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources"/>
+ 	
+ 	<ui:with field="expireLayoutData" 
+ 			type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData"/>
+ 	
+ 	<ui:style>
+ 		.expireContainer {margin:0px; border-width:0px; padding:0px;}
+ 	</ui:style>
+ 	
 	<container:BorderLayoutContainer ui:field="messagesPanel">
 		<container:west>
 			<gxt:ListView ui:field="messageList"/>
@@ -12,12 +20,13 @@
 		<container:center>
 			<container:BorderLayoutContainer>
 				<container:center>
-					<container:FlowLayoutContainer scrollMode="AUTOY">
+					<container:FlowLayoutContainer styleName="{res.style.messageView}" 
+							scrollMode="AUTOY">
 						<g:HTML ui:field="messageView"/>
 					</container:FlowLayoutContainer>
 				</container:center>
-				<container:south>
-					<container:CenterLayoutContainer>
+				<container:south layoutData="{expireLayoutData}">
+					<container:CenterLayoutContainer styleName="{style.expireContainer}">
 						<g:Label ui:field="expirationLabel"/>
 					</container:CenterLayoutContainer>
 				</container:south>
