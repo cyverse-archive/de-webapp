@@ -2,6 +2,7 @@ package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -10,8 +11,8 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -32,7 +33,13 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	interface Binder extends UiBinder<BorderLayoutContainer, DefaultMessagesView> {
 	}
 
+    interface ExpiryTemplate extends XTemplates {
+        @XTemplate("<div class='{style.expiry}'>{expiryText}</div>")
+        SafeHtml make(String expiryText, Style style);
+    }
+
 	private static final Binder binder = GWT.create(Binder.class);
+    private static final ExpiryTemplate EXPIRY_FACTORY = GWT.create(ExpiryTemplate.class);
 	
 	private static final ListStore<Message> makeDefaultStore() {
 		return new ListStore<Message>(new ModelKeyProvider<Message>() {
@@ -43,14 +50,17 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	}
 	
 	@UiField
+    DefaultMessagesViewResources res;
+
+    @UiField
 	BorderLayoutContainer messagesPanel;
 	
-	@UiField
-	Label expirationLabel;
-	
-	@UiField
+    @UiField
 	HTML messageView;
 	
+    @UiField
+    HTML expiryView;
+
 	@UiField(provided = true)
     final BorderLayoutData expireLayoutData;
 
@@ -69,6 +79,7 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 		messageList = new ListView<Message, Message>(makeDefaultStore(), 
 				new IdentityValueProvider<Message>(), summaryCell);
 		binder.createAndBindUi(this);
+        res.style().ensureInjected();
 		basePanel = new SimpleContainer();
 		statusPanel = new CenterLayoutContainer();
 		status = new Status();
@@ -94,8 +105,8 @@ public final class DefaultMessagesView extends Composite implements MessagesView
 	}
 	
 	@Override
-	public void setExpiryText(final String expiryText) {
-		expirationLabel.setText(expiryText);
+    public void setExpiryText(final String expiryText) {
+        expiryView.setHTML(EXPIRY_FACTORY.make(expiryText, res.style()));
         if (messagesPanel.isAttached()) {
             layoutMessagesPanel();
         }
@@ -129,7 +140,8 @@ public final class DefaultMessagesView extends Composite implements MessagesView
         Scheduler.get().scheduleFinally(new ScheduledCommand() {
             @Override
             public void execute() {
-                final XElement lblElmt = XElement.as(expirationLabel.getElement());
+                final XElement lblConElmt = XElement.as(expiryView.getElement());
+                final XElement lblElmt = lblConElmt.child("." + res.style().expiry());
                 expireLayoutData.setSize(lblElmt.getBounds().getHeight());
                 basePanel.forceLayout();
             }

@@ -32,6 +32,11 @@ public interface DefaultMessagesViewResources extends ClientBundle {
          * The styling of applied to the view of the body of the selected message.
          */
         String messageView();
+
+        /**
+         * The styling applied to the expiration date.
+         */
+        String expiry();
 	}
 	
     /**

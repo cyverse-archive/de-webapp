@@ -10,7 +10,9 @@ import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.text.client.DateTimeFormatRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.core.client.Style;
@@ -101,7 +103,9 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
 		bodyBuilder.appendHtmlConstant(msg.getBody());
 		view.setMessageBody(bodyBuilder.toSafeHtml());
-		view.setExpiryText(msg.getDeactivationTime().toString());
+        DateTimeFormatRenderer renderer = new DateTimeFormatRenderer(DateTimeFormat.getFormat("dd MMMM yyyy"));
+        final String expiryText = "This message will expire on " + renderer.render(msg.getDeactivationTime()) + ".";
+        view.setExpiryText(expiryText);
 	}
 
 	private void updateStoreAsync() {

@@ -18,17 +18,14 @@
 			<gxt:ListView ui:field="messageList"/>
 		</container:west>
 		<container:center>
-			<container:BorderLayoutContainer>
+			<container:BorderLayoutContainer styleName="{res.style.messageView}">
 				<container:center>
-					<container:FlowLayoutContainer styleName="{res.style.messageView}" 
-							scrollMode="AUTOY">
+					<container:FlowLayoutContainer scrollMode="AUTOY">
 						<g:HTML ui:field="messageView"/>
 					</container:FlowLayoutContainer>
 				</container:center>
 				<container:south layoutData="{expireLayoutData}">
-					<container:CenterLayoutContainer styleName="{style.expireContainer}">
-						<g:Label ui:field="expirationLabel"/>
-					</container:CenterLayoutContainer>
+					<g:HTML ui:field="expiryView"/>
 				</container:south>
 			</container:BorderLayoutContainer>
 		</container:center>

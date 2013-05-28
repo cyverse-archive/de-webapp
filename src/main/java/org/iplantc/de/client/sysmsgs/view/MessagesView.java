@@ -1,11 +1,11 @@
 package org.iplantc.de.client.sysmsgs.view;
 
+import org.iplantc.de.client.sysmsgs.model.Message;
+
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
-
-import org.iplantc.de.client.sysmsgs.model.Message;
 
 /**
  * TODO document
@@ -24,7 +24,7 @@ public interface MessagesView extends IsWidget {
 	
 	public void setPresenter(Presenter presenter);
 		
-	public void setExpiryText(String expiryText);
+    public void setExpiryText(String expiry);
 
 	public void setMessageBody(SafeHtml msgBody);
 	
