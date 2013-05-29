@@ -6,6 +6,7 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.view.MessageProperties;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
 import com.google.gwt.core.client.Callback;
@@ -31,6 +32,9 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 	private final ListStore<Message> store;
 	private final MessagesView view;
 	
+    /**
+     * the constructor
+     */
     public MessagesPresenter() {
         store = new ListStore<Message>(MessageProperties.INSTANCE.id());
         view = GWT.create(MessagesView.class);
@@ -40,7 +44,7 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 	}
 	
 	private void initStore() {
-		store.addSortInfo(new StoreSortInfo<Message>(MessageProperties.INSTANCE.creationTime(), 
+        store.addSortInfo(new StoreSortInfo<Message>(MessageProperties.INSTANCE.activationTime(),
 				SortDir.DESC));
 		updateStoreAsync();
 		EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, 
@@ -64,11 +68,17 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 						}}});
 	}
 
+    /**
+     * @see MessagesView.Presenter#getMessageStore()
+     */
 	@Override
 	public ListStore<Message> getMessageStore() {
 		return store;
 	}
 		
+    /**
+     * @see MessagesView.Presenter#handleDismissMessageEvent(Message)
+     */
 	@Override
 	public void handleDismissMessageEvent(final Message message) {
 		// TODO mask view
@@ -88,12 +98,22 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 			}});
 	}
 	
+    /**
+     * Starts the presenter and attaches the view to the provided container. This also starts the
+     * message caching.
+     * 
+     * @param container The container that will hold the view.
+     */
 	public void go(final AcceptsOneWidget container) {
         SystemMessageCache.instance().startSyncing();
 		container.setWidget(view);
 		view.showLoading();
 	}
 	
+    /**
+     * This should be called when the container holding the view has been closed. It stops the
+     * message caching.
+     */
     public void stop() {
         SystemMessageCache.instance().stopSyncing();
     }
@@ -105,7 +125,7 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 		view.setMessageBody(bodyBuilder.toSafeHtml());
         DateTimeFormatRenderer renderer = new DateTimeFormatRenderer(DateTimeFormat.getFormat("dd MMMM yyyy"));
         final String expiryText = "This message will expire on " + renderer.render(msg.getDeactivationTime()) + ".";
-        view.setExpiryText(expiryText);
+        view.setExpiryMessage(expiryText);
 	}
 
 	private void updateStoreAsync() {

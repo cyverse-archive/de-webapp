@@ -14,19 +14,34 @@ public interface DefaultMessagesViewResources extends ClientBundle {
      */
 	public interface Style extends CssResource {
         /**
+         * The styling of a summary list item
+         */
+        String summaryItem();
+
+        /**
+         * The styling of a summary item that is currently selected.
+         */
+        String selected();
+
+        /**
+         * The styling of a message summary that has already been seen.
+         */
+        String summary();
+
+        /**
          * The styling of the dismiss button
          */
-		String dismiss();
+        String dismiss();
 
         /**
-         * The styling of a message that has already been seen
+         * The styling of a message summary that has not already been seen.
          */
-        String seenMessageSummary();
+        String unseen();
 
         /**
-         * The styling of a message that has not already been seen
+         * The styling of the activation date
          */
-        String unseenMessageSummary();
+        String activationTime();
 
         /**
          * The styling of applied to the view of the body of the selected message.
