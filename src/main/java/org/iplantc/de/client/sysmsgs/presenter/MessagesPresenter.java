@@ -3,6 +3,7 @@ package org.iplantc.de.client.sysmsgs.presenter;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
@@ -13,7 +14,6 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.text.client.DateTimeFormatRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.core.client.Style;
@@ -123,9 +123,9 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
 		bodyBuilder.appendHtmlConstant(msg.getBody());
 		view.setMessageBody(bodyBuilder.toSafeHtml());
-        DateTimeFormatRenderer renderer = new DateTimeFormatRenderer(DateTimeFormat.getFormat("dd MMMM yyyy"));
-        final String expiryText = "This message will expire on " + renderer.render(msg.getDeactivationTime()) + ".";
-        view.setExpiryMessage(expiryText);
+        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
+        final String expiryStr = expiryFmt.format(msg.getDeactivationTime());
+        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
 	}
 
 	private void updateStoreAsync() {

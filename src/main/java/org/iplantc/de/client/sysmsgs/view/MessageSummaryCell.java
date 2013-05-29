@@ -2,6 +2,7 @@ package org.iplantc.de.client.sysmsgs.view;
 
 import java.util.Date;
 
+import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 
@@ -76,7 +77,7 @@ final class MessageSummaryCell extends AbstractEventCell<Message> {
         final Date now = new Date();
         String actMsg = "";
         if (sameDay(now, actTime)) {
-            actMsg = "Today";
+            actMsg = I18N.DISPLAY.today();
         } else if (withinPreviousWeek(now, actTime)) {
             actMsg = DateTimeFormat.getFormat("cccc").format(actTime);
         } else {
