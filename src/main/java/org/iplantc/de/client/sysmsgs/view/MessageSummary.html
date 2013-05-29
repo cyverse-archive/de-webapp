@@ -4,5 +4,5 @@
 <tpl if="msg.seen"><span class="{style.summary}"></tpl>
 <tpl if="!msg.seen"><span class="{style.summary} {style.unseen}"></tpl>
   <div>{msg.type}</div>
-  <div class="{style.activationTime}">{msg.activationTime:date("dd MMMM yyyy")}</div>
+  <div class="{style.activationTime}">{activationTimeMsg}</div>
 </span>
