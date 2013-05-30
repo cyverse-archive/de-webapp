@@ -15,6 +15,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.sencha.gxt.cell.core.client.AbstractEventCell;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.event.XEvent;
@@ -31,25 +32,25 @@ final class MessageSummaryCell extends AbstractEventCell<Message> {
 	
 	private static final Style CSS;
     private static final Templates FACTORY;
-    private static final long DAYS_PER_WEEK;
-    private static final long MS_PER_DAY;
 
     static {
         FACTORY = GWT.create(Templates.class);
         CSS = GWT.<DefaultMessagesViewResources> create(DefaultMessagesViewResources.class).style();
     	CSS.ensureInjected();
-        DAYS_PER_WEEK = 7;
-        MS_PER_DAY = 86400000;
     }
- 
-    private final DateTimeFormat activationTimeFormat;
+
+    private static boolean withinPreviousWeek(final Date successor, final Date predecessor) {
+        if (predecessor.after(successor)) {
+            return false;
+        }
+        return CalendarUtil.getDaysBetween(predecessor, successor) < 7;
+    }
 
     /**
      * the constructor
      */
     MessageSummaryCell() {
         super(BrowserEvents.CLICK);
-        activationTimeFormat = DateTimeFormat.getFormat("dd MMMM yyyy");
 	}
 
     /**
@@ -76,30 +77,14 @@ final class MessageSummaryCell extends AbstractEventCell<Message> {
 	    final Date actTime = message.getActivationTime();
         final Date now = new Date();
         String actMsg = "";
-        if (sameDay(now, actTime)) {
+        if (CalendarUtil.isSameDate(now, actTime)) {
             actMsg = I18N.DISPLAY.today();
         } else if (withinPreviousWeek(now, actTime)) {
             actMsg = DateTimeFormat.getFormat("cccc").format(actTime);
         } else {
-            actMsg = activationTimeFormat.format(actTime);
+            actMsg = DateTimeFormat.getFormat("dd MMMM yyyy").format(actTime);
         }
         builder.append(FACTORY.make(message, actMsg, CSS));
-    }
-	
-    private boolean sameDay(final Date lhs, final Date rhs) {
-        return activationTimeFormat.format(lhs).equals(activationTimeFormat.format(rhs));
-    }
-
-    private boolean withinPreviousWeek(final Date successor, final Date predecessor) {
-        if (predecessor.after(successor)) {
-            return false;
-        }
-        final Date succDay = activationTimeFormat.parseStrict(activationTimeFormat.format(successor));
-        final Date predDay = activationTimeFormat.parseStrict(activationTimeFormat.format(predecessor));
-        if (predDay.getTime() + (DAYS_PER_WEEK - 1) * MS_PER_DAY <= succDay.getTime()) {
-            return false;
-        }
-        return true;
     }
 
 }
