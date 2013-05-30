@@ -2,9 +2,9 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 import org.iplantc.core.uicommons.client.models.WindowState;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * DE Main view
@@ -52,5 +52,12 @@ public interface DEView extends IsWidget {
     List<WindowState> getOrderedWindowStates();
 
     void restoreWindows(List<WindowState> windowStates);
+
+    /**
+     * Changes the value of the displayed number of unread system messages.
+     * 
+     * @param numUnseenSysMsgs The new number of unread system messages
+     */
+    void updateUnseenSystemMessageCount(long numUnseenSysMsgs);
 
 }
