@@ -130,7 +130,7 @@ public class NotificationListView implements IsWidget {
 		@Override
 		public void renderItem(SafeHtmlBuilder builder, SafeHtml content) {
 			builder.appendHtmlConstant("<div class='" + style.thumbWrap()
-					+ "' style='border: 1px solid white'>");
+					+ "'>");
 			builder.append(content);
 			builder.appendHtmlConstant("</div>");
 		}
