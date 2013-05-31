@@ -233,10 +233,9 @@ public class NotificationListView implements IsWidget {
 	/**
 	 * Process notifications
 	 *
-	 * @param json
-	 *            string to be processed.
+	 * @param list of notifications
+	 *             to be processed.
 	 */
-	// public void processMessages(final String json) {
 	public void processMessages(final List<Notification> notifications) {
 		// cache before removing
 		List<NotificationMessage> temp = store.getAll();
@@ -247,7 +246,7 @@ public class NotificationListView implements IsWidget {
 		for (Notification n : notifications) {
 			NotificationMessage nm = n.getMessage();
 			nm.setSeen(n.isSeen());
-			if (nm != null && !isExist(temp, nm)) {
+			if (!isExist(temp, nm)) {
 				store.add(nm);
 				displayNotificationPopup(nm);
 				displayInfo = true;
