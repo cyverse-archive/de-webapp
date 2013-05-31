@@ -50,3 +50,8 @@
 	padding-top: 0.2em;
 	text-align: center;
 }
+
+.statusPanel {
+	background-color: rgb(255,255,255);
+	color: rgb(127,127,127);
+}

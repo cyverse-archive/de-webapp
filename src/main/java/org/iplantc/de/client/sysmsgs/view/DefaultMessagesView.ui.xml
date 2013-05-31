@@ -27,10 +27,12 @@
     </ui:with>
  	
  	<container:CardLayoutContainer ui:field="layout">
- 		<container:CenterLayoutContainer ui:field="loadingPanel">
+ 		<container:CenterLayoutContainer ui:field="loadingPanel" 
+ 				styleName="{res.style.statusPanel}">
  			<gxt:Status busy=""/>
  		</container:CenterLayoutContainer>
- 		<container:CenterLayoutContainer ui:field="noMessagesPanel">
+ 		<container:CenterLayoutContainer ui:field="noMessagesPanel" 
+ 				styleName="{res.style.statusPanel}">
  			<g:Label text="{loc.noSystemMessages}"/>
  		</container:CenterLayoutContainer>
 		<container:HorizontalLayoutContainer ui:field="messagesPanel">

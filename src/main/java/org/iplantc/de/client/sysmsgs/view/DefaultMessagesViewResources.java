@@ -52,6 +52,12 @@ public interface DefaultMessagesViewResources extends ClientBundle {
          * The styling applied to the expiration date.
          */
         String expiry();
+
+        /**
+         * The styling applied to the status panels (loading, no messages)
+         */
+        String statusPanel();
+
 	}
 	
     /**
