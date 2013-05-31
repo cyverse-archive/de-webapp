@@ -87,7 +87,6 @@ public class TextViewerImpl implements FileViewer {
 		addPageSizeChangeHandler();
 
 		addSelectPageKeyHandler();
-
 	}
 
 	private void computeTotalPages() {
