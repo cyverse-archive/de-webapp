@@ -8,10 +8,16 @@
  	<ui:with field="loc" type="org.iplantc.core.resources.client.messages.IplantDisplayStrings"/>
  	
  	<ui:with field="sumsData" 
- 			type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData">
-    	<ui:attributes size="0.3"/>
+ 			type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData">
+    	<ui:attributes width=".3" height="1"/>
   	</ui:with>
+  	
  	<ui:with field="msgData" 
+ 			type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData">
+    	<ui:attributes width=".7" height="1"/>
+  	</ui:with>
+  	
+ 	<ui:with field="bodyData" 
  			type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData">
          <ui:attributes width="1" height="1"/>
     </ui:with>
@@ -27,13 +33,13 @@
  		<container:CenterLayoutContainer ui:field="noMessagesPanel">
  			<g:Label text="{loc.noSystemMessages}"/>
  		</container:CenterLayoutContainer>
-		<container:BorderLayoutContainer ui:field="messagesPanel">
-			<container:west layoutData="{sumsData}">
+		<container:HorizontalLayoutContainer ui:field="messagesPanel">
+			<container:child layoutData="{sumsData}">
 				<gxt:ListView ui:field="messageList"/>
-			</container:west>
-			<container:center>
+			</container:child>
+			<container:child layoutData="{msgData}">
 				<container:VerticalLayoutContainer styleName="{res.style.messageView}">
-					<container:child layoutData="{msgData}">
+					<container:child layoutData="{bodyData}">
 						<container:FlowLayoutContainer scrollMode="AUTOY">
 							<g:HTML ui:field="messageView"/>
 						</container:FlowLayoutContainer>
@@ -42,7 +48,7 @@
 						<g:Label ui:field="expiryView" styleName="{res.style.expiry}"/>
 					</container:child>
 				</container:VerticalLayoutContainer>
-			</container:center>
-		</container:BorderLayoutContainer>
+			</container:child>
+		</container:HorizontalLayoutContainer>
 	</container:CardLayoutContainer>
 </ui:UiBinder> 
