@@ -1,6 +1,8 @@
 package org.iplantc.de.client.sysmsgs.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -10,6 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 
 /**
  * This is the default implementation of the messages view.
@@ -36,7 +39,7 @@ public final class DefaultMessagesView<M> extends Composite implements MessagesV
     Widget noMessagesPanel;
 
     @UiField
-    Widget messagesPanel;
+    ResizeContainer messagesPanel;
 
     @UiField
 	HTML messageView;
@@ -97,4 +100,25 @@ public final class DefaultMessagesView<M> extends Composite implements MessagesV
         layout.setActiveWidget(noMessagesPanel);
     }
 
+    /*
+     * This method is overridden to force the message panel to be laid out a second time in case
+     * the expiry message wrapped or unwrapped.
+     */
+    /**
+     * @see Composite#onResize(int, int)
+     */
+    @Override
+    protected void onResize(final int width, final int height) {
+        super.onResize(width, height);
+        if (layout.getActiveWidget() == messagesPanel) {
+            Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    messagesPanel.forceLayout();
+                }
+            });
+        }
+    }
+
 }
+
