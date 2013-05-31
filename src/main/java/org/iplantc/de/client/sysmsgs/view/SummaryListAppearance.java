@@ -11,7 +11,7 @@ import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 /**
  * The customized appearance for a list of system message summaries.
  */
-final class SummaryListAppearance extends ListViewCustomAppearance<Message> {
+public final class SummaryListAppearance extends ListViewCustomAppearance<Message> {
 
     private static final Style style;
 
@@ -23,7 +23,7 @@ final class SummaryListAppearance extends ListViewCustomAppearance<Message> {
     /**
      * the constructor
      */
-    SummaryListAppearance() {
+    public SummaryListAppearance() {
         super("." + style.summaryItem(), null, style.selected());
     }
 

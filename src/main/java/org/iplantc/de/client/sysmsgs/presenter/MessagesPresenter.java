@@ -7,8 +7,11 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.view.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.view.MessageProperties;
+import org.iplantc.de.client.sysmsgs.view.MessageSummaryCell;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
+import org.iplantc.de.client.sysmsgs.view.SummaryListAppearance;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.shared.GWT;
@@ -16,36 +19,41 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.Style;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.data.shared.loader.ListLoadResult;
+import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 /**
  * The system messages presenter.
  */
-public final class MessagesPresenter implements MessagesView.Presenter {
+public final class MessagesPresenter {
 
-	private final ListStore<Message> store;
-	private final MessagesView view;
+    private final MessagesView<Message> view;
+    private final ListStore<Message> messageStore;
+    private final ListViewSelectionModel<Message> messageSelectionModel;
 	
     /**
      * the constructor
      */
     public MessagesPresenter() {
-        store = new ListStore<Message>(MessageProperties.INSTANCE.id());
         view = GWT.create(MessagesView.class);
+        messageStore = new ListStore<Message>(MessageProperties.INSTANCE.id());
+        messageSelectionModel = new ListViewSelectionModel<Message>();
 		initStore();
 		initSelectionModel();
-        view.setPresenter(this);
+        initMessagesView();
 	}
 	
 	private void initStore() {
-        store.addSortInfo(new StoreSortInfo<Message>(MessageProperties.INSTANCE.activationTime(),
-				SortDir.DESC));
+        final StoreSortInfo<Message> sortInfo = new StoreSortInfo<Message>(MessageProperties.INSTANCE.activationTime(), SortDir.DESC);
+        messageStore.addSortInfo(sortInfo);
 		updateStoreAsync();
 		EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, 
 				new MessagesUpdatedEvent.Handler() {
@@ -56,8 +64,8 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 		}
 	
 	private void initSelectionModel() {
-		view.getMessageSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-		view.getMessageSelectionModel().addSelectionChangedHandler(
+        messageSelectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
+        messageSelectionModel.addSelectionChangedHandler(
 				new SelectionChangedHandler<Message>() {
 					@Override
 					public void onSelectionChanged(final SelectionChangedEvent<Message> event) 
@@ -67,25 +75,27 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 							selectMessage(selection.get(0));
 						}}});
 	}
-
-    /**
-     * @see MessagesView.Presenter#getMessageStore()
-     */
-	@Override
-	public ListStore<Message> getMessageStore() {
-		return store;
-	}
 		
-    /**
-     * @see MessagesView.Presenter#handleDismissMessageEvent(Message)
-     */
-	@Override
-	public void handleDismissMessageEvent(final Message message) {
+    private void initMessagesView() {
+        final IdentityValueProvider<Message> msgProv = new IdentityValueProvider<Message>();
+        final SummaryListAppearance sumAppearance = new SummaryListAppearance();
+        final ListView<Message, Message> sumView = new ListView<Message, Message>(messageStore, msgProv, sumAppearance);
+        final MessageSummaryCell sumCell = new MessageSummaryCell();
+        sumCell.addHandler(new DismissMessageEvent.Handler() {
+            @Override
+            public void handleDismiss(final DismissMessageEvent event) {
+                handleDismissMessageEvent(event.getMessageId());
+            }
+        }, DismissMessageEvent.TYPE);
+        sumView.setCell(sumCell);
+        sumView.setSelectionModel(messageSelectionModel);
+        view.init(sumView);
+    }
+
+    private void handleDismissMessageEvent(final String messageId) {
 		// TODO mask view
-		if (message == null) {
-			return;
-		}
-		SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
+        final Message msg = messageStore.findModelWithKey(messageId);
+        SystemMessageCache.instance().dismissMessage(msg, new Callback<Void, Throwable>() {
 			@Override
 			public void onFailure(final Throwable reason) {
 				// FIXME handle failure
@@ -93,7 +103,7 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 			}
 			@Override
 			public void onSuccess(Void unused) {
-				removeMessage(message);
+                removeMessage(msg);
 				// TODO unmask  view
 			}});
 	}
@@ -105,9 +115,13 @@ public final class MessagesPresenter implements MessagesView.Presenter {
      * @param container The container that will hold the view.
      */
 	public void go(final AcceptsOneWidget container) {
-        SystemMessageCache.instance().startSyncing();
-		container.setWidget(view);
-		view.showLoading();
+        if (container == null) {
+            stop();
+        } else {
+            SystemMessageCache.instance().startSyncing();
+            container.setWidget(view);
+            view.showLoading();
+        }
 	}
 	
     /**
@@ -119,10 +133,10 @@ public final class MessagesPresenter implements MessagesView.Presenter {
     }
 
 	private void selectMessage(final Message msg) {
-		view.getMessageSelectionModel().select(false, msg);
+        messageSelectionModel.select(false, msg);
 		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
 		bodyBuilder.appendHtmlConstant(msg.getBody());
-		view.setMessageBody(bodyBuilder.toSafeHtml());
+        view.setMessageBody(bodyBuilder.toSafeHtml());
         final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
         final String expiryStr = expiryFmt.format(msg.getDeactivationTime());
         view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
@@ -143,33 +157,33 @@ public final class MessagesPresenter implements MessagesView.Presenter {
 	}
 	
 	private void updateStore(final List<Message> updatedMessages) {
-		final Message curSelect = view.getMessageSelectionModel().getSelectedItem();
-		store.replaceAll(updatedMessages);
-		if (curSelect != null && store.findModel(curSelect) == null) {
-			store.add(curSelect);
+        final Message curSelect = messageSelectionModel.getSelectedItem();
+        messageStore.replaceAll(updatedMessages);
+        if (curSelect != null && messageStore.findModel(curSelect) == null) {
+            messageStore.add(curSelect);
 		}
-		if (store.size() > 0) {
+        if (messageStore.size() > 0) {
 			if (curSelect != null) {
-				showMessageSelected(store.indexOf(curSelect));
+                showMessageSelected(messageStore.indexOf(curSelect));
 			} else {
 				showMessageSelected(0);
 			}
 		} else {
-			view.showNoMessages();
+            view.showNoMessages();
 		}
 	}
 
 	private void removeMessage(final Message message) {
-		store.remove(message);
-		if (store.size() <= 0) {
-			view.showNoMessages();
+        messageStore.remove(message);
+        if (messageStore.size() <= 0) {
+            view.showNoMessages();
 		}
 	}
 	
 	private void showMessageSelected(final int index) {
-		view.getMessageSelectionModel().deselectAll();
-		view.getMessageSelectionModel().select(index, false);
-		view.showMessages();
+        view.showMessages();
+        messageSelectionModel.deselectAll();
+        messageSelectionModel.select(index, false);
 	}
-	
+
 }

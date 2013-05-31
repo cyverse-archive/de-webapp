@@ -5,29 +5,44 @@
 		xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
  
  	<ui:with field="res" type="org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources"/>
+ 	<ui:with field="loc" type="org.iplantc.core.resources.client.messages.IplantDisplayStrings"/>
  	
- 	<ui:with field="expireLayoutData" 
- 			type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData"/>
+ 	<ui:with field="sumsData" 
+ 			type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData">
+    	<ui:attributes size="0.3"/>
+  	</ui:with>
+ 	<ui:with field="msgData" 
+ 			type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData">
+         <ui:attributes width="1" height="1"/>
+    </ui:with>
+ 	<ui:with field="expiryData"
+ 			type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData">
+         <ui:attributes width="1" height="-1"/>
+    </ui:with>
  	
- 	<ui:style>
- 		.expireContainer {margin:0px; border-width:0px; padding:0px;}
- 	</ui:style>
- 	
-	<container:BorderLayoutContainer ui:field="messagesPanel">
-		<container:west>
-			<gxt:ListView ui:field="messageList"/>
-		</container:west>
-		<container:center>
-			<container:BorderLayoutContainer styleName="{res.style.messageView}">
-				<container:center>
-					<container:FlowLayoutContainer scrollMode="AUTOY">
-						<g:HTML ui:field="messageView"/>
-					</container:FlowLayoutContainer>
-				</container:center>
-				<container:south layoutData="{expireLayoutData}">
-					<g:HTML ui:field="expiryView"/>
-				</container:south>
-			</container:BorderLayoutContainer>
-		</container:center>
-	</container:BorderLayoutContainer>
+ 	<container:CardLayoutContainer ui:field="layout">
+ 		<container:CenterLayoutContainer ui:field="loadingPanel">
+ 			<gxt:Status busy=""/>
+ 		</container:CenterLayoutContainer>
+ 		<container:CenterLayoutContainer ui:field="noMessagesPanel">
+ 			<g:Label text="{loc.noSystemMessages}"/>
+ 		</container:CenterLayoutContainer>
+		<container:BorderLayoutContainer ui:field="messagesPanel">
+			<container:west layoutData="{sumsData}">
+				<gxt:ListView ui:field="messageList"/>
+			</container:west>
+			<container:center>
+				<container:VerticalLayoutContainer styleName="{res.style.messageView}">
+					<container:child layoutData="{msgData}">
+						<container:FlowLayoutContainer scrollMode="AUTOY">
+							<g:HTML ui:field="messageView"/>
+						</container:FlowLayoutContainer>
+					</container:child>
+					<container:child layoutData="{expiryData}">
+						<g:Label ui:field="expiryView" styleName="{res.style.expiry}"/>
+					</container:child>
+				</container:VerticalLayoutContainer>
+			</container:center>
+		</container:BorderLayoutContainer>
+	</container:CardLayoutContainer>
 </ui:UiBinder> 

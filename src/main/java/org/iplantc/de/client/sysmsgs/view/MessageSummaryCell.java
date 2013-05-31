@@ -23,7 +23,7 @@ import com.sencha.gxt.widget.core.client.event.XEvent;
 /**
  * This is the cell used to render message summaries.
  */
-final class MessageSummaryCell extends AbstractEventCell<Message> {
+public final class MessageSummaryCell extends AbstractEventCell<Message> {
 	
 	interface Templates extends XTemplates {
         @XTemplate(source = "MessageSummary.html")
@@ -49,21 +49,20 @@ final class MessageSummaryCell extends AbstractEventCell<Message> {
     /**
      * the constructor
      */
-    MessageSummaryCell() {
+    public MessageSummaryCell() {
         super(BrowserEvents.CLICK);
 	}
 
     /**
-     * @see AbstractEventCell<T>#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, Element, T,
+     * @see AbstractEventCell<T>#onBrowserEvent(Context, Element, T,
      *      NativeEvent, ValueUpdater)
      */
 	@Override
-	public void onBrowserEvent(final Context context, final Element parent, final Message message, 
-			final NativeEvent nativeEvent, final ValueUpdater<Message> updater) {
+    public void onBrowserEvent(final Context context, final Element parent, final Message message, final NativeEvent nativeEvent, final ValueUpdater<Message> updater) {
 		final XEvent event = nativeEvent.<XEvent>cast();
         if (event.getTypeInt() == Event.ONCLICK) {
             if (event.getEventTargetEl().hasClassName(CSS.dismiss())) {
-                fireEvent(new DismissMessageEvent(message));
+                fireEvent(new DismissMessageEvent(message.getId()));
             }
         }
     }
