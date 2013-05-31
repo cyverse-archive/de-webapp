@@ -3,6 +3,7 @@ package org.iplantc.de.client.sysmsgs.view;
 import java.util.Date;
 
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 

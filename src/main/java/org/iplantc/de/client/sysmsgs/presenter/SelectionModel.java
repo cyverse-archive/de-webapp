@@ -1,6 +1,7 @@
-package org.iplantc.de.client.sysmsgs.view;
+package org.iplantc.de.client.sysmsgs.presenter;
 
 import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 
 import com.google.gwt.core.client.GWT;
@@ -8,6 +9,10 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 import com.sencha.gxt.widget.core.client.event.XEvent;
 
+/**
+ * The summary selection model. This model prevents a summary from being selected when the user
+ * clicks on its dismiss button.
+ */
 final class SelectionModel extends ListViewSelectionModel<Message> {
 
 	private static final Style CSS;
@@ -17,6 +22,9 @@ final class SelectionModel extends ListViewSelectionModel<Message> {
     	CSS.ensureInjected();
     }
  
+    /**
+     * @see ListViewSelectionModel<T>#handleMouseDown(MouseDownEvent)
+     */
 	@Override
 	protected void handleMouseDown(final MouseDownEvent mouseEvent) {
 	    final XEvent event = mouseEvent.getNativeEvent().<XEvent> cast();

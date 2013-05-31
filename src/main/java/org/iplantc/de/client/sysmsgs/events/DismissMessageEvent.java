@@ -1,4 +1,4 @@
-package org.iplantc.de.client.sysmsgs.view;
+package org.iplantc.de.client.sysmsgs.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;

@@ -1,14 +1,14 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
+import java.util.Date;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
+import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.DismissMessageEvent;
-import org.iplantc.de.client.sysmsgs.view.MessageProperties;
 import org.iplantc.de.client.sysmsgs.view.MessageSummaryCell;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
 import org.iplantc.de.client.sysmsgs.view.SummaryListAppearance;
@@ -21,7 +21,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.Style;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.data.shared.loader.ListLoadResult;
@@ -35,6 +38,16 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
  */
 public final class MessagesPresenter {
 
+    interface MessageProperties extends PropertyAccess<Message> {
+        ModelKeyProvider<Message> id();
+
+        ValueProvider<Message, Date> activationTime();
+
+        ValueProvider<Message, Boolean> dismissible();
+    }
+
+    private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
+
     private final MessagesView<Message> view;
     private final ListStore<Message> messageStore;
     private final ListViewSelectionModel<Message> messageSelectionModel;
@@ -44,15 +57,15 @@ public final class MessagesPresenter {
      */
     public MessagesPresenter() {
         view = GWT.create(MessagesView.class);
-        messageStore = new ListStore<Message>(MessageProperties.INSTANCE.id());
-        messageSelectionModel = new ListViewSelectionModel<Message>();
+        messageStore = new ListStore<Message>(MSG_PROPS.id());
+        messageSelectionModel = new SelectionModel();
 		initStore();
 		initSelectionModel();
         initMessagesView();
 	}
 	
 	private void initStore() {
-        final StoreSortInfo<Message> sortInfo = new StoreSortInfo<Message>(MessageProperties.INSTANCE.activationTime(), SortDir.DESC);
+        final StoreSortInfo<Message> sortInfo = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
         messageStore.addSortInfo(sortInfo);
 		updateStoreAsync();
 		EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, 
