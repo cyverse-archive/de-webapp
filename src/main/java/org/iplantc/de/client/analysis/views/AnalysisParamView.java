@@ -105,7 +105,16 @@ public class AnalysisParamView implements IsWidget {
         saveDialog.toFront();
     }
 
+    public void mask() {
+    	con.mask(I18N.DISPLAY.loadingMask());
+    }
+
+    public void unmask() {
+    	con.unmask();
+    }
+
     private void saveFile(final String path, String fileContents) {
+    	mask();
         Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, fileContents,
                 new SaveasServiceCallbackHandler(path));
     }
@@ -134,6 +143,7 @@ public class AnalysisParamView implements IsWidget {
 
         @Override
         public void onSuccess(String result) {
+        	unmask();
             JSONObject obj = JSONParser.parseStrict(result).isObject();
             DefaultUploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
             uch.onCompletion(fileName, JsonUtil.getObject(obj, "file").toString());
@@ -141,6 +151,7 @@ public class AnalysisParamView implements IsWidget {
 
         @Override
         public void onFailure(Throwable caught) {
+        	unmask();
             ErrorHandler.post(I18N.ERROR.saveParamFailed(), caught);
         }
     }

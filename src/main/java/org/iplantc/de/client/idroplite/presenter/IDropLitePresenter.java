@@ -5,6 +5,9 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
+import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uidiskresource.client.models.HasPaths;
+import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
@@ -12,6 +15,7 @@ import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 
 import com.google.common.collect.Sets;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -24,9 +28,10 @@ import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
  */
 public class IDropLitePresenter implements Presenter {
 
+    private final DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
     private final IDropLiteView view;
     private final int CONTENT_PADDING = 12;
-    private IDropLiteWindowConfig idlwc;
+    private final IDropLiteWindowConfig idlwc;
 
     public IDropLitePresenter(IDropLiteView view, IDropLiteWindowConfig config) {
         this.view = view;
@@ -54,8 +59,11 @@ public class IDropLitePresenter implements Presenter {
     @Override
     public void buildDownloadApplet() {
         view.mask();
-        Services.DISK_RESOURCE_SERVICE.download(idlwc.getDownloadPaths(),
-                new IDropLiteServiceCallback() {
+
+        HasPaths request = drFactory.pathsList().as();
+        request.setPaths(DiskResourceUtil.asStringIdList(idlwc.getResourcesToDownload()));
+
+        Services.DISK_RESOURCE_SERVICE.download(request, new IDropLiteServiceCallback() {
             @Override
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
                 int adjustSize = CONTENT_PADDING * 2;

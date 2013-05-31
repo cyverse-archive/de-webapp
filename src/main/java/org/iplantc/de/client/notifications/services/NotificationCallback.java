@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
@@ -28,7 +27,6 @@ import com.google.web.bindery.autobean.shared.Splittable;
 public class NotificationCallback implements AsyncCallback<String> {
 
     private final NotificationAutoBeanFactory notFactory = GWT.create(NotificationAutoBeanFactory.class);
-    private final DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
     private List<Notification> notifications;
 
     @Override
