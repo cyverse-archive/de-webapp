@@ -1,12 +1,12 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uidiskresource.client.models.File;
 import org.iplantc.core.uidiskresource.client.services.errors.DiskResourceErrorAutoBeanFactory;
-import org.iplantc.core.uidiskresource.client.services.errors.ErrorDiskResource;
 import org.iplantc.core.uidiskresource.client.services.errors.ErrorGetManifest;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
@@ -15,6 +15,7 @@ import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -99,11 +100,15 @@ public class FileViewerWindow extends IplantWindowBase {
                 DiskResourceErrorAutoBeanFactory factory = GWT
                         .create(DiskResourceErrorAutoBeanFactory.class);
                 String message = caught.getMessage();
-                AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory,
-                        ErrorGetManifest.class, message);
-                ErrorDiskResource as = errorBean.as();
                 FileViewerWindow.this.hide();
-                ErrorHandler.post(as, caught);
+
+                if (JsonUtils.safeToEval(message)) {
+                    AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory,
+                            ErrorGetManifest.class, message);
+                    ErrorHandler.post(errorBean.as(), caught);
+                } else {
+                    ErrorHandler.post(I18N.ERROR.retrieveStatFailed(), caught);
+                }
             }
         });
     }
