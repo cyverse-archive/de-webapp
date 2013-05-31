@@ -91,7 +91,7 @@ public final class MessagesPresenter {
 		
     private void initMessagesView() {
         final IdentityValueProvider<Message> msgProv = new IdentityValueProvider<Message>();
-        final SummaryListAppearance sumAppearance = new SummaryListAppearance();
+        final SummaryListAppearance<Message> sumAppearance = new SummaryListAppearance<Message>();
         final ListView<Message, Message> sumView = new ListView<Message, Message>(messageStore, msgProv, sumAppearance);
         final MessageSummaryCell sumCell = new MessageSummaryCell();
         sumCell.addHandler(new DismissMessageEvent.Handler() {

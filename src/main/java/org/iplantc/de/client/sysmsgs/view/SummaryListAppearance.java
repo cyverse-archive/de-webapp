@@ -1,6 +1,5 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 
 import com.google.gwt.core.client.GWT;
@@ -10,8 +9,10 @@ import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 
 /**
  * The customized appearance for a list of system message summaries.
+ * 
+ * @param <M> the type of message
  */
-public final class SummaryListAppearance extends ListViewCustomAppearance<Message> {
+public final class SummaryListAppearance<M> extends ListViewCustomAppearance<M> {
 
     private static final Style style;
 
