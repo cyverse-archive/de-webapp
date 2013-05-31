@@ -102,7 +102,6 @@ public class FileViewerWindow extends IplantWindowBase {
                 AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory,
                         ErrorGetManifest.class, message);
                 ErrorDiskResource as = errorBean.as();
-                String tmp = as.generateErrorMsg();
                 FileViewerWindow.this.hide();
                 ErrorHandler.post(as, caught);
             }
