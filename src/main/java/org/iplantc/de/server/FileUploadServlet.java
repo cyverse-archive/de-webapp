@@ -216,8 +216,9 @@ public class FileUploadServlet extends UploadAction {
         }
 
         // Call the URL import service for each URL.
+        CasServiceDispatcher dispatcherSecured = new CasServiceDispatcher(serviceResolver);
         try {
-            dispatcherDataApi.init(servletConfig);
+            dispatcherSecured.init(servletConfig);
         }
         catch (Exception e) {
             LOG.error("DataApiServiceDispatcher::init - unable to init from getServletConfig()", e);
@@ -228,8 +229,8 @@ public class FileUploadServlet extends UploadAction {
             throw new UploadActionException(jsonResults.toString());
         }
 
-        dispatcherDataApi.setRequest(request);
-        dispatcherDataApi.setForceJsonContentType(true);
+        dispatcherSecured.setRequest(request);
+        // dispatcherSecured.setForceJsonContentType(true);
 
         for (String url : urlItems) {
             filename = url.replaceAll(".*/", "");
@@ -239,7 +240,7 @@ public class FileUploadServlet extends UploadAction {
             // call the RESTful service and get the results.
             try {
                 LOG.debug("invokeService - Making service call.");
-                String repsonse = dispatcherDataApi.getServiceData(wrapper);
+                String repsonse = dispatcherSecured.getServiceData(wrapper);
 
                 jsonResultsArray.add(JSONObject.fromObject(repsonse));
             }
@@ -288,7 +289,7 @@ public class FileUploadServlet extends UploadAction {
         // TODO: Should there be a FileServices class that is wrapping all of
         // this like
         // FolderServices/etc.???
-        String address = deProps.getUploadFileServiceBaseUrl();
+        String address = deProps.getUnprotectedFileIoBaseUrl() + "upload";
 
         // build our wrapper
         MultiPartServiceWrapper wrapper = new MultiPartServiceWrapper(MultiPartServiceWrapper.Type.POST,
@@ -302,7 +303,7 @@ public class FileUploadServlet extends UploadAction {
 
     private ServiceCallWrapper createUrlServiceWrapper(String idFolder, String user, String type,
             String filename, String url) {
-        String address = deProps.getUrlImportServiceBaseUrl();
+        String address = deProps.getFileIoBaseUrl() + "urlupload";
 
         JSONObject body = new JSONObject();
         body.put("dest", idFolder + "/" + filename);
