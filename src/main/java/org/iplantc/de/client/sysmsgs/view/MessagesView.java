@@ -5,12 +5,10 @@ import java.util.Date;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
 
 /**
@@ -81,13 +79,11 @@ public interface MessagesView<M> extends IsWidget {
         /**
          * Initializes the widget
          * 
-         * @param presetner the presenter for this view
+         * @param presenter the presenter for this view
          * @param messageProperties the message properties provider
-         * @param sortInfo the sorting information to use by the summary list
-         * @param selectionMode the selection mode to use by the summary list
          * @param activationRenderer the renderer used to render the activation time
          */
-        MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, StoreSortInfo<M> sortInfo, SelectionMode selectionMode, Renderer<Date> activationRenderer);
+        MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, Renderer<Date> activationRenderer);
     }
 
     /**

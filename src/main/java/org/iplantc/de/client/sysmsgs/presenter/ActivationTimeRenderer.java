@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.iplantc.de.client.I18N;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
@@ -14,6 +15,8 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
  */
 final class ActivationTimeRenderer implements Renderer<Date> {
 
+    private static final ProvidesTime CLOCK = GWT.create(ProvidesTime.class);
+
     private static boolean withinPreviousWeek(final Date successor, final Date predecessor) {
         if (predecessor.after(successor)) {
             return false;
@@ -21,18 +24,13 @@ final class ActivationTimeRenderer implements Renderer<Date> {
         return CalendarUtil.getDaysBetween(predecessor, successor) < 7;
     }
 
-    private final ProvidesTime clock;
-
-    ActivationTimeRenderer(final ProvidesTime clock) {
-        this.clock = clock;
-    }
 
     /**
      * @see Renderer<T>#render(T)
      */
     @Override
     public String render(final Date activationTime) {
-        final Date now = clock.now();
+        final Date now = CLOCK.now();
         String actMsg = "";
         if (CalendarUtil.isSameDate(now, activationTime)) {
             actMsg = I18N.DISPLAY.today();

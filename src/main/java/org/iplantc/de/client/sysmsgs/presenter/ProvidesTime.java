@@ -7,7 +7,7 @@ import java.util.Date;
  * 
  * This interface exists so that unit tests can provide known times.
  */
-interface ProvidesTime {
+public interface ProvidesTime {
 
     /**
      * provides the current time

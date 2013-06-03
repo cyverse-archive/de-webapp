@@ -25,11 +25,9 @@ final class SelectionModel<M> extends ListViewSelectionModel<M> {
  
     /**
      * the constructor
-     * 
-     * @param selectionMode the selection mode
      */
-    SelectionModel(final SelectionMode selectionMode) {
-        setSelectionMode(selectionMode);
+    SelectionModel() {
+        setSelectionMode(SelectionMode.SINGLE);
     }
 
     /**

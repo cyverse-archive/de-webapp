@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.iplantc.de.client.sysmsgs.events.DismissEvent;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -16,8 +17,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ListView;
@@ -39,6 +40,17 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
 
 	private static final Binder binder = GWT.create(Binder.class);
 	
+    private static final <M> ListView<M, M> makeMessageList(final Cell<M> sumCell, final MessageProperties<M> msgProps) {
+        final ListStore<M> store = new ListStore<M>(msgProps.id());
+        store.addSortInfo(new StoreSortInfo<M>(msgProps.activationTime(), SortDir.DESC));
+        final IdentityValueProvider<M> prov = new IdentityValueProvider<M>();
+        final SummaryListAppearance<M> appr = new SummaryListAppearance<M>();
+        final ListView<M, M> list = new ListView<M, M>(store, prov, appr);
+        list.setCell(sumCell);
+        list.setSelectionModel(new SelectionModel<M>());
+        return list;
+    }
+
 	@UiField
     DefaultMessagesViewResources res;
 
@@ -71,24 +83,30 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
      * 
      * @param presenter the corresponding presenter
      * @param messageProperties the message properties provider
-     * @param sortInfo the message sorting information
-     * @param selectionMode the message selection model
      * @param activationRenderer the renderer for the activation time
      */
-    DefaultMessagesView(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final StoreSortInfo<M> sortInfo, final SelectionMode selectionMode,
-            final Renderer<Date> activationRenderer) {
+    DefaultMessagesView(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final Renderer<Date> activationRenderer) {
         this.presenter = presenter;
-        final ListStore<M> msgStore = new ListStore<M>(messageProperties.id());
-        msgStore.addSortInfo(sortInfo);
-        final IdentityValueProvider<M> msgProv = new IdentityValueProvider<M>();
-        final SummaryListAppearance<M> sumAppearance = new SummaryListAppearance<M>();
-        messageList = new ListView<M, M>(msgStore, msgProv, sumAppearance);
         summaryCell = new MessageSummaryCell<M>(messageProperties, activationRenderer);
-        messageList.setCell(summaryCell);
-        messageList.setSelectionModel(new SelectionModel<M>(selectionMode));
+        messageList = makeMessageList(summaryCell, messageProperties);
         initWidget(binder.createAndBindUi(this));
         res.style().ensureInjected();
-        initHandlers(presenter);
+        initHandlers();
+    }
+
+    private void initHandlers() {
+        messageList.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<M>() {
+            @Override
+            public void onSelectionChanged(final SelectionChangedEvent<M> event) {
+                handleMessageSelection(event);
+            }
+        });
+        summaryCell.addHandler(new DismissEvent.Handler<M>() {
+            @Override
+            public void handleDismiss(final DismissEvent<M> event) {
+                presenter.handleDismissMessage(event.getDismissed());
+            }
+        }, DismissEvent.TYPE);
     }
 
     /**
@@ -167,24 +185,9 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
         }
     }
 
-    private void initHandlers(final Presenter<M> presenter) {
-        messageList.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<M>() {
-            @Override
-            public void onSelectionChanged(final SelectionChangedEvent<M> event) {
-                handleMessageSelection(event);
-            }
-        });
-        summaryCell.addHandler(new DismissEvent.Handler<M>() {
-            @Override
-            public void handleDismiss(final DismissEvent<M> event) {
-                presenter.handleDismissMessage(event.getDismissed());
-            }
-        }, DismissEvent.TYPE);
-    }
-
     private void handleMessageSelection(final SelectionChangedEvent<M> event) {
         final List<M> selection = event.getSelection();
-        if (!selection.isEmpty() && presenter != null) {
+        if (!selection.isEmpty()) {
             presenter.handleSelectMessage(selection.get(0));
         }
     }

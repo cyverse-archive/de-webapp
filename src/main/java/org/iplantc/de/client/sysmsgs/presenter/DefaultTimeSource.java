@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Generates the current time using the default Date() constructor.
  */
-final class DefaultTimeSource implements ProvidesTime {
+public final class DefaultTimeSource implements ProvidesTime {
 
     /**
      * @see ProvidesTime#now()

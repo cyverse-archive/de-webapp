@@ -15,10 +15,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.SortDir;
-import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.data.shared.loader.ListLoadResult;
 
 /**
@@ -38,9 +35,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      * the constructor
      */
     public MessagesPresenter() {
-        final StoreSortInfo<Message> sort = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
-        final ActivationTimeRenderer actRenderer = new ActivationTimeRenderer(new DefaultTimeSource());
-        view = VIEW_FACTORY.make(this, MSG_PROPS, sort, SelectionMode.SINGLE, actRenderer);
+        view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
         initStore();
 	}
 	
