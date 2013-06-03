@@ -246,7 +246,9 @@ public class DEViewImpl implements DEView {
                 dialog.show();
             }
         }));
-        userMenu.add(sysMsgsMenuItem);
+
+        // This is not available yet
+        // userMenu.add(sysMsgsMenuItem);
 
         userMenu.add(new SeparatorMenuItem());
 
