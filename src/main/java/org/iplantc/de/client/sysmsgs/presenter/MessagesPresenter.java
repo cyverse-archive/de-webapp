@@ -11,6 +11,7 @@ import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
@@ -29,28 +30,12 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
     private static final MessagesView.Factory<Message> VIEW_FACTORY = GWT.create(MessagesView.Factory.class);
     
-    private final MessagesView<Message> view;
+    private final MessagesView<Message> view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
 
-    /**
-     * the constructor
-     */
-    public MessagesPresenter() {
-        view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
-        initStore();
-	}
-	
-	private void initStore() {
-		updateStoreAsync();
-        EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, new MessagesUpdatedEvent.Handler() {
-            @Override
-            public void onUpdate(final MessagesUpdatedEvent event) {
-                updateStoreAsync();
-            }
-        });
-		}
+    private HandlerRegistration updateHandlerReg = null;
 	
     /**
-     * @see MessageView.Presenter<T>#dismissMessage(T)
+     * @see MessageView.Presenter<T>#handleDismissMessage(T)
      */
     @Override
     public void handleDismissMessage(final Message message) {
@@ -69,17 +54,16 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
 	}
 	
     /**
-     * @see MessageView.Presenter<T>#selectMessage(T)
+     * @see MessageView.Presenter<T>#handleSelectMessage(T)
      */
     @Override
-    public void handleSelectMessage(final Message msg) {
-        view.getSelectionModel().select(false, msg);
-        final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
-        bodyBuilder.appendHtmlConstant(msg.getBody());
-        view.setMessageBody(bodyBuilder.toSafeHtml());
-        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
-        final String expiryStr = expiryFmt.format(msg.getDeactivationTime());
-        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+    public void handleSelectMessage(final Message message) {
+        if (SystemMessageCache.instance().hasMessage(message)) {
+            view.getSelectionModel().select(false, message);
+            showBodyOf(message);
+            showExpiryOf(message);
+            markSeen(message);
+        }
     }
 
     /**
@@ -93,6 +77,15 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             stop();
         } else {
             SystemMessageCache.instance().startSyncing();
+            updateStoreAsync();
+            if (updateHandlerReg == null) {
+                updateHandlerReg = EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, new MessagesUpdatedEvent.Handler() {
+                    @Override
+                    public void onUpdate(final MessagesUpdatedEvent event) {
+                        updateStoreAsync();
+                    }
+                });
+            }
             container.setWidget(view);
             view.showLoading();
         }
@@ -103,7 +96,36 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      * message caching.
      */
     public void stop() {
+        if (updateHandlerReg != null) {
+            updateHandlerReg.removeHandler();
+        }
         SystemMessageCache.instance().stopSyncing();
+    }
+
+    private void markSeen(final Message message) {
+        SystemMessageCache.instance().markSeen(message, new Callback<Void, Throwable>() {
+            @Override
+            public void onFailure(final Throwable reason) {
+                // TODO Figure out how to handle this
+                Window.alert("Failed to mark a message as seen");
+            }
+            @Override
+            public void onSuccess(Void unused) {
+                view.getMessageStore().update(message);
+            }
+        });
+    }
+
+    private void showBodyOf(final Message message) {
+        final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
+        bodyBuilder.appendHtmlConstant(message.getBody());
+        view.setMessageBody(bodyBuilder.toSafeHtml());
+    }
+
+    private void showExpiryOf(final Message message) {
+        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
+        final String expiryStr = expiryFmt.format(message.getDeactivationTime());
+        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
     }
 
 	private void updateStoreAsync() {

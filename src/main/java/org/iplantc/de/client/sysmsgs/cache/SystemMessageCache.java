@@ -93,9 +93,40 @@ public final class SystemMessageCache
 		}
 	}
 
-	/**
-	 * Tells the cache to start periodically synchronizing itself with the back end.
-	 */
+    /**
+     * Indicates whether or not the given message is in the cache
+     * 
+     * @return true if the message exists, otherwise false
+     */
+    public boolean hasMessage(final Message message) {
+        return messages.containsKey(message.getId());
+    }
+
+    /**
+     * Asynchronously marks as message has have been seen by the user
+     * 
+     * @param message the message being marked
+     * @param callback the callback to call upon completion.
+     */
+    public void markSeen(final Message message, final Callback<Void, Throwable> callback) {
+        final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
+        idsDTO.setIds(Arrays.asList(message.getId()));
+        services.acknowledgeMessages(idsDTO, new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+            @Override
+            public void onSuccess(Void unused) {
+                message.setSeen(true);
+                callback.onSuccess(null);
+            }
+        });
+    }
+
+    /**
+     * Tells the cache to start periodically synchronizing itself with the back end.
+     */
 	public void startSyncing() {
 		if (!amPolling) {
 			requestAllMessages();
@@ -113,40 +144,6 @@ public final class SystemMessageCache
             amPolling = false;
         }
     }
-
-	/**
-	 * Returns the current number of message that the user has not acknowledged.
-	 * 
-	 * @return the number of unacknowledged messages
-	 */
-	public long countUnseen() {
-		long count = 0;
-		for (Message msg: messages.values()) {
-			if (!msg.isSeen()) {
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	/**
-	 * Acknowledges all of the messages for the user. This calls through to the back end. The 
-	 * provided callback is executed when the back end responds.
- 	 * 
-	 * @param callback The callback to execute when the back end responds.
-	 */
-	public void acknowledgeAllMessages(final Callback<Void, Throwable> callback) {
-		services.acknowledgeAllMessages(new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(final Throwable caught) {
-				callback.onFailure(caught);
-			}
-			@Override
-			public void onSuccess(final Void unused) {
-				markMessagesAsAcknowledged();
-				callback.onSuccess(null);
-			}});
-	}
 	
 	/**
 	 * Dismisses a particular message for the user. This calls through to the back end. The provide
@@ -183,12 +180,6 @@ public final class SystemMessageCache
 				messages.remove(message.getId());
 				callback.onSuccess(null);
 			}});
-	}
-	
-	private void markMessagesAsAcknowledged() {
-		for (Message msg : messages.values()) {
-			msg.setSeen(true);
-		}
 	}
 
 	private void requestAllMessages() {

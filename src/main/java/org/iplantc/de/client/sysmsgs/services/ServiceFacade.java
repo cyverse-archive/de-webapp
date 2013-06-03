@@ -66,9 +66,22 @@ public final class ServiceFacade {
     }
 
     /**
+     * Marks s list of system messages as seen by the user.
+     * 
+     * @param msgIds the Ids of the messages to be marked
+     * @param callback called on RPC completion.
+     */
+    public void acknowledgeMessages(final IdList msgIds, final AsyncCallback<Void> callback) {
+        final String address = baseURL + "/seen"; //$NON-NLS-1$
+        final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
+        final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(callback);
+        DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
+    }
+
+    /**
      * Marks all of the user's system messages as seen.
      * 
-     * @param user the user name
      * @param callback called on RPC completion.
      */
     public void acknowledgeAllMessages(final AsyncCallback<Void> callback) {
