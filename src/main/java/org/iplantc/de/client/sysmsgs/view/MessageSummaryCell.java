@@ -2,33 +2,33 @@ package org.iplantc.de.client.sysmsgs.view;
 
 import java.util.Date;
 
-import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
-import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.events.DismissEvent;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
+import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
+import org.iplantc.de.client.sysmsgs.view.MessagesView.Presenter;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.sencha.gxt.cell.core.client.AbstractEventCell;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.event.XEvent;
 
 /**
  * This is the cell used to render message summaries.
+ * 
+ * @param <M> the type of message
  */
-public final class MessageSummaryCell extends AbstractEventCell<Message> {
+public final class MessageSummaryCell<M> extends AbstractEventCell<M> {
 	
 	interface Templates extends XTemplates {
         @XTemplate(source = "MessageSummary.html")
-        SafeHtml make(Message msg, String activationTimeMsg, Style style);
+        SafeHtml make(String type, boolean seen, boolean dismissible, String activationTimeMsg, Style style);
 	}
 	
 	private static final Style CSS;
@@ -40,30 +40,30 @@ public final class MessageSummaryCell extends AbstractEventCell<Message> {
     	CSS.ensureInjected();
     }
 
-    private static boolean withinPreviousWeek(final Date successor, final Date predecessor) {
-        if (predecessor.after(successor)) {
-            return false;
-        }
-        return CalendarUtil.getDaysBetween(predecessor, successor) < 7;
-    }
+    private final Presenter<M> presenter;
+    private final MessageProperties<M> messageProperties;
 
     /**
      * the constructor
+     * 
+     * @param presenter the presenter of the parent view
+     * @param messageProperties the properties provider for a message
      */
-    public MessageSummaryCell() {
+    public MessageSummaryCell(final Presenter<M> presenter, final MessageProperties<M> messageProperties) {
         super(BrowserEvents.CLICK);
+        this.presenter = presenter;
+        this.messageProperties = messageProperties;
 	}
 
     /**
-     * @see AbstractEventCell<T>#onBrowserEvent(Context, Element, T,
-     *      NativeEvent, ValueUpdater)
+     * @see AbstractEventCell<T>#onBrowserEvent(Context, Element, T, NativeEvent, ValueUpdater)
      */
-	@Override
-    public void onBrowserEvent(final Context context, final Element parent, final Message message, final NativeEvent nativeEvent, final ValueUpdater<Message> updater) {
+    @Override
+    public void onBrowserEvent(final Context context, final Element parent, final M message, final NativeEvent nativeEvent, final ValueUpdater<M> updater) {
 		final XEvent event = nativeEvent.<XEvent>cast();
         if (event.getTypeInt() == Event.ONCLICK) {
             if (event.getEventTargetEl().hasClassName(CSS.dismiss())) {
-                fireEvent(new DismissMessageEvent(message.getId()));
+                fireEvent(new DismissEvent<M>(message));
             }
         }
     }
@@ -72,19 +72,13 @@ public final class MessageSummaryCell extends AbstractEventCell<Message> {
      * @see AbstractEventCell<T>#render(com.google.gwt.cell.client.Cell.Context, T, SafeHtmlBuilder)
      */
 	@Override
-	public void render(final Context context, final Message message, 
-			final SafeHtmlBuilder builder) {
-	    final Date actTime = message.getActivationTime();
-        final Date now = new Date();
-        String actMsg = "";
-        if (CalendarUtil.isSameDate(now, actTime)) {
-            actMsg = I18N.DISPLAY.today();
-        } else if (withinPreviousWeek(now, actTime)) {
-            actMsg = DateTimeFormat.getFormat("cccc").format(actTime);
-        } else {
-            actMsg = DateTimeFormat.getFormat("dd MMMM yyyy").format(actTime);
-        }
-        builder.append(FACTORY.make(message, actMsg, CSS));
+    public void render(final Context context, final M message, final SafeHtmlBuilder builder) {
+        final String type = messageProperties.type().getValue(message);
+        final boolean seen = messageProperties.seen().getValue(message);
+        final boolean dissmissible = messageProperties.dismissible().getValue(message);
+        final Date actTime = messageProperties.activationTime().getValue(message);
+        final String actMsg = presenter.formatActivationTime(actTime);
+        builder.append(FACTORY.make(type, seen, dissmissible, actMsg, CSS));
     }
 
 }

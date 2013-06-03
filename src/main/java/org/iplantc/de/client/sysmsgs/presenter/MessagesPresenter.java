@@ -6,12 +6,9 @@ import java.util.List;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
-import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.MessageSummaryCell;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
-import org.iplantc.de.client.sysmsgs.view.SummaryListAppearance;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.shared.GWT;
@@ -19,96 +16,59 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.sencha.gxt.core.client.IdentityValueProvider;
-import com.sencha.gxt.core.client.Style;
-import com.sencha.gxt.core.client.ValueProvider;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.data.shared.loader.ListLoadResult;
-import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 /**
  * The system messages presenter.
  */
-public final class MessagesPresenter {
+public final class MessagesPresenter implements MessagesView.Presenter<Message> {
 
-    interface MessageProperties extends PropertyAccess<Message> {
-        ModelKeyProvider<Message> id();
-
-        ValueProvider<Message, Date> activationTime();
-
-        ValueProvider<Message, Boolean> dismissible();
+    interface MessageProperties extends MessagesView.MessageProperties<Message> {
     }
 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
 
+    private static boolean withinPreviousWeek(final Date successor, final Date predecessor) {
+        if (predecessor.after(successor)) {
+            return false;
+        }
+        return CalendarUtil.getDaysBetween(predecessor, successor) < 7;
+    }
+
     private final MessagesView<Message> view;
-    private final ListStore<Message> messageStore;
-    private final ListViewSelectionModel<Message> messageSelectionModel;
-	
+
     /**
      * the constructor
      */
     public MessagesPresenter() {
         view = GWT.create(MessagesView.class);
-        messageStore = new ListStore<Message>(MSG_PROPS.id());
-        messageSelectionModel = new SelectionModel();
-		initStore();
-		initSelectionModel();
-        initMessagesView();
+        final StoreSortInfo<Message> sort = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
+        view.init(this, MSG_PROPS, sort, SelectionMode.SINGLE);
+        initStore();
 	}
 	
 	private void initStore() {
-        final StoreSortInfo<Message> sortInfo = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
-        messageStore.addSortInfo(sortInfo);
 		updateStoreAsync();
-		EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, 
-				new MessagesUpdatedEvent.Handler() {
-					@Override
-					public void onUpdate(final MessagesUpdatedEvent event) {
-						updateStoreAsync();
-					}});
+        EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, new MessagesUpdatedEvent.Handler() {
+            @Override
+            public void onUpdate(final MessagesUpdatedEvent event) {
+                updateStoreAsync();
+            }
+        });
 		}
 	
-	private void initSelectionModel() {
-        messageSelectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
-        messageSelectionModel.addSelectionChangedHandler(
-				new SelectionChangedHandler<Message>() {
-					@Override
-					public void onSelectionChanged(final SelectionChangedEvent<Message> event) 
-							{
-						final List<Message> selection = event.getSelection();
-						if (!selection.isEmpty()) {
-							selectMessage(selection.get(0));
-						}}});
-	}
-		
-    private void initMessagesView() {
-        final IdentityValueProvider<Message> msgProv = new IdentityValueProvider<Message>();
-        final SummaryListAppearance<Message> sumAppearance = new SummaryListAppearance<Message>();
-        final ListView<Message, Message> sumView = new ListView<Message, Message>(messageStore, msgProv, sumAppearance);
-        final MessageSummaryCell sumCell = new MessageSummaryCell();
-        sumCell.addHandler(new DismissMessageEvent.Handler() {
-            @Override
-            public void handleDismiss(final DismissMessageEvent event) {
-                handleDismissMessageEvent(event.getMessageId());
-            }
-        }, DismissMessageEvent.TYPE);
-        sumView.setCell(sumCell);
-        sumView.setSelectionModel(messageSelectionModel);
-        view.init(sumView);
-    }
-
-    private void handleDismissMessageEvent(final String messageId) {
+    /**
+     * @see MessageView.Presenter<T>#dismissMessage(T)
+     */
+    @Override
+    public void handleDismissMessage(final Message message) {
 		// TODO mask view
-        final Message msg = messageStore.findModelWithKey(messageId);
-        SystemMessageCache.instance().dismissMessage(msg, new Callback<Void, Throwable>() {
+        SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
 			@Override
 			public void onFailure(final Throwable reason) {
 				// FIXME handle failure
@@ -116,11 +76,42 @@ public final class MessagesPresenter {
 			}
 			@Override
 			public void onSuccess(Void unused) {
-                removeMessage(msg);
+                removeMessage(message);
 				// TODO unmask  view
 			}});
 	}
 	
+    /**
+     * @see MessageView.Presenter<T>#selectMessage(T)
+     */
+    @Override
+    public void handleSelectMessage(final Message msg) {
+        view.getSelectionModel().select(false, msg);
+        final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
+        bodyBuilder.appendHtmlConstant(msg.getBody());
+        view.setMessageBody(bodyBuilder.toSafeHtml());
+        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
+        final String expiryStr = expiryFmt.format(msg.getDeactivationTime());
+        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+    }
+
+    /**
+     * @see MessageView.Presenter#formatActivationTime(Date)
+     */
+    @Override
+    public String formatActivationTime(final Date activationTime) {
+        final Date now = new Date();
+        String actMsg = "";
+        if (CalendarUtil.isSameDate(now, activationTime)) {
+            actMsg = I18N.DISPLAY.today();
+        } else if (withinPreviousWeek(now, activationTime)) {
+            actMsg = DateTimeFormat.getFormat("cccc").format(activationTime);
+        } else {
+            actMsg = DateTimeFormat.getFormat("dd MMMM yyyy").format(activationTime);
+        }
+        return actMsg;
+    }
+
     /**
      * Starts the presenter and attaches the view to the provided container. This also starts the
      * message caching.
@@ -145,16 +136,6 @@ public final class MessagesPresenter {
         SystemMessageCache.instance().stopSyncing();
     }
 
-	private void selectMessage(final Message msg) {
-        messageSelectionModel.select(false, msg);
-		final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
-		bodyBuilder.appendHtmlConstant(msg.getBody());
-        view.setMessageBody(bodyBuilder.toSafeHtml());
-        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
-        final String expiryStr = expiryFmt.format(msg.getDeactivationTime());
-        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
-	}
-
 	private void updateStoreAsync() {
 		SystemMessageCache.instance().load(null, 
 				new Callback<ListLoadResult<Message>, Throwable>() {
@@ -170,14 +151,15 @@ public final class MessagesPresenter {
 	}
 	
 	private void updateStore(final List<Message> updatedMessages) {
-        final Message curSelect = messageSelectionModel.getSelectedItem();
-        messageStore.replaceAll(updatedMessages);
-        if (curSelect != null && messageStore.findModel(curSelect) == null) {
-            messageStore.add(curSelect);
+        final Message curSelect = view.getSelectionModel().getSelectedItem();
+        final ListStore<Message> store = view.getMessageStore();
+        store.replaceAll(updatedMessages);
+        if (curSelect != null && store.findModel(curSelect) == null) {
+            store.add(curSelect);
 		}
-        if (messageStore.size() > 0) {
+        if (store.size() > 0) {
 			if (curSelect != null) {
-                showMessageSelected(messageStore.indexOf(curSelect));
+                showMessageSelected(store.indexOf(curSelect));
 			} else {
 				showMessageSelected(0);
 			}
@@ -187,16 +169,15 @@ public final class MessagesPresenter {
 	}
 
 	private void removeMessage(final Message message) {
-        messageStore.remove(message);
-        if (messageStore.size() <= 0) {
+        view.getMessageStore().remove(message);
+        if (view.getMessageStore().size() <= 0) {
             view.showNoMessages();
 		}
 	}
 	
 	private void showMessageSelected(final int index) {
         view.showMessages();
-        messageSelectionModel.deselectAll();
-        messageSelectionModel.select(index, false);
+        view.getSelectionModel().select(index, false);
 	}
 
 }
