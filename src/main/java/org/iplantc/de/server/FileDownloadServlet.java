@@ -72,7 +72,7 @@ public class FileDownloadServlet extends HttpServlet {
         try {
             String address = buildRequestAddress(request);
             ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-            DataApiServiceDispatcher dispatcher = createServiceDispatcher(request);
+            CasServiceDispatcher dispatcher = createServiceDispatcher(request);
 
             LOG.debug("doGet - Making service call.");
             fileContents = dispatcher.getServiceStream(wrapper);
@@ -134,8 +134,8 @@ public class FileDownloadServlet extends HttpServlet {
      * @param request our HTTP servlet request.
      * @return the service dispatcher.
      */
-    private DataApiServiceDispatcher createServiceDispatcher(HttpServletRequest request) {
-        DataApiServiceDispatcher dispatcher = new DataApiServiceDispatcher(serviceResolver);
+    private CasServiceDispatcher createServiceDispatcher(HttpServletRequest request) {
+        CasServiceDispatcher dispatcher = new CasServiceDispatcher(serviceResolver);
         try {
             dispatcher.init(getServletConfig());
         } catch (ServletException e) {
@@ -164,7 +164,7 @@ public class FileDownloadServlet extends HttpServlet {
 
         String downloadUrl = request.getParameter("url");
         if (downloadUrl == null) {
-            downloadUrl = deProps.getDownloadFileServiceBaseUrl();
+            downloadUrl = deProps.getFileIoBaseUrl() + "download";
         } else {
             downloadUrl = deProps.getDataMgmtServiceBaseUrl() + downloadUrl;
         }
