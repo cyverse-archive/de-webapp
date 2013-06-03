@@ -1,0 +1,19 @@
+package org.iplantc.de.client.sysmsgs.presenter;
+
+import java.util.Date;
+
+/**
+ * Implementations of this interface can provide the current time.
+ * 
+ * This interface exists so that unit tests can provide known times.
+ */
+interface ProvidesTime {
+
+    /**
+     * provides the current time
+     * 
+     * @return the current time
+     */
+    Date now();
+
+}

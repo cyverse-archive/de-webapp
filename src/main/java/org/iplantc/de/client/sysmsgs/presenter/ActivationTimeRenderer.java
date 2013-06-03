@@ -21,12 +21,18 @@ final class ActivationTimeRenderer implements Renderer<Date> {
         return CalendarUtil.getDaysBetween(predecessor, successor) < 7;
     }
 
+    private final ProvidesTime clock;
+
+    ActivationTimeRenderer(final ProvidesTime clock) {
+        this.clock = clock;
+    }
+
     /**
      * @see Renderer<T>#render(T)
      */
     @Override
     public String render(final Date activationTime) {
-        final Date now = new Date();
+        final Date now = clock.now();
         String actMsg = "";
         if (CalendarUtil.isSameDate(now, activationTime)) {
             actMsg = I18N.DISPLAY.today();

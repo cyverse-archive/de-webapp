@@ -39,7 +39,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      */
     public MessagesPresenter() {
         final StoreSortInfo<Message> sort = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
-        final ActivationTimeRenderer actRenderer = new ActivationTimeRenderer();
+        final ActivationTimeRenderer actRenderer = new ActivationTimeRenderer(new DefaultTimeSource());
         view = VIEW_FACTORY.make(this, MSG_PROPS, sort, SelectionMode.SINGLE, actRenderer);
         initStore();
 	}
