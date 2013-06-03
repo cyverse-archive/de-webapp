@@ -85,14 +85,21 @@ public interface MessagesView<M> extends IsWidget {
     }
 
     /**
-     * Initializes the widget
+     * A factory for making MessageView objects
      * 
-     * @param presetner the presenter for this view
-     * @param messageProperties the message properties provider
-     * @param sortInfo the sorting information to use by the summary list
-     * @param selectionMode the selection mode to use by the summary list
+     * @param <M> the type of message to view
      */
-    void init(Presenter<M> presenter, MessageProperties<M> messageProperites, StoreSortInfo<M> sortInfo, SelectionMode selectionMode);
+    interface Factory<M> {
+        /**
+         * Initializes the widget
+         * 
+         * @param presetner the presenter for this view
+         * @param messageProperties the message properties provider
+         * @param sortInfo the sorting information to use by the summary list
+         * @param selectionMode the selection mode to use by the summary list
+         */
+        MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, StoreSortInfo<M> sortInfo, SelectionMode selectionMode);
+    }
 
     /**
      * returns the message store backing the view

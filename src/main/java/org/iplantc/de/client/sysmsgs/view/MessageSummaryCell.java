@@ -24,7 +24,7 @@ import com.sencha.gxt.widget.core.client.event.XEvent;
  * 
  * @param <M> the type of message
  */
-public final class MessageSummaryCell<M> extends AbstractEventCell<M> {
+final class MessageSummaryCell<M> extends AbstractEventCell<M> {
 	
 	interface Templates extends XTemplates {
         @XTemplate(source = "MessageSummary.html")
@@ -49,7 +49,7 @@ public final class MessageSummaryCell<M> extends AbstractEventCell<M> {
      * @param presenter the presenter of the parent view
      * @param messageProperties the properties provider for a message
      */
-    public MessageSummaryCell(final Presenter<M> presenter, final MessageProperties<M> messageProperties) {
+    MessageSummaryCell(final Presenter<M> presenter, final MessageProperties<M> messageProperties) {
         super(BrowserEvents.CLICK);
         this.presenter = presenter;
         this.messageProperties = messageProperties;

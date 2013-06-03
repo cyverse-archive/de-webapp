@@ -30,7 +30,7 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
  * 
  * @param <M> the type of message to view
  */
-public final class DefaultMessagesView<M> extends Composite implements MessagesView<M> {
+final class DefaultMessagesView<M> extends Composite implements MessagesView<M> {
 
     interface Binder extends UiBinder<Widget, DefaultMessagesView<?>> {
 	}
@@ -59,16 +59,20 @@ public final class DefaultMessagesView<M> extends Composite implements MessagesV
     Label expiryView;
 
     @UiField(provided = true)
-    ListView<M, M> messageList;
+    final ListView<M, M> messageList;
 
-    private MessageSummaryCell<M> summaryCell;
-    private Presenter<M> presenter;
+    private final MessageSummaryCell<M> summaryCell;
+    private final Presenter<M> presenter;
 
     /**
-     * @see MessagesView#init(ListView)
+     * the constructor
+     * 
+     * @param presenter the corresponding presenter
+     * @param messageProperties the message properties provider
+     * @param sortInfo the message sorting information
+     * @param selectionMode the message selection model
      */
-    @Override
-    public void init(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final StoreSortInfo<M> sortInfo, final SelectionMode selectionMode) {
+    DefaultMessagesView(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final StoreSortInfo<M> sortInfo, final SelectionMode selectionMode) {
         this.presenter = presenter;
         final ListStore<M> msgStore = new ListStore<M>(messageProperties.id());
         msgStore.addSortInfo(sortInfo);
@@ -172,7 +176,6 @@ public final class DefaultMessagesView<M> extends Composite implements MessagesV
                 presenter.handleDismissMessage(event.getDismissed());
             }
         }, DismissEvent.TYPE);
-
     }
 
     private void handleMessageSelection(final SelectionChangedEvent<M> event) {

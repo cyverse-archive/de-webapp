@@ -1,7 +1,6 @@
-package org.iplantc.de.client.sysmsgs.presenter;
+package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.de.client.sysmsgs.model.Message;
-import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 
 import com.google.gwt.core.client.GWT;

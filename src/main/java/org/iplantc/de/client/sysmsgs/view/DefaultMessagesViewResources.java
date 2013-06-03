@@ -7,12 +7,12 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * This defines the resources required for displaying system messages.
  */
-public interface DefaultMessagesViewResources extends ClientBundle {
+interface DefaultMessagesViewResources extends ClientBundle {
 
     /**
      * This is the interface of the style used for rendering the system messages view.
      */
-	public interface Style extends CssResource {
+    interface Style extends CssResource {
         /**
          * The styling of a summary list item
          */

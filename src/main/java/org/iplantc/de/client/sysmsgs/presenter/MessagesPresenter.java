@@ -32,7 +32,8 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     }
 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
-
+    private static final MessagesView.Factory<Message> VIEW_FACTORY = GWT.create(MessagesView.Factory.class);
+    
     private static boolean withinPreviousWeek(final Date successor, final Date predecessor) {
         if (predecessor.after(successor)) {
             return false;
@@ -46,9 +47,8 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      * the constructor
      */
     public MessagesPresenter() {
-        view = GWT.create(MessagesView.class);
         final StoreSortInfo<Message> sort = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
-        view.init(this, MSG_PROPS, sort, SelectionMode.SINGLE);
+        view = VIEW_FACTORY.make(this, MSG_PROPS, sort, SelectionMode.SINGLE);
         initStore();
 	}
 	

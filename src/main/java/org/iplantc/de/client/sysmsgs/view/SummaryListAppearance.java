@@ -12,7 +12,7 @@ import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
  * 
  * @param <M> the type of message
  */
-public final class SummaryListAppearance<M> extends ListViewCustomAppearance<M> {
+final class SummaryListAppearance<M> extends ListViewCustomAppearance<M> {
 
     private static final Style style;
 
@@ -24,7 +24,7 @@ public final class SummaryListAppearance<M> extends ListViewCustomAppearance<M> 
     /**
      * the constructor
      */
-    public SummaryListAppearance() {
+    SummaryListAppearance() {
         super("." + style.summaryItem(), null, style.selected());
     }
 
