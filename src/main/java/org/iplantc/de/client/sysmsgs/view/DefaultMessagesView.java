@@ -81,7 +81,7 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
         messageList = new ListView<M, M>(msgStore, msgProv, sumAppearance);
         summaryCell = new MessageSummaryCell<M>(presenter, messageProperties);
         messageList.setCell(summaryCell);
-        messageList.getSelectionModel().setSelectionMode(selectionMode);
+        messageList.setSelectionModel(new SelectionModel<M>(selectionMode));
         initWidget(binder.createAndBindUi(this));
         res.style().ensureInjected();
         initHandlers(presenter);
