@@ -1,9 +1,12 @@
 package org.iplantc.de.client.sysmsgs.view;
 
+import java.util.Date;
+
 import org.iplantc.de.client.sysmsgs.view.MessagesView.Factory;
 import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
 import org.iplantc.de.client.sysmsgs.view.MessagesView.Presenter;
 
+import com.google.gwt.text.shared.Renderer;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 
@@ -15,11 +18,11 @@ import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 public final class DefaultMessagesViewFactory<M> implements Factory<M> {
 
     /**
-     * @see Factory#make(Presenter, MessageProperties, StoreSortInfo, SelectionMode)
+     * @see Factory#make(Presenter, MessageProperties, StoreSortInfo, SelectionMode, Renderer<Date>)
      */
     @Override
-    public MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, StoreSortInfo<M> sortInfo, SelectionMode selectionMode) {
-        return new DefaultMessagesView<M>(presenter, messageProperties, sortInfo, selectionMode);
+    public MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, StoreSortInfo<M> sortInfo, SelectionMode selectionMode, Renderer<Date> activationRenderer) {
+        return new DefaultMessagesView<M>(presenter, messageProperties, sortInfo, selectionMode, activationRenderer);
     }
 
 }

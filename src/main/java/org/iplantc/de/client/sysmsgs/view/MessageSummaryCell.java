@@ -5,7 +5,6 @@ import java.util.Date;
 import org.iplantc.de.client.sysmsgs.events.DismissEvent;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
-import org.iplantc.de.client.sysmsgs.view.MessagesView.Presenter;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -14,6 +13,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.Event;
 import com.sencha.gxt.cell.core.client.AbstractEventCell;
 import com.sencha.gxt.core.client.XTemplates;
@@ -40,19 +40,19 @@ final class MessageSummaryCell<M> extends AbstractEventCell<M> {
     	CSS.ensureInjected();
     }
 
-    private final Presenter<M> presenter;
     private final MessageProperties<M> messageProperties;
+    private final Renderer<Date> activationRenderer;
 
     /**
      * the constructor
      * 
-     * @param presenter the presenter of the parent view
      * @param messageProperties the properties provider for a message
+     * @param activationRenderer the renderer for rendering activation times
      */
-    MessageSummaryCell(final Presenter<M> presenter, final MessageProperties<M> messageProperties) {
+    MessageSummaryCell(final MessageProperties<M> messageProperties, final Renderer<Date> activationRenderer) {
         super(BrowserEvents.CLICK);
-        this.presenter = presenter;
         this.messageProperties = messageProperties;
+        this.activationRenderer = activationRenderer;
 	}
 
     /**
@@ -77,7 +77,7 @@ final class MessageSummaryCell<M> extends AbstractEventCell<M> {
         final boolean seen = messageProperties.seen().getValue(message);
         final boolean dissmissible = messageProperties.dismissible().getValue(message);
         final Date actTime = messageProperties.activationTime().getValue(message);
-        final String actMsg = presenter.formatActivationTime(actTime);
+        final String actMsg = activationRenderer.render(actTime);
         builder.append(FACTORY.make(type, seen, dissmissible, actMsg, CSS));
     }
 

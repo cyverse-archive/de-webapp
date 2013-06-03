@@ -1,5 +1,6 @@
 package org.iplantc.de.client.sysmsgs.view;
 
+import java.util.Date;
 import java.util.List;
 
 import org.iplantc.de.client.sysmsgs.events.DismissEvent;
@@ -8,6 +9,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
@@ -71,15 +73,17 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
      * @param messageProperties the message properties provider
      * @param sortInfo the message sorting information
      * @param selectionMode the message selection model
+     * @param activationRenderer the renderer for the activation time
      */
-    DefaultMessagesView(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final StoreSortInfo<M> sortInfo, final SelectionMode selectionMode) {
+    DefaultMessagesView(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final StoreSortInfo<M> sortInfo, final SelectionMode selectionMode,
+            final Renderer<Date> activationRenderer) {
         this.presenter = presenter;
         final ListStore<M> msgStore = new ListStore<M>(messageProperties.id());
         msgStore.addSortInfo(sortInfo);
         final IdentityValueProvider<M> msgProv = new IdentityValueProvider<M>();
         final SummaryListAppearance<M> sumAppearance = new SummaryListAppearance<M>();
         messageList = new ListView<M, M>(msgStore, msgProv, sumAppearance);
-        summaryCell = new MessageSummaryCell<M>(presenter, messageProperties);
+        summaryCell = new MessageSummaryCell<M>(messageProperties, activationRenderer);
         messageList.setCell(summaryCell);
         messageList.setSelectionModel(new SelectionModel<M>(selectionMode));
         initWidget(binder.createAndBindUi(this));

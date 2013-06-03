@@ -1,6 +1,5 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import java.util.Date;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -16,7 +15,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.SortDir;
@@ -34,13 +32,6 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
     private static final MessagesView.Factory<Message> VIEW_FACTORY = GWT.create(MessagesView.Factory.class);
     
-    private static boolean withinPreviousWeek(final Date successor, final Date predecessor) {
-        if (predecessor.after(successor)) {
-            return false;
-        }
-        return CalendarUtil.getDaysBetween(predecessor, successor) < 7;
-    }
-
     private final MessagesView<Message> view;
 
     /**
@@ -48,7 +39,8 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      */
     public MessagesPresenter() {
         final StoreSortInfo<Message> sort = new StoreSortInfo<Message>(MSG_PROPS.activationTime(), SortDir.DESC);
-        view = VIEW_FACTORY.make(this, MSG_PROPS, sort, SelectionMode.SINGLE);
+        final ActivationTimeRenderer actRenderer = new ActivationTimeRenderer();
+        view = VIEW_FACTORY.make(this, MSG_PROPS, sort, SelectionMode.SINGLE, actRenderer);
         initStore();
 	}
 	
@@ -93,23 +85,6 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
         final String expiryStr = expiryFmt.format(msg.getDeactivationTime());
         view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
-    }
-
-    /**
-     * @see MessageView.Presenter#formatActivationTime(Date)
-     */
-    @Override
-    public String formatActivationTime(final Date activationTime) {
-        final Date now = new Date();
-        String actMsg = "";
-        if (CalendarUtil.isSameDate(now, activationTime)) {
-            actMsg = I18N.DISPLAY.today();
-        } else if (withinPreviousWeek(now, activationTime)) {
-            actMsg = DateTimeFormat.getFormat("cccc").format(activationTime);
-        } else {
-            actMsg = DateTimeFormat.getFormat("dd MMMM yyyy").format(activationTime);
-        }
-        return actMsg;
     }
 
     /**

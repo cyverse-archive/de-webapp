@@ -3,6 +3,7 @@ package org.iplantc.de.client.sysmsgs.view;
 import java.util.Date;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -24,7 +25,6 @@ public interface MessagesView<M> extends IsWidget {
      * The properties of the messages used by the view
      */
     interface MessageProperties<M> extends PropertyAccess<M> {
-
         /**
          * the message id provider for providing index keys
          */
@@ -49,7 +49,6 @@ public interface MessagesView<M> extends IsWidget {
          * the dismissible provider
          */
         ValueProvider<M, Boolean> dismissible();
-
     }
 
     /**
@@ -58,7 +57,6 @@ public interface MessagesView<M> extends IsWidget {
      * @param <M> the type of message to present
      */
     interface Presenter<M> {
-
         /**
          * handle a user request to dismiss a message
          * 
@@ -72,16 +70,6 @@ public interface MessagesView<M> extends IsWidget {
          * @param message the message to select
          */
         void handleSelectMessage(M message);
-
-        /**
-         * format a time to be displayed as an activation time
-         * 
-         * @param activationTime the time to format
-         * 
-         * @return the display string
-         */
-        String formatActivationTime(Date activationTime);
-
     }
 
     /**
@@ -97,8 +85,9 @@ public interface MessagesView<M> extends IsWidget {
          * @param messageProperties the message properties provider
          * @param sortInfo the sorting information to use by the summary list
          * @param selectionMode the selection mode to use by the summary list
+         * @param activationRenderer the renderer used to render the activation time
          */
-        MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, StoreSortInfo<M> sortInfo, SelectionMode selectionMode);
+        MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, StoreSortInfo<M> sortInfo, SelectionMode selectionMode, Renderer<Date> activationRenderer);
     }
 
     /**
