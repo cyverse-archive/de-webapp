@@ -176,9 +176,12 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
 	}
 
 	private void removeMessage(final Message message) {
+        final int idx = view.getMessageStore().indexOf(message);
         view.getMessageStore().remove(message);
         if (view.getMessageStore().size() <= 0) {
             view.showNoMessages();
+        } else {
+            showMessageSelected(view.getMessageStore().size() <= idx ? idx - 1 : idx);
 		}
 	}
 	
