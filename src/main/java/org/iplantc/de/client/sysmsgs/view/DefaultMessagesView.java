@@ -3,7 +3,7 @@ package org.iplantc.de.client.sysmsgs.view;
 import java.util.Date;
 import java.util.List;
 
-import org.iplantc.de.client.sysmsgs.events.DismissEvent;
+import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
@@ -101,12 +101,12 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
                 handleMessageSelection(event);
             }
         });
-        summaryCell.addHandler(new DismissEvent.Handler<M>() {
+        summaryCell.addHandler(new DismissMessageEvent.Handler() {
             @Override
-            public void handleDismiss(final DismissEvent<M> event) {
-                presenter.handleDismissMessage(event.getDismissed());
+            public void handleDismiss(final DismissMessageEvent event) {
+                handleMessageDismissal(event);
             }
-        }, DismissEvent.TYPE);
+        }, DismissMessageEvent.TYPE);
     }
 
     /**
@@ -182,6 +182,13 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
                     messagesPanel.forceLayout();
                 }
             });
+        }
+    }
+
+    private void handleMessageDismissal(final DismissMessageEvent event) {
+        final M msg = messageList.getStore().findModelWithKey(event.getMessage());
+        if (msg != null) {
+            presenter.handleDismissMessage(msg);
         }
     }
 

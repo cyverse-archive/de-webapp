@@ -2,7 +2,7 @@ package org.iplantc.de.client.sysmsgs.view;
 
 import java.util.Date;
 
-import org.iplantc.de.client.sysmsgs.events.DismissEvent;
+import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
 import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
 
@@ -63,7 +63,7 @@ final class MessageSummaryCell<M> extends AbstractEventCell<M> {
 		final XEvent event = nativeEvent.<XEvent>cast();
         if (event.getTypeInt() == Event.ONCLICK) {
             if (event.getEventTargetEl().hasClassName(CSS.dismiss())) {
-                fireEvent(new DismissEvent<M>(message));
+                fireEvent(new DismissMessageEvent(messageProperties.id().getKey(message)));
             }
         }
     }
