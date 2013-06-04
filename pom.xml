@@ -98,11 +98,6 @@
       </dependency>
       <dependency>
          <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-metadata</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
          <artifactId>jsonutil</artifactId>
          <version>${project.version}</version>
       </dependency>

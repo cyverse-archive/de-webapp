@@ -1,10 +1,9 @@
 /**
  * 
  */
-package org.iplantc.de.client.views.panels;
+package org.iplantc.de.client.notifications.views;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.de.client.notifications.views.NotificationListView;
 
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;

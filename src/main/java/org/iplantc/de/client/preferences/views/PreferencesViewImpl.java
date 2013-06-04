@@ -15,15 +15,14 @@ import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
-import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.validator.MaxLengthValidator;
 
 /**
  * A view imple for preferences screen
- * 
+ *
  * @author sriram
- * 
+ *
  */
 public class PreferencesViewImpl implements PreferencesView {
 
@@ -48,10 +47,7 @@ public class PreferencesViewImpl implements PreferencesView {
     CheckBox cboLastPath;
 
     @UiField
-    Radio radioSaveSession;
-
-    @UiField
-    Radio radioNoSaveSession;
+    CheckBox cboSaveSession;
 
     @UiField
     TextField appKbSc;
@@ -88,7 +84,7 @@ public class PreferencesViewImpl implements PreferencesView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.google.gwt.user.client.ui.IsWidget#asWidget()
      */
     @Override
@@ -104,7 +100,7 @@ public class PreferencesViewImpl implements PreferencesView {
     public void setDefaultValues() {
         cboNotifyEmail.setValue(true);
         cboLastPath.setValue(true);
-        radioSaveSession.setValue(true);
+        cboSaveSession.setValue(true);
         appKbSc.setValue(us.getAppsShortCut());
         dataKbSc.setValue(us.getDataShortCut());
         anaKbSc.setValue(us.getAnalysesShortCut());
@@ -117,13 +113,7 @@ public class PreferencesViewImpl implements PreferencesView {
         cboNotifyEmail.setValue(us.isEnableEmailNotification());
         cboLastPath.setValue(us.isRememberLastPath());
         defaultOpFolder.setValueFromStringId(us.getDefaultOutputFolder());
-        if (us.isSaveSession()) {
-            radioSaveSession.setValue(true);
-            radioNoSaveSession.setValue(false);
-        } else {
-            radioSaveSession.setValue(false);
-            radioNoSaveSession.setValue(true);
-        }
+        	cboSaveSession.setValue(us.isSaveSession());
 
         appKbSc.setValue(us.getAppsShortCut());
         dataKbSc.setValue(us.getDataShortCut());
@@ -136,11 +126,7 @@ public class PreferencesViewImpl implements PreferencesView {
     public UserSettings getValues() {
         us.setEnableEmailNotification(cboNotifyEmail.getValue());
         us.setRememberLastPath(cboLastPath.getValue());
-        if (radioNoSaveSession.getValue()) {
-            us.setSaveSession(true);
-        } else {
-            us.setSaveSession(false);
-        }
+        us.setSaveSession(cboSaveSession.getValue());
         us.setDefaultOutputFolder(defaultOpFolder.getValue().getId());
         us.setAppsShortCut(appKbSc.getValue());
         us.setDataShortCut(dataKbSc.getValue());

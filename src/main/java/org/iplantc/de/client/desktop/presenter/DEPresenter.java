@@ -4,37 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-
-import com.sencha.gxt.core.client.XTemplates;
-import com.sencha.gxt.core.client.dom.XDOM;
-import com.sencha.gxt.core.client.dom.XElement;
-import com.sencha.gxt.core.client.util.Size;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.appearance.widgets.InternalAnchorDefaultAppearance;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncementConfig;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
@@ -44,7 +18,6 @@ import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
 import org.iplantc.core.uicommons.client.widgets.InternalAnchor;
-import org.iplantc.core.uicommons.client.widgets.InternalAnchorDefaultAppearance;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
@@ -64,6 +37,32 @@ import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.core.client.dom.XElement;
+import com.sencha.gxt.core.client.util.Size;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
 /**
  * Defines the default view of the workspace.
  * 
@@ -74,7 +73,7 @@ public class DEPresenter implements DEView.Presenter {
     private final DEView view;
     private final DeResources res;
     private final EventBus eventBus;
-    private HashMap<String, Command> keyboardShortCuts;
+    private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
     private TextButton feedbackBtn;
     
@@ -273,7 +272,6 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void initMessagePoller() {
-//        SystemMessageCache.instance().startSyncing();
         MessagePoller poller = MessagePoller.getInstance();
         poller.addTask(new CountUnseenNotifications());
         poller.start();
@@ -333,7 +331,7 @@ public class DEPresenter implements DEView.Presenter {
 		$doc.oncontextmenu = function() {
 			return enabled;
 		};
-	}-*/;
+    }-*/;
 
     @Override
     public void go(HasOneWidget container) {/* Do Nothing */
@@ -373,10 +371,10 @@ public class DEPresenter implements DEView.Presenter {
     	}
     	
     	private static final Templates FACTORY = GWT.create(Templates.class);
-    	private static final InternalAnchorDefaultAppearance ANCHOR_APPEARANCE 
+        private static final InternalAnchorDefaultAppearance ANCHOR_APPEARANCE
     			= new InternalAnchorDefaultAppearance(true);
     	
-    	private InternalAnchor<Void> anchor;
+    	private final InternalAnchor<Void> anchor;
     	
     	NewSystemMessageAnnouncement() {
     		super(FACTORY.make(ANCHOR_APPEARANCE.render("Read it.")));
@@ -392,7 +390,7 @@ public class DEPresenter implements DEView.Presenter {
     
     private void indicateNewSysMessages() {
     	final NewSystemMessageAnnouncement announcement = new NewSystemMessageAnnouncement();
-    	IplantAnnouncer.schedule(announcement, new IplantAnnouncementConfig(true, 0));
+        IplantAnnouncer.getInstance().schedule(announcement, new IplantAnnouncementConfig(true, 0));
 	}
     
     private class DataKBShortCutCmd implements Command {

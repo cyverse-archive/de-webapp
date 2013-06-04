@@ -53,7 +53,6 @@
         <!-- Common Service Interfaces -->
 	<inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
 	<inherits name="org.iplantc.core.JsonUtil"/>
-	<inherits name="org.iplantc.core.Metadata"/>
 	<inherits name="org.iplantc.core.uiapps.Apps"/>
 	<inherits name="org.iplantc.core.uiapps.widgets.Widgets"/>
 	<inherits name="org.iplantc.core.uiapps.integration.AppsIntegration"/>
@@ -81,12 +80,21 @@
       <when-type-is class="org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade"/>
    </replace-with>
    
-   <replace-with class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorDefaultAppearance">
+   <replace-with 
+         class="org.iplantc.core.uicommons.client.appearance.widgets.IPlantAnchorDefaultAppearance">
       <when-type-is class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance"/>
    </replace-with>
    
    <replace-with class="org.iplantc.de.client.services.impl.AppTemplateServicesImpl">
       <when-type-is class="org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices" />
+   </replace-with>
+   
+   <replace-with class="org.iplantc.de.client.sysmsgs.presenter.DefaultTimeSource">
+      <when-type-is class="org.iplantc.de.client.sysmsgs.presenter.ProvidesTime"/>
+   </replace-with
+   >
+   <replace-with class="org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewFactory">
+   	  <when-type-is class="org.iplantc.de.client.sysmsgs.view.MessagesView.Factory"/>
    </replace-with>
    
 	<!-- Specify the app entry point class.                         -->

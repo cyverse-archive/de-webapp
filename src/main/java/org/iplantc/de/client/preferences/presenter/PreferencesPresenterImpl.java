@@ -42,7 +42,7 @@ public class PreferencesPresenterImpl implements Presenter {
 
                 @Override
                 public void onSuccess(String result) {
-                    IplantAnnouncer.schedule(I18N.DISPLAY.saveSettings());
+                    IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.saveSettings());
                 }
 
                 @Override

@@ -5,6 +5,25 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
+import org.iplantc.core.resources.client.DEHeaderStyle;
+import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
+import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsDailog;
+import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.util.WindowUtil;
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
+import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.DeResources;
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.desktop.widget.Desktop;
+import org.iplantc.de.client.events.NotificationCountUpdateEvent;
+import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
+import org.iplantc.de.client.events.ShowAboutWindowEvent;
+import org.iplantc.de.client.events.ShowSystemMessagesEvent;
+import org.iplantc.de.client.notifications.views.ViewNotificationMenu;
+import org.iplantc.de.client.preferences.views.PreferencesDialog;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,24 +49,6 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.SeparatorMenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
-
-import org.iplantc.core.resources.client.DEHeaderStyle;
-import org.iplantc.core.resources.client.IplantResources;
-import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
-import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsDailog;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.util.WindowUtil;
-import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
-import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.desktop.widget.Desktop;
-import org.iplantc.de.client.events.NotificationCountUpdateEvent;
-import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
-import org.iplantc.de.client.events.ShowAboutWindowEvent;
-import org.iplantc.de.client.preferences.views.PreferencesDialog;
-import org.iplantc.de.client.views.panels.ViewNotificationMenu;
 
 /**
  * Default DE View as Desktop
@@ -83,6 +84,7 @@ public class DEViewImpl implements DEView {
     private final Desktop desktop;
     private final HeaderTemplate r;
     private final DEHeaderStyle headerResources;
+    private final IPlantAnchor sysMsgsMenuItem;
 
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
@@ -91,6 +93,15 @@ public class DEViewImpl implements DEView {
     interface HeaderTemplate extends XTemplates {
         @XTemplate(source = "template_de.html")
         public SafeHtml render(DEHeaderStyle style);
+    }
+
+    private static IPlantAnchor makeSysMsgsMenuItem() {
+        return new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
+            }
+        });
     }
 
     public DEViewImpl(final DeResources resources, final EventBus eventBus) {
@@ -109,6 +120,8 @@ public class DEViewImpl implements DEView {
         headerResources = IplantResources.RESOURCES.getHeaderStyle();
         headerResources.ensureInjected();
         r = GWT.create(HeaderTemplate.class);
+
+        sysMsgsMenuItem = makeSysMsgsMenuItem();
     }
 
     @Override
@@ -233,12 +246,9 @@ public class DEViewImpl implements DEView {
                 dialog.show();
             }
         }));
-//        userMenu.add(new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
-//            @Override
-//            public void onClick(ClickEvent event) {
-//                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
-//            }
-//        }));
+
+        // This is not available yet
+        // userMenu.add(sysMsgsMenuItem);
 
         userMenu.add(new SeparatorMenuItem());
 
@@ -343,6 +353,18 @@ public class DEViewImpl implements DEView {
         for (WindowState ws : windowStates) {
             desktop.restoreWindow(ws);
         }
+    }
+
+    /**
+     * @see DEView#updateUnseenSystemMessageCount(long)
+     */
+    @Override
+    public void updateUnseenSystemMessageCount(final long numUnseenSysMsgs) {
+        String lbl = I18N.DISPLAY.systemMessagesLabel();
+        if (numUnseenSysMsgs > 0) {
+            lbl += " (" + numUnseenSysMsgs + ")";
+        }
+        sysMsgsMenuItem.setText(lbl);
     }
 
 }
