@@ -1,24 +1,26 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import java.util.List;
+import java.util.Arrays;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.sysmsgs.cache.SystemMessageCache;
-import org.iplantc.de.client.sysmsgs.events.MessagesUpdatedEvent;
+import org.iplantc.de.client.sysmsgs.events.NewMessagesEvent;
+import org.iplantc.de.client.sysmsgs.model.IdList;
 import org.iplantc.de.client.sysmsgs.model.Message;
+import org.iplantc.de.client.sysmsgs.model.MessageFactory;
+import org.iplantc.de.client.sysmsgs.model.MessageList;
+import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.loader.ListLoadResult;
 
 /**
  * The system messages presenter.
@@ -31,23 +33,23 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
     private static final MessagesView.Factory<Message> VIEW_FACTORY = GWT.create(MessagesView.Factory.class);
     
+    private final ServiceFacade services = new ServiceFacade();
     private final MessagesView<Message> view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
 
     private HandlerRegistration updateHandlerReg = null;
+    private boolean hasActiveSvcCall = false;
 	
     /**
      * @see MessageView.Presenter<T>#handleDismissMessage(T)
      */
     @Override
     public void handleDismissMessage(final Message message) {
-        if (SystemMessageCache.instance().hasMessage(message)) {
-            view.verifyMessageDismissal(new Command() {
-                @Override
-                public void execute() {
-                    dismissMessage(message);
-                }
-            });
-        }
+        view.verifyMessageDismissal(new Command() {
+            @Override
+            public void execute() {
+                dismissMessage(message);
+            }
+        });
     }
 
     /**
@@ -55,12 +57,10 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      */
     @Override
     public void handleSelectMessage(final Message message) {
-        if (SystemMessageCache.instance().hasMessage(message)) {
-            view.getSelectionModel().select(false, message);
-            showBodyOf(message);
-            showExpiryOf(message);
-            markSeen(message);
-        }
+        view.getSelectionModel().select(false, message);
+        showBodyOf(message);
+        showExpiryOf(message);
+        markSeen(message);
     }
 
     /**
@@ -73,13 +73,12 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         if (container == null) {
             stop();
         } else {
-            SystemMessageCache.instance().startSyncing();
-            updateStoreAsync();
+            loadAllMessages();
             if (updateHandlerReg == null) {
-                updateHandlerReg = EventBus.getInstance().addHandler(MessagesUpdatedEvent.TYPE, new MessagesUpdatedEvent.Handler() {
+                updateHandlerReg = EventBus.getInstance().addHandler(NewMessagesEvent.TYPE, new NewMessagesEvent.Handler() {
                     @Override
-                    public void onUpdate(final MessagesUpdatedEvent event) {
-                        updateStoreAsync();
+                    public void onUpdate(final NewMessagesEvent event) {
+                        handleNewMessages();
                     }
                 });
             }
@@ -95,87 +94,126 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     public void stop() {
         if (updateHandlerReg != null) {
             updateHandlerReg.removeHandler();
+            updateHandlerReg = null;
         }
-        SystemMessageCache.instance().stopSyncing();
     }
 
-    private void dismissMessage(final Message message) {
-        // TODO externalize message
-        view.mask("dismissing message");
-        SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
+    private void handleNewMessages() {
+        if (!hasActiveSvcCall) {
+            loadNewMessages();
+        }
+    }
+
+    private void loadAllMessages() {
+        services.getAllMessages(new AsyncCallback<MessageList>() {
             @Override
-            public void onFailure(final Throwable reason) {
-                // FIXME handle failure
-                Window.alert(reason.getMessage());
-                view.unmask();
+            public void onFailure(final Throwable exn) {
+                // TODO handle failure
+                Window.alert(exn.getMessage());
+                noteStopSvcCall();
             }
+
             @Override
-            public void onSuccess(Void unused) {
-                removeMessage(message);
-                view.unmask();
+            public void onSuccess(final MessageList messages) {
+                noteStopSvcCall();
+                addMessages(messages);
             }
         });
+        noteStartSvcCall(false);
+    }
+
+    private void loadNewMessages() {
+        services.getNewMessages(new AsyncCallback<MessageList>() {
+            @Override
+            public void onFailure(final Throwable exn) {
+                // TODO handle failure
+                Window.alert(exn.getMessage());
+                noteStopSvcCall();
+            }
+            @Override
+            public void onSuccess(final MessageList messages) {
+                noteStopSvcCall();
+                addMessages(messages);
+            }
+        });
+        noteStartSvcCall(false);
     }
 
     private void markSeen(final Message message) {
-        SystemMessageCache.instance().markSeen(message, new Callback<Void, Throwable>() {
+        final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
+        idsDTO.setIds(Arrays.asList(message.getId()));
+        services.acknowledgeMessages(idsDTO, new AsyncCallback<Void>() {
             @Override
-            public void onFailure(final Throwable reason) {
+            public void onFailure(Throwable caught) {
                 // TODO Figure out how to handle this
-                Window.alert(reason.getMessage());
+                Window.alert(caught.getMessage());
+                noteStopSvcCall();
             }
             @Override
             public void onSuccess(Void unused) {
-                view.getMessageStore().update(message);
+                noteStopSvcCall();
+                markLocalSeen(message);
             }
         });
+        noteStartSvcCall(false);
     }
 
-    private void showBodyOf(final Message message) {
-        final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
-        bodyBuilder.appendHtmlConstant(message.getBody());
-        view.setMessageBody(bodyBuilder.toSafeHtml());
+    private void dismissMessage(final Message message) {
+        if (!message.isDismissible()) {
+            return;
+        }
+
+        final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
+        idsDTO.setIds(Arrays.asList(message.getId()));
+        services.hideMessages(idsDTO, new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(final Throwable caught) {
+                // TODO handle failure
+                Window.alert(caught.getMessage());
+                noteStopSvcCall();
+            }
+
+            @Override
+            public void onSuccess(final Void unused) {
+                removeMessage(message);
+                noteStopSvcCall();
+            }
+        });
+        noteStartSvcCall(true);
     }
 
-    private void showExpiryOf(final Message message) {
-        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
-        final String expiryStr = expiryFmt.format(message.getDeactivationTime());
-        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+    private void noteStartSvcCall(final boolean mask) {
+        if (mask) {
+            // TODO externalize message
+            view.mask("dismissing message");
+        }
+        hasActiveSvcCall = true;
     }
 
-	private void updateStoreAsync() {
-		SystemMessageCache.instance().load(null, 
-				new Callback<ListLoadResult<Message>, Throwable>() {
-					@Override
-					public void onFailure(final Throwable reason) {
-						// TODO implement
-						Window.alert("Failed to retrieve messages");
-					}
-					@Override
-					public void onSuccess(final ListLoadResult<Message> result) {
-						updateStore(result.getData());
-					}});
-	}
-	
-	private void updateStore(final List<Message> updatedMessages) {
+    private void noteStopSvcCall() {
+        hasActiveSvcCall = false;
+        view.unmask();
+    }
+
+    private void addMessages(final MessageList messages) {
         final Message curSelect = view.getSelectionModel().getSelectedItem();
         final ListStore<Message> store = view.getMessageStore();
-        store.replaceAll(updatedMessages);
-        if (curSelect != null && store.findModel(curSelect) == null) {
-            store.add(curSelect);
-		}
-        if (store.size() > 0) {
-			if (curSelect != null) {
-                showMessageSelected(store.indexOf(curSelect));
-			} else {
-				showMessageSelected(0);
-			}
-		} else {
+        store.replaceAll(messages.getList());
+        if (store.size() <= 0) {
             view.showNoMessages();
+        } else if (curSelect != null) {
+            showMessageSelected(store.indexOf(curSelect));
+        } else {
+            showMessageSelected(0);
 		}
 	}
 
-	private void removeMessage(final Message message) {
+    private void markLocalSeen(final Message message) {
+        message.setSeen(true);
+        view.getMessageStore().update(message);
+    }
+
+    private void removeMessage(final Message message) {
         final int idx = view.getMessageStore().indexOf(message);
         view.getMessageStore().remove(message);
         if (view.getMessageStore().size() <= 0) {
@@ -189,5 +227,17 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         view.showMessages();
         view.getSelectionModel().select(index, false);
 	}
+
+    private void showBodyOf(final Message message) {
+        final SafeHtmlBuilder bodyBuilder = new SafeHtmlBuilder();
+        bodyBuilder.appendHtmlConstant(message.getBody());
+        view.setMessageBody(bodyBuilder.toSafeHtml());
+    }
+
+    private void showExpiryOf(final Message message) {
+        final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
+        final String expiryStr = expiryFmt.format(message.getDeactivationTime());
+        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+    }
 
 }

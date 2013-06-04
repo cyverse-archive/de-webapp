@@ -52,6 +52,17 @@ public final class ServiceFacade {
     }	
 
     /**
+     * Retrieves the new active system messages for a given user.
+     * 
+     * @param callback called on RPC completion.
+     */
+    public final void getNewMessages(final AsyncCallback<MessageList> callback) {
+        final String address = baseURL + "/new-messages";
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.GET, address);
+        DEServiceFacade.getInstance().getServiceData(wrapper, new MsgListCB(callback));
+    }
+
+    /**
      * Marks a list of system messages as received by the user
      * 
      * @param msgIds the Ids of the messages to be marked

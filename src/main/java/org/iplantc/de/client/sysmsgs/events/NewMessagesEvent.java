@@ -4,9 +4,9 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * This event indicates that the system message records have been updated.
+ * This event indicates that new messages have been received.
  */
-public final class MessagesUpdatedEvent extends GwtEvent<MessagesUpdatedEvent.Handler> {
+public final class NewMessagesEvent extends GwtEvent<NewMessagesEvent.Handler> {
 
 	/**
 	 * Classes that implement this interface are able to receive MessagesUpdateEvent objects.
@@ -18,7 +18,7 @@ public final class MessagesUpdatedEvent extends GwtEvent<MessagesUpdatedEvent.Ha
 		 * 
 		 * @param event The event being dispatched.
 		 */
-		void onUpdate(MessagesUpdatedEvent event);
+		void onUpdate(NewMessagesEvent event);
 		
 	}
 
@@ -27,33 +27,12 @@ public final class MessagesUpdatedEvent extends GwtEvent<MessagesUpdatedEvent.Ha
 	 */
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
-	private final boolean newMessages;
-	
-	/**
-	 * the constructor
-	 * 
-	 * @param newMessages This parameter indicates whether or not there are any new unseen messages.
-	 */
-	public MessagesUpdatedEvent(final boolean newMessages) {
-		this.newMessages = newMessages;
-	}
-	
-	
 	/**
 	 * @see GwtEvent#getAssociatedType()
 	 */
 	@Override
 	public Type<Handler> getAssociatedType() {
 		return TYPE;
-	}
-
-	/**
-	 * Indicates whether or not the update includes new messages;
-	 * 
-	 * @return true if there are new messages, otherwise false
-	 */
-	public boolean areNewMessages() {
-		return newMessages;
 	}
 	
 	/**
