@@ -14,6 +14,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -39,20 +40,16 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      */
     @Override
     public void handleDismissMessage(final Message message) {
-		// TODO mask view
-        SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
-			@Override
-			public void onFailure(final Throwable reason) {
-				// FIXME handle failure
-				Window.alert(reason.getMessage());
-			}
-			@Override
-			public void onSuccess(Void unused) {
-                removeMessage(message);
-				// TODO unmask  view
-			}});
-	}
-	
+        if (SystemMessageCache.instance().hasMessage(message)) {
+            view.verifyMessageDismissal(new Command() {
+                @Override
+                public void execute() {
+                    dismissMessage(message);
+                }
+            });
+        }
+    }
+
     /**
      * @see MessageView.Presenter<T>#handleSelectMessage(T)
      */
@@ -102,12 +99,30 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         SystemMessageCache.instance().stopSyncing();
     }
 
+    private void dismissMessage(final Message message) {
+        // TODO mask view
+        SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
+            @Override
+            public void onFailure(final Throwable reason) {
+                // FIXME handle failure
+                Window.alert(reason.getMessage());
+                // TODO unmask view
+            }
+
+            @Override
+            public void onSuccess(Void unused) {
+                removeMessage(message);
+                // TODO unmask view
+            }
+        });
+    }
+
     private void markSeen(final Message message) {
         SystemMessageCache.instance().markSeen(message, new Callback<Void, Throwable>() {
             @Override
             public void onFailure(final Throwable reason) {
                 // TODO Figure out how to handle this
-                Window.alert("Failed to mark a message as seen");
+                Window.alert(reason.getMessage());
             }
             @Override
             public void onSuccess(Void unused) {

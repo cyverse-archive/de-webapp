@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -13,10 +12,12 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.Store.StoreSortInfo;
@@ -40,14 +41,15 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
 
 	private static final Binder binder = GWT.create(Binder.class);
 	
-    private static final <M> ListView<M, M> makeMessageList(final Cell<M> sumCell, final MessageProperties<M> msgProps) {
+    private static final <M> ListView<M, M> makeMessageList(final MessageProperties<M> msgProps) {
         final ListStore<M> store = new ListStore<M>(msgProps.id());
         store.addSortInfo(new StoreSortInfo<M>(msgProps.activationTime(), SortDir.DESC));
         final IdentityValueProvider<M> prov = new IdentityValueProvider<M>();
         final SummaryListAppearance<M> appr = new SummaryListAppearance<M>();
         final ListView<M, M> list = new ListView<M, M>(store, prov, appr);
-        list.setCell(sumCell);
-        list.setSelectionModel(new SelectionModel<M>());
+        final ListViewSelectionModel<M> sel = new ListViewSelectionModel<M>();
+        sel.setSelectionMode(SelectionMode.SINGLE);
+        list.setSelectionModel(sel);
         return list;
     }
 
@@ -88,9 +90,10 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
     DefaultMessagesView(final Presenter<M> presenter, final MessageProperties<M> messageProperties, final Renderer<Date> activationRenderer) {
         this.presenter = presenter;
         summaryCell = new MessageSummaryCell<M>(messageProperties, activationRenderer);
-        messageList = makeMessageList(summaryCell, messageProperties);
+        messageList = makeMessageList(messageProperties);
         initWidget(binder.createAndBindUi(this));
         res.style().ensureInjected();
+        messageList.setCell(summaryCell);
         initHandlers();
     }
 
@@ -163,6 +166,15 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
     @Override
     public void showNoMessages() {
         layout.setActiveWidget(noMessagesPanel);
+    }
+
+    /**
+     * @see MessagesView#verifyMessageDismissal(Command)
+     */
+    @Override
+    public void verifyMessageDismissal(final Command dismiss) {
+        final DismissalDialog dlg = new DismissalDialog(dismiss);
+        dlg.show();
     }
 
     /*
