@@ -102,6 +102,13 @@ public interface MessagesView<M> extends IsWidget {
     ListViewSelectionModel<M> getSelectionModel();
 
     /**
+     * Puts a mask over the view to disable user interaction
+     * 
+     * @param maskMessage the message to display while masking
+     */
+    void mask(String maskMessage);
+
+    /**
      * Provides the expiration message to display for the selected system message
      * 
      * @param expiryMsg the expiration message
@@ -136,5 +143,10 @@ public interface MessagesView<M> extends IsWidget {
      * @param dismiss the command to execute if the user confirms the dismissal
      */
     void verifyMessageDismissal(Command dismiss);
+
+    /**
+     * Removes a mask from the view
+     */
+    void unmask();
 
 }

@@ -100,19 +100,19 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     }
 
     private void dismissMessage(final Message message) {
-        // TODO mask view
+        // TODO externalize message
+        view.mask("dismissing message");
         SystemMessageCache.instance().dismissMessage(message, new Callback<Void, Throwable>() {
             @Override
             public void onFailure(final Throwable reason) {
                 // FIXME handle failure
                 Window.alert(reason.getMessage());
-                // TODO unmask view
+                view.unmask();
             }
-
             @Override
             public void onSuccess(Void unused) {
                 removeMessage(message);
-                // TODO unmask view
+                view.unmask();
             }
         });
     }
