@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
 /**
- * TODO document
+ * Represents a JSON document containing a list of UUIDS.
  */
 public interface IdList {
 	
