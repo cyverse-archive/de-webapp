@@ -10,7 +10,11 @@
             /WEB-INF/classes/de-base.xml
             /WEB-INF/classes/de-security.xml
         </param-value>
-	</context-param>
+    </context-param>
+    <context-param>
+        <param-name>maxSize</param-name>
+        <param-value>2040109465</param-value>
+    </context-param>
 
 	<!-- Servlets -->
 	<servlet>
