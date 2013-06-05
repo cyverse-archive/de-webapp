@@ -1,6 +1,7 @@
 package org.iplantc.de.client.desktop.presenter;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
 import org.iplantc.de.client.notifications.models.Counts;
@@ -23,21 +24,22 @@ final class GetMessageCounts implements Runnable {
             public void onFailure(final Throwable caught) {}
             @Override
             public void onSuccess(final Counts cnts) {
-                dispatchCounts(cnts);
+                fireEvents(cnts);
             }
         });
 	}
 
-    private void dispatchCounts(final Counts counts) {
+    private void fireEvents(final Counts counts) {
+        final EventBus bus = EventBus.getInstance();
         final int unseenNoteCnt = counts.getUnseenNotificationCount();
         if (unseenNoteCnt > 0) {
-            EventBus.getInstance().fireEvent(new NotificationCountUpdateEvent(unseenNoteCnt));
+            bus.fireEvent(new NotificationCountUpdateEvent(unseenNoteCnt));
         }
         if (counts.getNewSystemMessageCount() > 0) {
-            // TODO fire new system messages event
+            bus.fireEvent(new NewSystemMessagesEvent());
         }
         final int unseenSysMsgCnt = counts.getUnseenSystemMessageCount();
-        EventBus.getInstance().fireEvent(new SystemMessageCountUpdateEvent(unseenSysMsgCnt));
+        bus.fireEvent(new SystemMessageCountUpdateEvent(unseenSysMsgCnt));
     }
 	
 }

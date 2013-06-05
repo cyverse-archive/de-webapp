@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.sysmsgs.events.NewMessagesEvent;
+import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.sysmsgs.model.IdList;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
@@ -75,9 +75,9 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         } else {
             loadAllMessages();
             if (updateHandlerReg == null) {
-                updateHandlerReg = EventBus.getInstance().addHandler(NewMessagesEvent.TYPE, new NewMessagesEvent.Handler() {
+                updateHandlerReg = EventBus.getInstance().addHandler(NewSystemMessagesEvent.TYPE, new NewSystemMessagesEvent.Handler() {
                     @Override
-                    public void onUpdate(final NewMessagesEvent event) {
+                    public void onUpdate(final NewSystemMessagesEvent event) {
                         handleNewMessages();
                     }
                 });
@@ -116,7 +116,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             @Override
             public void onSuccess(final MessageList messages) {
                 noteStopSvcCall();
-                addMessages(messages);
+                replaceMessages(messages);
             }
         });
         noteStartSvcCall(false);
@@ -198,15 +198,36 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private void addMessages(final MessageList messages) {
         final Message curSelect = view.getSelectionModel().getSelectedItem();
         final ListStore<Message> store = view.getMessageStore();
-        store.replaceAll(messages.getList());
+        for (Message msg : messages.getList()) {
+            if (store.findModel(msg) == null) {
+                store.add(msg);
+            } else {
+                store.update(msg);
+            }
+        }
+        store.applySort(false);
+        updateView(curSelect);
+    }
+
+    private void replaceMessages(final MessageList messages) {
+        final Message curSelect = view.getSelectionModel().getSelectedItem();
+        view.getMessageStore().replaceAll(messages.getList());
+        updateView(curSelect);
+    }
+
+    private void updateView(final Message curSelect) {
+        final ListStore<Message> store = view.getMessageStore();
         if (store.size() <= 0) {
             view.showNoMessages();
-        } else if (curSelect != null) {
-            showMessageSelected(store.indexOf(curSelect));
         } else {
-            showMessageSelected(0);
-		}
-	}
+            final Message newSelect = curSelect == null ? null : store.findModel(curSelect);
+            if (newSelect == null) {
+                showMessageSelected(0);
+            } else {
+                showMessageSelected(store.indexOf(newSelect));
+            }
+        }
+    }
 
     private void markLocalSeen(final Message message) {
         message.setSeen(true);

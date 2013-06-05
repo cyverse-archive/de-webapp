@@ -1,16 +1,16 @@
-package org.iplantc.de.client.sysmsgs.events;
+package org.iplantc.de.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * This event indicates that new messages have been received.
+ * This event indicates that new system messages have been received.
  */
-public final class NewMessagesEvent extends GwtEvent<NewMessagesEvent.Handler> {
+public final class NewSystemMessagesEvent extends GwtEvent<NewSystemMessagesEvent.Handler> {
 
-	/**
-	 * Classes that implement this interface are able to receive MessagesUpdateEvent objects.
-	 */
+    /**
+     * Classes that implement this interface are able to receive events of this type.
+     */
 	public interface Handler extends EventHandler {
 
 		/**
@@ -18,7 +18,7 @@ public final class NewMessagesEvent extends GwtEvent<NewMessagesEvent.Handler> {
 		 * 
 		 * @param event The event being dispatched.
 		 */
-		void onUpdate(NewMessagesEvent event);
+		void onUpdate(NewSystemMessagesEvent event);
 		
 	}
 
