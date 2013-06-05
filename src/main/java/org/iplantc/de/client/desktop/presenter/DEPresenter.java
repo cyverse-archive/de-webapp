@@ -274,7 +274,7 @@ public class DEPresenter implements DEView.Presenter {
     private void initMessagePoller() {
         // SystemMessageCache.instance().startSyncing();
         MessagePoller poller = MessagePoller.getInstance();
-        poller.addTask(new CountUnseenNotifications());
+        poller.addTask(new GetMessageCounts());
         poller.start();
     }
 

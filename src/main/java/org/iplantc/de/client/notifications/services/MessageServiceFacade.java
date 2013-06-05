@@ -3,8 +3,13 @@ package org.iplantc.de.client.notifications.services;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.de.client.notifications.models.Counts;
+import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
+import org.iplantc.de.client.sysmsgs.services.CallbackConverter;
+import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,6 +21,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *
  */
 public class MessageServiceFacade {
+
+    private static final NotificationAutoBeanFactory notesFactory = GWT.create(NotificationAutoBeanFactory.class);
+    
+    private final CallbackConverter callbackConv = new CallbackConverter(notesFactory);
+
     /**
      * Get notifications from the server.
      *
@@ -88,13 +98,17 @@ public class MessageServiceFacade {
 
     }
 
-    public void getUnSeenMessageCount(AsyncCallback<String> callback) {
-        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
+    /**
+     * Retrieves the message counts from the server where the seen parameter is false.
+     * 
+     * @param callback called on RPC completion
+     */
+    public void getMessageCounts(final AsyncCallback<Counts> callback) {
+        final String addr = DEProperties.getInstance().getMuleServiceBaseUrl()
                 + "notifications/count-messages?seen=false"; //$NON-NLS-1$
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
-
-        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.GET, addr);
+        final AsyncCallback<String> convCB = callbackConv.convert(callback, Counts.class);
+        DEServiceFacade.getInstance().getServiceData(wrapper, convCB);
     }
 
     public void deleteAll(AsyncCallback<String> callback) {
