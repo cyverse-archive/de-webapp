@@ -1,5 +1,6 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -116,6 +117,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             @Override
             public void onSuccess(final MessageList messages) {
                 noteStopSvcCall();
+                markReceived(messages);
                 replaceMessages(messages);
             }
         });
@@ -133,7 +135,31 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             @Override
             public void onSuccess(final MessageList messages) {
                 noteStopSvcCall();
+                markReceived(messages);
                 addMessages(messages);
+            }
+        });
+        noteStartSvcCall(false);
+    }
+
+    private void markReceived(final MessageList messages) {
+        final ArrayList<String> ids = new ArrayList<String>();
+        for (Message msg : messages.getList()) {
+            ids.add(msg.getId());
+        }
+        final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
+        idsDTO.setIds(ids);
+        services.markReceived(idsDTO, new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(final Throwable caught) {
+                // TODO Auto-generated method stub
+                Window.alert(caught.getMessage());
+                noteStopSvcCall();
+            }
+
+            @Override
+            public void onSuccess(Void unused) {
+                noteStopSvcCall();
             }
         });
         noteStartSvcCall(false);
