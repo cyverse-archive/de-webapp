@@ -31,7 +31,7 @@ public class Shortcut extends IconButton {
      * Creates a new shortcut.
      */
     public Shortcut(final ShortcutDesc desc, SelectHandler handler) {
-        super(desc.getId());
+        super(desc.getStyle());
         setId(desc.getId());
         setSize("68px", "68px");
         setToolTip(desc.getCaption());
@@ -58,7 +58,7 @@ public class Shortcut extends IconButton {
 
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                changeStyle(desc.getId());
+                changeStyle(desc.getStyle());
             }
         }, MouseOutEvent.getType());
 
