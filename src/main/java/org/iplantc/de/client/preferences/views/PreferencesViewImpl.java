@@ -1,6 +1,10 @@
 package org.iplantc.de.client.preferences.views;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.iplantc.core.uiapps.widgets.client.view.fields.AppWizardFolderSelector;
+import org.iplantc.core.uicommons.client.Constants;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.de.client.I18N;
 
@@ -20,9 +24,9 @@ import com.sencha.gxt.widget.core.client.form.validator.MaxLengthValidator;
 
 /**
  * A view imple for preferences screen
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class PreferencesViewImpl implements PreferencesView {
 
@@ -39,6 +43,9 @@ public class PreferencesViewImpl implements PreferencesView {
 
     @UiField
     VerticalLayoutContainer prefContainer;
+
+    @UiField
+    VerticalLayoutContainer kbContainer;
 
     @UiField
     CheckBox cboNotifyEmail;
@@ -68,8 +75,11 @@ public class PreferencesViewImpl implements PreferencesView {
 
     static UserSettings us = UserSettings.getInstance();
 
+    private Map<TextField, String> kbMap;
+
     public PreferencesViewImpl() {
         widget = uiBinder.createAndBindUi(this);
+        kbMap = new HashMap<TextField, String>();
         container.setScrollMode(ScrollMode.AUTOY);
         defaultOpFolder = new AppWizardFolderSelector();
         prefContainer.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new VerticalLayoutData(.9, -1,
@@ -80,11 +90,21 @@ public class PreferencesViewImpl implements PreferencesView {
         anaKbSc.addValidator(new MaxLengthValidator(1));
         notKbSc.addValidator(new MaxLengthValidator(1));
         closeKbSc.addValidator(new MaxLengthValidator(1));
+        populateKbMap();
+    }
+
+    private void populateKbMap() {
+        kbMap.put(appKbSc, appKbSc.getValue());
+        kbMap.put(dataKbSc, dataKbSc.getValue());
+        kbMap.put(anaKbSc, anaKbSc.getValue());
+        kbMap.put(notKbSc, notKbSc.getValue());
+        kbMap.put(closeKbSc, closeKbSc.getValue());
+
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.google.gwt.user.client.ui.IsWidget#asWidget()
      */
     @Override
@@ -101,11 +121,11 @@ public class PreferencesViewImpl implements PreferencesView {
         cboNotifyEmail.setValue(true);
         cboLastPath.setValue(true);
         cboSaveSession.setValue(true);
-        appKbSc.setValue(us.getAppsShortCut());
-        dataKbSc.setValue(us.getDataShortCut());
-        anaKbSc.setValue(us.getAnalysesShortCut());
-        notKbSc.setValue(us.getNotifiShortCut());
-        closeKbSc.setValue(us.getCloseShortCut());
+        appKbSc.setValue(Constants.CLIENT.appsKeyShortCut());
+        dataKbSc.setValue(Constants.CLIENT.dataKeyShortCut());
+        anaKbSc.setValue(Constants.CLIENT.analysisKeyShortCut());
+        notKbSc.setValue(Constants.CLIENT.notifyKeyShortCut());
+        closeKbSc.setValue(Constants.CLIENT.closeKeyShortCut());
     }
 
     @Override
@@ -113,7 +133,7 @@ public class PreferencesViewImpl implements PreferencesView {
         cboNotifyEmail.setValue(us.isEnableEmailNotification());
         cboLastPath.setValue(us.isRememberLastPath());
         defaultOpFolder.setValueFromStringId(us.getDefaultOutputFolder());
-        	cboSaveSession.setValue(us.isSaveSession());
+        cboSaveSession.setValue(us.isSaveSession());
 
         appKbSc.setValue(us.getAppsShortCut());
         dataKbSc.setValue(us.getDataShortCut());
@@ -137,10 +157,30 @@ public class PreferencesViewImpl implements PreferencesView {
         return us;
     }
 
-    @Override
-    public boolean isValid() {
-        return appKbSc.isValid() && dataKbSc.isValid() && anaKbSc.isValid() && notKbSc.isValid()
-                && closeKbSc.isValid();
+    private void resetKbFieldErrors() {
+        for (TextField ks : kbMap.keySet()) {
+            ks.clearInvalid();
+        }
+
     }
 
+    @Override
+    public boolean isValid() {
+        boolean valid = appKbSc.isValid() && dataKbSc.isValid() && anaKbSc.isValid()
+                && notKbSc.isValid() && closeKbSc.isValid();
+        populateKbMap();
+        resetKbFieldErrors();
+        for (TextField ks : kbMap.keySet()) {
+            for (TextField sc : kbMap.keySet()) {
+                if (ks != sc) {
+                    if (kbMap.get(ks).equals(kbMap.get(sc))) {
+                        ks.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
+                        sc.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
+                        valid = false;
+                    }
+                }
+            }
+        }
+        return valid;
+    }
 }
