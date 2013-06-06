@@ -3,6 +3,7 @@ package org.iplantc.de.client.sysmsgs.presenter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
@@ -18,7 +19,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -101,15 +101,14 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private void loadAllMessages() {
         services.getAllMessages(new AsyncCallback<MessageList>() {
             @Override
-            public void onFailure(final Throwable exn) {
-                // TODO handle failure
-                Window.alert(exn.getMessage());
-            }
-
-            @Override
             public void onSuccess(final MessageList messages) {
                 markReceived(messages);
                 replaceMessages(messages);
+            }
+            @Override
+            public void onFailure(final Throwable cause) {
+                // TODO externalize string
+                ErrorHandler.post("The system messages could not be loaded.", cause);
             }
         });
     }
@@ -117,15 +116,13 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private void loadNewMessages() {
         services.getNewMessages(new AsyncCallback<MessageList>() {
             @Override
-            public void onFailure(final Throwable exn) {
-                // TODO handle failure
-                Window.alert(exn.getMessage());
-            }
-            @Override
             public void onSuccess(final MessageList messages) {
                 markReceived(messages);
                 addMessages(messages);
             }
+
+            @Override
+            public void onFailure(Throwable caught) {}
         });
     }
 
@@ -138,12 +135,12 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         idsDTO.setIds(ids);
         services.markReceived(idsDTO, new AsyncCallback<Void>() {
             @Override
-            public void onFailure(final Throwable caught) {
-                // TODO Auto-generated method stub
-                Window.alert(caught.getMessage());
-            }
-            @Override
             public void onSuccess(Void unused) {}
+            @Override
+            public void onFailure(final Throwable cause) {
+                // TODO externalize string
+                ErrorHandler.post("The system messages could not be marked as received.", cause);
+            }
         });
     }
 
@@ -152,13 +149,13 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         idsDTO.setIds(Arrays.asList(message.getId()));
         services.acknowledgeMessages(idsDTO, new AsyncCallback<Void>() {
             @Override
-            public void onFailure(Throwable caught) {
-                // TODO Figure out how to handle this
-                Window.alert(caught.getMessage());
-            }
-            @Override
             public void onSuccess(Void unused) {
                 markLocalSeen(message);
+            }
+            @Override
+            public void onFailure(final Throwable cause) {
+                // TODO externalize string
+                ErrorHandler.post("The system message could not be marked as seen.", cause);
             }
         });
     }
@@ -172,17 +169,16 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         // TODO externalize message
         view.mask("dismissing message");
         services.hideMessages(idsDTO, new AsyncCallback<Void>() {
-            @Override
-            public void onFailure(final Throwable caught) {
-                // TODO handle failure
-                Window.alert(caught.getMessage());
-                view.unmask();
-            }
-
+            // TODO handle failure
             @Override
             public void onSuccess(final Void unused) {
                 removeMessage(message);
                 view.unmask();
+            }
+            @Override
+            public void onFailure(final Throwable cause) {
+                view.unmask();
+                ErrorHandler.post("The system message could not be dismissed.", cause);
             }
         });
     }
