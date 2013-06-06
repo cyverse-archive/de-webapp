@@ -38,7 +38,6 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private final MessagesView<Message> view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
 
     private HandlerRegistration updateHandlerReg = null;
-    private boolean hasActiveSvcCall = false;
 	
     /**
      * @see MessageView.Presenter<T>#handleDismissMessage(T)
@@ -79,7 +78,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
                 updateHandlerReg = EventBus.getInstance().addHandler(NewSystemMessagesEvent.TYPE, new NewSystemMessagesEvent.Handler() {
                     @Override
                     public void onUpdate(final NewSystemMessagesEvent event) {
-                        handleNewMessages();
+                        loadNewMessages();
                     }
                 });
             }
@@ -99,29 +98,20 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         }
     }
 
-    private void handleNewMessages() {
-        if (!hasActiveSvcCall) {
-            loadNewMessages();
-        }
-    }
-
     private void loadAllMessages() {
         services.getAllMessages(new AsyncCallback<MessageList>() {
             @Override
             public void onFailure(final Throwable exn) {
                 // TODO handle failure
                 Window.alert(exn.getMessage());
-                noteStopSvcCall();
             }
 
             @Override
             public void onSuccess(final MessageList messages) {
-                noteStopSvcCall();
                 markReceived(messages);
                 replaceMessages(messages);
             }
         });
-        noteStartSvcCall(false);
     }
 
     private void loadNewMessages() {
@@ -130,16 +120,13 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             public void onFailure(final Throwable exn) {
                 // TODO handle failure
                 Window.alert(exn.getMessage());
-                noteStopSvcCall();
             }
             @Override
             public void onSuccess(final MessageList messages) {
-                noteStopSvcCall();
                 markReceived(messages);
                 addMessages(messages);
             }
         });
-        noteStartSvcCall(false);
     }
 
     private void markReceived(final MessageList messages) {
@@ -154,15 +141,10 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             public void onFailure(final Throwable caught) {
                 // TODO Auto-generated method stub
                 Window.alert(caught.getMessage());
-                noteStopSvcCall();
             }
-
             @Override
-            public void onSuccess(Void unused) {
-                noteStopSvcCall();
-            }
+            public void onSuccess(Void unused) {}
         });
-        noteStartSvcCall(false);
     }
 
     private void markSeen(final Message message) {
@@ -173,52 +155,36 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             public void onFailure(Throwable caught) {
                 // TODO Figure out how to handle this
                 Window.alert(caught.getMessage());
-                noteStopSvcCall();
             }
             @Override
             public void onSuccess(Void unused) {
-                noteStopSvcCall();
                 markLocalSeen(message);
             }
         });
-        noteStartSvcCall(false);
     }
 
     private void dismissMessage(final Message message) {
         if (!message.isDismissible()) {
             return;
         }
-
         final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
         idsDTO.setIds(Arrays.asList(message.getId()));
+        // TODO externalize message
+        view.mask("dismissing message");
         services.hideMessages(idsDTO, new AsyncCallback<Void>() {
             @Override
             public void onFailure(final Throwable caught) {
                 // TODO handle failure
                 Window.alert(caught.getMessage());
-                noteStopSvcCall();
+                view.unmask();
             }
 
             @Override
             public void onSuccess(final Void unused) {
                 removeMessage(message);
-                noteStopSvcCall();
+                view.unmask();
             }
         });
-        noteStartSvcCall(true);
-    }
-
-    private void noteStartSvcCall(final boolean mask) {
-        if (mask) {
-            // TODO externalize message
-            view.mask("dismissing message");
-        }
-        hasActiveSvcCall = true;
-    }
-
-    private void noteStopSvcCall() {
-        hasActiveSvcCall = false;
-        view.unmask();
     }
 
     private void addMessages(final MessageList messages) {
