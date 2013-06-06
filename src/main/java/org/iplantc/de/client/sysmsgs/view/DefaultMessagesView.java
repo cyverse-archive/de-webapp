@@ -3,6 +3,7 @@ package org.iplantc.de.client.sysmsgs.view;
 import java.util.Date;
 import java.util.List;
 
+import org.iplantc.core.resources.client.SystemMessagesResources;
 import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 
 import com.google.gwt.core.client.GWT;
@@ -54,7 +55,7 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
     }
 
 	@UiField
-    DefaultMessagesViewResources res;
+    SystemMessagesResources res;
 
     @UiField
     CardLayoutContainer layout;

@@ -4,7 +4,7 @@
 		xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
 		xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
  
- 	<ui:with field="res" type="org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources"/>
+ 	<ui:with field="res" type="org.iplantc.core.resources.client.SystemMessagesResources"/>
  	<ui:with field="loc" type="org.iplantc.core.resources.client.messages.IplantDisplayStrings"/>
  	
  	<ui:with field="sumsData" 

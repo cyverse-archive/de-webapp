@@ -1,6 +1,7 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewResources.Style;
+import org.iplantc.core.resources.client.SystemMessagesResources;
+import org.iplantc.core.resources.client.SystemMessagesResources.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -17,7 +18,7 @@ final class SummaryListAppearance<M> extends ListViewCustomAppearance<M> {
     private static final Style style;
 
     static {
-        style = GWT.<DefaultMessagesViewResources> create(DefaultMessagesViewResources.class).style();
+        style = GWT.<SystemMessagesResources> create(SystemMessagesResources.class).style();
         style.ensureInjected();
     }
 
