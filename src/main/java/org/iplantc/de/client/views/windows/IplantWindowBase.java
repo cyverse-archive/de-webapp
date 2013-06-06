@@ -158,7 +158,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createLayoutButton() {
         final ToolButton layoutBtn = new ToolButton(res.css().xToolLayoutwindow());
-        layoutBtn.setId("idLayout-" + getStateId()); //$NON-NLS-1$
+        layoutBtn.setId("idLayout"); //$NON-NLS-1$
         layoutBtn.sinkEvents(Event.ONMOUSEOUT);
         layoutBtn.setToolTip("Layout");
         final Menu m = new Menu();
@@ -229,7 +229,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createMaximizeButton() {
         final ToolButton newMaxBtn = new ToolButton(res.css().xToolMaximizewindow());
-        newMaxBtn.setId("idmaximize-" + getStateId()); //$NON-NLS-1$
+        newMaxBtn.setId("idmaximize"); //$NON-NLS-1$
         newMaxBtn.sinkEvents(Event.ONMOUSEOUT);
         newMaxBtn.setToolTip(I18N.DISPLAY.maximize());
 
@@ -272,7 +272,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createRestoreButton() {
         final ToolButton btnRestore = new ToolButton(res.css().xToolRestorewindow());
-        btnRestore.setId("idrestore-" + getStateId()); //$NON-NLS-1$
+        btnRestore.setId("idrestore"); //$NON-NLS-1$
         btnRestore.sinkEvents(Event.ONMOUSEOUT);
         btnRestore.setToolTip(I18N.DISPLAY.restore());
 
@@ -308,7 +308,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createMinimizeButton() {
         final ToolButton newMinBtn = new ToolButton(res.css().xToolMinimizewindow());
-        newMinBtn.setId("idminimize-" + getStateId()); //$NON-NLS-1$
+        newMinBtn.setId("idminimize"); //$NON-NLS-1$
         newMinBtn.sinkEvents(Event.ONMOUSEOUT);
         newMinBtn.setToolTip(I18N.DISPLAY.minimize());
 
@@ -340,7 +340,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     private ToolButton createCloseButton() {
         final ToolButton newCloseBtn = new ToolButton(res.css().xToolClosewindow());
-        newCloseBtn.setId("idclose-" + getStateId()); //$NON-NLS-1$
+        newCloseBtn.setId("idclose"); //$NON-NLS-1$
         newCloseBtn.sinkEvents(Event.ONMOUSEOUT);
         newCloseBtn.setToolTip(I18N.DISPLAY.close());
 

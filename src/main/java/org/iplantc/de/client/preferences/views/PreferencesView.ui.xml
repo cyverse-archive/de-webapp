@@ -35,14 +35,14 @@
 		</form:FieldSet>
 		<form:FieldSet headingText="{strings.keyboadSc}"
 			collapsible="true">
-			<container:VerticalLayoutContainer>
+			<container:VerticalLayoutContainer ui:field="kbContainer">
 				<form:FieldLabel labelWidth="150"
 					HTML="{strings.openAppswindow}">
 					<form:widget>
 						<g:HorizontalPanel spacing="1">
 							<g:Label text="Control + Shift + "></g:Label>
 							<form:TextField allowBlank="false" width="50"
-								ui:field="appKbSc"></form:TextField>
+								ui:field="appKbSc" debugId="appKbSc"></form:TextField>
 						</g:HorizontalPanel>
 					</form:widget>
 				</form:FieldLabel>
@@ -52,7 +52,7 @@
 						<g:HorizontalPanel spacing="1">
 							<g:Label text="Control + Shift + "></g:Label>
 							<form:TextField allowBlank="false" width="50"
-								ui:field="dataKbSc"></form:TextField>
+								ui:field="dataKbSc" debugId="dataKbSc"></form:TextField>
 						</g:HorizontalPanel>
 					</form:widget>
 				</form:FieldLabel>
@@ -62,7 +62,7 @@
 						<g:HorizontalPanel spacing="1">
 							<g:Label text="Control + Shift + "></g:Label>
 							<form:TextField allowBlank="false" width="50"
-								ui:field="anaKbSc"></form:TextField>
+								ui:field="anaKbSc" debugId="anaKbSc"></form:TextField>
 						</g:HorizontalPanel>
 					</form:widget>
 				</form:FieldLabel>
@@ -72,7 +72,7 @@
 						<g:HorizontalPanel spacing="1">
 							<g:Label text="Control + Shift + "></g:Label>
 							<form:TextField allowBlank="false" width="50"
-								ui:field="notKbSc"></form:TextField>
+								ui:field="notKbSc" debugId="notKbSc"></form:TextField>
 						</g:HorizontalPanel>
 					</form:widget>
 				</form:FieldLabel>
@@ -82,7 +82,7 @@
 						<g:HorizontalPanel spacing="1">
 							<g:Label text="Control + Shift + "></g:Label>
 							<form:TextField allowBlank="false" width="50"
-								ui:field="closeKbSc"></form:TextField>
+								ui:field="closeKbSc" debugId="closeKbSc"></form:TextField>
 						</g:HorizontalPanel>
 					</form:widget>
 				</form:FieldLabel>

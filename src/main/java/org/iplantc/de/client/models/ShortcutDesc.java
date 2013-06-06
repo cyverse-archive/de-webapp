@@ -9,6 +9,15 @@ import org.iplantc.de.client.views.windows.configs.WindowConfig;
  * 
  */
 public class ShortcutDesc {
+    private final String style;
+
+    /**
+     * @return the style
+     */
+    public String getStyle() {
+        return style;
+    }
+
     private final String id;
     private final String hoverStyle;
     private final String caption;
@@ -17,8 +26,9 @@ public class ShortcutDesc {
     private String index;
     private final WindowConfig config;
 
-    public ShortcutDesc(String id, String hoverStyle, String index, String caption, String action,
-            WindowConfig config) {
+    public ShortcutDesc(String style, String id, String hoverStyle, String index, String caption,
+            String action, WindowConfig config) {
+        this.style = style;
         this.id = id;
         this.hoverStyle = hoverStyle;
         this.caption = caption;
