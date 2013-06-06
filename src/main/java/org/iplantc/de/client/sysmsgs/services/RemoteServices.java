@@ -18,7 +18,7 @@ import com.google.web.bindery.autobean.shared.Splittable;
 /**
  * Provides access to remote services to acquire system messages.
  */
-public final class ServiceFacade {
+public final class RemoteServices implements Services {
 	
     private static final class MsgListCB extends AsyncCallbackConverter<String, MessageList> {
         public MsgListCB(final AsyncCallback<MessageList> callback) {
@@ -34,16 +34,15 @@ public final class ServiceFacade {
 	private final String baseURL;
     private final CommandSequencer callSequencer;
 	
-	public ServiceFacade() {
+	public RemoteServices() {
 		baseURL = DEProperties.getInstance().getMuleServiceBaseUrl() + "notifications/system";  //$NON-NLS-1$
         callSequencer = new CommandSequencer();
 	}
 	
     /**
-     * Retrieves all of the active system messages for a given user.
-     *
-     * @param callback called on RPC completion.
+     * @see Services#getAllMessages(AsyncCallback)
      */
+    @Override
     public final void getAllMessages(final AsyncCallback<MessageList> callback) {
         callSequencer.schedule(new ChainableCommand<MessageList>(callback) {
             @Override
@@ -56,10 +55,9 @@ public final class ServiceFacade {
     }	
 
     /**
-     * Retrieves the new active system messages for a given user.
-     * 
-     * @param callback called on RPC completion.
+     * @see Services#getNewMessages(AsyncCallback)
      */
+    @Override
     public final void getNewMessages(final AsyncCallback<MessageList> callback) {
         callSequencer.schedule(new ChainableCommand<MessageList>(callback) {
             @Override
@@ -72,11 +70,9 @@ public final class ServiceFacade {
     }
 
     /**
-     * Marks a list of system messages as received by the user
-     * 
-     * @param msgIds the Ids of the messages to be marked
-     * @param callback called on RPC completion
+     * @see Services#markReceived(IdList, AsyncCallback)
      */
+    @Override
     public void markReceived(final IdList msgIds, final AsyncCallback<Void> callback) {
         callSequencer.schedule(new ChainableCommand<Void>(callback) {
             @Override
@@ -91,11 +87,9 @@ public final class ServiceFacade {
     }
 
     /**
-     * Marks s list of system messages as seen by the user.
-     * 
-     * @param msgIds the Ids of the messages to be marked
-     * @param callback called on RPC completion.
+     * @see Services#acknowledgeMessages(IdList, AsyncCallback)
      */
+    @Override
     public void acknowledgeMessages(final IdList msgIds, final AsyncCallback<Void> callback) {
         callSequencer.schedule(new ChainableCommand<Void>(callback) {
             @Override
@@ -110,11 +104,9 @@ public final class ServiceFacade {
     }
 
     /**
-     * Hides a list of active system messages from a user
-     * 
-     * @param msgIds the Ids of the messages to hide
-     * @param callback called on RPC completion.
+     * @see Services#hideMessages(IdList, AsyncCallback)
      */
+    @Override
     public void hideMessages(final IdList msgIds, final AsyncCallback<Void> callback) {
         callSequencer.schedule(new ChainableCommand<Void>(callback) {
             @Override

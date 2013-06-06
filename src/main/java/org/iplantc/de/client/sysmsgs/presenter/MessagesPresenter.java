@@ -11,7 +11,7 @@ import org.iplantc.de.client.sysmsgs.model.IdList;
 import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
 import org.iplantc.de.client.sysmsgs.model.MessageList;
-import org.iplantc.de.client.sysmsgs.services.ServiceFacade;
+import org.iplantc.de.client.sysmsgs.services.Services;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
 import com.google.gwt.core.shared.GWT;
@@ -32,13 +32,21 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     }
 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
+    private static final Services services = GWT.create(Services.class);
     private static final MessagesView.Factory<Message> VIEW_FACTORY = GWT.create(MessagesView.Factory.class);
     
-    private final ServiceFacade services = new ServiceFacade();
-    private final MessagesView<Message> view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
+    private final MessagesView<Message> view;
 
-    private HandlerRegistration updateHandlerReg = null;
+    private HandlerRegistration updateHandlerReg;
 	
+    /**
+     * the constructor
+     */
+    public MessagesPresenter() {
+        view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
+        updateHandlerReg = null;
+    }
+
     /**
      * @see MessageView.Presenter<T>#handleDismissMessage(T)
      */
