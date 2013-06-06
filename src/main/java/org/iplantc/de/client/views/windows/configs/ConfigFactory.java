@@ -78,9 +78,10 @@ public class ConfigFactory {
         return sdwc;
     }
 
-    public static SystemMessagesWindowConfig systemMessagesWindowConfig() {
+    public static SystemMessagesWindowConfig systemMessagesWindowConfig(final String selectedMsg) {
     	final AutoBean<SystemMessagesWindowConfig> ab = applyWindowType(WindowType.SYSTEM_MESSAGES, 
     			factory.systemMessagesWindowConfig());
+        ab.as().setSelectedMessage(selectedMsg);
     	return ab.as();
     }
 

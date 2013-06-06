@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.Renderer;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -101,6 +102,13 @@ public interface MessagesView<M> extends IsWidget {
     ListViewSelectionModel<M> getSelectionModel();
 
     /**
+     * Puts a mask over the view to disable user interaction
+     * 
+     * @param maskMessage the message to display while masking
+     */
+    void mask(String maskMessage);
+
+    /**
      * Provides the expiration message to display for the selected system message
      * 
      * @param expiryMsg the expiration message
@@ -128,5 +136,17 @@ public interface MessagesView<M> extends IsWidget {
      * Tells the view to show the no messages panel.
      */
     void showNoMessages();
+
+    /**
+     * Ask the user to verify that the provided message should be dismissed.
+     * 
+     * @param dismiss the command to execute if the user confirms the dismissal
+     */
+    void verifyMessageDismissal(Command dismiss);
+
+    /**
+     * Removes a mask from the view
+     */
+    void unmask();
 
 }
