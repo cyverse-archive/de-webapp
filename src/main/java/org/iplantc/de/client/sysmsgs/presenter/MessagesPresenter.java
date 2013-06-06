@@ -128,8 +128,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             }
             @Override
             public void onFailure(final Throwable cause) {
-                // TODO externalize string
-                ErrorHandler.post("The system messages could not be loaded.", cause);
+                ErrorHandler.post(I18N.ERROR.loadMessagesFailed(), cause);
             }
         });
     }
@@ -159,8 +158,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             public void onSuccess(Void unused) {}
             @Override
             public void onFailure(final Throwable cause) {
-                // TODO externalize string
-                ErrorHandler.post("The system messages could not be marked as received.", cause);
+                ErrorHandler.post(I18N.ERROR.markMessageReceivedFailed(), cause);
             }
         });
     }
@@ -175,8 +173,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             }
             @Override
             public void onFailure(final Throwable cause) {
-                // TODO externalize string
-                ErrorHandler.post("The system message could not be marked as seen.", cause);
+                ErrorHandler.post(I18N.ERROR.markMessageSeenFailed(), cause);
             }
         });
     }
@@ -187,8 +184,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         }
         final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
         idsDTO.setIds(Arrays.asList(selectedMsgId));
-        // TODO externalize message
-        view.mask("dismissing message");
+        view.mask(I18N.DISPLAY.messageDismissing());
         services.hideMessages(idsDTO, new AsyncCallback<Void>() {
             @Override
             public void onSuccess(final Void unused) {
@@ -198,7 +194,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             @Override
             public void onFailure(final Throwable cause) {
                 view.unmask();
-                ErrorHandler.post("The system message could not be dismissed.", cause);
+                ErrorHandler.post(I18N.ERROR.dismissMessageFailed(), cause);
             }
         });
     }

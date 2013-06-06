@@ -1,5 +1,6 @@
 package org.iplantc.de.client.sysmsgs.view;
 
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
 
 import com.google.gwt.user.client.Command;
@@ -19,8 +20,7 @@ final class DismissalDialog extends IPlantDialog {
      */
     DismissalDialog(final Command dismiss) {
         this.dismiss = dismiss;
-        // TODO externalize message
-        setWidget(new Label("Do you really want to dismiss this message?"));
+        setWidget(new Label(I18N.DISPLAY.messageDismissQuery()));
     }
 
     /**
