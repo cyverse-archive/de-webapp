@@ -23,14 +23,14 @@ public final class SystemMessagesWindow extends IplantWindowBase {
 
 	private final MessagesPresenter presenter;
 	
-	/**
-	 * the constructor
-	 * 
-	 * @param config unused
-	 */
-	public SystemMessagesWindow(final SystemMessagesWindowConfig unused) {
-		super("");
-        this.presenter = new MessagesPresenter();
+    /**
+     * the constructor
+     * 
+     * @param config the persisted window configuration
+     */
+    public SystemMessagesWindow(final SystemMessagesWindowConfig config) {
+        super("", config);
+        this.presenter = new MessagesPresenter(config.getSelectedMessage());
 		setTitle(I18N.DISPLAY.systemMessagesLabel());
         this.setWidth(computeDefaultWidth());
         this.setHeight(computeDefaultHeight());
@@ -42,7 +42,8 @@ public final class SystemMessagesWindow extends IplantWindowBase {
      */
 	@Override
 	public WindowState getWindowState() {
-		return createWindowState(ConfigFactory.systemMessagesWindowConfig());
+        final String selMsg = presenter.getSelectedMessageId();
+        return createWindowState(ConfigFactory.systemMessagesWindowConfig(selMsg));
 	}
 	
     /**

@@ -37,13 +37,15 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     
     private final MessagesView<Message> view;
 
+    private String selectedMsgId;
     private HandlerRegistration updateHandlerReg;
 	
     /**
      * the constructor
      */
-    public MessagesPresenter() {
+    public MessagesPresenter(final String startingSelectedMsgId) {
         view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
+        selectedMsgId = startingSelectedMsgId == "" ? null : startingSelectedMsgId;
         updateHandlerReg = null;
     }
 
@@ -52,10 +54,11 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      */
     @Override
     public void handleDismissMessage(final Message message) {
+        handleSelectMessage(message);
         view.verifyMessageDismissal(new Command() {
             @Override
             public void execute() {
-                dismissMessage(message);
+                dismissSelectedMessage();
             }
         });
     }
@@ -65,10 +68,20 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      */
     @Override
     public void handleSelectMessage(final Message message) {
+        selectedMsgId = message.getId();
         view.getSelectionModel().select(false, message);
         showBodyOf(message);
         showExpiryOf(message);
         markSeen(message);
+    }
+
+    /**
+     * Returns the Id of the currently selected message.
+     * 
+     * @return the message Id or null if there is no currently selected message
+     */
+    public String getSelectedMessageId() {
+        return selectedMsgId;
     }
 
     /**
@@ -168,19 +181,18 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         });
     }
 
-    private void dismissMessage(final Message message) {
-        if (!message.isDismissible()) {
+    private void dismissSelectedMessage() {
+        if (!getSelectedMessage().isDismissible()) {
             return;
         }
         final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
-        idsDTO.setIds(Arrays.asList(message.getId()));
+        idsDTO.setIds(Arrays.asList(selectedMsgId));
         // TODO externalize message
         view.mask("dismissing message");
         services.hideMessages(idsDTO, new AsyncCallback<Void>() {
-            // TODO handle failure
             @Override
             public void onSuccess(final Void unused) {
-                removeMessage(message);
+                removeSelectedMessage();
                 view.unmask();
             }
             @Override
@@ -192,7 +204,6 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     }
 
     private void addMessages(final MessageList messages) {
-        final Message curSelect = view.getSelectionModel().getSelectedItem();
         final ListStore<Message> store = view.getMessageStore();
         for (Message msg : messages.getList()) {
             if (store.findModel(msg) == null) {
@@ -202,26 +213,21 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             }
         }
         store.applySort(false);
-        updateView(curSelect);
+        updateView();
     }
 
     private void replaceMessages(final MessageList messages) {
-        final Message curSelect = view.getSelectionModel().getSelectedItem();
         view.getMessageStore().replaceAll(messages.getList());
-        updateView(curSelect);
+        updateView();
     }
 
-    private void updateView(final Message curSelect) {
+    private void updateView() {
         final ListStore<Message> store = view.getMessageStore();
         if (store.size() <= 0) {
-            view.showNoMessages();
+            showNoMessages();
         } else {
-            final Message newSelect = curSelect == null ? null : store.findModel(curSelect);
-            if (newSelect == null) {
-                showMessageSelected(0);
-            } else {
-                showMessageSelected(store.indexOf(newSelect));
-            }
+            final Message selMsg = selectedMsgId == null ? null : store.findModelWithKey(selectedMsgId);
+            showMessageSelected(selMsg == null ? store.get(0) : selMsg);
         }
     }
 
@@ -230,19 +236,27 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         view.getMessageStore().update(message);
     }
 
-    private void removeMessage(final Message message) {
-        final int idx = view.getMessageStore().indexOf(message);
-        view.getMessageStore().remove(message);
+    private void removeSelectedMessage() {
+        final Message selMsg = getSelectedMessage();
+        final int idx = view.getMessageStore().indexOf(selMsg);
+        view.getMessageStore().remove(selMsg);
         if (view.getMessageStore().size() <= 0) {
-            view.showNoMessages();
+            showNoMessages();
         } else {
-            showMessageSelected(view.getMessageStore().size() <= idx ? idx - 1 : idx);
+            final int newIdx = view.getMessageStore().size() <= idx ? idx - 1 : idx;
+            showMessageSelected(view.getMessageStore().get(newIdx));
 		}
 	}
 	
-	private void showMessageSelected(final int index) {
+    private void showNoMessages() {
+        selectedMsgId = null;
+        view.showNoMessages();
+    }
+
+    private void showMessageSelected(final Message msg) {
+        selectedMsgId = msg.getId();
+        view.getSelectionModel().select(msg, false);
         view.showMessages();
-        view.getSelectionModel().select(index, false);
 	}
 
     private void showBodyOf(final Message message) {
@@ -255,6 +269,10 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
         final String expiryStr = expiryFmt.format(message.getDeactivationTime());
         view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+    }
+
+    private Message getSelectedMessage() {
+        return view.getMessageStore().findModelWithKey(selectedMsgId);
     }
 
 }

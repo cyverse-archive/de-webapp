@@ -5,4 +5,14 @@ package org.iplantc.de.client.views.windows.configs;
  */
 public interface SystemMessagesWindowConfig extends WindowConfig {
 
+    /**
+     * retrieves the persisted id of the previously selected message
+     */
+    String getSelectedMessage();
+
+    /**
+     * set the id of the currently selected messaged to be persisted.
+     */
+    void setSelectedMessage(String id);
+
 }
