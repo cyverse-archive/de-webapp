@@ -1,12 +1,18 @@
 package org.iplantc.de.client.sysmsgs.model;
 
 /**
- * TODO document
+ * This interface models a user.
  */
 public interface User {
 
+    /**
+     * retrieves the name of the user
+     */
 	String getUser();
 	
-	void setUser(String u);
+    /**
+     * sets the name of the user
+     */
+    void setUser(String name);
 	
 }
