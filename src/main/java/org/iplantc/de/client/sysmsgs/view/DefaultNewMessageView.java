@@ -1,5 +1,6 @@
 package org.iplantc.de.client.sysmsgs.view;
 
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.appearance.widgets.InternalAnchorDefaultAppearance;
 import org.iplantc.core.uicommons.client.widgets.InternalAnchor;
 
@@ -33,8 +34,7 @@ final class DefaultNewMessageView extends InlineHTML implements NewMessageView {
      * @param presenter the presenter managing the view
      */
     DefaultNewMessageView(final Presenter presenter) {
-        // TODO externalize string
-        super(FACTORY.make(ANCHOR_APPEARANCE.render("Read it.")));
+        super(FACTORY.make(ANCHOR_APPEARANCE.render(I18N.DISPLAY.openMessage())));
         final XElement elmt = ANCHOR_APPEARANCE.getAnchorElement(XElement.as(getElement()));
         anchor = InternalAnchor.wrap(null, elmt);
 		anchor.addOpenHandler(new OpenHandler<Void>() {
