@@ -12,6 +12,7 @@ import org.iplantc.de.client.sysmsgs.model.Message;
 import org.iplantc.de.client.sysmsgs.model.MessageFactory;
 import org.iplantc.de.client.sysmsgs.model.MessageList;
 import org.iplantc.de.client.sysmsgs.services.Services;
+import org.iplantc.de.client.sysmsgs.view.Factory;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
 
 import com.google.gwt.core.shared.GWT;
@@ -33,7 +34,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
     private static final Services services = GWT.create(Services.class);
-    private static final MessagesView.Factory<Message> VIEW_FACTORY = GWT.create(MessagesView.Factory.class);
+    private static final Factory VIEW_FACTORY = GWT.create(Factory.class);
     
     private final MessagesView<Message> view;
 
@@ -44,7 +45,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
      * the constructor
      */
     public MessagesPresenter(final String startingSelectedMsgId) {
-        view = VIEW_FACTORY.make(this, MSG_PROPS, new ActivationTimeRenderer());
+        view = VIEW_FACTORY.makeMessagesView(this, MSG_PROPS, new ActivationTimeRenderer());
         selectedMsgId = startingSelectedMsgId == "" ? null : startingSelectedMsgId;
         updateHandlerReg = null;
     }
@@ -99,7 +100,9 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
                 updateHandlerReg = EventBus.getInstance().addHandler(NewSystemMessagesEvent.TYPE, new NewSystemMessagesEvent.Handler() {
                     @Override
                     public void onUpdate(final NewSystemMessagesEvent event) {
-                        loadNewMessages();
+                        // Can't directly load new messages, because the message that triggered
+                        // this event has already been marked as received.
+                        loadUnseenMessages();
                     }
                 });
             }
@@ -133,8 +136,8 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         });
     }
 
-    private void loadNewMessages() {
-        services.getNewMessages(new AsyncCallback<MessageList>() {
+    private void loadUnseenMessages() {
+        services.getUnseenMessages(new AsyncCallback<MessageList>() {
             @Override
             public void onSuccess(final MessageList messages) {
                 markReceived(messages);
