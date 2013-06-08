@@ -95,15 +95,6 @@ public class DEViewImpl implements DEView {
         public SafeHtml render(DEHeaderStyle style);
     }
 
-    private static IPlantAnchor makeSysMsgsMenuItem() {
-        return new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
-            }
-        });
-    }
-
     public DEViewImpl(final DeResources resources, final EventBus eventBus) {
         this.resources = resources;
         this.eventBus = eventBus;
@@ -121,7 +112,12 @@ public class DEViewImpl implements DEView {
         headerResources.ensureInjected();
         r = GWT.create(HeaderTemplate.class);
 
-        sysMsgsMenuItem = makeSysMsgsMenuItem();
+        sysMsgsMenuItem = new IPlantAnchor(I18N.DISPLAY.systemMessagesLabel(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
+            }
+        });
     }
 
     @Override

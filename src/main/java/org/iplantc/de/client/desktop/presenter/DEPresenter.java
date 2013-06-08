@@ -23,6 +23,7 @@ import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
+import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
@@ -103,6 +104,12 @@ public class DEPresenter implements DEView.Presenter {
                 keyboardShortCuts.clear();
                 setUpKBShortCuts();
 
+            }
+        });
+        eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE, new SystemMessageCountUpdateEvent.Handler() {
+            @Override
+            public void onCountUpdate(final SystemMessageCountUpdateEvent event) {
+                view.updateUnseenSystemMessageCount(event.getCount());
             }
         });
 	}
