@@ -56,7 +56,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
- * 
+ *
  * @author sriram
  */
 public class DEPresenter implements DEView.Presenter {
@@ -68,7 +68,7 @@ public class DEPresenter implements DEView.Presenter {
     private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
     private TextButton feedbackBtn;
-    
+
     /**
      * Constructs a default instance of the object.
      */
@@ -281,7 +281,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Initializes the username and email for a user.
-     * 
+     *
      * Calls the session management service to get the attributes associated with a user.
      */
     private void initializeUserInfoAttributes() {
@@ -314,7 +314,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Disable the context menu of the browser using native JavaScript.
-     * 
+     *
      * This disables the user's ability to right-click on this widget and get the browser's context menu
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
@@ -333,14 +333,13 @@ public class DEPresenter implements DEView.Presenter {
         // Need to stop polling
         MessagePoller.getInstance().stop();
 
+        String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
         if (UserSettings.getInstance().isSaveSession()) {
-            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this);
+            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this, redirectUrl);
             uspmb.show();
+        } else {
+            Window.Location.assign(redirectUrl);
         }
-
-        // Need to perform actual logout redirect.
-        Window.Location.assign(Window.Location.getPath() + Constants.CLIENT.logoutUrl());
-
     }
 
     @Override
@@ -352,7 +351,7 @@ public class DEPresenter implements DEView.Presenter {
     public List<WindowState> getOrderedWindowStates() {
         return view.getOrderedWindowStates();
     }
-    
+
     private class DataKBShortCutCmd implements Command {
 
         @Override

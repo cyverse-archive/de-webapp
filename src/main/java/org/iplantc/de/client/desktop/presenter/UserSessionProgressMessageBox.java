@@ -11,6 +11,7 @@ import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEView.Presenter;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
@@ -25,10 +26,15 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox saveSession(DEView.Presenter presenter) {
+        return saveSession(presenter, null);
+    }
+
+    public static UserSessionProgressMessageBox saveSession(DEView.Presenter presenter, String redirectUrl) {
         UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(),
                 I18N.DISPLAY.savingSessionWaitNotice(),
                 ProgressBoxType.SAVE_SESSION,
-                presenter);
+                presenter,
+                redirectUrl);
         saveSessionMb.setProgressText(I18N.DISPLAY.savingMask());
         saveSessionMb.setClosable(false);
         return saveSessionMb;
@@ -49,14 +55,21 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     private final DEView.Presenter presenter;
     private final GetUserSessionCallback restoreSessionCallback;
     private final UserSessionFactory factory = GWT.create(UserSessionFactory.class);
+    private final String redirectUrl;
 
     private UserSessionProgressMessageBox(String headingHtml, String messageHtml, ProgressBoxType type, DEView.Presenter presenter) {
+        this(headingHtml, messageHtml, type, presenter, null);
+    }
+
+    private UserSessionProgressMessageBox(String headingHtml, String messageHtml, ProgressBoxType type, DEView.Presenter presenter,
+            String redirectUrl) {
         super(headingHtml, messageHtml);
         this.getProgressBar().setDuration(1000);
         this.getProgressBar().setInterval(100);
         this.auto();
         this.type = type;
         this.presenter = presenter;
+        this.redirectUrl = redirectUrl;
         restoreSessionCallback = new GetUserSessionCallback(this, presenter, factory);
     }
 
@@ -76,7 +89,7 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
         } else if (type.equals(ProgressBoxType.SAVE_SESSION)) {
             AutoBean<UserSession> userSession = factory.userSession();
             userSession.as().setWindowStates(presenter.getOrderedWindowStates());
-            Services.USER_SESSION_SERVICE.saveUserSession(userSession.as(), new SaveUserSessionCallback(this));
+            Services.USER_SESSION_SERVICE.saveUserSession(userSession.as(), new SaveUserSessionCallback(this, redirectUrl));
         }
 
     }
@@ -87,20 +100,30 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
 
     private final class SaveUserSessionCallback implements AsyncCallback<String> {
         private final IsHideable msgBox;
+        private final String redirectUrl;
 
-        public SaveUserSessionCallback(IsHideable msgBox) {
+        public SaveUserSessionCallback(IsHideable msgBox, String redirectUrl) {
             this.msgBox = msgBox;
+            this.redirectUrl = redirectUrl;
+        }
+
+        private void handleRedirection() {
+            if (redirectUrl != null) {
+                Window.Location.assign(redirectUrl);
+            }
         }
 
         @Override
         public void onSuccess(String result) {
             msgBox.hide();
+            handleRedirection();
         }
 
         @Override
         public void onFailure(Throwable caught) {
             GWT.log(I18N.ERROR.saveSessionFailed(), caught);
             msgBox.hide();
+            handleRedirection();
         }
     }
 
