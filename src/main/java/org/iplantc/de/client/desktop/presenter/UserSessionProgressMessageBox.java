@@ -25,7 +25,8 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox saveSession(DEView.Presenter presenter) {
-        UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(), I18N.DISPLAY.savingSessionWaitNotice(),
+        UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(),
+                I18N.DISPLAY.savingSessionWaitNotice(),
                 ProgressBoxType.SAVE_SESSION,
                 presenter);
         saveSessionMb.setProgressText(I18N.DISPLAY.savingMask());
@@ -34,7 +35,8 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox restoreSession(DEView.Presenter presenter) {
-        UserSessionProgressMessageBox restoreSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.loadingSession(), I18N.DISPLAY.loadingSessionWaitNotice(),
+        UserSessionProgressMessageBox restoreSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.loadingSession(),
+                I18N.DISPLAY.loadingSessionWaitNotice(),
                 ProgressBoxType.RESTORE_SESSION,
                 presenter);
         restoreSessionMb.setProgressText(I18N.DISPLAY.loadingMask());
