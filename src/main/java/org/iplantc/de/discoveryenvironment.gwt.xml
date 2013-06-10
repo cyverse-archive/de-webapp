@@ -96,8 +96,8 @@
    <replace-with class="org.iplantc.de.client.sysmsgs.presenter.DefaultTimeSource">
       <when-type-is class="org.iplantc.de.client.sysmsgs.presenter.ProvidesTime"/>
    </replace-with>
-   <replace-with class="org.iplantc.de.client.sysmsgs.view.DefaultMessagesViewFactory">
-   	  <when-type-is class="org.iplantc.de.client.sysmsgs.view.MessagesView.Factory"/>
+   <replace-with class="org.iplantc.de.client.sysmsgs.view.DefaultFactory">
+   	  <when-type-is class="org.iplantc.de.client.sysmsgs.view.Factory"/>
    </replace-with>
    
 	<!-- Specify the app entry point class.                         -->

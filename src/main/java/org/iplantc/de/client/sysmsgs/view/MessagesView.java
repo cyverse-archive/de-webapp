@@ -3,7 +3,6 @@ package org.iplantc.de.client.sysmsgs.view;
 import java.util.Date;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -69,22 +68,6 @@ public interface MessagesView<M> extends IsWidget {
          * @param message the message to select
          */
         void handleSelectMessage(M message);
-    }
-
-    /**
-     * A factory for making MessageView objects
-     * 
-     * @param <M> the type of message to view
-     */
-    interface Factory<M> {
-        /**
-         * Initializes the widget
-         * 
-         * @param presenter the presenter for this view
-         * @param messageProperties the message properties provider
-         * @param activationRenderer the renderer used to render the activation time
-         */
-        MessagesView<M> make(Presenter<M> presenter, MessageProperties<M> messageProperties, Renderer<Date> activationRenderer);
     }
 
     /**

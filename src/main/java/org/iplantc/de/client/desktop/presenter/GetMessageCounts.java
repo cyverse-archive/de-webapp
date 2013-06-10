@@ -35,11 +35,11 @@ final class GetMessageCounts implements Runnable {
         final EventBus bus = EventBus.getInstance();
         final int unseenNoteCnt = counts.getUnseenNotificationCount();
         bus.fireEvent(new NotificationCountUpdateEvent(unseenNoteCnt));
+        final int unseenSysMsgCnt = counts.getUnseenSystemMessageCount();
+        bus.fireEvent(new SystemMessageCountUpdateEvent(unseenSysMsgCnt));
         if (counts.getNewSystemMessageCount() > 0) {
             bus.fireEvent(new NewSystemMessagesEvent());
         }
-        final int unseenSysMsgCnt = counts.getUnseenSystemMessageCount();
-        bus.fireEvent(new SystemMessageCountUpdateEvent(unseenSysMsgCnt));
     }
 
 }
