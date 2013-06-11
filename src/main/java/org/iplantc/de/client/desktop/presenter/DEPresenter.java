@@ -263,8 +263,12 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void initMessagePoller() {
+        // Do an initial fetch of message counts, otherwise the initial count will not be fetched until
+        // after an entire poll-length of the MessagePoller's timer (15 seconds by default).
+        GetMessageCounts notificationCounts = new GetMessageCounts();
+        notificationCounts.run();
         MessagePoller poller = MessagePoller.getInstance();
-        poller.addTask(new GetMessageCounts());
+        poller.addTask(notificationCounts);
         poller.start();
     }
 
