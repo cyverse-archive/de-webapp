@@ -256,6 +256,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         selectedMsgId = msg.getId();
         view.getSelectionModel().select(msg, false);
         view.showMessages();
+        view.scrollIntoView(view.getMessageStore().indexOf(msg));
 	}
 
     private void showBodyOf(final Message message) {
@@ -268,6 +269,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
         final String expiryStr = expiryFmt.format(message.getDeactivationTime());
         view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+
     }
 
     private Message getSelectedMessage() {
