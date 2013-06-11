@@ -33,8 +33,6 @@ public final class RemoteServices implements Services {
             return AutoBeanCodex.decode(MessageFactory.INSTANCE, MessageList.class, json).as();
         }
     }
-
-    private final CommandSequencer callSequencer = new CommandSequencer();
 	
     /**
      * @see Services#getAllMessages(AsyncCallback)
@@ -65,18 +63,13 @@ public final class RemoteServices implements Services {
      */
     @Override
     public void markAllReceived(final AsyncCallback<Void> callback) {
-        callSequencer.schedule(new ChainableCommand<Void>(callback) {
-            @Override
-            protected void execute(final AsyncCallback<Void> wrappedCB) {
-                final String address = makeAddress("/mark-all-received");  //$NON-NLS-1$
-                final AutoBean<User> user = MessageFactory.INSTANCE.makeUser();
-                user.as().setUser(UserInfo.getInstance().getUsername());
-                final String payload = AutoBeanCodex.encode(user).getPayload();
-                final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, payload);
-                final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(wrappedCB);
-                DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
-            }
-        });
+        final String address = makeAddress("/mark-all-received");  //$NON-NLS-1$
+        final AutoBean<User> user = MessageFactory.INSTANCE.makeUser();
+        user.as().setUser(UserInfo.getInstance().getUsername());
+        final String payload = AutoBeanCodex.encode(user).getPayload();
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, payload);
+        final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(callback);
+        DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
     }
 
     /**
@@ -84,16 +77,11 @@ public final class RemoteServices implements Services {
      */
     @Override
     public void markReceived(final IdList msgIds, final AsyncCallback<Void> callback) {
-        callSequencer.schedule(new ChainableCommand<Void>(callback) {
-            @Override
-            protected void execute(final AsyncCallback<Void> wrappedCB) {
-                final String address = makeAddress("/received");  //$NON-NLS-1$
-                final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
-                final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
-                final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(wrappedCB);
-                DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
-            }
-        });
+        final String address = makeAddress("/received");  //$NON-NLS-1$
+        final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
+        final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(callback);
+        DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
     }
 
     /**
@@ -101,16 +89,11 @@ public final class RemoteServices implements Services {
      */
     @Override
     public void acknowledgeMessages(final IdList msgIds, final AsyncCallback<Void> callback) {
-        callSequencer.schedule(new ChainableCommand<Void>(callback) {
-            @Override
-            protected void execute(final AsyncCallback<Void> wrappedCB) {
-                final String address = makeAddress("/seen"); //$NON-NLS-1$
-                final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
-                final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
-                final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(wrappedCB);
-                DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
-            }
-        });
+        final String address = makeAddress("/seen"); //$NON-NLS-1$
+        final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
+        final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(callback);
+        DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
     }
 
     /**
@@ -118,27 +101,17 @@ public final class RemoteServices implements Services {
      */
     @Override
     public void hideMessages(final IdList msgIds, final AsyncCallback<Void> callback) {
-        callSequencer.schedule(new ChainableCommand<Void>(callback) {
-            @Override
-            protected void execute(final AsyncCallback<Void> wrappedCB) {
-                final String address = makeAddress("/delete");  //$NON-NLS-1$
-                final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
-                final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
-                final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(wrappedCB);
-                DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
-            }
-        });
+        final String address = makeAddress("/delete");  //$NON-NLS-1$
+        final Splittable split = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(msgIds));
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, address, split.getPayload());
+        final AsyncCallback<String> voidedCB = new StringToVoidCallbackConverter(callback);
+        DEServiceFacade.getInstance().getServiceData(wrapper, voidedCB);
     }
 
     private void getMessages(final String relSvcPath, final AsyncCallback<MessageList> callback) {
         final String address = makeAddress(relSvcPath);
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.GET, address);
-        callSequencer.schedule(new ChainableCommand<MessageList>(callback) {
-            @Override
-            protected void execute(final AsyncCallback<MessageList> wrappedCB) {
-                DEServiceFacade.getInstance().getServiceData(wrapper, new MsgListCB(wrappedCB));
-            }
-        });
+        DEServiceFacade.getInstance().getServiceData(wrapper, new MsgListCB(callback));
     }
 
     private String makeAddress(final String relPath) {
