@@ -18,13 +18,13 @@
     <container:SimpleContainer>
         <toolbar:ToolBar ui:field="menuToolBar" >
             <button:TextButton
-                debugId="idBtnCancel"
+                debugId="idBtnDelete"
                 icon="{icons.cancel}"
                 text="{strings.delete}"
                 ui:field="btnDelete"
                 enabled="false"/>
              <button:TextButton
-                 debugId="idBtnDelete"
+                 debugId="idBtnCancel"
                 icon="{icons.deleteIcon}"
                 text="{strings.cancelAnalysis}"
                 ui:field="btnCancel"
@@ -37,6 +37,7 @@
                 enabled="false"/>
             <analysis:AnalysisSearchField
                 ui:field="filterField"
+                debugId="idAnalysisSrc"
                 emptyText="{strings.filterAnalysesList}" />
         </toolbar:ToolBar>
     </container:SimpleContainer>

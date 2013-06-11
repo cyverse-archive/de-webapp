@@ -17,17 +17,19 @@ final class GetMessageCounts implements Runnable {
     /**
      * @see Runnable#run()
      */
-	@Override
-	public void run() {
+    @Override
+    public void run() {
         new MessageServiceFacade().getMessageCounts(new AsyncCallback<Counts>() {
             @Override
-            public void onFailure(final Throwable caught) {}
+            public void onFailure(final Throwable caught) {
+            }
+
             @Override
             public void onSuccess(final Counts cnts) {
                 fireEvents(cnts);
             }
         });
-	}
+    }
 
     private void fireEvents(final Counts counts) {
         final EventBus bus = EventBus.getInstance();
@@ -39,5 +41,5 @@ final class GetMessageCounts implements Runnable {
             bus.fireEvent(new NewSystemMessagesEvent());
         }
     }
-	
+
 }
