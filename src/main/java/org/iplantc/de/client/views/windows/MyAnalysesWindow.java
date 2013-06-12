@@ -13,7 +13,8 @@ import org.iplantc.de.client.analysis.views.AnalysesView;
 import org.iplantc.de.client.analysis.views.AnalysesViewImpl;
 import org.iplantc.de.client.analysis.views.cells.AnalysisAppNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisNameCell;
-import org.iplantc.de.client.analysis.views.cells.AnalysisTimeStampCell;
+import org.iplantc.de.client.analysis.views.cells.EndDateTimeCell;
+import org.iplantc.de.client.analysis.views.cells.StartDateTimeCell;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
@@ -96,13 +97,13 @@ public class MyAnalysesWindow extends IplantWindowBase {
 
         ColumnConfig<Analysis, Analysis> startdate = new ColumnConfig<Analysis, Analysis>(valueProvider,
                 150);
-        startdate.setCell(new AnalysisTimeStampCell());
+        startdate.setCell(new StartDateTimeCell());
         startdate.setHeader(I18N.DISPLAY.startDate());
         configs.add(startdate);
 
         ColumnConfig<Analysis, Analysis> enddate = new ColumnConfig<Analysis, Analysis>(valueProvider,
                 150);
-        enddate.setCell(new AnalysisTimeStampCell());
+        enddate.setCell(new EndDateTimeCell());
         enddate.setHeader(I18N.DISPLAY.endDate());
         configs.add(enddate);
 
