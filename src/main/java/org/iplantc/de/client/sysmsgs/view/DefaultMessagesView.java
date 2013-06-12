@@ -114,6 +114,21 @@ final class DefaultMessagesView<M> extends Composite implements MessagesView<M> 
     }
 
     /**
+     * @see MessagesView#scrollIntoView(int)
+     */
+    @Override
+    public void scrollIntoView(final int messageIndex) {
+        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                if (messageIndex < messageList.getItemCount()) {
+                    messageList.getElement(messageIndex).scrollIntoView();
+                }
+            }
+        });
+    }
+
+    /**
      * @see MessagesView#getMessageStore()
      */
     @Override

@@ -28,6 +28,7 @@ import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -71,6 +72,7 @@ public class NotificationListView implements IsWidget {
 	private ListStore<NotificationMessage> store;
 	private int total_unseen;
 	private final HorizontalPanel hyperlinkPanel;
+    private boolean unseenNotificationsFetchedOnce;
 
 	public static final int NEW_NOTIFICATIONS_LIMIT = 10;
 
@@ -226,6 +228,7 @@ public class NotificationListView implements IsWidget {
 			public void onSuccess(String result) {
 				super.onSuccess(result);
 				processMessages(this.getNotifications());
+                unseenNotificationsFetchedOnce = true;
 			}
 		});
 	}
@@ -238,16 +241,20 @@ public class NotificationListView implements IsWidget {
 	 */
 	public void processMessages(final List<Notification> notifications) {
 		// cache before removing
-		List<NotificationMessage> temp = store.getAll();
-		store.clear();
+        // KLUDGE Apparently ListStore.getAll in GXT 3.0.1 and GWT 2.5.0 does not really create a copy of
+        // the store contents.
+        List<NotificationMessage> temp = Lists.newArrayList(store.getAll());
+
+        store.clear();
 		store.clearSortInfo();
 		boolean displayInfo = false;
 
 		for (Notification n : notifications) {
 			NotificationMessage nm = n.getMessage();
 			nm.setSeen(n.isSeen());
-			if (!isExist(temp, nm)) {
-				store.add(nm);
+            store.add(nm);
+
+            if (unseenNotificationsFetchedOnce && !nm.isSeen() && !isExist(temp, nm)) {
 				displayNotificationPopup(nm);
 				displayInfo = true;
 			}
@@ -269,23 +276,19 @@ public class NotificationListView implements IsWidget {
 		highlightNewNotifications();
 	}
 
-	private void displayNotificationPopup(NotificationMessage n) {
-		if (!n.isSeen()) {
-			if (n.getCategory().equals(Category.DATA)) {
-				NotifyInfo.display(n.getMessage());
-			} else if (n.getCategory().equals(Category.ANALYSIS)) {
-				PayloadAnalysis analysisPayload = AutoBeanCodex.decode(
-						notificationFactory, PayloadAnalysis.class,
-						n.getContext()).as();
+    private void displayNotificationPopup(NotificationMessage msg) {
+        if (Category.ANALYSIS.equals(msg.getCategory())) {
+            PayloadAnalysis analysisPayload = AutoBeanCodex.decode(notificationFactory,
+                    PayloadAnalysis.class, msg.getContext()).as();
 
-				if ("Failed".equals(analysisPayload.getStatus())) { //$NON-NLS-1$
-					NotifyInfo.displayWarning(n.getMessage());
-				} else {
-					NotifyInfo.display(n.getMessage());
-				}
-			}
-		}
-	}
+            if ("Failed".equals(analysisPayload.getStatus())) { //$NON-NLS-1$
+                NotifyInfo.displayWarning(msg.getMessage());
+                return;
+            }
+        }
+
+        NotifyInfo.display(msg.getMessage());
+    }
 
 	private boolean isExist(List<NotificationMessage> list,
 			NotificationMessage n) {
