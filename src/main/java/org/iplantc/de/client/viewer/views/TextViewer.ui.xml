@@ -4,15 +4,6 @@
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form" xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client" xmlns:toolbar="urn:import:org.iplantc.de.client.viewer.views">
 
- <ui:style >
-
- 	.viewer_bck {
-		background-color: white;
-	}
-
-  </ui:style>
-
-
 	<ui:with field="strings"
 		type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
 
@@ -55,9 +46,7 @@
 					</toolbar:TextViewPagingToolBar>
 				</container:north>
 				<container:center layoutData="{centerData}">
-					<container:VerticalLayoutContainer ui:field="contentPnl">
-						<g:HTML addStyleNames='{style.viewer_bck}' debugId="idViewArea" ui:field="textArea"></g:HTML>
-					</container:VerticalLayoutContainer>
+						<g:TextArea debugId="idViewArea" ui:field="textArea"></g:TextArea>
 				</container:center>
 			</container:BorderLayoutContainer>
 		</container:child>
