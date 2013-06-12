@@ -71,6 +71,13 @@ public interface MessagesView<M> extends IsWidget {
     }
 
     /**
+     * Makes sure that the summary of the given index is visible in the summary list.
+     * 
+     * @param messageIndex The index of the message in the list store
+     */
+    void scrollIntoView(int messageIndex);
+
+    /**
      * returns the message store backing the view
      * 
      * @return the message store
