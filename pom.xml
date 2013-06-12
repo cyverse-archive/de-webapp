@@ -23,7 +23,7 @@
       <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
       <hibernate.version>3.6.8.Final</hibernate.version>
       <googleGuava.version>13.0.1</googleGuava.version>
-   </properties> 
+   </properties>
    <dependencies>
       <dependency>
          <groupId>org.safehaus.jug</groupId>
@@ -111,7 +111,7 @@
          <artifactId>ui-apps-integration</artifactId>
          <version>${project.version}</version>
       </dependency>
-        
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
@@ -151,7 +151,7 @@
             <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
            <groupId>com.google.guava</groupId>
            <artifactId>guava-gwt</artifactId>
@@ -188,7 +188,7 @@
             <version>dev-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -229,7 +229,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <packagingExcludes>**/log4j.properties</packagingExcludes>
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <manifest>
                         <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -280,7 +279,7 @@
                 <configuration>
                     <extraJvmArgs>-Xmx1024M -Xms512M -Xss4M</extraJvmArgs>
                     <webappDirectory>${basedir}/war</webappDirectory>
-                    <mode>htmlunit</mode> 
+                    <mode>htmlunit</mode>
                     <gen>${basedir}/gwt-gen</gen>
                     <module>org.iplantc.de.discoveryenvironment</module>
 		            <!-- compileReport>true</compileReport>
