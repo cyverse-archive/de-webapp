@@ -93,9 +93,6 @@
    <replace-with class="org.iplantc.de.client.sysmsgs.services.RemoteServices">
       <when-type-is class="org.iplantc.de.client.sysmsgs.services.Services"/>
    </replace-with>
-   <replace-with class="org.iplantc.de.client.sysmsgs.presenter.DefaultTimeSource">
-      <when-type-is class="org.iplantc.de.client.sysmsgs.presenter.ProvidesTime"/>
-   </replace-with>
    <replace-with class="org.iplantc.de.client.sysmsgs.view.DefaultFactory">
    	  <when-type-is class="org.iplantc.de.client.sysmsgs.view.Factory"/>
    </replace-with>
