@@ -4,6 +4,7 @@ import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent;
 import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent.AnalysisLaunchEventHandler;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
+import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
@@ -14,6 +15,8 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchEventHandler {
 
@@ -55,8 +58,24 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
 
     private void init(final AppWizardView.Presenter presenter, AppWizardConfig config) {
         if (config.getAppTemplate() != null) {
-            setHeadingText(config.getAppTemplate().getLabel());
-            presenter.go(this, config.getAppTemplate());
+            AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(new AsyncCallback<AppTemplate>() {
+
+                @Override
+                public void onSuccess(AppTemplate result) {
+                    setHeadingText(result.getLabel());
+                    presenter.go(AppWizardWindow.this, result);
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    /*
+                     * JDS Do nothing since this this callback converter is called manually below (i.e.
+                     * no over-the-wire integration)
+                     */
+                }
+            });
+            cnvt.onSuccess(config.getAppTemplate().getPayload());
+
             // KLUDGE JDS This call to forceLayout should not be necessary.
             forceLayout();
         } else if ((config.getLegacyAppTemplateJson() != null)
@@ -75,7 +94,7 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
     @Override
     public WindowState getWindowState() {
         AppWizardConfig config = ConfigFactory.appWizardConfig(appId);
-        config.setAppTemplate(presenter.getAppTemplate());
+        config.setAppTemplate(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(presenter.getAppTemplate())));
         return createWindowState(config);
     }
 
