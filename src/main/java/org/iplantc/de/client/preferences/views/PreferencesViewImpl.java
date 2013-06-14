@@ -126,6 +126,7 @@ public class PreferencesViewImpl implements PreferencesView {
         anaKbSc.setValue(Constants.CLIENT.analysisKeyShortCut());
         notKbSc.setValue(Constants.CLIENT.notifyKeyShortCut());
         closeKbSc.setValue(Constants.CLIENT.closeKeyShortCut());
+        defaultOpFolder.setValueFromStringId(us.getSystemDefaultOutputFolder());
     }
 
     @Override
