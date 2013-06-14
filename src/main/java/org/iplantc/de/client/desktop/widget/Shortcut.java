@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.sencha.gxt.core.client.util.Padding;
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -43,8 +44,8 @@ public class Shortcut extends IconButton {
 
         this.addSelectHandler(handler);
         getElement().setAttribute("data-step", desc.getIndex());
-        getElement().setAttribute("data-intro", desc.getCaption());
-        getElement().setAttribute("data-position", "right");
+        getElement().setAttribute("data-intro", desc.getHelp());
+        getElement().setAttribute("data-position", "bottom");
         setBorders(false);
         addHandler(new MouseOverHandler() {
 

@@ -34,6 +34,8 @@ import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -168,6 +170,16 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onSuccess(String result) {
                 loadPreferences(JsonUtil.getObject(result));
+                Scheduler.get().scheduleDeferred(new Command() {
+
+                    @Override
+                    public void execute() {
+                        if (UserInfo.getInstance().isNewUser()) {
+                            doIntro();
+                        }
+
+                    }
+                });
             }
         });
     }
@@ -211,6 +223,10 @@ public class DEPresenter implements DEView.Presenter {
         feedbackBtn.addStyleName(resources.css().rotate90());
         feedbackBtn.getElement().updateZIndex(0);
         RootPanel.get().add(feedbackBtn);
+        feedbackBtn.getElement().setAttribute("data-intro",
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introFeedback());
+        feedbackBtn.getElement().setAttribute("data-position", "left");
+        feedbackBtn.getElement().setAttribute("data-step", "6");
     }
 
     private void positionFButton(Size s) {
@@ -224,7 +240,10 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     public static native void doIntro() /*-{
-		$wnd.introJs().start();
+		var introjs = $wnd.introJs();
+		introjs.setOption("showStepNumbers", false);
+		introjs.start();
+
     }-*/;
 
     private void setUpKBShortCuts() {

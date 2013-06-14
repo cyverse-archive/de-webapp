@@ -122,7 +122,7 @@ public class Desktop implements IsWidget {
      */
     private void addShortcut(Shortcut shortcut) {
         getShortcuts().add(shortcut);
-        getDesktop().add(shortcut, new BoxLayoutData(new Margins(5)));
+        getDesktop().add(shortcut, new BoxLayoutData(new Margins(5, 5, 5, 25)));
 
     }
 

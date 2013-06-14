@@ -164,7 +164,7 @@ public class DEViewImpl implements DEView {
     }
 
     public interface HtmlLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\" data-intro=\"You will get all notifications here!\" data-step='1' data-position=\"left\"/><td class=\" cell3\"/><td class=\"cell2\" data-intro=\"Preferences,help and support can be accessed from here!\" data-step='2' data-position=\"left\"/></tr></tbody></table>")
+        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\"/><td class=\" cell3\"/><td class=\"cell2\"/></tr></tbody></table>")
         SafeHtml getTemplate();
     }
 
@@ -191,6 +191,10 @@ public class DEViewImpl implements DEView {
             }
         });
         button.setMenu(notificationsView);
+        button.getElement().setAttribute("data-intro",
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introNotifications());
+        button.getElement().setAttribute("data-position", "left");
+        button.getElement().setAttribute("data-step", "4");
         ToolBar bar = new ToolBar();
         bar.setPixelSize(120, 30);
         bar.add(button);
@@ -219,6 +223,11 @@ public class DEViewImpl implements DEView {
                 menu.removeStyleName(resources.css().de_header_menu());
             }
         });
+
+        button.getElement().setAttribute("data-intro",
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introSettings());
+        button.getElement().setAttribute("data-position", "left");
+        button.getElement().setAttribute("data-step", "5");
 
         ToolBar bar = new ToolBar();
         bar.setPixelSize(50, 30);
