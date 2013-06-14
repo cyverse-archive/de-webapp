@@ -34,21 +34,21 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
  * 
  */
 public class AnalysisNameCell extends AbstractCell<Analysis> {
-    
-    interface Resources extends ClientBundle{
+
+    interface Resources extends ClientBundle {
         @Source("AnalysisNameCell.css")
         Style css();
     }
-    
-    interface Style extends CssResource{
+
+    interface Style extends CssResource {
         String hasResultFolder();
-        
+
         String noResultFolder();
     }
-    
+
     interface Templates extends SafeHtmlTemplates {
-        
-        @SafeHtmlTemplates.Template("<span name=\"{0}\" class=\"{1}\">{2}</span>")
+
+        @SafeHtmlTemplates.Template("<span name=\"{0}\" title=\" click here to view results of this analysis \" class=\"{1}\">{2}</span>")
         SafeHtml cell(String elementName, String className, SafeHtml analysisName);
     }
 
@@ -56,7 +56,7 @@ public class AnalysisNameCell extends AbstractCell<Analysis> {
     private final Templates templates = GWT.create(Templates.class);
     private final EventBus eventBus;
     private static final String ELEMENT_NAME = "analysisName";
-    
+
     public AnalysisNameCell(EventBus eventBus) {
         super(CLICK, MOUSEOVER, MOUSEOUT);
         res.css().ensureInjected();
@@ -65,16 +65,17 @@ public class AnalysisNameCell extends AbstractCell<Analysis> {
 
     @Override
     public void render(Cell.Context context, Analysis model, SafeHtmlBuilder sb) {
-        if(model == null)
+        if (model == null)
             return;
-        
-        String style = Strings.isNullOrEmpty(model.getResultFolderId()) ? res.css().noResultFolder() : res.css().hasResultFolder();
+
+        String style = Strings.isNullOrEmpty(model.getResultFolderId()) ? res.css().noResultFolder()
+                : res.css().hasResultFolder();
         sb.append(templates.cell(ELEMENT_NAME, style, SafeHtmlUtils.fromString(model.getName())));
     }
 
     @Override
-    public void onBrowserEvent(Cell.Context context, Element parent,
-            Analysis value, NativeEvent event, ValueUpdater<Analysis> valueUpdater) {
+    public void onBrowserEvent(Cell.Context context, Element parent, Analysis value, NativeEvent event,
+            ValueUpdater<Analysis> valueUpdater) {
         if (value == null) {
             return;
         }
@@ -102,26 +103,30 @@ public class AnalysisNameCell extends AbstractCell<Analysis> {
     }
 
     private void doOnMouseOut(Element eventTarget, Analysis value) {
-        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME) && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
+                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
             eventTarget.getStyle().setTextDecoration(TextDecoration.NONE);
-        }        
+        }
     }
 
     private void doOnMouseOver(Element eventTarget, Analysis value) {
-        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME) && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
+                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
             eventTarget.getStyle().setTextDecoration(TextDecoration.UNDERLINE);
-        }        
+        }
     }
 
     private void doOnClick(Element eventTarget, Analysis value, ValueUpdater<Analysis> valueUpdater) {
-        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME) && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
+                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
             CommonModelAutoBeanFactory factory = GWT.create(CommonModelAutoBeanFactory.class);
-            HasId folderAb = AutoBeanCodex.decode(factory, HasId.class, "{\"id\": \"" + value.getResultFolderId() + "\"}").as();
-            
+            HasId folderAb = AutoBeanCodex.decode(factory, HasId.class,
+                    "{\"id\": \"" + value.getResultFolderId() + "\"}").as();
+
             DiskResourceWindowConfig config = ConfigFactory.diskResourceWindowConfig();
             config.setSelectedFolder(folderAb);
-            eventBus.fireEvent(new WindowShowRequestEvent(config));
-        }        
+            eventBus.fireEvent(new WindowShowRequestEvent(config, true));
+        }
     }
 
 }
