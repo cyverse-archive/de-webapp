@@ -46,7 +46,7 @@ public class AnalysisAppNameCell extends AbstractCell<Analysis> {
 
     interface Templates extends SafeHtmlTemplates {
 
-        @SafeHtmlTemplates.Template("<span name=\"{0}\" title=\"click here to re-launch this analysis\" class=\"{1}\">{2}</span>")
+        @SafeHtmlTemplates.Template("<span name=\"{0}\" title=\"Click here to relaunch this analysis.\" class=\"{1}\">{2}</span>")
         SafeHtml cell(String elementName, String className, SafeHtml analysisAppName);
     }
 
