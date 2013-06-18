@@ -81,10 +81,6 @@
 		<servlet-class>org.iplantc.de.server.EmptyResponseServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>toolSubmitServlet</servlet-name>
-		<servlet-class>org.iplantc.de.server.NewToolRequestServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>proxyServlet</servlet-name>
 		<servlet-class>org.iplantc.de.server.service.ProxyServlet</servlet-class>
 	</servlet>
@@ -153,10 +149,6 @@
 	<servlet-mapping>
 		<servlet-name>emptyResponseServlet</servlet-name>
 		<url-pattern>/discoveryenvironment/empty</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>toolSubmitServlet</servlet-name>
-		<url-pattern>/apps/new_tool_request</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>proxyServlet</servlet-name>
