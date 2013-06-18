@@ -37,10 +37,6 @@
 		</init-param>
 	</servlet>
 	<servlet>
-		<servlet-name>fileUploadServlet</servlet-name>
-		<servlet-class>org.iplantc.de.server.FileUploadServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>fileDownloadServlet</servlet-name>
 		<servlet-class>org.iplantc.de.server.FileDownloadServlet</servlet-class>
 	</servlet>
@@ -113,10 +109,6 @@
 	<servlet-mapping>
 		<servlet-name>loggedOutServlet</servlet-name>
 		<url-pattern>/discoveryenvironment/logged-out</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileUploadServlet</servlet-name>
-		<url-pattern>*.gupld</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>fileDownloadServlet</servlet-name>
