@@ -16,7 +16,6 @@ import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
@@ -58,15 +57,6 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, 
                 address, split.getPayload());
         DEServiceFacade.getInstance().getServiceData(wrapper, new AppTemplateCallbackConverter(callback));
-    }
-
-    private Splittable appTemplateToSplittable(AppTemplate at){
-        AutoBean<AppTemplate> ab = AutoBeanUtils.getAutoBean(at);
-        return AutoBeanCodex.encode(ab);
-    }
-
-    private void callSecuredService(AsyncCallback<String> callback, ServiceCallWrapper wrapper) {
-        SharedServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
     @Override
@@ -117,6 +107,28 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.PUT, address, split.getPayload());
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
+
+    private Splittable appTemplateToSplittable(AppTemplate at){
+        Splittable ret = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(at));
+        if(at.getDeployedComponent() != null){
+            StringQuoter.create(at.getDeployedComponent().getId()).assign(ret, "component_id");
+        }
+        // JDS Convert Argument.getValue() which contain any selected/checked *Selection types to only
+        // contain their value.
+        /*AutoBean<AppTemplate> ab = AutoBeanUtils.getAutoBean(at);
+        for (ArgumentGroup ag : at.getArgumentGroups()) {
+            for (Argument arg : ag.getArguments()) {
+                if (AppWizardFieldFactory.isSelectionArgumentType(arg)) {
+
+                }
+            }
+        }*/
+        return ret;
+    }
+
+    private void callSecuredService(AsyncCallback<String> callback, ServiceCallWrapper wrapper) {
+        SharedServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
 }
