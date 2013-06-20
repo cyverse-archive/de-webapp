@@ -82,6 +82,7 @@ public class PreferencesViewImpl implements PreferencesView {
         kbMap = new HashMap<TextField, String>();
         container.setScrollMode(ScrollMode.AUTOY);
         defaultOpFolder = new AppWizardFolderSelector();
+        defaultOpFolder.setId("idDefaultFolderSelector");
         prefContainer.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new VerticalLayoutData(.9, -1,
                 new Margins(5)));
         prefContainer.add(defaultOpFolder.asWidget(), new VerticalLayoutData(.9, -1, new Margins(5)));
@@ -99,7 +100,6 @@ public class PreferencesViewImpl implements PreferencesView {
         kbMap.put(anaKbSc, anaKbSc.getValue());
         kbMap.put(notKbSc, notKbSc.getValue());
         kbMap.put(closeKbSc, closeKbSc.getValue());
-
     }
 
     /*

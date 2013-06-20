@@ -238,61 +238,105 @@ public class DEViewImpl implements DEView {
     private Menu buildUserMenu() {
         final Menu userMenu = buildMenu();
 
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.preferences(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                buildAndShowPreferencesDialog();
-            }
-        }));
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.collaborators(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                ManageCollaboratorsDailog dialog = new ManageCollaboratorsDailog(MODE.MANAGE);
-                dialog.show();
-            }
-        }));
+        userMenu.add(buildPrefMenuItem());
+        userMenu.add(buildCollabMenuItem());
 
         userMenu.add(sysMsgsMenuItem);
 
         userMenu.add(new SeparatorMenuItem());
 
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.deHelpFile());
-            }
-        }));
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.forums(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.forumsUrl());
-            }
-        }));
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.contactSupport(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.supportUrl());
-            }
-        }));
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.about(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                // displayAboutDe();
-                EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
-            }
-        }));
+        userMenu.add(buildHelpMenuItem());
+        userMenu.add(buildFourmsMenuItem());
+        userMenu.add(buildContactMenuItem());
+        userMenu.add(buildAboutMenuItem());
 
         userMenu.add(new SeparatorMenuItem());
 
-        userMenu.add(new IPlantAnchor(I18N.DISPLAY.logout(), -1, new ClickHandler() {
+        userMenu.add(buildLogoutMenuItem());
+
+        return userMenu;
+    }
+
+    private IPlantAnchor buildLogoutMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.logout(), -1, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 // doLogout();
                 presenter.doLogout();
             }
-        }));
+        });
 
-        return userMenu;
+        anchor.setId("idLogoutMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildAboutMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.about(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                // displayAboutDe();
+                EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
+            }
+        });
+        anchor.setId("idAboutMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildContactMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.contactSupport(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.supportUrl());
+            }
+        });
+        anchor.setId("idSupportMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildFourmsMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.forums(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.forumsUrl());
+            }
+        });
+        anchor.setId("idForumMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildHelpMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.documentation(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                WindowUtil.open(Constants.CLIENT.deHelpFile());
+            }
+        });
+        anchor.setId("idDocMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildCollabMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.collaborators(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                ManageCollaboratorsDailog dialog = new ManageCollaboratorsDailog(MODE.MANAGE);
+                dialog.show();
+            }
+        });
+        anchor.setId("idCollabMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildPrefMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.preferences(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                buildAndShowPreferencesDialog();
+            }
+
+        });
+        anchor.setId("idPrefMenuItem");
+        return anchor;
     }
 
     private void buildAndShowPreferencesDialog() {
