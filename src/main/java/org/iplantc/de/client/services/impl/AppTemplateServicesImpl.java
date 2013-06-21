@@ -5,6 +5,7 @@ import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.Argument;
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
 import org.iplantc.core.uiapps.widgets.client.models.JobExecution;
+import org.iplantc.core.uiapps.widgets.client.models.util.AppTemplateUtils;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
@@ -73,9 +74,20 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
     public void cmdLinePreview(AppTemplate at, AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl()
                + "arg-preview"; //$NON-NLS-1$
-        Splittable split = appTemplateToSplittable(at);
+        AppTemplate copy = AppTemplateUtils.copyAppTemplate(at);
+        // JDS Transform any Argument's value which contains a full SelectionItem obj to the
+        // SelectionItem's value
+        for (ArgumentGroup ag : copy.getArgumentGroups()) {
+            for (Argument arg : ag.getArguments()) {
+                if (AppTemplateUtils.isSimpleSelectionArgumentType(arg) && (arg.getValue() != null) && arg.getValue().isKeyed() && !arg.getValue().isUndefined("value")) {
+                    arg.setValue(arg.getValue().get("value"));
+                }
+            }
+        }
+        Splittable split = appTemplateToSplittable(copy);
+        String payload = split.getPayload();
         ServiceCallWrapper wrapper = new ServiceCallWrapper(Type.POST, 
-                address, split.getPayload());
+                address, payload);
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
