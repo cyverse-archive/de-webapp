@@ -48,7 +48,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
         templateService = GWT.create(AppTemplateServices.class);
         presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY);
         setTitle(I18N.DISPLAY.createApps());
-        setSize("890", "500");
+        setSize("1020", "500");
 
         init(presenter, config);
 
