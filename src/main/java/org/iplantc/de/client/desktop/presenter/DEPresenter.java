@@ -107,7 +107,7 @@ public class DEPresenter implements DEView.Presenter {
                     }
                 }
             });
-        } else if (GXT.isChrome() || GXT.isSafari()) {
+        } else if (GXT.isChrome() || GXT.isWebKit()) {
 
             Window.addWindowClosingHandler(new ClosingHandler() {
 
