@@ -145,9 +145,9 @@ public class IDropLitePresenter implements Presenter {
                     foldersOnly = false;
                     break;
                 }
-                if (foldersOnly) {
-                    view.disableSimpleDownload();
-                }
+            }
+            if (foldersOnly) {
+                view.disableSimpleDownload();
             }
         }
     }
