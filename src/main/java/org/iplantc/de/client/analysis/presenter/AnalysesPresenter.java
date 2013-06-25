@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
@@ -225,7 +226,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
         param_name.setHeader(I18N.DISPLAY.paramName());
         param_name.setCell(new AnalysisParamNameCell());
 
-        ColumnConfig<AnalysisParameter, String> param_type = new ColumnConfig<AnalysisParameter, String>(
+        ColumnConfig<AnalysisParameter, ArgumentType> param_type = new ColumnConfig<AnalysisParameter, ArgumentType>(
                 props.type(), 75);
         param_type.setHeader(I18N.DISPLAY.paramType());
 

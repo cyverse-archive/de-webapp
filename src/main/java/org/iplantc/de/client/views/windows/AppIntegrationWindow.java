@@ -17,6 +17,8 @@ import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.UUIDService;
+import org.iplantc.de.client.UUIDServiceAsync;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
@@ -46,7 +48,8 @@ public class AppIntegrationWindow extends IplantWindowBase {
 
         AppsIntegrationView view = new AppsIntegrationViewImpl();
         templateService = GWT.create(AppTemplateServices.class);
-        presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY);
+        UUIDServiceAsync uuidService = GWT.<UUIDServiceAsync> create(UUIDService.class);
+        presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY, uuidService);
         setTitle(I18N.DISPLAY.createApps());
         setSize("1020", "500");
 
