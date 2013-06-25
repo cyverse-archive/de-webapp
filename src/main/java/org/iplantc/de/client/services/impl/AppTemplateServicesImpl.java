@@ -1,10 +1,15 @@
 package org.iplantc.de.client.services.impl;
 
+import java.util.List;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.Argument;
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
 import org.iplantc.core.uiapps.widgets.client.models.JobExecution;
+import org.iplantc.core.uiapps.widgets.client.models.selection.SelectionItem;
+import org.iplantc.core.uiapps.widgets.client.models.selection.SelectionItemGroup;
 import org.iplantc.core.uiapps.widgets.client.models.util.AppTemplateUtils;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
@@ -79,8 +84,25 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         // SelectionItem's value
         for (ArgumentGroup ag : copy.getArgumentGroups()) {
             for (Argument arg : ag.getArguments()) {
-                if (AppTemplateUtils.isSimpleSelectionArgumentType(arg) && (arg.getValue() != null) && arg.getValue().isKeyed() && !arg.getValue().isUndefined("value")) {
-                    arg.setValue(arg.getValue().get("value"));
+                if (AppTemplateUtils.isSimpleSelectionArgumentType(arg.getType())) {
+
+                    if ((arg.getValue() != null) && arg.getValue().isKeyed() && !arg.getValue().isUndefined("value")) {
+                        arg.setValue(arg.getValue().get("value"));
+                    } else {
+                        arg.setValue(null);
+                    }
+                } else if (arg.getType().equals(ArgumentType.TreeSelection)) {
+                    if ((arg.getSelectionItems() != null) && (arg.getSelectionItems().size() == 1)) {
+                        SelectionItemGroup sig = AppTemplateUtils.selectionItemToSelectionItemGroup(arg.getSelectionItems().get(0));
+                        List<SelectionItem> siList = AppTemplateUtils.getSelectedTreeItems(sig);
+                        String retVal = "";
+                        for (SelectionItem si : siList) {
+                            if (si.getValue() != null) {
+                                retVal += si.getValue() + " ";
+                            }
+                        }
+                        arg.setValue(StringQuoter.create(retVal.trim()));
+                    }
                 }
             }
         }
@@ -99,19 +121,22 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         Splittable configSplit = StringQuoter.createSplittable();
         for (ArgumentGroup ag : at.getArgumentGroups()) {
             for (Argument arg : ag.getArguments()) {
-                if (arg.getValue() != null) {
-                    if (arg.getValue().isKeyed()) {
-                        for(String key : arg.getValue().getPropertyKeys()){
-                            if(key.equals("id")){
-                                // JDS When we encounter anything has an "ID" key, we use the value of that key instead of the object.
-                                // For example, we do not need to pass in an entire "Folder" object, we just need the path.
-                                arg.getValue().get("id").assign(configSplit, arg.getId());
-                            }
-                        }
-                    } else {
-                        arg.getValue().assign(configSplit, arg.getId());
-                    }
+                Splittable value = arg.getValue();
+                if (value == null) {
+                    continue;
                 }
+                if (AppTemplateUtils.isSimpleSelectionArgumentType(arg.getType())) {
+                    value.assign(configSplit, arg.getId());
+                } else if (AppTemplateUtils.isDiskResourceArgumentType(arg)) {
+                    value.get("id").assign(configSplit, arg.getId());
+                } else if (arg.getType().equals(ArgumentType.TreeSelection) && (arg.getSelectionItems() != null) && (arg.getSelectionItems().size() == 1)) {
+                    SelectionItemGroup sig = AppTemplateUtils.selectionItemToSelectionItemGroup(arg.getSelectionItems().get(0));
+                    Splittable sigSplit = AppTemplateUtils.getSelectedTreeItemsAsSplittable(sig);
+                    sigSplit.assign(configSplit, arg.getId());
+                } else {
+                    value.assign(configSplit, arg.getId());
+                }
+
             }
         }
         configSplit.assign(split, "config");
@@ -128,14 +153,17 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         }
         // JDS Convert Argument.getValue() which contain any selected/checked *Selection types to only
         // contain their value.
-        /*AutoBean<AppTemplate> ab = AutoBeanUtils.getAutoBean(at);
         for (ArgumentGroup ag : at.getArgumentGroups()) {
             for (Argument arg : ag.getArguments()) {
-                if (AppWizardFieldFactory.isSelectionArgumentType(arg)) {
-
+                if (arg.getType().equals(ArgumentType.TreeSelection)) {
+                    if ((arg.getSelectionItems() != null) && (arg.getSelectionItems().size() == 1)) {
+                        SelectionItemGroup sig = AppTemplateUtils.selectionItemToSelectionItemGroup(arg.getSelectionItems().get(0));
+                        Splittable split = AppTemplateUtils.getSelectedTreeItemsAsSplittable(sig);
+                        arg.setValue(split);
+                    }
                 }
             }
-        }*/
+        }
         return ret;
     }
 

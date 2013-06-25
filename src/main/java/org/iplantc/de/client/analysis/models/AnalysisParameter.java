@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.client.analysis.models;
 
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
+
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 import com.google.web.bindery.autobean.shared.Splittable;
 
@@ -25,10 +27,10 @@ public interface AnalysisParameter extends Cloneable {
     String getName();
 
     @PropertyName("param_type")
-    void setType(String type);
+    void setType(ArgumentType type);
 
     @PropertyName("param_type")
-    String getType();
+    ArgumentType getType();
 
     @PropertyName("param_value")
     void setValue(Splittable value);

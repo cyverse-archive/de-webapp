@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.client.analysis.models;
 
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
+
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
@@ -14,5 +16,5 @@ public interface AnalysisParameterProperties extends PropertyAccess<AnalysisPara
 
     ValueProvider<AnalysisParameter, String> name();
 
-    ValueProvider<AnalysisParameter, String> type();
+    ValueProvider<AnalysisParameter, ArgumentType> type();
 }

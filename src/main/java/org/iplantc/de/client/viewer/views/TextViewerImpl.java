@@ -5,7 +5,7 @@ package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 
