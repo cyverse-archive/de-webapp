@@ -5,7 +5,7 @@ package org.iplantc.de.client.events;
 
 import java.util.List;
 
-import org.iplantc.core.uidiskresource.client.models.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 
 import com.google.gwt.event.shared.GwtEvent;
 

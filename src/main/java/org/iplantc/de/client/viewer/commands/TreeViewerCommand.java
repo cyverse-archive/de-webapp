@@ -3,7 +3,7 @@ package org.iplantc.de.client.viewer.commands;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.models.TreeUrl;
 import org.iplantc.de.client.viewer.models.TreeUrlProperties;
