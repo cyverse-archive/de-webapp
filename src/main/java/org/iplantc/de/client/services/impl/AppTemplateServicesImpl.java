@@ -122,7 +122,7 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
         for (ArgumentGroup ag : at.getArgumentGroups()) {
             for (Argument arg : ag.getArguments()) {
                 Splittable value = arg.getValue();
-                if (value == null) {
+                if ((value == null) && !arg.getType().equals(ArgumentType.TreeSelection)) {
                     continue;
                 }
                 if (AppTemplateUtils.isSimpleSelectionArgumentType(arg.getType())) {
