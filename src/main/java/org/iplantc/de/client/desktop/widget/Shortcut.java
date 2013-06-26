@@ -43,8 +43,8 @@ public class Shortcut extends IconButton {
 
         this.addSelectHandler(handler);
         getElement().setAttribute("data-step", desc.getIndex());
-        getElement().setAttribute("data-intro", desc.getCaption());
-        getElement().setAttribute("data-position", "right");
+        getElement().setAttribute("data-intro", desc.getHelp());
+        getElement().setAttribute("data-position", "bottom");
         setBorders(false);
         addHandler(new MouseOverHandler() {
 

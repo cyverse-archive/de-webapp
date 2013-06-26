@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.viewer.commands;
 
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.viewer.views.ImageViewerImpl;

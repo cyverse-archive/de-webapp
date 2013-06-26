@@ -1,13 +1,16 @@
 package org.iplantc.de.client.idroplite.presenter;
 
+import java.util.List;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.HasPaths;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
-import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uidiskresource.client.models.HasPaths;
-import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
@@ -20,6 +23,9 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 
 /**
@@ -49,8 +55,8 @@ public class IDropLitePresenter implements Presenter {
 
                 appletData.put("uploadDest", new JSONString(idlwc.getUploadFolderDest().getId())); //$NON-NLS-1$
 
-                return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth()
-                        - CONTENT_PADDING, view.getViewHeight() - adjustSize);
+                return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth(),
+                        view.getViewHeight() - adjustSize);
             }
         });
 
@@ -66,10 +72,10 @@ public class IDropLitePresenter implements Presenter {
         Services.DISK_RESOURCE_SERVICE.download(request, new IDropLiteServiceCallback() {
             @Override
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
-                int adjustSize = CONTENT_PADDING * 2;
+                int adjustSize = CONTENT_PADDING * 3;
 
-                return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth()
-                        - CONTENT_PADDING, view.getViewHeight() - adjustSize);
+                return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth(),
+                        view.getViewHeight() - adjustSize);
             }
         });
 
@@ -105,12 +111,15 @@ public class IDropLitePresenter implements Presenter {
 
     @Override
     public void onSimpleUploadClick() {
-        EventBus.getInstance().fireEvent(new RequestSimpleUploadEvent(this, idlwc.getUploadFolderDest()));
+        EventBus.getInstance()
+                .fireEvent(new RequestSimpleUploadEvent(this, idlwc.getUploadFolderDest()));
     }
 
     @Override
     public void onSimpleDownloadClick() {
-        EventBus.getInstance().fireEvent(new RequestSimpleDownloadEvent(this, Sets.newHashSet(idlwc.getResourcesToDownload()), idlwc.getCurrentFolder()));
+        EventBus.getInstance().fireEvent(
+                new RequestSimpleDownloadEvent(this, Sets.newHashSet(idlwc.getResourcesToDownload()),
+                        idlwc.getCurrentFolder()));
     }
 
     @Override
@@ -123,5 +132,23 @@ public class IDropLitePresenter implements Presenter {
             buildDownloadApplet();
         }
         view.setToolBarButton(mode);
+
+        // disable simple download if only one folder(s) are selected...
+        List<DiskResource> resourcesToDownload = idlwc.getResourcesToDownload();
+        boolean foldersOnly = true;
+        if (mode == IDropLiteUtil.DISPLAY_MODE_DOWNLOAD
+                && !DiskResourceUtil.containsFile(Sets.newHashSet(resourcesToDownload))) {
+            for (DiskResource dr : resourcesToDownload) {
+                Splittable s = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(dr));
+                List<String> key = s.getPropertyKeys();
+                if (!key.contains("hasSubDirs")) {
+                    foldersOnly = false;
+                    break;
+                }
+            }
+            if (foldersOnly) {
+                view.disableSimpleDownload();
+            }
+        }
     }
 }

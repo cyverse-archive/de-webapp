@@ -10,12 +10,15 @@ import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uiapps.widgets.client.models.Argument;
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
+import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.UUIDService;
+import org.iplantc.de.client.UUIDServiceAsync;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
@@ -23,6 +26,8 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
@@ -41,11 +46,12 @@ public class AppIntegrationWindow extends IplantWindowBase {
     public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus) {
         super(null, config);
 
-        AppsIntegrationView view = new AppsIntegrationViewImpl(eventBus);
+        AppsIntegrationView view = new AppsIntegrationViewImpl();
         templateService = GWT.create(AppTemplateServices.class);
-        presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY);
+        UUIDServiceAsync uuidService = GWT.<UUIDServiceAsync> create(UUIDService.class);
+        presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY, uuidService);
         setTitle(I18N.DISPLAY.createApps());
-        setSize("890", "500");
+        setSize("1020", "500");
 
         init(presenter, config);
 
@@ -57,7 +63,22 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private void init(final AppsIntegrationView.Presenter presenter, AppsIntegrationWindowConfig config) {
         Splittable legacyAppTemplateJson = config.getLegacyAppTemplateJson();
         if (config.getAppTemplate() != null) {
-            presenter.go(this, config.getAppTemplate());
+            AppTemplateCallbackConverter at = new AppTemplateCallbackConverter(new AsyncCallback<AppTemplate>() {
+
+                @Override
+                public void onSuccess(AppTemplate result) {
+                    presenter.go(AppIntegrationWindow.this, result);
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    /*
+                     * JDS Do nothing since this this callback converter is called manually below (i.e.
+                     * no over-the-wire integration)
+                     */
+                }
+            });
+            at.onSuccess(config.getAppTemplate().getPayload());
         } else if ((legacyAppTemplateJson != null) && (!legacyAppTemplateJson.getPayload().isEmpty())) {
             presenter.goLegacy(this, config.getLegacyAppTemplateJson());
         } else if(config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())){
@@ -99,7 +120,8 @@ public class AppIntegrationWindow extends IplantWindowBase {
      */
     private AppsIntegrationWindowConfig getUpdatedConfig() {
         AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig("");
-        config.setAppTemplate(presenter.getAppTemplate());
+        AppTemplate appTemplate = presenter.getAppTemplate();
+        config.setAppTemplate(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(appTemplate)));
         return config;
     }
 }

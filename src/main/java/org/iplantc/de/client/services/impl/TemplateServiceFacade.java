@@ -224,22 +224,19 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 		if (json != null) {
 			Number avg = JsonUtil.getNumber(json, "avg"); //$NON-NLS-1$
 			int avgRounded = (int) Math.round(avg.doubleValue());
-			ConfluenceServiceFacade.getInstance().updateDocumentationPage(
-					appName, avgRounded, new AsyncCallback<String>() {
+            ConfluenceServiceFacade.getInstance().updateDocumentationPage(appName, avgRounded,
+                    new AsyncCallback<Void>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
-							ErrorHandler.post(I18N.ERROR.confluenceError(),
-									caught);
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            ErrorHandler.post(I18N.ERROR.confluenceError(), caught);
+                        }
 
-						}
-
-						@Override
-						public void onSuccess(String result) {
-							// Do nothing intentionally
-
-						}
-					});
+                        @Override
+                        public void onSuccess(Void result) {
+                            // Do nothing intentionally
+                        }
+                    });
 		}
 	}
 
@@ -250,20 +247,19 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 		// update comment on wiki page, then call rating service, then update
 		// avg on wiki page
 		String username = UserInfo.getInstance().getUsername();
-		ConfluenceServiceFacade.getInstance().editComment(appName, rating,
-				username, commentId, comment, new AsyncCallback<String>() {
-					@Override
-					public void onSuccess(String result) {
-						rateAnalysis(appName, analysisId, rating,
-								String.valueOf(commentId), authorEmail,
-								callback);
-					}
+        ConfluenceServiceFacade.getInstance().editComment(appName, rating, username, commentId, comment,
+                new AsyncCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        rateAnalysis(appName, analysisId, rating, String.valueOf(commentId),
+                                authorEmail, callback);
+                    }
 
-					@Override
-					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
-					}
-				});
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+                });
 	}
 
 	@Override
@@ -303,21 +299,19 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 	}
 
 	private void removeComment(String toolName, long commentId) {
-		ConfluenceServiceFacade.getInstance().removeComment(toolName,
-				commentId, new AsyncCallback<String>() {
+        ConfluenceServiceFacade.getInstance().removeComment(toolName, commentId,
+                new AsyncCallback<Void>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						ErrorHandler.post(I18N.ERROR.confluenceError(), caught);
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        ErrorHandler.post(I18N.ERROR.confluenceError(), caught);
+                    }
 
-					}
-
-					@Override
-					public void onSuccess(String result) {
-						// Do nothing intentionally
-
-					}
-				});
+                    @Override
+                    public void onSuccess(Void result) {
+                        // Do nothing intentionally
+                    }
+                });
 	}
 
 	@Override

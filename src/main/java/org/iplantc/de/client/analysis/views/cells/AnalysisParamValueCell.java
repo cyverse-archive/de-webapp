@@ -5,12 +5,13 @@ package org.iplantc.de.client.analysis.views.cells;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
-import org.iplantc.core.uidiskresource.client.models.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uidiskresource.client.models.File;
-import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 
@@ -44,7 +45,7 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
 		// // At present,reference genome info types are not supported by DE
 		// viewers
 		boolean valid_info_type = isValidInputType(info_type);
-		if (value.getType().equalsIgnoreCase("Input") && valid_info_type) {
+        if (value.getType().equals(ArgumentType.Input) && valid_info_type) {
 			sb.appendHtmlConstant("<div style=\"cursor:pointer;text-decoration:underline;white-space:pre-wrap;\">"
 					+ value.getDisplayValue() + "</div>");
 		} else {
@@ -69,7 +70,7 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
 		if ("click".equals(event.getType())) {
 			String info_type = value.getInfoType();
 			boolean valid_info_type = isValidInputType(info_type);
-			if (value.getType().equalsIgnoreCase("Input") && valid_info_type) {
+            if (value.getType().equals(ArgumentType.Input) && valid_info_type) {
 				launchViewer(value);
 
 			}

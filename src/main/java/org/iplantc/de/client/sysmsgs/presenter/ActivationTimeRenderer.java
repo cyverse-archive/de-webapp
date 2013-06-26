@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.shared.ProvidesTime;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;

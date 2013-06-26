@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationList;

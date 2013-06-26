@@ -20,8 +20,6 @@
     <set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED"/>
     <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 
-    <set-property name="user.agent" value="gecko1_8" />
-    <set-property name="locale" value="default" />
     <set-configuration-property name="CssResource.style" value="pretty"/>
     
     <inherits name="com.google.gwt.user.Debug"/>
@@ -92,9 +90,6 @@
    <!--  system messages deferred binding rules -->
    <replace-with class="org.iplantc.de.client.sysmsgs.services.RemoteServices">
       <when-type-is class="org.iplantc.de.client.sysmsgs.services.Services"/>
-   </replace-with>
-   <replace-with class="org.iplantc.de.client.sysmsgs.presenter.DefaultTimeSource">
-      <when-type-is class="org.iplantc.de.client.sysmsgs.presenter.ProvidesTime"/>
    </replace-with>
    <replace-with class="org.iplantc.de.client.sysmsgs.view.DefaultFactory">
    	  <when-type-is class="org.iplantc.de.client.sysmsgs.view.Factory"/>

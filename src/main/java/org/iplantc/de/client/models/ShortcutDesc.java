@@ -25,9 +25,10 @@ public class ShortcutDesc {
     private String tag;
     private String index;
     private final WindowConfig config;
+    private String help;
 
     public ShortcutDesc(String style, String id, String hoverStyle, String index, String caption,
-            String action, WindowConfig config) {
+            String action, WindowConfig config, String help) {
         this.style = style;
         this.id = id;
         this.hoverStyle = hoverStyle;
@@ -37,6 +38,7 @@ public class ShortcutDesc {
         }
         this.index = index;
         this.config = config;
+        this.help = help;
     }
 
     public WindowConfig getWindowConfig() {
@@ -98,5 +100,19 @@ public class ShortcutDesc {
      */
     public String getHoverStyle() {
         return hoverStyle;
+    }
+
+    /**
+     * @return the help
+     */
+    public String getHelp() {
+        return help;
+    }
+
+    /**
+     * @param help the help to set
+     */
+    public void setHelp(String help) {
+        this.help = help;
     }
 }

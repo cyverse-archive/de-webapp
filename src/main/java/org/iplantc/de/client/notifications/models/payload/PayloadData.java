@@ -1,6 +1,6 @@
 package org.iplantc.de.client.notifications.models.payload;
 
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 

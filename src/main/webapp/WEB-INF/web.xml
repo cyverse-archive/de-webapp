@@ -37,10 +37,6 @@
 		</init-param>
 	</servlet>
 	<servlet>
-		<servlet-name>fileUploadServlet</servlet-name>
-		<servlet-class>org.iplantc.de.server.FileUploadServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>fileDownloadServlet</servlet-name>
 		<servlet-class>org.iplantc.de.server.FileDownloadServlet</servlet-class>
 	</servlet>
@@ -85,10 +81,6 @@
 		<servlet-class>org.iplantc.de.server.EmptyResponseServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>toolSubmitServlet</servlet-name>
-		<servlet-class>org.iplantc.de.server.NewToolRequestServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>proxyServlet</servlet-name>
 		<servlet-class>org.iplantc.de.server.service.ProxyServlet</servlet-class>
 	</servlet>
@@ -113,10 +105,6 @@
 	<servlet-mapping>
 		<servlet-name>loggedOutServlet</servlet-name>
 		<url-pattern>/discoveryenvironment/logged-out</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileUploadServlet</servlet-name>
-		<url-pattern>*.gupld</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>fileDownloadServlet</servlet-name>
@@ -161,10 +149,6 @@
 	<servlet-mapping>
 		<servlet-name>emptyResponseServlet</servlet-name>
 		<url-pattern>/discoveryenvironment/empty</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>toolSubmitServlet</servlet-name>
-		<url-pattern>/apps/new_tool_request</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>proxyServlet</servlet-name>

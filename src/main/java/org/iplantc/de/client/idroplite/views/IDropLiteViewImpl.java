@@ -103,4 +103,9 @@ public class IDropLiteViewImpl implements IDropLiteView {
         contents.unmask();
 
     }
+
+    @Override
+    public void disableSimpleDownload() {
+        btnSimpleDwld.setEnabled(false);
+    }
 }

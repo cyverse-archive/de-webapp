@@ -32,24 +32,24 @@ import com.google.gwt.user.client.Event;
  */
 public class AnalysisAppNameCell extends AbstractCell<Analysis> {
 
-    interface Resources extends ClientBundle{
-        
+    interface Resources extends ClientBundle {
+
         @Source("AnalysisNameCell.css")
         Style css();
     }
-    
-    interface Style extends CssResource{
+
+    interface Style extends CssResource {
         String hasResultFolder();
-        
+
         String noResultFolder();
     }
-    
+
     interface Templates extends SafeHtmlTemplates {
-        
-        @SafeHtmlTemplates.Template("<span name=\"{0}\" class=\"{1}\">{2}</span>")
+
+        @SafeHtmlTemplates.Template("<span name=\"{0}\" title=\"Click here to relaunch this analysis.\" class=\"{1}\">{2}</span>")
         SafeHtml cell(String elementName, String className, SafeHtml analysisAppName);
     }
-    
+
     private final Resources res = GWT.create(Resources.class);
     private final Templates templates = GWT.create(Templates.class);
     private final EventBus eventBus;
@@ -63,21 +63,23 @@ public class AnalysisAppNameCell extends AbstractCell<Analysis> {
 
     @Override
     public void render(Cell.Context context, Analysis model, SafeHtmlBuilder sb) {
-        if(model == null)
+        if (model == null)
             return;
-           
-        String style = Strings.isNullOrEmpty(model.getResultFolderId()) ? res.css().noResultFolder() : res.css().hasResultFolder();
+
+        String style = Strings.isNullOrEmpty(model.getResultFolderId()) ? res.css().noResultFolder()
+                : res.css().hasResultFolder();
         sb.append(templates.cell(ELEMENT_NAME, style, SafeHtmlUtils.fromString(model.getAppName())));
     }
 
     @Override
-    public void onBrowserEvent(Cell.Context context, Element parent, Analysis value, NativeEvent event, ValueUpdater<Analysis> valueUpdater) {
+    public void onBrowserEvent(Cell.Context context, Element parent, Analysis value, NativeEvent event,
+            ValueUpdater<Analysis> valueUpdater) {
         if (value == null) {
             return;
         }
         // Call the super handler, which handlers the enter key.
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
-        
+
         Element eventTarget = Element.as(event.getEventTarget());
         if (parent.isOrHasChild(eventTarget)) {
 
@@ -95,23 +97,26 @@ public class AnalysisAppNameCell extends AbstractCell<Analysis> {
                     break;
             }
         }
-        
+
     }
 
     private void doOnMouseOut(Element eventTarget, Analysis value) {
-        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME) && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
+                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
             eventTarget.getStyle().setTextDecoration(TextDecoration.NONE);
-        }         
+        }
     }
 
     private void doOnMouseOver(Element eventTarget, Analysis value) {
-        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME) && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
+                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
             eventTarget.getStyle().setTextDecoration(TextDecoration.UNDERLINE);
-        }         
+        }
     }
 
     private void doOnClick(Element eventTarget, Analysis value, ValueUpdater<Analysis> valueUpdater) {
-        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME) && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+        if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
+                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
             AppWizardConfig config = ConfigFactory.appWizardConfig(value.getAppId());
             config.setAnalysisId(value);
             config.setRelaunchAnalysis(true);

@@ -34,9 +34,9 @@ import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -44,19 +44,28 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.core.client.util.KeyNav;
 import com.sencha.gxt.core.client.util.Size;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
- *
+ * 
  * @author sriram
  */
 public class DEPresenter implements DEView.Presenter {
@@ -83,19 +92,36 @@ public class DEPresenter implements DEView.Presenter {
         initializeDEProperties();
     }
 
-	private void initializeEventHandlers() {
-		// Add a close handler to detect browser refresh events.
-        Window.addCloseHandler(new CloseHandler<Window>() {
+    private void initializeEventHandlers() {
 
-            @Override
-            public void onClose(final CloseEvent<Window> event) {
-                if (UserSettings.getInstance().isSaveSession()) {
-                    UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
-                            .saveSession(DEPresenter.this);
-                    uspmb.show();
+        if (GXT.isGecko() || GXT.isIE()) {
+            // Add a close handler to detect browser refresh events.
+            Window.addCloseHandler(new CloseHandler<Window>() {
+
+                @Override
+                public void onClose(final CloseEvent<Window> event) {
+                    if (UserSettings.getInstance().isSaveSession()) {
+                        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
+                                .saveSession(DEPresenter.this);
+                        uspmb.show();
+                    }
                 }
-            }
-        });
+            });
+        } else if (GXT.isChrome() || GXT.isWebKit()) {
+
+            Window.addWindowClosingHandler(new ClosingHandler() {
+
+                @Override
+                public void onWindowClosing(ClosingEvent arg0) {
+                    if (UserSettings.getInstance().isSaveSession()) {
+                        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
+                                .saveSession(DEPresenter.this);
+                        uspmb.show();
+                    }
+
+                }
+            });
+        }
 
         eventBus.addHandler(PreferencesUpdatedEvent.TYPE, new PreferencesUpdatedEventHandler() {
 
@@ -106,15 +132,16 @@ public class DEPresenter implements DEView.Presenter {
 
             }
         });
-        eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE, new SystemMessageCountUpdateEvent.Handler() {
-            @Override
-            public void onCountUpdate(final SystemMessageCountUpdateEvent event) {
-                view.updateUnseenSystemMessageCount(event.getCount());
-            }
-        });
-	}
+        eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
+                new SystemMessageCountUpdateEvent.Handler() {
+                    @Override
+                    public void onCountUpdate(final SystemMessageCountUpdateEvent event) {
+                        view.updateUnseenSystemMessageCount(event.getCount());
+                    }
+                });
+    }
 
-	/**
+    /**
      * Initializes the discovery environment configuration properties object.
      */
     private void initializeDEProperties() {
@@ -167,6 +194,31 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onSuccess(String result) {
                 loadPreferences(JsonUtil.getObject(result));
+                Scheduler.get().scheduleDeferred(new Command() {
+
+                    @Override
+                    public void execute() {
+                        if (UserInfo.getInstance().isNewUser()) {
+                            MessageBox box = new MessageBox("Welcome",
+                                    org.iplantc.core.resources.client.messages.I18N.TOUR.introWelcome());
+                            box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
+                            box.setIcon(MessageBox.ICONS.question());
+                            box.addHideHandler(new HideHandler() {
+
+                                @Override
+                                public void onHide(HideEvent event) {
+                                    Dialog btn = (Dialog)event.getSource();
+                                    if (btn.getHideButton().getText().equalsIgnoreCase("yes")) {
+                                        doIntro();
+                                    }
+                                }
+                            });
+                            box.show();
+                        }
+
+                    }
+
+                });
             }
         });
     }
@@ -210,6 +262,10 @@ public class DEPresenter implements DEView.Presenter {
         feedbackBtn.addStyleName(resources.css().rotate90());
         feedbackBtn.getElement().updateZIndex(0);
         RootPanel.get().add(feedbackBtn);
+        feedbackBtn.getElement().setAttribute("data-intro",
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introFeedback());
+        feedbackBtn.getElement().setAttribute("data-position", "left");
+        feedbackBtn.getElement().setAttribute("data-step", "6");
     }
 
     private void positionFButton(Size s) {
@@ -223,7 +279,10 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     public static native void doIntro() /*-{
-		$wnd.introJs().start();
+		var introjs = $wnd.introJs();
+		introjs.setOption("showStepNumbers", false);
+		introjs.start();
+
     }-*/;
 
     private void setUpKBShortCuts() {
@@ -238,19 +297,22 @@ public class DEPresenter implements DEView.Presenter {
 
     private void addKeyBoardEvents() {
         if (!keyboardEventsAdded) {
-            RootPanel.get().addDomHandler(new KeyPressHandler() {
+            new KeyNav(RootPanel.get()) {
                 @Override
-                public void onKeyPress(KeyPressEvent event) {
-                    if (event.isShiftKeyDown() && event.isControlKeyDown()) {
-                        Command cmd = keyboardShortCuts.get(String.valueOf(event.getCharCode()));
+                public void handleEvent(NativeEvent event) {
+                    if (event.getCtrlKey() && event.getShiftKey()) {
+                        Command cmd = keyboardShortCuts.get(String.valueOf((char)event.getKeyCode()));
                         if (cmd != null) {
                             cmd.execute();
                         }
                     }
                 }
-            }, KeyPressEvent.getType());
+
+            };
+
             keyboardEventsAdded = true;
         }
+
     }
 
     private String parseWorkspaceId(String json) {
@@ -285,7 +347,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Initializes the username and email for a user.
-     *
+     * 
      * Calls the session management service to get the attributes associated with a user.
      */
     private void initializeUserInfoAttributes() {
@@ -318,7 +380,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Disable the context menu of the browser using native JavaScript.
-     *
+     * 
      * This disables the user's ability to right-click on this widget and get the browser's context menu
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
@@ -339,7 +401,8 @@ public class DEPresenter implements DEView.Presenter {
 
         String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
         if (UserSettings.getInstance().isSaveSession()) {
-            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this, redirectUrl);
+            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this,
+                    redirectUrl);
             uspmb.show();
         } else {
             Window.Location.assign(redirectUrl);

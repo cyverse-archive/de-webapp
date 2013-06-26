@@ -19,18 +19,23 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
         DeResources res = GWT.create(DeResources.class);
         res.css().ensureInjected();
         addShortcut(res.css().iplantcMydataShortcut(), "idMydataShortCut", res.css()
-                .iplantcMydataShortcutHover(), "3", I18N.HELP.iconHomepageDataTip(),
+                .iplantcMydataShortcutHover(), "1",
+                I18N.HELP.iconHomepageDataTip(),
                 Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                ConfigFactory.diskResourceWindowConfig());
+                ConfigFactory.diskResourceWindowConfig(),
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introDataWindow());
 
         addShortcut(res.css().iplantcCatalogShortcut(), "idAppsShortCut", res.css()
-                .iplantcCatalogShortcutHover(), "4", I18N.HELP.iconHomepageAppsTip(),
+                .iplantcCatalogShortcutHover(), "2",
+                I18N.HELP.iconHomepageAppsTip(),
                 Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                ConfigFactory.appsWindowConfig());
+                ConfigFactory.appsWindowConfig(),
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introAppsWindow());
 
-        addShortcut(res.css().iplantcMyanalysisShortcut(), "idAnalysisShortCut", res.css()
-                .iplantcMyanalysisShortcutHover(),
-                "5", I18N.HELP.iconHomepageAnalysesTip(), Constants.CLIENT.windowTag(), //$NON-NLS-1$
-                ConfigFactory.analysisWindowConfig());
+        addShortcut(res.css().iplantcMyanalysisShortcut(), "idAnalysisShortCut",
+                res.css().iplantcMyanalysisShortcutHover(),
+                "3", I18N.HELP.iconHomepageAnalysesTip(), Constants.CLIENT.windowTag(), //$NON-NLS-1$
+                ConfigFactory.analysisWindowConfig(),
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introAnalysesWindow());
     }
 }

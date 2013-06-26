@@ -1,9 +1,14 @@
 package org.iplantc.de.client.desktop.widget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade;
+import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent.RequestBulkDownloadEventHandler;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
@@ -14,10 +19,6 @@ import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent.RequestSimpleDownloadEventHandler;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent.RequestSimpleUploadEventHandler;
-import org.iplantc.core.uidiskresource.client.models.DiskResource;
-import org.iplantc.core.uidiskresource.client.models.Folder;
-import org.iplantc.core.uidiskresource.client.services.DiskResourceServiceFacade;
-import org.iplantc.core.uidiskresource.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.views.dialogs.FileUploadByUrlDialog;
 import org.iplantc.core.uidiskresource.client.views.dialogs.SimpleFileUploadDialog;
 import org.iplantc.de.client.Constants;
@@ -47,11 +48,9 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     public void onRequestSimpleUpload(RequestSimpleUploadEvent event) {
         Folder uploadDest = event.getDestinationFolder();
         if (canUpload(uploadDest)) {
-            SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, 
-                    drService, 
-                    EventBus.getInstance(),
-                    UriUtils.fromTrustedString(Constants.CLIENT.fileUploadServlet()), 
-                    UserInfo.getInstance().getUsername());
+            SimpleFileUploadDialog dlg = new SimpleFileUploadDialog(uploadDest, drService,
+                    EventBus.getInstance(), UriUtils.fromTrustedString(Constants.CLIENT
+                            .fileUploadServlet()), UserInfo.getInstance().getUsername());
             dlg.show();
         }
     }
@@ -59,7 +58,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     @Override
     public void onRequestUploadFromUrl(RequestImportFromUrlEvent event) {
         Folder uploadDest = event.getDestinationFolder();
-        
+
         if (canUpload(uploadDest)) {
             String userName = UserInfo.getInstance().getUsername();
             FileUploadByUrlDialog dlg = new FileUploadByUrlDialog(uploadDest, drService, userName);
@@ -85,17 +84,29 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         List<DiskResource> resources = Lists.newArrayList(event.getRequestedResources());
         if (isDownloadable(resources)) {
             if (resources.size() == 1) {
-                // Download now
+                // Download now. No folders possible here....
                 Services.DISK_RESOURCE_SERVICE.simpleDownload(resources.get(0).getId());
             } else {
                 SimpleDownloadWindowConfig sdwc = ConfigFactory.simpleDownloadWindowConfig();
-                sdwc.setResourcesToDownload(resources);
+                sdwc.setResourcesToDownload(filterFolders(resources));
                 desktop.showWindow(sdwc);
             }
         } else {
             showErrorMsg();
         }
 
+    }
+
+    // remove folders from list to be displayed for simple download
+    private List<DiskResource> filterFolders(List<DiskResource> listToFilter) {
+        List<DiskResource> filteredList = new ArrayList<DiskResource>();
+        for (DiskResource dr : listToFilter) {
+            if (!(dr instanceof Folder)) {
+                filteredList.add(dr);
+            }
+        }
+
+        return filteredList;
     }
 
     @Override
@@ -137,6 +148,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
     }
 
     private void showErrorMsg() {
-        new AlertMessageBox(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage()).show();
+        new AlertMessageBox(I18N.DISPLAY.permissionErrorTitle(), I18N.DISPLAY.permissionErrorMessage())
+                .show();
     }
 }

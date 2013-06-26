@@ -5,7 +5,7 @@ package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uidiskresource.client.models.File;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 
@@ -239,6 +239,18 @@ public class TextViewerImpl implements FileViewer {
                     if (pageNumber <= totalPages && pageNumber > 0) {
                         toolbar.pageText.clearInvalid();
                         loadData();
+                        if (pageNumber == 1) {
+                            toolbar.setFirstEnabled(false);
+                            toolbar.setPrevEnabled(false);
+                            toolbar.setLastEnabled(true);
+                            toolbar.setNextEnabled(true);
+                        } else if (pageNumber == totalPages) {
+                            toolbar.setLastEnabled(false);
+                            toolbar.setNextEnabled(false);
+                        } else {
+                            toolbar.setPrevEnabled(true);
+                            toolbar.setNextEnabled(true);
+                        }
                     } else {
                         toolbar.pageText.markInvalid(I18N.DISPLAY.inValidPage());
                     }
