@@ -55,8 +55,8 @@ public class IDropLitePresenter implements Presenter {
 
                 appletData.put("uploadDest", new JSONString(idlwc.getUploadFolderDest().getId())); //$NON-NLS-1$
 
-                return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth()
-                        - CONTENT_PADDING, view.getViewHeight() - adjustSize);
+                return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth(),
+                        view.getViewHeight() - adjustSize);
             }
         });
 
@@ -72,10 +72,10 @@ public class IDropLitePresenter implements Presenter {
         Services.DISK_RESOURCE_SERVICE.download(request, new IDropLiteServiceCallback() {
             @Override
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
-                int adjustSize = CONTENT_PADDING * 2;
+                int adjustSize = CONTENT_PADDING * 3;
 
-                return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth()
-                        - CONTENT_PADDING, view.getViewHeight() - adjustSize);
+                return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth(),
+                        view.getViewHeight() - adjustSize);
             }
         });
 

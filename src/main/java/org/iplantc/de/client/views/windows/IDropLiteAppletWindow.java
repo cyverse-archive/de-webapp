@@ -29,7 +29,7 @@ public class IDropLiteAppletWindow extends IplantWindowBase {
     public IDropLiteAppletWindow(IDropLiteWindowConfig config) {
         super("");
         this.idlwc = config;
-        setSize("740", "410");
+        setSize("720", "430");
         setResizable(false);
         init();
     }
