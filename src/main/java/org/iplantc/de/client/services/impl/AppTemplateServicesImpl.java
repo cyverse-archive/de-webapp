@@ -127,7 +127,7 @@ public class AppTemplateServicesImpl implements AppTemplateServices {
                 }
                 if (AppTemplateUtils.isSimpleSelectionArgumentType(arg.getType())) {
                     value.assign(configSplit, arg.getId());
-                } else if (AppTemplateUtils.isDiskResourceArgumentType(arg)) {
+                } else if (AppTemplateUtils.isDiskResourceArgumentType(arg.getType())) {
                     value.get("id").assign(configSplit, arg.getId());
                 } else if (arg.getType().equals(ArgumentType.TreeSelection) && (arg.getSelectionItems() != null) && (arg.getSelectionItems().size() == 1)) {
                     SelectionItemGroup sig = AppTemplateUtils.selectionItemToSelectionItemGroup(arg.getSelectionItems().get(0));

@@ -89,7 +89,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
             newAppTemplate.setName("New App");
             ArgumentGroup argGrp = factory.argumentGroup().as();
             argGrp.setName("");
-            argGrp.setLabel("New Group");
+            argGrp.setLabel("Group 1");
             argGrp.setArguments(Lists.<Argument> newArrayList());
             newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
             presenter.go(this, newAppTemplate);
