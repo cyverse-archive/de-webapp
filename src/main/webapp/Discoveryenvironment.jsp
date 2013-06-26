@@ -14,7 +14,6 @@ response.setDateHeader("Expires", 0);
 
 <html>
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=8" />   <!-- Remove this when GWT supports IE9 -->
 
 <!--                                                               -->
 <!-- Consider inlining CSS to reduce the number of requested files -->

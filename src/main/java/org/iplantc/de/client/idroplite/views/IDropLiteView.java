@@ -37,4 +37,6 @@ public interface IDropLiteView extends IsWidget {
 
     void unmask();
 
+    void disableSimpleDownload();
+
 }
