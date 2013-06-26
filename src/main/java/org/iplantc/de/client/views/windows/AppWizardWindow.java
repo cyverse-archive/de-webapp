@@ -10,6 +10,7 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
@@ -31,6 +32,7 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
         public void onSuccess(AppTemplate result) {
             presenter.go(AppWizardWindow.this, result);
             AppWizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
+            AppWizardWindow.this.fireEvent(new WindowHeadingUpdatedEvent());
             // KLUDGE JDS This call to forceLayout should not be necessary.
             AppWizardWindow.this.forceLayout();
         }
