@@ -69,6 +69,7 @@ public class ConfigFactory {
     public static IDropLiteWindowConfig iDropLiteDownloadWindowConfig() {
         IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE_DOWNLOAD,
                 factory.iDropLiteWindowConfig()).as();
+
         return idlwc;
     }
 
@@ -138,12 +139,8 @@ public class ConfigFactory {
                 config = null;
                 break;
 
-            case IDROP_LITE_UPLOAD:
-                config = AutoBeanCodex
-                        .decode(factory, IDropLiteWindowConfig.class, ws.getWindowConfig()).as();
-                break;
-
             case IDROP_LITE_DOWNLOAD:
+            case IDROP_LITE_UPLOAD:
                 config = AutoBeanCodex
                         .decode(factory, IDropLiteWindowConfig.class, ws.getWindowConfig()).as();
                 break;
