@@ -56,8 +56,13 @@ public class ConfigFactory {
         return fvwc.as();
     }
 
-    public static IDropLiteWindowConfig iDropLiteWindowConfig() {
-        IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE, factory.iDropLiteWindowConfig()).as();
+    public static IDropLiteWindowConfig iDropLiteDownloadWindowConfig() {
+        IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE_DOWNLOAD, factory.iDropLiteWindowConfig()).as();
+        return idlwc;
+    }
+
+    public static IDropLiteWindowConfig iDropLiteUploadWindowConfig() {
+        IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE_UPLOAD, factory.iDropLiteWindowConfig()).as();
         return idlwc;
     }
 
@@ -119,7 +124,10 @@ public class ConfigFactory {
                 config = null;
                 break;
 
-            case IDROP_LITE:
+            case IDROP_LITE_DOWNLOAD:
+            case IDROP_LITE_UPLOAD:
+                // config = applyWindowType(ws.getConfigType(), AutoBeanCodex.decode(factory,
+                // IDropLiteWindowConfig.class, ws.getWindowConfig())).as();
                 config = AutoBeanCodex.decode(factory, IDropLiteWindowConfig.class, ws.getWindowConfig()).as();
                 break;
 

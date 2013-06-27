@@ -72,7 +72,8 @@ public class WindowFactory {
             case HELP:
                 WindowUtil.open(Constants.CLIENT.deHelpFile());
                 break;
-            case IDROP_LITE:
+            case IDROP_LITE_DOWNLOAD:
+            case IDROP_LITE_UPLOAD:
                 ret = new IDropLiteAppletWindow((IDropLiteWindowConfig)config);
                 break;
             case NOTIFICATIONS:
