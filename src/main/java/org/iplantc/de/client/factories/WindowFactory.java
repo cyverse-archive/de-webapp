@@ -1,8 +1,11 @@
 package org.iplantc.de.client.factories;
 
+import org.iplantc.core.uiapps.widgets.client.services.AppMetadataServiceFacade;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.UUIDService;
+import org.iplantc.de.client.UUIDServiceAsync;
 import org.iplantc.de.client.views.windows.AboutApplicationWindow;
 import org.iplantc.de.client.views.windows.AppIntegrationWindow;
 import org.iplantc.de.client.views.windows.AppWizardWindow;
@@ -30,12 +33,15 @@ import org.iplantc.de.client.views.windows.configs.SystemMessagesWindowConfig;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 
 /**
  * Defines a factory for the creation of windows.
  * 
  */
 public class WindowFactory {
+    private static AppMetadataServiceFacade appMetadataService = GWT.create(AppMetadataServiceFacade.class);
+    private static UUIDServiceAsync uuidService = GWT.create(UUIDService.class);
 
     /**
      * Constructs a DE window based on the given {@link WindowConfig} The "tag" for the window must be
@@ -55,10 +61,10 @@ public class WindowFactory {
                 ret = new MyAnalysesWindow((AnalysisWindowConfig)config, eventBus);
                 break;
             case APP_INTEGRATION:
-                ret = new AppIntegrationWindow((AppsIntegrationWindowConfig)config, eventBus);
+                ret = new AppIntegrationWindow((AppsIntegrationWindowConfig)config, eventBus, uuidService, appMetadataService);
                 break;
             case APP_WIZARD:
-                ret = new AppWizardWindow((AppWizardConfig)config);
+                ret = new AppWizardWindow((AppWizardConfig)config, uuidService, appMetadataService);
                 break;
             case APPS:
                 ret = new DEAppsWindow((AppsWindowConfig)config);

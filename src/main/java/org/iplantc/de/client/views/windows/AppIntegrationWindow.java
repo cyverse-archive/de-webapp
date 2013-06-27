@@ -9,7 +9,9 @@ import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uiapps.widgets.client.models.Argument;
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
+import org.iplantc.core.uiapps.widgets.client.services.AppMetadataServiceFacade;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
+import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices;
 import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -17,7 +19,6 @@ import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.UUIDService;
 import org.iplantc.de.client.UUIDServiceAsync;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -42,13 +43,14 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private final AppsIntegrationView.Presenter presenter;
     protected List<HandlerRegistration> handlers;
     private final AppTemplateServices templateService;
+    private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
+    private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
 
-    public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus) {
+    public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus, final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
         super(null, config);
 
-        AppsIntegrationView view = new AppsIntegrationViewImpl();
+        AppsIntegrationView view = new AppsIntegrationViewImpl(uuidService, appMetadataService);
         templateService = GWT.create(AppTemplateServices.class);
-        UUIDServiceAsync uuidService = GWT.<UUIDServiceAsync> create(UUIDService.class);
         presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY, uuidService);
         setTitle(I18N.DISPLAY.createApps());
         setSize("1020", "500");
@@ -63,7 +65,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private void init(final AppsIntegrationView.Presenter presenter, AppsIntegrationWindowConfig config) {
         Splittable legacyAppTemplateJson = config.getLegacyAppTemplateJson();
         if (config.getAppTemplate() != null) {
-            AppTemplateCallbackConverter at = new AppTemplateCallbackConverter(new AsyncCallback<AppTemplate>() {
+            AppTemplateCallbackConverter at = new AppTemplateCallbackConverter(factory, dcServices, new AsyncCallback<AppTemplate>() {
 
                 @Override
                 public void onSuccess(AppTemplate result) {
