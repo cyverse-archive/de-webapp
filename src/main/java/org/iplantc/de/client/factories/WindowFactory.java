@@ -36,15 +36,15 @@ import com.google.common.base.Strings;
  * 
  */
 public class WindowFactory {
-    
+
     /**
-     * Constructs a DE window based on the given {@link WindowConfig}
-     * The "tag" for the window must be constructed here.
+     * Constructs a DE window based on the given {@link WindowConfig} The "tag" for the window must be
+     * constructed here.
      * 
      * @param config
      * @return
      */
-    public static <C extends WindowConfig> IPlantWindowInterface  build(C config){
+    public static <C extends WindowConfig> IPlantWindowInterface build(C config) {
         final EventBus eventBus = EventBus.getInstance();
         IPlantWindowInterface ret = null;
         switch (config.getWindowType()) {
@@ -72,7 +72,10 @@ public class WindowFactory {
             case HELP:
                 WindowUtil.open(Constants.CLIENT.deHelpFile());
                 break;
-            case IDROP_LITE:
+            case IDROP_LITE_UPLOAD:
+                ret = new IDropLiteAppletWindow((IDropLiteWindowConfig)config);
+                break;
+            case IDROP_LITE_DOWNLOAD:
                 ret = new IDropLiteAppletWindow((IDropLiteWindowConfig)config);
                 break;
             case NOTIFICATIONS:
@@ -85,14 +88,15 @@ public class WindowFactory {
                 ret = new PipelineEditorWindow(config);
                 break;
             case SYSTEM_MESSAGES:
-            	ret = new SystemMessagesWindow((SystemMessagesWindowConfig)config);
+                ret = new SystemMessagesWindow((SystemMessagesWindowConfig)config);
             default:
                 break;
         }
         return ret;
     }
 
-    public static <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> String constructWindowId(C config) {
+    public static <C extends org.iplantc.de.client.views.windows.configs.WindowConfig> String constructWindowId(
+            C config) {
         String windowType = config.getWindowType().toString();
         String tag = config.getTag();
         return (!Strings.isNullOrEmpty(tag)) ? windowType + "_" + tag : windowType;

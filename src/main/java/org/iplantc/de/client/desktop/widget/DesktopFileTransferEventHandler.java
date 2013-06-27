@@ -71,7 +71,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         Folder uploadDest = event.getDestinationFolder();
         if (canUpload(uploadDest)) {
             // Build window config
-            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteWindowConfig();
+            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteUploadWindowConfig();
             idlwc.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_UPLOAD);
             idlwc.setUploadFolderDest(uploadDest);
             idlwc.setCurrentFolder(uploadDest);
@@ -115,7 +115,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         if (isDownloadable(resources)) {
 
             // Build window config
-            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteWindowConfig();
+            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteDownloadWindowConfig();
             idlwc.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_DOWNLOAD);
             idlwc.setResourcesToDownload(resources);
             idlwc.setCurrentFolder(event.getCurrentFolder());
