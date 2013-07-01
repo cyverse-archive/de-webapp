@@ -415,4 +415,9 @@ public class DEViewImpl implements DEView {
         sysMsgsMenuItem.setText(lbl);
     }
 
+    @Override
+    public Desktop getDesktop() {
+        return desktop;
+    }
+
 }

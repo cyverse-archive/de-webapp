@@ -37,20 +37,15 @@ import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.util.KeyNav;
 import com.sencha.gxt.core.client.util.Size;
@@ -93,35 +88,6 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void initializeEventHandlers() {
-
-        if (GXT.isGecko() || GXT.isIE()) {
-            // Add a close handler to detect browser refresh events.
-            Window.addCloseHandler(new CloseHandler<Window>() {
-
-                @Override
-                public void onClose(final CloseEvent<Window> event) {
-                    if (UserSettings.getInstance().isSaveSession()) {
-                        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
-                                .saveSession(DEPresenter.this);
-                        uspmb.show();
-                    }
-                }
-            });
-        } else if (GXT.isChrome() || GXT.isWebKit()) {
-
-            Window.addWindowClosingHandler(new ClosingHandler() {
-
-                @Override
-                public void onWindowClosing(ClosingEvent arg0) {
-                    if (UserSettings.getInstance().isSaveSession()) {
-                        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
-                                .saveSession(DEPresenter.this);
-                        uspmb.show();
-                    }
-
-                }
-            });
-        }
 
         eventBus.addHandler(PreferencesUpdatedEvent.TYPE, new PreferencesUpdatedEventHandler() {
 
@@ -243,6 +209,7 @@ public class DEPresenter implements DEView.Presenter {
         });
 
         initMessagePoller();
+        initPeriodicSessionSave();
     }
 
     private void addFeedbackButton() {
@@ -331,6 +298,15 @@ public class DEPresenter implements DEView.Presenter {
         notificationCounts.run();
         MessagePoller poller = MessagePoller.getInstance();
         poller.addTask(notificationCounts);
+        poller.start();
+    }
+
+    private void initPeriodicSessionSave() {
+        SaveSessionPeriodic ssp = new SaveSessionPeriodic(this);
+        ssp.run();
+        MessagePoller poller = MessagePoller.getInstance();
+        poller.addTask(ssp);
+        // start if not started...
         poller.start();
     }
 
