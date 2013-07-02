@@ -72,6 +72,7 @@ public class DEPresenter implements DEView.Presenter {
     private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
     private TextButton feedbackBtn;
+    private SaveSessionPeriodic ssp;
 
     /**
      * Constructs a default instance of the object.
@@ -85,6 +86,7 @@ public class DEPresenter implements DEView.Presenter {
         keyboardShortCuts = new HashMap<String, Command>();
         initializeEventHandlers();
         initializeDEProperties();
+        ssp = new SaveSessionPeriodic(this);
     }
 
     private void initializeEventHandlers() {
@@ -95,7 +97,7 @@ public class DEPresenter implements DEView.Presenter {
             public void onUpdate(final PreferencesUpdatedEvent event) {
                 keyboardShortCuts.clear();
                 setUpKBShortCuts();
-
+                initPeriodicSessionSave();
             }
         });
         eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
@@ -302,12 +304,16 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void initPeriodicSessionSave() {
-        SaveSessionPeriodic ssp = new SaveSessionPeriodic(this);
-        ssp.run();
         MessagePoller poller = MessagePoller.getInstance();
-        poller.addTask(ssp);
-        // start if not started...
-        poller.start();
+        if (UserSettings.getInstance().isSaveSession()) {
+
+            ssp.run();
+            poller.addTask(ssp);
+            // start if not started...
+            poller.start();
+        } else {
+            poller.removeTask(ssp);
+        }
     }
 
     /**
