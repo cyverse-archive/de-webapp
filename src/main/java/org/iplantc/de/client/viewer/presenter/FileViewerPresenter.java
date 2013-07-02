@@ -6,7 +6,6 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IplantInfoBox;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
@@ -20,18 +19,11 @@ import org.iplantc.de.client.views.windows.FileViewerWindow;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.sencha.gxt.widget.core.client.event.BlurEvent;
-import com.sencha.gxt.widget.core.client.event.BlurEvent.BlurHandler;
-import com.sencha.gxt.widget.core.client.event.ShowEvent;
-import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
 /**
  * @author sriram
@@ -108,7 +100,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
         if (viewers.size() == 0) {
             container.unmask();
-            container.add(new HTML(SafeHtmlUtils.fromString(I18N.DISPLAY.fileOpenMsg())));
+            container.add(new HTML(I18N.DISPLAY.fileOpenMsg()));
         }
 
     }
