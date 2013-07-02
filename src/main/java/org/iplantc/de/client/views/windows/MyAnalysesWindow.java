@@ -48,12 +48,12 @@ public class MyAnalysesWindow extends IplantWindowBase {
         this.eventBus = eventBus;
 
         setTitle(I18N.DISPLAY.analyses());
-        setSize("600", "375");
+        setSize("670", "375");
 
         AnalysisKeyProvider provider = new AnalysisKeyProvider();
         ListStore<Analysis> listStore = new ListStore<Analysis>(provider);
         AnalysesView view = new AnalysesViewImpl(listStore, buildColumnModel(), checkBoxModel, expander);
-        presenter = new AnalysesPresenter(view);
+        presenter = new AnalysesPresenter(view, eventBus);
 
         presenter.go(this, config.getSelectedAnalyses());
     }

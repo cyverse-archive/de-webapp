@@ -47,6 +47,9 @@ public class AnalysesToolbarViewImpl implements AnalysesToolbarView {
     TextButton btnDelete;
 
     @UiField
+    TextButton btnRelaunchAnalysis;
+
+    @UiField
     ToolBar menuToolBar;
 
     @UiField
@@ -84,24 +87,34 @@ public class AnalysesToolbarViewImpl implements AnalysesToolbarView {
     }
 
     @Override
+    public void setRelaunchAnalysisEnabled(boolean enabled) {
+        btnRelaunchAnalysis.setEnabled(enabled);
+    }
+
+    @Override
     public void setPresenter(Presenter p) {
         this.presenter = p;
 
     }
 
     @UiHandler("btnDelete")
-    public void deleteClicked(SelectEvent event) {
+    void deleteClicked(SelectEvent event) {
         presenter.onDeleteClicked();
     }
 
     @UiHandler("btnCancel")
-    public void cancelClicked(SelectEvent event) {
+    void cancelClicked(SelectEvent event) {
         presenter.onCancelClicked();
     }
 
     @UiHandler("btnViewParam")
-    public void viewParamClicked(SelectEvent event) {
+    void viewParamClicked(SelectEvent event) {
         presenter.onViewParamClicked();
+    }
+
+    @UiHandler("btnRelaunchAnalysis")
+    void onRelaunchAnalysisClicked(SelectEvent event) {
+        presenter.onAnalysisRelaunchClicked();
     }
 
     @Override
