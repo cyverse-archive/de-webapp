@@ -52,6 +52,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
         AppsIntegrationView view = new AppsIntegrationViewImpl(uuidService, appMetadataService);
         templateService = GWT.create(AppTemplateServices.class);
         presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY, uuidService);
+        presenter.setOnlyLabelEditMode(false);
         setTitle(I18N.DISPLAY.createApps());
         setSize("1020", "500");
 
@@ -70,6 +71,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                 @Override
                 public void onSuccess(AppTemplate result) {
                     presenter.go(AppIntegrationWindow.this, result);
+                    AppIntegrationWindow.this.maximize();
                 }
 
                 @Override
@@ -83,6 +85,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
             at.onSuccess(config.getAppTemplate().getPayload());
         } else if ((legacyAppTemplateJson != null) && (!legacyAppTemplateJson.getPayload().isEmpty())) {
             presenter.goLegacy(this, config.getLegacyAppTemplateJson());
+            AppIntegrationWindow.this.maximize();
         } else if(config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())){
             // Create empty AppTemplate
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
@@ -95,6 +98,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
             argGrp.setArguments(Lists.<Argument> newArrayList());
             newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
             presenter.go(this, newAppTemplate);
+            AppIntegrationWindow.this.maximize();
         }else {
             templateService.getAppTemplateForEdit(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
                 @Override
@@ -106,6 +110,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                 @Override
                 public void onSuccess(AppTemplate result) {
                     presenter.go(AppIntegrationWindow.this, result);
+                    AppIntegrationWindow.this.maximize();
                     AppIntegrationWindow.this.forceLayout();
                 }
             });
