@@ -45,8 +45,6 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
 
     void toFront();
 
-    void refresh();
-
     Point getPosition3(boolean b);
 
     WindowState getWindowState();

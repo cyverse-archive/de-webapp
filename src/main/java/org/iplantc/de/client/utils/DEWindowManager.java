@@ -155,7 +155,6 @@ public class DEWindowManager extends IplantWindowManager {
 
         window.show();
         window.toFront();
-        window.refresh();
         if (getCount() == 1) {
             setFirst_window_postion(window.getPosition3(true));
         }
