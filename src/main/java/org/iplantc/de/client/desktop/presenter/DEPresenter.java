@@ -72,7 +72,7 @@ public class DEPresenter implements DEView.Presenter {
     private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
     private TextButton feedbackBtn;
-    private SaveSessionPeriodic ssp;
+    private final SaveSessionPeriodic ssp;
 
     /**
      * Constructs a default instance of the object.
@@ -349,10 +349,28 @@ public class DEPresenter implements DEView.Presenter {
                         userInfo.setFullUsername(attributes.get(UserInfo.ATTR_USERNAME));
                         userInfo.setFirstName(attributes.get(UserInfo.ATTR_FIRSTNAME));
                         userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
+                        initUserHomeDir();
                         doWorkspaceDisplay();
                         getUserSession();
                     }
                 });
+    }
+
+    private void initUserHomeDir() {
+        Services.DISK_RESOURCE_SERVICE.getHomeFolder(new AsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                UserInfo.getInstance().setHomePath(result);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // best guess with username. this is horrible...
+                UserInfo userInfo = UserInfo.getInstance();
+                userInfo.setHomePath("/iplant/home/" + userInfo.getUsername());
+            }
+        });
     }
 
     private void loadPreferences(JSONObject obj) {
