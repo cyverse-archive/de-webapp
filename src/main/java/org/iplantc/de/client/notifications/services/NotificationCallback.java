@@ -68,7 +68,7 @@ public class NotificationCallback implements AsyncCallback<String> {
                     if ("file_uploaded".equals(dataAction)) {
                         AutoBean<File> fileAb = AutoBeanUtils.getAutoBean(dataPayload.getData());
                         msg.setContext(AutoBeanCodex.encode(fileAb).getPayload());
-                    } else if ("share".equals(dataAction)) {
+                    } else if ("share".equals(dataAction) || "unshare".equals(dataAction)) {
                         List<String> paths = dataPayload.getPaths();
                         if (paths != null && !paths.isEmpty()) {
                             String path = paths.get(0);
