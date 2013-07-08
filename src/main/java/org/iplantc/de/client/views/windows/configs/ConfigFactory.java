@@ -29,6 +29,7 @@ public class ConfigFactory {
         AppsIntegrationWindowConfig aiwc = applyWindowType(WindowType.APP_INTEGRATION,
                 factory.appsIntegrationWindowConfig()).as();
         aiwc.setAppId(appId);
+        aiwc.setOnlyLabelEditMode(false);
         return aiwc;
     }
 

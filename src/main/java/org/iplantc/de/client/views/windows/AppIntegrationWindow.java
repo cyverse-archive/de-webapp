@@ -52,7 +52,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
         AppsIntegrationView view = new AppsIntegrationViewImpl(uuidService, appMetadataService);
         templateService = GWT.create(AppTemplateServices.class);
         presenter = new AppsIntegrationPresenterImpl(view, eventBus, templateService, I18N.ERROR, I18N.DISPLAY, uuidService);
-        presenter.setOnlyLabelEditMode(false);
+        presenter.setOnlyLabelEditMode(config.isOnlyLabelEditMode());
         setTitle(I18N.DISPLAY.createApps());
         setSize("1020", "500");
 
@@ -103,8 +103,8 @@ public class AppIntegrationWindow extends IplantWindowBase {
             templateService.getAppTemplateForEdit(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    AppIntegrationWindow.this.hide();
                     ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
+                    AppIntegrationWindow.this.hide();
                 }
 
                 @Override
