@@ -29,6 +29,8 @@ public interface DEView extends IsWidget {
         void restoreWindows(List<WindowState> windowStates);
 
         List<WindowState> getOrderedWindowStates();
+
+        void doWelcomeIntro();
     }
 
     /**

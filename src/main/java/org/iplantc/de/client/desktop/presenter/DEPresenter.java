@@ -467,4 +467,11 @@ public class DEPresenter implements DEView.Presenter {
 
         }
     }
+
+    @Override
+    public void doWelcomeIntro() {
+        // call intro.js
+        doIntro();
+
+    }
 }
