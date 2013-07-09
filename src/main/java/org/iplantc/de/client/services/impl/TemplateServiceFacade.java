@@ -354,20 +354,19 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 	}
 
 	@Override
-	public void deleteAppFromWorkspace(String user, String email,
-			String analysisId, AsyncCallback<String> callback) {
-		String address = DEProperties.getInstance()
-				.getUnproctedMuleServiceBaseUrl() + "delete-workflow";
+    public void deleteAppFromWorkspace(String user, String email, List<String> analysisIds,
+            AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl() + "delete-workflow"; //$NON-NLS-1$
 
-		JSONObject body = new JSONObject();
-		body.put("analysis_id", new JSONString(analysisId));
-		body.put("user", new JSONString(user));
-		body.put("email", new JSONString(email));
+        JSONObject body = new JSONObject();
+        body.put("analysis_ids", JsonUtil.buildArrayFromStrings(analysisIds)); //$NON-NLS-1$
+        body.put("user", new JSONString(user)); //$NON-NLS-1$
+        body.put("email", new JSONString(email)); //$NON-NLS-1$
 
-		ServiceCallWrapper wrapper = new ServiceCallWrapper(
-				ServiceCallWrapper.Type.POST, address, body.toString());
-		DEServiceFacade.getInstance().getServiceData(wrapper, callback);
-	}
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
+                body.toString());
+        DEServiceFacade.getInstance().getServiceData(wrapper, callback);
+    }
 
 	/**
 	 * {@inheritDoc}
