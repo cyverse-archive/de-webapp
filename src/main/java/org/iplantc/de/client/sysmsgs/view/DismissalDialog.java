@@ -19,6 +19,7 @@ final class DismissalDialog extends IPlantDialog {
      * @param dismiss the command to execute upon verification
      */
     DismissalDialog(final Command dismiss) {
+        setHeadingText(I18N.DISPLAY.confirmAction());
         this.dismiss = dismiss;
         setWidget(new Label(I18N.DISPLAY.messageDismissQuery()));
     }
