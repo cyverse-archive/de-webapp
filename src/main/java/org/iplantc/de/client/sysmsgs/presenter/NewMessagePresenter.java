@@ -16,6 +16,7 @@ import org.iplantc.de.client.sysmsgs.view.NewMessageView;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * An object of this class manages the interactions of a NewMessageView view.
@@ -47,7 +48,7 @@ public final class NewMessagePresenter implements NewMessageView.Presenter {
         view = VIEW_FACTORY.makeNewMessageView(this);
         this.eventBus = eventBus;
         this.announcer = announcer;
-        annCfg = new IplantAnnouncementConfig(true, 0);
+        annCfg = new SysMsgAnnouncementConfig(view);
         currentAnnId = null;
         removalReg = null;
         arrivalReg = eventBus.addHandler(NewSystemMessagesEvent.TYPE, new NewSystemMessagesEvent.Handler() {
@@ -91,7 +92,7 @@ public final class NewMessagePresenter implements NewMessageView.Presenter {
 
     private void announceArrival() {
         if (!isAnnouncementScheduled()) {
-            currentAnnId = announcer.schedule(view, annCfg);
+            currentAnnId = announcer.schedule(annCfg);
             removalReg = eventBus.addHandler(AnnouncementRemovedEvent.TYPE, new AnnouncementRemovedEvent.Handler() {
                 @Override
                 public void onRemove(final AnnouncementRemovedEvent event) {
@@ -131,4 +132,18 @@ public final class NewMessagePresenter implements NewMessageView.Presenter {
         return currentAnnId != null;
     }
 
+    private final class SysMsgAnnouncementConfig extends IplantAnnouncementConfig {
+        private final IsWidget view;
+
+        public SysMsgAnnouncementConfig(IsWidget view) {
+            super(null, true, 0);
+
+            this.view = view;
+        }
+
+        @Override
+        public IsWidget getWidget() {
+            return view;
+        }
+    }
 }
