@@ -1,19 +1,16 @@
 package org.iplantc.de.client.preferences.views;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.iplantc.core.uiapps.widgets.client.view.editors.validation.AnalysisOutputValidator;
 import org.iplantc.core.uiapps.widgets.client.view.fields.AppWizardFolderSelector;
 import org.iplantc.core.uicommons.client.Constants;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.de.client.I18N;
 
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.editor.client.Editor;
-import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -27,8 +24,6 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.form.error.DefaultEditorError;
-import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
 import com.sencha.gxt.widget.core.client.form.validator.MaxLengthValidator;
 
 /**
@@ -101,22 +96,9 @@ public class PreferencesViewImpl implements PreferencesView {
 
     private void initDefaultOutputFolder() {
         defaultOpFolder = new AppWizardFolderSelector();
-        defaultOpFolder.setId("idDefaultFolderSelector");
+        defaultOpFolder.setId("idDefaultFolderSelector"); //$NON-NLS-1$
 
-        // CORE-4079: Paths should not contain spaces.
-        defaultOpFolder.addValidator(new AbstractValidator<String>() {
-
-            @Override
-            public List<EditorError> validate(Editor<String> editor, String value) {
-                if (!Strings.isNullOrEmpty(value) && value.contains(" ")) { //$NON-NLS-1$
-                    EditorError err = new DefaultEditorError(editor, I18N.ERROR
-                            .defaultOutputFolderValidationError(), value);
-                    return createError(err);
-                }
-
-                return null;
-            }
-        });
+        defaultOpFolder.addValidator(new AnalysisOutputValidator());
         defaultOpFolder.addValueChangeHandler(new ValueChangeHandler<HasId>() {
 
             @Override
