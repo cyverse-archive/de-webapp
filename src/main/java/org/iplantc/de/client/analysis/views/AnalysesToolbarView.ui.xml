@@ -35,6 +35,12 @@
                 text="{strings.viewParamLbl}"
                 ui:field="btnViewParam"
                 enabled="false"/>
+              <button:TextButton
+                debugId="idBtnAnalysisRelaunch"
+                icon="{icons.run}"
+                text="{strings.relaunchAnalysis}"
+                ui:field="btnRelaunchAnalysis"
+                enabled="false"/>
             <analysis:AnalysisSearchField
                 ui:field="filterField"
                 debugId="idAnalysisSrc"

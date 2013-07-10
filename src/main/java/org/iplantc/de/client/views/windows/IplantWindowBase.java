@@ -459,10 +459,6 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     }
 
     @Override
-    public void refresh() {
-    }
-
-    @Override
     public Point getPosition3(boolean b) {
         return getElement().getPosition(b);
     }

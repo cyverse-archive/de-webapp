@@ -50,9 +50,4 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         presenter.setSelectedDiskResourcesById(drConfig.getSelectedDiskResources());
     }
 
-    @Override
-    public void refresh() {
-        presenter.doRefresh();
-    }
-
 }

@@ -3,13 +3,19 @@ package org.iplantc.de.client.views.windows;
 import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent;
 import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent.AnalysisLaunchEventHandler;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
+import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
+import org.iplantc.core.uiapps.widgets.client.presenter.AppWizardPresenterImpl;
+import org.iplantc.core.uiapps.widgets.client.services.AppMetadataServiceFacade;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
+import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices;
 import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.UUIDServiceAsync;
+import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
@@ -31,6 +37,7 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
         public void onSuccess(AppTemplate result) {
             presenter.go(AppWizardWindow.this, result);
             AppWizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
+            AppWizardWindow.this.fireEvent(new WindowHeadingUpdatedEvent());
             // KLUDGE JDS This call to forceLayout should not be necessary.
             AppWizardWindow.this.forceLayout();
         }
@@ -44,13 +51,16 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
     private final AppWizardView.Presenter presenter;
     private final AppTemplateServices templateService = GWT.create(AppTemplateServices.class);
     private final String appId;
+    private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
+    private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
 
-    public AppWizardWindow(AppWizardConfig config) {
+
+    public AppWizardWindow(AppWizardConfig config, final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
         super(null, null);
         setSize("640", "375");
         setBorders(false);
 
-        presenter = GWT.create(AppWizardView.Presenter.class);
+        presenter = new AppWizardPresenterImpl(uuidService, appMetadataService);
         presenter.addAnalysisLaunchHandler(this);
         appId = config.getAppId();
         init(presenter, config);
@@ -58,7 +68,7 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
 
     private void init(final AppWizardView.Presenter presenter, AppWizardConfig config) {
         if (config.getAppTemplate() != null) {
-            AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(new AsyncCallback<AppTemplate>() {
+            AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(factory, dcServices, new AsyncCallback<AppTemplate>() {
 
                 @Override
                 public void onSuccess(AppTemplate result) {

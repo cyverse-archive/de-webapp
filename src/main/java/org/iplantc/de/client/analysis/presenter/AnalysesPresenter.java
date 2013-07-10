@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
@@ -23,7 +24,10 @@ import org.iplantc.de.client.analysis.views.AnalysisParamView;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamValueCell;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.utils.NotifyInfo;
+import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
@@ -67,9 +71,11 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     private final AnalysesToolbarView toolbar;
     private final AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
     private HandlerRegistration handlerFirstLoad;
+    private final EventBus eventBus;
 
-    public AnalysesPresenter(AnalysesView view) {
+    public AnalysesPresenter(final AnalysesView view, final EventBus eventBus) {
         this.view = view;
+        this.eventBus = eventBus;
         this.view.setPresenter(this);
         toolbar = new AnalysesToolbarViewImpl();
         toolbar.setPresenter(this);
@@ -135,6 +141,18 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
         }
     }
 
+    @Override
+    public void onAnalysisRelaunchClicked() {
+        if (view.getSelectedAnalyses().size() != 1) {
+            return;
+        }
+        Analysis selectedAnalysis = view.getSelectedAnalyses().get(0);
+        AppWizardConfig config = ConfigFactory.appWizardConfig(selectedAnalysis.getAppId());
+        config.setAnalysisId(selectedAnalysis);
+        config.setRelaunchAnalysis(true);
+        eventBus.fireEvent(new WindowShowRequestEvent(config));
+    }
+
     private class AnalysisParameterKeyProvider implements ModelKeyProvider<AnalysisParameter> {
 
         @Override
@@ -154,17 +172,20 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
                 toolbar.setCancelButtonEnabled(false);
                 toolbar.setDeleteButtonEnabled(false);
                 toolbar.setViewParamButtonEnabled(false);
+                toolbar.setRelaunchAnalysisEnabled(false);
                 break;
 
             case 1:
                 enableCancelAnalysisButtonByStatus();
                 toolbar.setDeleteButtonEnabled(true);
                 toolbar.setViewParamButtonEnabled(true);
+                toolbar.setRelaunchAnalysisEnabled(true);
                 break;
 
             default:
                 toolbar.setDeleteButtonEnabled(true);
                 toolbar.setViewParamButtonEnabled(false);
+                toolbar.setRelaunchAnalysisEnabled(false);
                 enableCancelAnalysisButtonByStatus();
         }
     }

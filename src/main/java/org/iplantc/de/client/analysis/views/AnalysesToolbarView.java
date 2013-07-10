@@ -26,6 +26,8 @@ public interface AnalysesToolbarView extends IsWidget {
         void onCancelClicked();
 
         void setRefreshButton(TextButton refreshBtn);
+
+        void onAnalysisRelaunchClicked();
     }
 
     void setDeleteButtonEnabled(boolean enabled);
@@ -34,6 +36,8 @@ public interface AnalysesToolbarView extends IsWidget {
 
     void setCancelButtonEnabled(boolean enabled);
 
+    void setRelaunchAnalysisEnabled(boolean enabled);
+
     void setPresenter(Presenter p);
 
     void setRefreshButton(TextButton refreshBtn);
@@ -41,4 +45,5 @@ public interface AnalysesToolbarView extends IsWidget {
     PagingLoader<FilterPagingLoadConfig, PagingLoadResult<Analysis>> getLoader();
 
     AnalysisSearchField getFilterField();
+
 }

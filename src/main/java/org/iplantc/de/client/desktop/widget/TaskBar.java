@@ -8,6 +8,8 @@ package org.iplantc.de.client.desktop.widget;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
+import org.iplantc.de.client.events.WindowHeadingUpdatedEvent.WindowHeadingUpdatedEventHandler;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -20,9 +22,9 @@ import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
  */
 public class TaskBar extends ToolBar {
 
-    private int buttonWidth = 168;
-    private int minButtonWidth = 118;
-    private boolean resizeButtons = true;
+    private final int buttonWidth = 168;
+    private final int minButtonWidth = 118;
+    private final boolean resizeButtons = true;
 
     /**
      * Creates a task bar.
@@ -41,12 +43,19 @@ public class TaskBar extends ToolBar {
      * @param win the window
      * @return the new task button
      */
-    public TaskButton addTaskButton(IPlantWindowInterface win) {
-        TaskButton taskButton = new TaskButton(win);
+    public TaskButton addTaskButton(final IPlantWindowInterface win) {
+        final TaskButton taskButton = new TaskButton(win);
         add(taskButton, new BoxLayoutData(new Margins(0, 3, 0, 0)));
         autoSize();
         doLayout();
         setActiveButton(taskButton);
+        win.asWidget().addHandler(new WindowHeadingUpdatedEventHandler() {
+
+            @Override
+            public void onWindowHeadingUpdated(WindowHeadingUpdatedEvent event) {
+                taskButton.setText(win.getTitle());
+            }
+        }, WindowHeadingUpdatedEvent.TYPE);
         return taskButton;
     }
 

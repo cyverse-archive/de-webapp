@@ -1,6 +1,7 @@
 package org.iplantc.de.client.views.windows.configs;
 
 import java.util.List;
+import java.util.Map;
 
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
@@ -22,5 +23,9 @@ public interface IDropLiteWindowConfig extends WindowConfig {
     void setCurrentFolder(Folder currentFolder);
 
     void setUploadFolderDest(Folder uploadDest);
+
+    void setTypeMap(Map<String, String> map);
+
+    Map<String, String> getTypeMap();
 
 }

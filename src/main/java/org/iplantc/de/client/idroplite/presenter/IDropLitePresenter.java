@@ -1,6 +1,7 @@
 package org.iplantc.de.client.idroplite.presenter;
 
 import java.util.List;
+import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
@@ -11,6 +12,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBe
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestSimpleUploadEvent;
+import org.iplantc.core.uidiskresource.client.sharing.models.DataSharing.TYPE;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
@@ -23,9 +25,6 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.google.web.bindery.autobean.shared.Splittable;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 
 /**
@@ -138,16 +137,18 @@ public class IDropLitePresenter implements Presenter {
         boolean foldersOnly = true;
         if (mode == IDropLiteUtil.DISPLAY_MODE_DOWNLOAD
                 && !DiskResourceUtil.containsFile(Sets.newHashSet(resourcesToDownload))) {
-            for (DiskResource dr : resourcesToDownload) {
-                Splittable s = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(dr));
-                List<String> key = s.getPropertyKeys();
-                if (!key.contains("hasSubDirs")) {
-                    foldersOnly = false;
-                    break;
+            Map<String, String> typeMap = idlwc.getTypeMap();
+            if (typeMap != null) {
+                for (String id : typeMap.keySet()) {
+                    String type = typeMap.get(id);
+                    if (type.equalsIgnoreCase(TYPE.FILE.toString())) {
+                        foldersOnly = false;
+                        break;
+                    }
                 }
-            }
-            if (foldersOnly) {
-                view.disableSimpleDownload();
+                if (foldersOnly) {
+                    view.disableSimpleDownload();
+                }
             }
         }
     }

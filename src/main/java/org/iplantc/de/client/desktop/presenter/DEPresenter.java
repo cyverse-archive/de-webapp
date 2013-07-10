@@ -37,20 +37,15 @@ import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.util.KeyNav;
 import com.sencha.gxt.core.client.util.Size;
@@ -77,6 +72,7 @@ public class DEPresenter implements DEView.Presenter {
     private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
     private TextButton feedbackBtn;
+    private final SaveSessionPeriodic ssp;
 
     /**
      * Constructs a default instance of the object.
@@ -90,38 +86,10 @@ public class DEPresenter implements DEView.Presenter {
         keyboardShortCuts = new HashMap<String, Command>();
         initializeEventHandlers();
         initializeDEProperties();
+        ssp = new SaveSessionPeriodic(this);
     }
 
     private void initializeEventHandlers() {
-
-        if (GXT.isGecko() || GXT.isIE()) {
-            // Add a close handler to detect browser refresh events.
-            Window.addCloseHandler(new CloseHandler<Window>() {
-
-                @Override
-                public void onClose(final CloseEvent<Window> event) {
-                    if (UserSettings.getInstance().isSaveSession()) {
-                        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
-                                .saveSession(DEPresenter.this);
-                        uspmb.show();
-                    }
-                }
-            });
-        } else if (GXT.isChrome() || GXT.isWebKit()) {
-
-            Window.addWindowClosingHandler(new ClosingHandler() {
-
-                @Override
-                public void onWindowClosing(ClosingEvent arg0) {
-                    if (UserSettings.getInstance().isSaveSession()) {
-                        UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox
-                                .saveSession(DEPresenter.this);
-                        uspmb.show();
-                    }
-
-                }
-            });
-        }
 
         eventBus.addHandler(PreferencesUpdatedEvent.TYPE, new PreferencesUpdatedEventHandler() {
 
@@ -129,7 +97,7 @@ public class DEPresenter implements DEView.Presenter {
             public void onUpdate(final PreferencesUpdatedEvent event) {
                 keyboardShortCuts.clear();
                 setUpKBShortCuts();
-
+                initPeriodicSessionSave();
             }
         });
         eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
@@ -243,6 +211,7 @@ public class DEPresenter implements DEView.Presenter {
         });
 
         initMessagePoller();
+        initPeriodicSessionSave();
     }
 
     private void addFeedbackButton() {
@@ -334,6 +303,19 @@ public class DEPresenter implements DEView.Presenter {
         poller.start();
     }
 
+    private void initPeriodicSessionSave() {
+        MessagePoller poller = MessagePoller.getInstance();
+        if (UserSettings.getInstance().isSaveSession()) {
+
+            ssp.run();
+            poller.addTask(ssp);
+            // start if not started...
+            poller.start();
+        } else {
+            poller.removeTask(ssp);
+        }
+    }
+
     /**
      * Initializes the session keepalive timer.
      */
@@ -367,10 +349,28 @@ public class DEPresenter implements DEView.Presenter {
                         userInfo.setFullUsername(attributes.get(UserInfo.ATTR_USERNAME));
                         userInfo.setFirstName(attributes.get(UserInfo.ATTR_FIRSTNAME));
                         userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
+                        initUserHomeDir();
                         doWorkspaceDisplay();
                         getUserSession();
                     }
                 });
+    }
+
+    private void initUserHomeDir() {
+        Services.DISK_RESOURCE_SERVICE.getHomeFolder(new AsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                UserInfo.getInstance().setHomePath(result);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // best guess with username. this is horrible...
+                UserInfo userInfo = UserInfo.getInstance();
+                userInfo.setHomePath("/iplant/home/" + userInfo.getUsername());
+            }
+        });
     }
 
     private void loadPreferences(JSONObject obj) {
@@ -466,5 +466,12 @@ public class DEPresenter implements DEView.Presenter {
             eventBus.fireEvent(new WindowCloseRequestEvent());
 
         }
+    }
+
+    @Override
+    public void doWelcomeIntro() {
+        // call intro.js
+        doIntro();
+
     }
 }

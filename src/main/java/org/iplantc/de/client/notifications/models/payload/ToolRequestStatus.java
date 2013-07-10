@@ -14,7 +14,7 @@ public enum ToolRequestStatus {
     Evaluation(I18N.HELP.toolRequestStatusEvaluationHelp()),
     Installation(I18N.HELP.toolRequestStatusInstallationHelp()),
     Validation(I18N.HELP.toolRequestStatusValidationHelp()),
-    Complete(I18N.HELP.toolRequestStatusCompleteHelp()),
+    Completion(I18N.HELP.toolRequestStatusCompleteHelp()),
     Failed(I18N.HELP.toolRequestStatusFailedHelp());
 
     private String helpText;

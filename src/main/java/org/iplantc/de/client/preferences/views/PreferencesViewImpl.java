@@ -3,12 +3,16 @@ package org.iplantc.de.client.preferences.views;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.iplantc.core.uiapps.widgets.client.view.editors.validation.AnalysisOutputValidator;
 import org.iplantc.core.uiapps.widgets.client.view.fields.AppWizardFolderSelector;
 import org.iplantc.core.uicommons.client.Constants;
+import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.de.client.I18N;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -75,23 +79,37 @@ public class PreferencesViewImpl implements PreferencesView {
 
     static UserSettings us = UserSettings.getInstance();
 
-    private Map<TextField, String> kbMap;
+    private final Map<TextField, String> kbMap;
 
     public PreferencesViewImpl() {
         widget = uiBinder.createAndBindUi(this);
         kbMap = new HashMap<TextField, String>();
         container.setScrollMode(ScrollMode.AUTOY);
-        defaultOpFolder = new AppWizardFolderSelector();
-        defaultOpFolder.setId("idDefaultFolderSelector");
-        prefContainer.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new VerticalLayoutData(.9, -1,
-                new Margins(5)));
-        prefContainer.add(defaultOpFolder.asWidget(), new VerticalLayoutData(.9, -1, new Margins(5)));
+        initDefaultOutputFolder();
         appKbSc.addValidator(new MaxLengthValidator(1));
         dataKbSc.addValidator(new MaxLengthValidator(1));
         anaKbSc.addValidator(new MaxLengthValidator(1));
         notKbSc.addValidator(new MaxLengthValidator(1));
         closeKbSc.addValidator(new MaxLengthValidator(1));
         populateKbMap();
+    }
+
+    private void initDefaultOutputFolder() {
+        defaultOpFolder = new AppWizardFolderSelector();
+        defaultOpFolder.setId("idDefaultFolderSelector"); //$NON-NLS-1$
+
+        defaultOpFolder.addValidator(new AnalysisOutputValidator());
+        defaultOpFolder.addValueChangeHandler(new ValueChangeHandler<HasId>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<HasId> event) {
+                defaultOpFolder.validate(false);
+            }
+        });
+
+        prefContainer.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new VerticalLayoutData(.9, -1,
+                new Margins(5)));
+        prefContainer.add(defaultOpFolder.asWidget(), new VerticalLayoutData(.9, -1, new Margins(5)));
     }
 
     private void populateKbMap() {
@@ -167,8 +185,8 @@ public class PreferencesViewImpl implements PreferencesView {
 
     @Override
     public boolean isValid() {
-        boolean valid = appKbSc.isValid() && dataKbSc.isValid() && anaKbSc.isValid()
-                && notKbSc.isValid() && closeKbSc.isValid();
+        boolean valid = defaultOpFolder.isValid(false) && appKbSc.isValid() && dataKbSc.isValid()
+                && anaKbSc.isValid() && notKbSc.isValid() && closeKbSc.isValid();
         populateKbMap();
         resetKbFieldErrors();
         for (TextField ks : kbMap.keySet()) {

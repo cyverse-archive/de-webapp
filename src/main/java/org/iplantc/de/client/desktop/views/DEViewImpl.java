@@ -246,6 +246,7 @@ public class DEViewImpl implements DEView {
         userMenu.add(new SeparatorMenuItem());
 
         userMenu.add(buildHelpMenuItem());
+        userMenu.add(buildIntroMenuItem());
         userMenu.add(buildFourmsMenuItem());
         userMenu.add(buildContactMenuItem());
         userMenu.add(buildAboutMenuItem());
@@ -301,6 +302,17 @@ public class DEViewImpl implements DEView {
             }
         });
         anchor.setId("idForumMenuItem");
+        return anchor;
+    }
+
+    private IPlantAnchor buildIntroMenuItem() {
+        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.introduction(), -1, new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.doWelcomeIntro();
+            }
+        });
+        anchor.setId("idIntroMenuItem");
         return anchor;
     }
 
@@ -413,6 +425,11 @@ public class DEViewImpl implements DEView {
             lbl += " (" + numUnseenSysMsgs + ")";
         }
         sysMsgsMenuItem.setText(lbl);
+    }
+
+    @Override
+    public Desktop getDesktop() {
+        return desktop;
     }
 
 }

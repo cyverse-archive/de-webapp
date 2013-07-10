@@ -20,13 +20,16 @@ public class ConfigFactory {
     }
 
     public static AnalysisWindowConfig analysisWindowConfig() {
-        AnalysisWindowConfig awc = applyWindowType(WindowType.ANALYSES, factory.analysisWindowConfig()).as();
+        AnalysisWindowConfig awc = applyWindowType(WindowType.ANALYSES, factory.analysisWindowConfig())
+                .as();
         return awc;
     }
-    
+
     public static AppsIntegrationWindowConfig appsIntegrationWindowConfig(String appId) {
-        AppsIntegrationWindowConfig aiwc = applyWindowType(WindowType.APP_INTEGRATION, factory.appsIntegrationWindowConfig()).as();
+        AppsIntegrationWindowConfig aiwc = applyWindowType(WindowType.APP_INTEGRATION,
+                factory.appsIntegrationWindowConfig()).as();
         aiwc.setAppId(appId);
+        aiwc.setOnlyLabelEditMode(false);
         return aiwc;
     }
 
@@ -43,12 +46,14 @@ public class ConfigFactory {
     }
 
     public static DiskResourceWindowConfig diskResourceWindowConfig() {
-        DiskResourceWindowConfig drwc = applyWindowType(WindowType.DATA, factory.diskResourceWindowConfig()).as();
+        DiskResourceWindowConfig drwc = applyWindowType(WindowType.DATA,
+                factory.diskResourceWindowConfig()).as();
         return drwc;
     }
 
     public static FileViewerWindowConfig fileViewerWindowConfig(File file, boolean b) {
-        AutoBean<FileViewerWindowConfig> fvwc = applyWindowType(WindowType.DATA_VIEWER, factory.fileViewerWindowConfig());
+        AutoBean<FileViewerWindowConfig> fvwc = applyWindowType(WindowType.DATA_VIEWER,
+                factory.fileViewerWindowConfig());
         fvwc.as().setFile(file);
         fvwc.as().setShowTreeTab(b);
         applyTag(file.getId(), fvwc);
@@ -56,13 +61,22 @@ public class ConfigFactory {
         return fvwc.as();
     }
 
-    public static IDropLiteWindowConfig iDropLiteWindowConfig() {
-        IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE, factory.iDropLiteWindowConfig()).as();
+    public static IDropLiteWindowConfig iDropLiteUploadWindowConfig() {
+        IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE_UPLOAD,
+                factory.iDropLiteWindowConfig()).as();
+        return idlwc;
+    }
+
+    public static IDropLiteWindowConfig iDropLiteDownloadWindowConfig() {
+        IDropLiteWindowConfig idlwc = applyWindowType(WindowType.IDROP_LITE_DOWNLOAD,
+                factory.iDropLiteWindowConfig()).as();
+
         return idlwc;
     }
 
     public static NotifyWindowConfig notifyWindowConfig(Category category) {
-        NotifyWindowConfig nwc = applyWindowType(WindowType.NOTIFICATIONS, factory.notifyWindowConfig()).as();
+        NotifyWindowConfig nwc = applyWindowType(WindowType.NOTIFICATIONS, factory.notifyWindowConfig())
+                .as();
         nwc.setSortCategory(category);
         return nwc;
     }
@@ -74,29 +88,33 @@ public class ConfigFactory {
     }
 
     public static SimpleDownloadWindowConfig simpleDownloadWindowConfig() {
-        SimpleDownloadWindowConfig sdwc = applyWindowType(WindowType.SIMPLE_DOWNLOAD, factory.simpleDownloadWindowConfig()).as();
+        SimpleDownloadWindowConfig sdwc = applyWindowType(WindowType.SIMPLE_DOWNLOAD,
+                factory.simpleDownloadWindowConfig()).as();
         return sdwc;
     }
 
     public static SystemMessagesWindowConfig systemMessagesWindowConfig(final String selectedMsg) {
-    	final AutoBean<SystemMessagesWindowConfig> ab = applyWindowType(WindowType.SYSTEM_MESSAGES, 
-    			factory.systemMessagesWindowConfig());
+        final AutoBean<SystemMessagesWindowConfig> ab = applyWindowType(WindowType.SYSTEM_MESSAGES,
+                factory.systemMessagesWindowConfig());
         ab.as().setSelectedMessage(selectedMsg);
-    	return ab.as();
+        return ab.as();
     }
 
     public static WindowConfig getConfig(WindowState ws) {
         WindowConfig config = null;
         switch (ws.getConfigType()) {
             case ABOUT:
-                config = AutoBeanCodex.decode(factory, AboutWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, AboutWindowConfig.class, ws.getWindowConfig())
+                        .as();
                 break;
             case ANALYSES:
-                config = AutoBeanCodex.decode(factory, AnalysisWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, AnalysisWindowConfig.class, ws.getWindowConfig())
+                        .as();
                 break;
 
             case APP_INTEGRATION:
-                config = AutoBeanCodex.decode(factory, AppsIntegrationWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, AppsIntegrationWindowConfig.class,
+                        ws.getWindowConfig()).as();
                 break;
 
             case APP_WIZARD:
@@ -104,42 +122,49 @@ public class ConfigFactory {
                 break;
 
             case APPS:
-                config = AutoBeanCodex.decode(factory, AppsWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, AppsWindowConfig.class, ws.getWindowConfig())
+                        .as();
                 break;
 
             case DATA:
-                config = AutoBeanCodex.decode(factory, DiskResourceWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, DiskResourceWindowConfig.class,
+                        ws.getWindowConfig()).as();
                 break;
 
             case DATA_VIEWER:
-                config = AutoBeanCodex.decode(factory, FileViewerWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, FileViewerWindowConfig.class,
+                        ws.getWindowConfig()).as();
                 break;
 
             case HELP:
                 config = null;
                 break;
 
-            case IDROP_LITE:
-                config = AutoBeanCodex.decode(factory, IDropLiteWindowConfig.class, ws.getWindowConfig()).as();
+            case IDROP_LITE_DOWNLOAD:
+            case IDROP_LITE_UPLOAD:
+                config = AutoBeanCodex
+                        .decode(factory, IDropLiteWindowConfig.class, ws.getWindowConfig()).as();
                 break;
 
             case NOTIFICATIONS:
-                config = AutoBeanCodex.decode(factory, NotifyWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, NotifyWindowConfig.class, ws.getWindowConfig())
+                        .as();
                 break;
 
             case SIMPLE_DOWNLOAD:
-                config = AutoBeanCodex.decode(factory, SimpleDownloadWindowConfig.class, ws.getWindowConfig()).as();
+                config = AutoBeanCodex.decode(factory, SimpleDownloadWindowConfig.class,
+                        ws.getWindowConfig()).as();
                 break;
 
             case WORKFLOW_INTEGRATION:
                 config = AutoBeanCodex.decode(factory, PipelineEditorWindowConfig.class,
                         ws.getWindowConfig()).as();
                 break;
-                
+
             case SYSTEM_MESSAGES:
-            	config = AutoBeanCodex.decode(factory, SystemMessagesWindowConfig.class, 
-            			ws.getWindowConfig()).as();
-            	break;
+                config = AutoBeanCodex.decode(factory, SystemMessagesWindowConfig.class,
+                        ws.getWindowConfig()).as();
+                break;
         }
 
         return config;

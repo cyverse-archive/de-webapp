@@ -1,12 +1,15 @@
 package org.iplantc.de.client.desktop.widget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.models.diskresources.TYPE;
 import org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
@@ -71,7 +74,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         Folder uploadDest = event.getDestinationFolder();
         if (canUpload(uploadDest)) {
             // Build window config
-            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteWindowConfig();
+            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteUploadWindowConfig();
             idlwc.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_UPLOAD);
             idlwc.setUploadFolderDest(uploadDest);
             idlwc.setCurrentFolder(uploadDest);
@@ -115,14 +118,25 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         if (isDownloadable(resources)) {
 
             // Build window config
-            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteWindowConfig();
+            IDropLiteWindowConfig idlwc = ConfigFactory.iDropLiteDownloadWindowConfig();
             idlwc.setDisplayMode(IDropLiteUtil.DISPLAY_MODE_DOWNLOAD);
             idlwc.setResourcesToDownload(resources);
+            idlwc.setTypeMap(buildTypeMap(resources));
             idlwc.setCurrentFolder(event.getCurrentFolder());
             desktop.showWindow(idlwc);
         } else {
             showErrorMsg();
         }
+    }
+
+    private Map<String, String> buildTypeMap(List<DiskResource> resources) {
+        Map<String, String> map = new HashMap<String, String>();
+        for (DiskResource dr : resources) {
+            map.put(dr.getId(), dr instanceof Folder ? TYPE.FOLDER.toString() : TYPE.FILE.toString());
+        }
+
+        return map;
+
     }
 
     private boolean isDownloadable(List<DiskResource> resources) {

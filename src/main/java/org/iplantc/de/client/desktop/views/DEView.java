@@ -3,6 +3,7 @@ package org.iplantc.de.client.desktop.views;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.client.desktop.widget.Desktop;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -17,17 +18,19 @@ public interface DEView extends IsWidget {
 
     public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
 
-		void doLogout();
+        void doLogout();
 
         /**
-         * Restores the windows specified by the given list of <code>WindowState</code> objects.
-         * This method restores the windows in the order they are given.
+         * Restores the windows specified by the given list of <code>WindowState</code> objects. This
+         * method restores the windows in the order they are given.
          * 
          * @param windowStates
          */
         void restoreWindows(List<WindowState> windowStates);
 
         List<WindowState> getOrderedWindowStates();
+
+        void doWelcomeIntro();
     }
 
     /**
@@ -44,8 +47,8 @@ public interface DEView extends IsWidget {
     void setPresenter(final Presenter presenter);
 
     /**
-     * XXX JDS This method should not exist in the view.
-     * Eventually, all window management functionality should be contained within the presenter.
+     * XXX JDS This method should not exist in the view. Eventually, all window management functionality
+     * should be contained within the presenter.
      * 
      * @return
      */
@@ -59,5 +62,7 @@ public interface DEView extends IsWidget {
      * @param numUnseenSysMsgs The new number of unread system messages
      */
     void updateUnseenSystemMessageCount(long numUnseenSysMsgs);
+
+    Desktop getDesktop();
 
 }

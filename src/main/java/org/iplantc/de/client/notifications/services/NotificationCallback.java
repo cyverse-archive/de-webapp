@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
@@ -67,6 +68,13 @@ public class NotificationCallback implements AsyncCallback<String> {
                     if ("file_uploaded".equals(dataAction)) {
                         AutoBean<File> fileAb = AutoBeanUtils.getAutoBean(dataPayload.getData());
                         msg.setContext(AutoBeanCodex.encode(fileAb).getPayload());
+                    } else if ("share".equals(dataAction) || "unshare".equals(dataAction)) {
+                        List<String> paths = dataPayload.getPaths();
+                        if (paths != null && !paths.isEmpty()) {
+                            String path = paths.get(0);
+                            Splittable file = CommonModelUtils.createHasIdSplittableFromString(path);
+                            msg.setContext(file.getPayload());
+                        }
                     }
                     break;
 

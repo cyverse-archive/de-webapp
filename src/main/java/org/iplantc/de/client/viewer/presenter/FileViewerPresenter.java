@@ -20,12 +20,10 @@ import org.iplantc.de.client.views.windows.FileViewerWindow;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.sencha.gxt.widget.core.client.Window;
-import com.sencha.gxt.widget.core.client.event.ActivateEvent;
-import com.sencha.gxt.widget.core.client.event.ActivateEvent.ActivateHandler;
 
 /**
  * @author sriram
@@ -101,13 +99,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         }
 
         if (viewers.size() == 0) {
-            // hide window after it becomes active.you cannot hide it now cos its not yet shown
-            container.addActivateHandler(new ActivateHandler<Window>() {
-                @Override
-                public void onActivate(ActivateEvent<Window> event) {
-                    container.doHide();
-                }
-            });
+            container.unmask();
+            container.add(new HTML(I18N.DISPLAY.fileOpenMsg()));
         }
 
     }

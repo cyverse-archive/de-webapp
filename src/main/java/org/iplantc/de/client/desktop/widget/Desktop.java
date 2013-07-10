@@ -183,6 +183,10 @@ public class Desktop implements IsWidget {
         return getDesktopViewport();
     }
 
+    public Viewport getViewPort() {
+        return desktopViewport;
+    }
+
     /**
      * Returns the container of the "desktop", which is the area that contains the shortcuts (i.e. minus
      * the task bar).
