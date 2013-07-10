@@ -104,6 +104,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                         @Override
                         public void onSuccess(AppTemplate result) {
                             presenter.go(AppIntegrationWindow.this, result);
+                            AppIntegrationWindow.this.forceLayout();
                         }
 
                         @Override
@@ -129,6 +130,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
             argGrp.setArguments(Lists.<Argument> newArrayList());
             newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
             presenter.go(this, newAppTemplate);
+            AppIntegrationWindow.this.forceLayout();
         } else {
             templateService.getAppTemplateForEdit(
                     CommonModelUtils.createHasIdFromString(config.getAppId()),
@@ -142,6 +144,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                         @Override
                         public void onSuccess(AppTemplate result) {
                             presenter.go(AppIntegrationWindow.this, result);
+                            AppIntegrationWindow.this.forceLayout();
                         }
                     });
         }
