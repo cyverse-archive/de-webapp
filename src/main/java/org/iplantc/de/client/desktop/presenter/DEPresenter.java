@@ -267,9 +267,7 @@ public class DEPresenter implements DEView.Presenter {
 
     private void parseWorkspaceInfo(String json) {
         // Bootstrap the user-info object with workspace info provided in JSON format.
-        JSONObject obj = JsonUtil.getObject(json);
-        UserInfo userInfo = UserInfo.getInstance();
-        userInfo.init(obj.toString());
+        UserInfo.getInstance().init(json);
         initIntro();
     }
 
