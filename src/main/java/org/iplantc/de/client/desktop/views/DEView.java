@@ -30,6 +30,8 @@ public interface DEView extends IsWidget {
 
         List<WindowState> getOrderedWindowStates();
 
+        void doPeriodicSessionSave();
+
         void doWelcomeIntro();
     }
 

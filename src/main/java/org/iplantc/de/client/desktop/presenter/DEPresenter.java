@@ -97,7 +97,7 @@ public class DEPresenter implements DEView.Presenter {
             public void onUpdate(final PreferencesUpdatedEvent event) {
                 keyboardShortCuts.clear();
                 setUpKBShortCuts();
-                initPeriodicSessionSave();
+                doPeriodicSessionSave();
             }
         });
         eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
@@ -174,6 +174,7 @@ public class DEPresenter implements DEView.Presenter {
 
     private void getUserSession() {
         if (UserSettings.getInstance().isSaveSession()) {
+            // This restoreSession's callback will also init periodic session saving.
             UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.restoreSession(this);
             uspmb.show();
         }
@@ -192,7 +193,6 @@ public class DEPresenter implements DEView.Presenter {
         });
 
         initMessagePoller();
-        initPeriodicSessionSave();
     }
 
     private void addFeedbackButton() {
@@ -308,7 +308,8 @@ public class DEPresenter implements DEView.Presenter {
         poller.start();
     }
 
-    private void initPeriodicSessionSave() {
+    @Override
+    public void doPeriodicSessionSave() {
         MessagePoller poller = MessagePoller.getInstance();
         if (UserSettings.getInstance().isSaveSession()) {
 

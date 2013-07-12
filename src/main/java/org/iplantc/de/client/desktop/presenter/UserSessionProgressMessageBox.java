@@ -153,12 +153,14 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
                     presenter.restoreWindows(windowStates);
                 }
             }
+            presenter.doPeriodicSessionSave();
             msgBox.hide();
         }
 
         @Override
         public void onFailure(Throwable caught) {
             GWT.log(I18N.ERROR.loadSessionFailed(), caught);
+            presenter.doPeriodicSessionSave();
             msgBox.hide();
         }
     }
