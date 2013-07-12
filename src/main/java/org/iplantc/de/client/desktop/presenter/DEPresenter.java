@@ -144,7 +144,7 @@ public class DEPresenter implements DEView.Presenter {
 
             @Override
             public void onSuccess(String result) {
-                parseWorkspaceId(result);
+                parseWorkspaceInfo(result);
                 initializeUserInfoAttributes();
                 initKeepaliveTimer();
             }
@@ -162,31 +162,6 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onSuccess(String result) {
                 loadPreferences(JsonUtil.getObject(result));
-                Scheduler.get().scheduleDeferred(new Command() {
-
-                    @Override
-                    public void execute() {
-                        if (UserInfo.getInstance().isNewUser()) {
-                            MessageBox box = new MessageBox("Welcome",
-                                    org.iplantc.core.resources.client.messages.I18N.TOUR.introWelcome());
-                            box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
-                            box.setIcon(MessageBox.ICONS.question());
-                            box.addHideHandler(new HideHandler() {
-
-                                @Override
-                                public void onHide(HideEvent event) {
-                                    Dialog btn = (Dialog)event.getSource();
-                                    if (btn.getHideButton().getText().equalsIgnoreCase("yes")) {
-                                        doIntro();
-                                    }
-                                }
-                            });
-                            box.show();
-                        }
-
-                    }
-
-                });
             }
         });
     }
@@ -290,13 +265,39 @@ public class DEPresenter implements DEView.Presenter {
 
     }
 
-    private String parseWorkspaceId(String json) {
+    private void parseWorkspaceInfo(String json) {
+        // Bootstrap the user-info object with workspace info provided in JSON format.
         JSONObject obj = JsonUtil.getObject(json);
-        // Bootstrap the user-info object with session data provided in JSON
-        // format
         UserInfo userInfo = UserInfo.getInstance();
         userInfo.init(obj.toString());
-        return userInfo.getWorkspaceId();
+        initIntro();
+    }
+
+    private void initIntro() {
+        Scheduler.get().scheduleDeferred(new Command() {
+
+            @Override
+            public void execute() {
+                if (UserInfo.getInstance().isNewUser()) {
+                    MessageBox box = new MessageBox(I18N.DISPLAY.welcome(),
+                            org.iplantc.core.resources.client.messages.I18N.TOUR.introWelcome());
+                    box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
+                    box.setIcon(MessageBox.ICONS.question());
+                    box.addHideHandler(new HideHandler() {
+
+                        @Override
+                        public void onHide(HideEvent event) {
+                            Dialog btn = (Dialog)event.getSource();
+                            if (btn.getHideButton().getText().equalsIgnoreCase("yes")) { //$NON-NLS-1$
+                                doIntro();
+                            }
+                        }
+                    });
+                    box.show();
+                }
+            }
+
+        });
     }
 
     private void initMessagePoller() {
