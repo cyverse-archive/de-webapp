@@ -191,6 +191,12 @@ public class DEPresenter implements DEView.Presenter {
         });
     }
 
+    private void loadPreferences(JSONObject obj) {
+        UserSettings.getInstance().setValues(obj);
+        setUpKBShortCuts();
+        getUserSession();
+    }
+
     private void getUserSession() {
         if (UserSettings.getInstance().isSaveSession()) {
             UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.restoreSession(this);
@@ -351,7 +357,6 @@ public class DEPresenter implements DEView.Presenter {
                         userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
                         initUserHomeDir();
                         doWorkspaceDisplay();
-                        getUserSession();
                     }
                 });
     }
@@ -371,11 +376,6 @@ public class DEPresenter implements DEView.Presenter {
                 userInfo.setHomePath("/iplant/home/" + userInfo.getUsername());
             }
         });
-    }
-
-    private void loadPreferences(JSONObject obj) {
-        UserSettings.getInstance().setValues(obj);
-        setUpKBShortCuts();
     }
 
     /**
