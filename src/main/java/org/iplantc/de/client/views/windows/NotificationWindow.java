@@ -45,6 +45,9 @@ public class NotificationWindow extends IplantWindowBase {
         presenter = new NotificationPresenter(view);
         setSize("600", "375");
         presenter.go(this);
+        if (config != null) {
+            presenter.filterBy(config.getSortCategory());
+        }
     }
 
     @SuppressWarnings("unchecked")

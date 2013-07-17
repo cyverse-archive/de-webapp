@@ -29,4 +29,6 @@ public interface NotificationToolbarView extends IsWidget {
 
     void setRefreshButton(TextButton refreshBtn);
 
+    void setCurrentCategory(Category category);
+
 }

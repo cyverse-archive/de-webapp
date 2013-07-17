@@ -101,6 +101,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     @Override
     public void filterBy(Category category) {
         currentCategory = category;
+        toolbar.setCurrentCategory(category);
         FilterPagingLoadConfig config = view.getCurrentLoadConfig();
         FilterConfig filterBean = new FilterConfigBean();
         if (!currentCategory.toString().equalsIgnoreCase("ALL")) {
