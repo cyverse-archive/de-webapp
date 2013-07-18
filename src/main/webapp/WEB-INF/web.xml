@@ -45,14 +45,6 @@
 		<servlet-class>org.iplantc.de.server.CasServiceDispatcher</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>unsecuredDeServiceDispatcher</servlet-name>
-		<servlet-class>org.iplantc.de.server.UnsecuredDEServiceDispatcher</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>dataApiServiceDispatcher</servlet-name>
-		<servlet-class>org.iplantc.de.server.DataApiServiceDispatcher</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>authenticationValidatingServiceDispatcher</servlet-name>
 		<servlet-class>org.iplantc.de.server.AuthenticationValidatingServiceDispatcher</servlet-class>
 	</servlet>
@@ -113,14 +105,6 @@
 	<servlet-mapping>
 		<servlet-name>deServiceDispatcher</servlet-name>
 		<url-pattern>/discoveryenvironment/deservice</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>unsecuredDeServiceDispatcher</servlet-name>
-		<url-pattern>/discoveryenvironment/unsecureddeservice</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>dataApiServiceDispatcher</servlet-name>
-		<url-pattern>/discoveryenvironment/data-api-service</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>authenticationValidatingServiceDispatcher</servlet-name>
