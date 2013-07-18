@@ -96,6 +96,7 @@ public class PreferencesViewImpl implements PreferencesView {
 
     private void initDefaultOutputFolder() {
         defaultOpFolder = new AppWizardFolderSelector();
+        defaultOpFolder.setValidatePermissions(true);
         defaultOpFolder.setId("idDefaultFolderSelector"); //$NON-NLS-1$
 
         defaultOpFolder.addValidator(new AnalysisOutputValidator());
