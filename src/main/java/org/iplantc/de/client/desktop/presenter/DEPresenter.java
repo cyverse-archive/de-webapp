@@ -63,7 +63,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
- * 
+ *
  * @author sriram
  */
 public class DEPresenter implements DEView.Presenter {
@@ -364,7 +364,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Initializes the username and email for a user.
-     * 
+     *
      * Calls the session management service to get the attributes associated with a user.
      */
     private void initializeUserInfoAttributes() {
@@ -409,7 +409,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Disable the context menu of the browser using native JavaScript.
-     * 
+     *
      * This disables the user's ability to right-click on this widget and get the browser's context menu
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
@@ -428,14 +428,40 @@ public class DEPresenter implements DEView.Presenter {
         // Need to stop polling
         MessagePoller.getInstance().stop();
 
-        String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
-        if (UserSettings.getInstance().isSaveSession()) {
-            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this,
-                    redirectUrl);
-            uspmb.show();
-        } else {
-            Window.Location.assign(redirectUrl);
-        }
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "logout?login-time=" + UserInfo.getInstance().getLoginTime(); //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable arg0) {
+				System.out.println("error on logout:" + arg0.getMessage());
+				//logout anyway
+				logout();
+
+			}
+
+			@Override
+			public void onSuccess(String arg0) {
+				System.out.println("logout service success:" + arg0);
+				logout();
+			}
+
+			private void logout() {
+				String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
+		        if (UserSettings.getInstance().isSaveSession()) {
+		            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(DEPresenter.this,
+		                    redirectUrl);
+		            uspmb.show();
+		        } else {
+		            Window.Location.assign(redirectUrl);
+		        }
+			}
+
+        });
+
+
+
     }
 
     @Override
