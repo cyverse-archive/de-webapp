@@ -9,6 +9,8 @@ import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.events.UserSettingsUpdatedEvent;
+import org.iplantc.core.uicommons.client.events.UserSettingsUpdatedEventHandler;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
@@ -28,6 +30,7 @@ import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.periodic.MessagePoller;
+import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.sysmsgs.presenter.NewMessagePresenter;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
@@ -107,6 +110,14 @@ public class DEPresenter implements DEView.Presenter {
                         view.updateUnseenSystemMessageCount(event.getCount());
                     }
                 });
+        eventBus.addHandler(UserSettingsUpdatedEvent.TYPE, new UserSettingsUpdatedEventHandler() {
+
+            @Override
+            public void onUpdate(UserSettingsUpdatedEvent usue) {
+                saveSettings();
+
+            }
+        });
     }
 
     /**
@@ -125,6 +136,24 @@ public class DEPresenter implements DEView.Presenter {
                 getUserInfo();
                 getUserPreferences();
                 setBrowserContextMenuEnabled(DEProperties.getInstance().isContextClickEnabled());
+            }
+        });
+    }
+
+    private void saveSettings() {
+        UserSettings us = UserSettings.getInstance();
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                // do nothing intentionally
+
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
             }
         });
     }
