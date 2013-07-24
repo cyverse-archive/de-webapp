@@ -448,7 +448,7 @@ public class DEPresenter implements DEView.Presenter {
 			}
 
 			private void logout() {
-				String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
+				String redirectUrl = com.google.gwt.core.client.GWT.getModuleBaseURL() + Constants.CLIENT.logoutUrl();
 		        if (UserSettings.getInstance().isSaveSession()) {
 		            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(DEPresenter.this,
 		                    redirectUrl);
