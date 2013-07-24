@@ -35,7 +35,6 @@ import org.iplantc.de.client.sysmsgs.presenter.NewMessagePresenter;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
-import org.iplantc.de.shared.services.SessionManagementServiceFacade;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
@@ -63,7 +62,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
- *
+ * 
  * @author sriram
  */
 public class DEPresenter implements DEView.Presenter {
@@ -174,8 +173,10 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onSuccess(String result) {
                 parseWorkspaceInfo(result);
-                initializeUserInfoAttributes();
                 initKeepaliveTimer();
+                initUserHomeDir();
+                doWorkspaceDisplay();
+
             }
         });
     }
@@ -362,34 +363,6 @@ public class DEPresenter implements DEView.Presenter {
         }
     }
 
-    /**
-     * Initializes the username and email for a user.
-     *
-     * Calls the session management service to get the attributes associated with a user.
-     */
-    private void initializeUserInfoAttributes() {
-        SessionManagementServiceFacade.getInstance().getAttributes(
-                new AsyncCallback<Map<String, String>>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        ErrorHandler.post(I18N.ERROR.retrieveUserInfoFailed(), caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Map<String, String> attributes) {
-                        UserInfo userInfo = UserInfo.getInstance();
-
-                        userInfo.setEmail(attributes.get(UserInfo.ATTR_EMAIL));
-                        userInfo.setUsername(attributes.get(UserInfo.ATTR_UID));
-                        userInfo.setFullUsername(attributes.get(UserInfo.ATTR_USERNAME));
-                        userInfo.setFirstName(attributes.get(UserInfo.ATTR_FIRSTNAME));
-                        userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
-                        initUserHomeDir();
-                        doWorkspaceDisplay();
-                    }
-                });
-    }
-
     private void initUserHomeDir() {
         Services.DISK_RESOURCE_SERVICE.getHomeFolder(new AsyncCallback<String>() {
 
@@ -409,7 +382,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Disable the context menu of the browser using native JavaScript.
-     *
+     * 
      * This disables the user's ability to right-click on this widget and get the browser's context menu
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
@@ -428,39 +401,38 @@ public class DEPresenter implements DEView.Presenter {
         // Need to stop polling
         MessagePoller.getInstance().stop();
 
-        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "logout?login-time=" + UserInfo.getInstance().getLoginTime(); //$NON-NLS-1$
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
+                + "logout?login-time=" + UserInfo.getInstance().getLoginTime(); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
 
         DEServiceFacade.getInstance().getServiceData(wrapper, new AsyncCallback<String>() {
 
-			@Override
-			public void onFailure(Throwable arg0) {
-				System.out.println("error on logout:" + arg0.getMessage());
-				//logout anyway
-				logout();
+            @Override
+            public void onFailure(Throwable arg0) {
+                System.out.println("error on logout:" + arg0.getMessage());
+                // logout anyway
+                logout();
 
-			}
+            }
 
-			@Override
-			public void onSuccess(String arg0) {
-				System.out.println("logout service success:" + arg0);
-				logout();
-			}
+            @Override
+            public void onSuccess(String arg0) {
+                System.out.println("logout service success:" + arg0);
+                logout();
+            }
 
-			private void logout() {
-				String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
-		        if (UserSettings.getInstance().isSaveSession()) {
-		            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(DEPresenter.this,
-		                    redirectUrl);
-		            uspmb.show();
-		        } else {
-		            Window.Location.assign(redirectUrl);
-		        }
-			}
+            private void logout() {
+                String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
+                if (UserSettings.getInstance().isSaveSession()) {
+                    UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(
+                            DEPresenter.this, redirectUrl);
+                    uspmb.show();
+                } else {
+                    Window.Location.assign(redirectUrl);
+                }
+            }
 
         });
-
-
 
     }
 
