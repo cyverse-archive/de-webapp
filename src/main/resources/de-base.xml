@@ -52,8 +52,8 @@
         <property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
     </bean>
 
-    <bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
-        <constructor-arg index="0" value="${org.iplantc.discoveryenvironment.cas.server-name}/discoveryenvironment/login" />
+    <bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+        <property name="defaultTargetUrl" value="/"/>
     </bean>
 
     <bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter" />
