@@ -53,7 +53,7 @@
     </bean>
 
     <bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-        <property name="defaultTargetUrl" value="/"/>
+        <property name="defaultTargetUrl" value="${org.iplantc.discoveryenvironment.cas.server-name}/discoveryenvironment/login"/>
     </bean>
 
     <bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter" />
