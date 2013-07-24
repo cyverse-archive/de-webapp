@@ -409,20 +409,20 @@ public class DEPresenter implements DEView.Presenter {
 
             @Override
             public void onFailure(Throwable arg0) {
-                System.out.println("error on logout:" + arg0.getMessage());
+                GWT.log("error on logout:" + arg0.getMessage());
                 // logout anyway
                 logout();
-
             }
 
             @Override
             public void onSuccess(String arg0) {
-                System.out.println("logout service success:" + arg0);
+                GWT.log("logout service success:" + arg0);
                 logout();
             }
 
             private void logout() {
-                String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
+                String redirectUrl = com.google.gwt.core.client.GWT.getModuleBaseURL()
+                        + Constants.CLIENT.logoutUrl();
                 if (UserSettings.getInstance().isSaveSession()) {
                     UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(
                             DEPresenter.this, redirectUrl);
@@ -433,7 +433,6 @@ public class DEPresenter implements DEView.Presenter {
             }
 
         });
-
     }
 
     @Override
