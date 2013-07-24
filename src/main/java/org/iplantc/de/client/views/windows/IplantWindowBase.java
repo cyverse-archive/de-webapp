@@ -315,8 +315,8 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         newMinBtn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                minimize();
                 minimized = true;
+                minimize();
                 newMinBtn.removeStyleName(res.css().xToolMinimizewindowHover());
             }
         });

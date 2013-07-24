@@ -1,6 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.views.IsMinimizable;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
@@ -25,7 +26,7 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.HasShowHandlers;
  * 
  */
 public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
-        HasDeactivateHandlers<Window>, HasMinimizeHandlers, HasHideHandlers, HasShowHandlers, IsWidget {
+ HasDeactivateHandlers<Window>, HasMinimizeHandlers, HasHideHandlers, HasShowHandlers, IsWidget, IsMinimizable {
 
     /**
      * @see Component#getStateId()
@@ -53,15 +54,11 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
 
     boolean isMaximized();
 
-    void minimize();
-
     void setMinimized(boolean min);
 
     void setTitle(String wintitle);
 
     String getTitle();
-
-    boolean isMinimized();
 
     void setPixelSize(int width, int height);
 
