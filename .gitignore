@@ -39,3 +39,7 @@ confluence.properties
 
 # ignore any Clavin jar files downloaded by the bootstrap script
 clavin-*-standalone.jar
+
+# IntelliJ Idea files
+.idea
+*.iml

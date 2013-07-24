@@ -9,6 +9,8 @@ import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.events.UserSettingsUpdatedEvent;
+import org.iplantc.core.uicommons.client.events.UserSettingsUpdatedEventHandler;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
@@ -28,6 +30,7 @@ import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.periodic.MessagePoller;
+import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.sysmsgs.presenter.NewMessagePresenter;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
@@ -60,7 +63,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
- * 
+ *
  * @author sriram
  */
 public class DEPresenter implements DEView.Presenter {
@@ -97,7 +100,7 @@ public class DEPresenter implements DEView.Presenter {
             public void onUpdate(final PreferencesUpdatedEvent event) {
                 keyboardShortCuts.clear();
                 setUpKBShortCuts();
-                initPeriodicSessionSave();
+                doPeriodicSessionSave();
             }
         });
         eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
@@ -107,6 +110,14 @@ public class DEPresenter implements DEView.Presenter {
                         view.updateUnseenSystemMessageCount(event.getCount());
                     }
                 });
+        eventBus.addHandler(UserSettingsUpdatedEvent.TYPE, new UserSettingsUpdatedEventHandler() {
+
+            @Override
+            public void onUpdate(UserSettingsUpdatedEvent usue) {
+                saveSettings();
+
+            }
+        });
     }
 
     /**
@@ -129,6 +140,24 @@ public class DEPresenter implements DEView.Presenter {
         });
     }
 
+    private void saveSettings() {
+        UserSettings us = UserSettings.getInstance();
+        UserSessionServiceFacade facade = new UserSessionServiceFacade();
+        facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                // do nothing intentionally
+
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
+            }
+        });
+    }
+
     /**
      * Retrieves the user information from the server.
      */
@@ -144,7 +173,7 @@ public class DEPresenter implements DEView.Presenter {
 
             @Override
             public void onSuccess(String result) {
-                parseWorkspaceId(result);
+                parseWorkspaceInfo(result);
                 initializeUserInfoAttributes();
                 initKeepaliveTimer();
             }
@@ -162,37 +191,19 @@ public class DEPresenter implements DEView.Presenter {
             @Override
             public void onSuccess(String result) {
                 loadPreferences(JsonUtil.getObject(result));
-                Scheduler.get().scheduleDeferred(new Command() {
-
-                    @Override
-                    public void execute() {
-                        if (UserInfo.getInstance().isNewUser()) {
-                            MessageBox box = new MessageBox("Welcome",
-                                    org.iplantc.core.resources.client.messages.I18N.TOUR.introWelcome());
-                            box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
-                            box.setIcon(MessageBox.ICONS.question());
-                            box.addHideHandler(new HideHandler() {
-
-                                @Override
-                                public void onHide(HideEvent event) {
-                                    Dialog btn = (Dialog)event.getSource();
-                                    if (btn.getHideButton().getText().equalsIgnoreCase("yes")) {
-                                        doIntro();
-                                    }
-                                }
-                            });
-                            box.show();
-                        }
-
-                    }
-
-                });
             }
         });
     }
 
+    private void loadPreferences(JSONObject obj) {
+        UserSettings.getInstance().setValues(obj);
+        setUpKBShortCuts();
+        getUserSession();
+    }
+
     private void getUserSession() {
         if (UserSettings.getInstance().isSaveSession()) {
+            // This restoreSession's callback will also init periodic session saving.
             UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.restoreSession(this);
             uspmb.show();
         }
@@ -211,7 +222,6 @@ public class DEPresenter implements DEView.Presenter {
         });
 
         initMessagePoller();
-        initPeriodicSessionSave();
     }
 
     private void addFeedbackButton() {
@@ -284,13 +294,37 @@ public class DEPresenter implements DEView.Presenter {
 
     }
 
-    private String parseWorkspaceId(String json) {
-        JSONObject obj = JsonUtil.getObject(json);
-        // Bootstrap the user-info object with session data provided in JSON
-        // format
-        UserInfo userInfo = UserInfo.getInstance();
-        userInfo.init(obj.toString());
-        return userInfo.getWorkspaceId();
+    private void parseWorkspaceInfo(String json) {
+        // Bootstrap the user-info object with workspace info provided in JSON format.
+        UserInfo.getInstance().init(json);
+        initIntro();
+    }
+
+    private void initIntro() {
+        Scheduler.get().scheduleDeferred(new Command() {
+
+            @Override
+            public void execute() {
+                if (UserInfo.getInstance().isNewUser()) {
+                    MessageBox box = new MessageBox(I18N.DISPLAY.welcome(),
+                            org.iplantc.core.resources.client.messages.I18N.TOUR.introWelcome());
+                    box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
+                    box.setIcon(MessageBox.ICONS.question());
+                    box.addHideHandler(new HideHandler() {
+
+                        @Override
+                        public void onHide(HideEvent event) {
+                            Dialog btn = (Dialog)event.getSource();
+                            if (btn.getHideButton().getText().equalsIgnoreCase("yes")) { //$NON-NLS-1$
+                                doIntro();
+                            }
+                        }
+                    });
+                    box.show();
+                }
+            }
+
+        });
     }
 
     private void initMessagePoller() {
@@ -303,7 +337,8 @@ public class DEPresenter implements DEView.Presenter {
         poller.start();
     }
 
-    private void initPeriodicSessionSave() {
+    @Override
+    public void doPeriodicSessionSave() {
         MessagePoller poller = MessagePoller.getInstance();
         if (UserSettings.getInstance().isSaveSession()) {
 
@@ -329,7 +364,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Initializes the username and email for a user.
-     * 
+     *
      * Calls the session management service to get the attributes associated with a user.
      */
     private void initializeUserInfoAttributes() {
@@ -351,7 +386,6 @@ public class DEPresenter implements DEView.Presenter {
                         userInfo.setLastName(attributes.get(UserInfo.ATTR_LASTNAME));
                         initUserHomeDir();
                         doWorkspaceDisplay();
-                        getUserSession();
                     }
                 });
     }
@@ -373,14 +407,9 @@ public class DEPresenter implements DEView.Presenter {
         });
     }
 
-    private void loadPreferences(JSONObject obj) {
-        UserSettings.getInstance().setValues(obj);
-        setUpKBShortCuts();
-    }
-
     /**
      * Disable the context menu of the browser using native JavaScript.
-     * 
+     *
      * This disables the user's ability to right-click on this widget and get the browser's context menu
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
@@ -399,14 +428,40 @@ public class DEPresenter implements DEView.Presenter {
         // Need to stop polling
         MessagePoller.getInstance().stop();
 
-        String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
-        if (UserSettings.getInstance().isSaveSession()) {
-            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(this,
-                    redirectUrl);
-            uspmb.show();
-        } else {
-            Window.Location.assign(redirectUrl);
-        }
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "logout?login-time=" + UserInfo.getInstance().getLoginTime(); //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+
+        DEServiceFacade.getInstance().getServiceData(wrapper, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable arg0) {
+				System.out.println("error on logout:" + arg0.getMessage());
+				//logout anyway
+				logout();
+
+			}
+
+			@Override
+			public void onSuccess(String arg0) {
+				System.out.println("logout service success:" + arg0);
+				logout();
+			}
+
+			private void logout() {
+				String redirectUrl = Window.Location.getPath() + Constants.CLIENT.logoutUrl();
+		        if (UserSettings.getInstance().isSaveSession()) {
+		            UserSessionProgressMessageBox uspmb = UserSessionProgressMessageBox.saveSession(DEPresenter.this,
+		                    redirectUrl);
+		            uspmb.show();
+		        } else {
+		            Window.Location.assign(redirectUrl);
+		        }
+			}
+
+        });
+
+
+
     }
 
     @Override

@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplantc.core.uiapps.widgets.client.view.editors.validation.AnalysisOutputValidator;
-import org.iplantc.core.uiapps.widgets.client.view.fields.AppWizardFolderSelector;
 import org.iplantc.core.uicommons.client.Constants;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.UserSettings;
+import org.iplantc.core.uidiskresource.client.views.widgets.FolderSelectorField;
 import org.iplantc.de.client.I18N;
 
 import com.google.gwt.core.client.GWT;
@@ -75,7 +75,7 @@ public class PreferencesViewImpl implements PreferencesView {
     @UiField
     TextField closeKbSc;
 
-    AppWizardFolderSelector defaultOpFolder;
+    FolderSelectorField defaultOpFolder;
 
     static UserSettings us = UserSettings.getInstance();
 
@@ -95,7 +95,8 @@ public class PreferencesViewImpl implements PreferencesView {
     }
 
     private void initDefaultOutputFolder() {
-        defaultOpFolder = new AppWizardFolderSelector();
+        defaultOpFolder = new FolderSelectorField();
+        defaultOpFolder.setValidatePermissions(true);
         defaultOpFolder.setId("idDefaultFolderSelector"); //$NON-NLS-1$
 
         defaultOpFolder.addValidator(new AnalysisOutputValidator());

@@ -19,6 +19,7 @@ import org.iplantc.de.client.notifications.views.NotificationToolbarViewImpl;
 import org.iplantc.de.client.notifications.views.NotificationView;
 import org.iplantc.de.client.notifications.views.NotificationView.Presenter;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -78,6 +79,17 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
             @Override
             public void load(final FilterPagingLoadConfig loadConfig,
                     final AsyncCallback<PagingLoadResult<NotificationMessage>> callback) {
+                // for 'NEW' filter always set offset to 0
+                List<FilterConfig> fc_list = loadConfig.getFilters();
+                if (fc_list != null) {
+                    String cat = (fc_list.get(0).getField() != null ? fc_list.get(0).getField()
+                            .toLowerCase() : null);
+                    if ((!Strings.isNullOrEmpty(cat))) {
+                        if (cat.equalsIgnoreCase(Category.NEW.toString())) {
+                            loadConfig.setOffset(0);
+                        }
+                    }
+                }
                 Services.MESSAGE_SERVICE.getNotifications(loadConfig.getLimit(), loadConfig.getOffset(),
                         (loadConfig.getFilters().get(0).getField()) == null ? "" : loadConfig
                                 .getFilters().get(0).getField().toLowerCase(), loadConfig.getSortInfo()
@@ -101,6 +113,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     @Override
     public void filterBy(Category category) {
         currentCategory = category;
+        toolbar.setCurrentCategory(category);
         FilterPagingLoadConfig config = view.getCurrentLoadConfig();
         FilterConfig filterBean = new FilterConfigBean();
         if (!currentCategory.toString().equalsIgnoreCase("ALL")) {

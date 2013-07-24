@@ -1,10 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-response.setHeader("Cache-Control", "no-cache");
-response.setHeader("Pragma", "no-cache");
-response.setDateHeader("Expires", 0);
+    response.setHeader("Cache-Control", "no-cache");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->
 <!-- above set at the top of the file will set     -->
 <!-- the browser's rendering engine into           -->
@@ -21,8 +21,8 @@ response.setDateHeader("Expires", 0);
 <!--                                                               -->
 <link type="text/css" rel="stylesheet" href="gxt/css/gxt-all.css">
 <link type="text/css" rel="stylesheet" href="gxt/css/gxt-gray.css">
-<link type="text/css" rel="stylesheet" href="Discoveryenvironment.css">
 <link type="image/x-icon" rel="shortcut icon" href="images/favicon.ico">
+<link type="text/css" rel="stylesheet" href="./introjs.min.css">
 
 <!-- set by i18n code -->
 <title></title>
@@ -36,6 +36,8 @@ response.setDateHeader("Expires", 0);
 
 <script type="text/javascript" language="javascript"
 	src="discoveryenvironment/discoveryenvironment.nocache.js"></script>
+<script type="text/javascript" language="javascript"
+	src="scripts/intro.min.js"></script>
 </head>
 
 <!--                                           -->
@@ -51,8 +53,7 @@ response.setDateHeader("Expires", 0);
 
 	<!-- include for history support -->
 	<iframe src="javascript:''" id="__gwt_historyFrame"
-		style="position: absolute; width: 0; height: 0; border: 0">
-	</iframe>
+		style="position: absolute; width: 0; height: 0; border: 0"> </iframe>
 
 </body>
 

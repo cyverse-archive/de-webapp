@@ -101,4 +101,9 @@ public class NotificationToolbarViewImpl implements NotificationToolbarView {
     public void setRefreshButton(TextButton refreshBtn) {
         menuToolBar.insert(refreshBtn, 1);
     }
+
+    @Override
+    public void setCurrentCategory(Category category) {
+        cboFilter.setValue(category);
+    }
 }

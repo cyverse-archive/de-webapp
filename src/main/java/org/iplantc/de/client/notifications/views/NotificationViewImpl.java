@@ -13,7 +13,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -32,11 +31,11 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 /**
- *
+ * 
  * Notification View as grid
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class NotificationViewImpl implements NotificationView {
 
@@ -93,7 +92,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.google.gwt.user.client.ui.IsWidget#asWidget()
      */
     @Override
@@ -103,7 +102,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.iplantc.de.client.gxt3.views.NotificationView#getSelectedItems()
      */
     @Override
@@ -113,7 +112,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.iplantc.de.client.gxt3.views.NotificationView#setPresenter(org.iplantc.de.client.gxt3.views
      * .NotificationView.Presenter)
@@ -125,7 +124,7 @@ public class NotificationViewImpl implements NotificationView {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.iplantc.de.client.gxt3.views.NotificationView#getListStore()
      */
     @Override
@@ -146,16 +145,6 @@ public class NotificationViewImpl implements NotificationView {
             PagingLoader<FilterPagingLoadConfig, PagingLoadResult<NotificationMessage>> loader) {
         grid.setLoader(loader);
         toolBar.bind(loader);
-
-        // for the first time
-        Timer t = new Timer() {
-
-            @Override
-            public void run() {
-                loadNotifications(presenter.buildDefaultLoadConfig());
-            }
-        };
-        t.schedule(100);
     }
 
     @Override
@@ -165,7 +154,8 @@ public class NotificationViewImpl implements NotificationView {
 
     @Override
     public FilterPagingLoadConfig getCurrentLoadConfig() {
-        return (FilterPagingLoadConfig)grid.getLoader().getLastLoadConfig();
+        FilterPagingLoadConfig lastConfig = (FilterPagingLoadConfig)grid.getLoader().getLastLoadConfig();
+        return lastConfig;
     }
 
     @Override
