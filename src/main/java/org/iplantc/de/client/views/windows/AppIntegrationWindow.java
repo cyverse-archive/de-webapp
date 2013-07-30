@@ -14,7 +14,10 @@ import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices;
 import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.errorHandling.models.SimpleServiceError;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
@@ -29,7 +32,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.google.web.bindery.autobean.shared.Splittable;
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
 import com.sencha.gxt.widget.core.client.event.RestoreEvent;
@@ -96,7 +98,6 @@ public class AppIntegrationWindow extends IplantWindowBase {
     }
 
     private void init(final AppsIntegrationView.Presenter presenter, AppsIntegrationWindowConfig config) {
-        Splittable legacyAppTemplateJson = config.getLegacyAppTemplateJson();
         if (config.getAppTemplate() != null) {
             AppTemplateCallbackConverter at = new AppTemplateCallbackConverter(factory, dcServices,
                     new AsyncCallback<AppTemplate>() {
@@ -116,8 +117,6 @@ public class AppIntegrationWindow extends IplantWindowBase {
                         }
                     });
             at.onSuccess(config.getAppTemplate().getPayload());
-        } else if ((legacyAppTemplateJson != null) && (!legacyAppTemplateJson.getPayload().isEmpty())) {
-            presenter.goLegacy(this, config.getLegacyAppTemplateJson());
         } else if (config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
             // Create empty AppTemplate
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
@@ -132,21 +131,23 @@ public class AppIntegrationWindow extends IplantWindowBase {
             presenter.go(this, newAppTemplate);
             AppIntegrationWindow.this.forceLayout();
         } else {
-            templateService.getAppTemplateForEdit(
-                    CommonModelUtils.createHasIdFromString(config.getAppId()),
-                    new AsyncCallback<AppTemplate>() {
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
-                            AppIntegrationWindow.this.hide();
-                        }
+            mask(I18N.DISPLAY.loadingMask());
+            templateService.getAppTemplateForEdit(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    SimpleServiceError serviceError = AutoBeanCodex.decode(factory, SimpleServiceError.class, caught.getMessage()).as();
+                    IplantAnnouncer.getInstance().schedule(new ErrorAnnouncementConfig(I18N.ERROR.unableToRetrieveWorkflowGuide() + ": " + serviceError.getReason()));
+                    ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
+                    AppIntegrationWindow.this.hide();
+                }
 
-                        @Override
-                        public void onSuccess(AppTemplate result) {
-                            presenter.go(AppIntegrationWindow.this, result);
-                            AppIntegrationWindow.this.forceLayout();
-                        }
-                    });
+                @Override
+                public void onSuccess(AppTemplate result) {
+                    presenter.go(AppIntegrationWindow.this, result);
+                    AppIntegrationWindow.this.unmask();
+                    AppIntegrationWindow.this.forceLayout();
+                }
+            });
         }
     }
 

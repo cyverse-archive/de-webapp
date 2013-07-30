@@ -40,10 +40,12 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
             AppWizardWindow.this.fireEvent(new WindowHeadingUpdatedEvent());
             // KLUDGE JDS This call to forceLayout should not be necessary.
             AppWizardWindow.this.forceLayout();
+            AppWizardWindow.this.unmask();
         }
 
         @Override
         public void onFailure(Throwable caught) {
+            AppWizardWindow.this.unmask();
             ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
         }
     }
@@ -67,6 +69,7 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
     }
 
     private void init(final AppWizardView.Presenter presenter, AppWizardConfig config) {
+        mask(I18N.DISPLAY.loadingMask());
         if (config.getAppTemplate() != null) {
             AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(factory, dcServices, new AsyncCallback<AppTemplate>() {
 
@@ -74,6 +77,7 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
                 public void onSuccess(AppTemplate result) {
                     setHeadingText(result.getLabel());
                     presenter.go(AppWizardWindow.this, result);
+                    AppWizardWindow.this.unmask();
                 }
 
                 @Override
@@ -87,11 +91,6 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
             cnvt.onSuccess(config.getAppTemplate().getPayload());
 
             // KLUDGE JDS This call to forceLayout should not be necessary.
-            forceLayout();
-        } else if ((config.getLegacyAppTemplateJson() != null)
-                && (!config.getLegacyAppTemplateJson().asString().isEmpty())) {
-            presenter.goLegacy(this, config.getLegacyAppTemplateJson());
-            setHeadingText(presenter.getAppTemplate().getLabel());
             forceLayout();
         } else if (config.isRelaunchAnalysis()) {
             templateService.rerunAnalysis(config.getAnalysisId(), new AppTemplateCallback(

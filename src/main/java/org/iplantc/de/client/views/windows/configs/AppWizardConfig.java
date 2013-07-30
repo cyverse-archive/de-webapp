@@ -14,10 +14,6 @@ public interface AppWizardConfig extends WindowConfig {
 
     void setAppTemplate(Splittable appTemplate);
 
-    Splittable getLegacyAppTemplateJson();
-
-    void setLegacyAppTemplateJson(Splittable legacyJson);
-
     boolean isRelaunchAnalysis();
 
     void setRelaunchAnalysis(boolean relaunchAnalysis);
