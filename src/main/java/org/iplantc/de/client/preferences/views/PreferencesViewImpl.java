@@ -93,6 +93,7 @@ public class PreferencesViewImpl implements PreferencesView {
         anaKbSc.addValidator(new MaxLengthValidator(1));
         notKbSc.addValidator(new MaxLengthValidator(1));
         closeKbSc.addValidator(new MaxLengthValidator(1));
+        setSCToolTip();
 
         appKbSc.addKeyPressHandler(new KeyPressHandler() {
 
@@ -130,6 +131,14 @@ public class PreferencesViewImpl implements PreferencesView {
             }
         });
         populateKbMap();
+    }
+
+    private void setSCToolTip() {
+        appKbSc.setToolTip("Maximum 1 character");
+        dataKbSc.setToolTip("Maximum 1 character");
+        anaKbSc.setToolTip("Maximum 1 character");
+        notKbSc.setToolTip("Maximum 1 character");
+        closeKbSc.setToolTip("Maximum 1 character");
     }
 
     private void initDefaultOutputFolder() {
