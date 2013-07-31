@@ -3,10 +3,10 @@
  */
 package org.iplantc.de.client.events;
 
+import org.iplantc.de.client.events.WindowCloseRequestEvent.WindowCloseRequestEventHandler;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-
-import org.iplantc.de.client.events.WindowCloseRequestEvent.WindowCloseRequestEventHandler;
 
 /**
  * @author sriram

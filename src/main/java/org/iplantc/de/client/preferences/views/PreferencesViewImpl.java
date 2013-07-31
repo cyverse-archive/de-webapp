@@ -11,6 +11,8 @@ import org.iplantc.core.uidiskresource.client.views.widgets.FolderSelectorField;
 import org.iplantc.de.client.I18N;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -91,7 +93,52 @@ public class PreferencesViewImpl implements PreferencesView {
         anaKbSc.addValidator(new MaxLengthValidator(1));
         notKbSc.addValidator(new MaxLengthValidator(1));
         closeKbSc.addValidator(new MaxLengthValidator(1));
+        setSCToolTip();
+
+        appKbSc.addKeyPressHandler(new KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                kbShortcutToUpperCase(appKbSc, event);
+            }
+        });
+        dataKbSc.addKeyPressHandler(new KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                kbShortcutToUpperCase(dataKbSc, event);
+            }
+        });
+        anaKbSc.addKeyPressHandler(new KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                kbShortcutToUpperCase(anaKbSc, event);
+            }
+        });
+        notKbSc.addKeyPressHandler(new KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                kbShortcutToUpperCase(notKbSc, event);
+            }
+        });
+        closeKbSc.addKeyPressHandler(new KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                kbShortcutToUpperCase(closeKbSc, event);
+            }
+        });
         populateKbMap();
+    }
+
+    private void setSCToolTip() {
+        appKbSc.setToolTip("Maximum 1 character");
+        dataKbSc.setToolTip("Maximum 1 character");
+        anaKbSc.setToolTip("Maximum 1 character");
+        notKbSc.setToolTip("Maximum 1 character");
+        closeKbSc.setToolTip("Maximum 1 character");
     }
 
     private void initDefaultOutputFolder() {
@@ -202,5 +249,26 @@ public class PreferencesViewImpl implements PreferencesView {
             }
         }
         return valid;
+    }
+
+    private void kbShortcutToUpperCase(TextField fld, KeyPressEvent event) {
+        int code = event.getNativeEvent().getCharCode();
+        if ((code > 96 && code <= 122)) {
+            fld.clear();
+            fld.setValue((event.getCharCode() + "").toUpperCase());
+            fld.setText((event.getCharCode() + "").toUpperCase());
+            fld.setCursorPos(1);
+            fld.focus();
+        } else if ((code > 47 && code <= 57) || (code > 64 && code <= 90)) {
+            fld.clear();
+            fld.setValue(event.getCharCode() + "");
+            fld.setText(event.getCharCode() + "");
+            fld.setCursorPos(1);
+            fld.focus();
+        } else {
+            if (code != 0) {
+                event.preventDefault();
+            }
+        }
     }
 }
