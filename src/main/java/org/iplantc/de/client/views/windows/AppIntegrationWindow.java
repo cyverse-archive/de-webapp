@@ -2,6 +2,7 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.List;
 
+import org.iplantc.core.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLabels;
 import org.iplantc.core.uiapps.integration.client.presenter.AppsIntegrationPresenterImpl;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
@@ -53,6 +54,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private final AppTemplateServices templateService;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
     private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
+    private final AppsWidgetsPropertyPanelLabels labels = GWT.create(AppsWidgetsPropertyPanelLabels.class);
 
     public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus,
             final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
@@ -122,10 +124,10 @@ public class AppIntegrationWindow extends IplantWindowBase {
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
 
             AppTemplate newAppTemplate = factory.appTemplate().as();
-            newAppTemplate.setName("New App");
+            newAppTemplate.setName(labels.appDefaultName());
             ArgumentGroup argGrp = factory.argumentGroup().as();
             argGrp.setName("");
-            argGrp.setLabel("Group 1");
+            argGrp.setLabel(labels.groupDefaultLabel(1));
             argGrp.setArguments(Lists.<Argument> newArrayList());
             newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
             presenter.go(this, newAppTemplate);
