@@ -267,11 +267,11 @@ public class DEPresenter implements DEView.Presenter {
 
     private void setUpKBShortCuts() {
         UserSettings us = UserSettings.getInstance();
-        keyboardShortCuts.put(us.getDataShortCut().toUpperCase(), new DataKBShortCutCmd());
-        keyboardShortCuts.put(us.getAppsShortCut().toUpperCase(), new AppsKBShortCutCmd());
-        keyboardShortCuts.put(us.getAnalysesShortCut().toUpperCase(), new AnalysesKBShortCutCmd());
-        keyboardShortCuts.put(us.getNotifiShortCut().toUpperCase(), new NotifyKBShortCutCmd());
-        keyboardShortCuts.put(us.getCloseShortCut().toUpperCase(), new CloseKBShortCutCmd());
+        keyboardShortCuts.put(us.getDataShortCut(), new DataKBShortCutCmd());
+        keyboardShortCuts.put(us.getAppsShortCut(), new AppsKBShortCutCmd());
+        keyboardShortCuts.put(us.getAnalysesShortCut(), new AnalysesKBShortCutCmd());
+        keyboardShortCuts.put(us.getNotifiShortCut(), new NotifyKBShortCutCmd());
+        keyboardShortCuts.put(us.getCloseShortCut(), new CloseKBShortCutCmd());
         addKeyBoardEvents();
     }
 
