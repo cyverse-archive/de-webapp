@@ -24,14 +24,6 @@ public class DiscoveryEnvironment implements EntryPoint {
         resources.css().ensureInjected();
         DEView view = new DEViewImpl(resources, EventBus.getInstance());
         new DEPresenter(view, resources, EventBus.getInstance());
-        // HistoryManager mgrHistory = new HistoryManager();
-        // String token = History.getToken();
-        //
-        // if (token == null || token.isEmpty()) {
-        //            mgrHistory.handleToken("workspace"); //$NON-NLS-1$
-        // } else {
-        // mgrHistory.processCommand(token);
-        // }
     }
 
     /**
