@@ -4,6 +4,7 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
 
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
@@ -19,7 +20,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.TextDecoration;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -35,19 +35,13 @@ public class AnalysisAppNameCell extends AbstractCell<Analysis> {
     interface Resources extends ClientBundle {
 
         @Source("AnalysisNameCell.css")
-        Style css();
-    }
-
-    interface Style extends CssResource {
-        String hasResultFolder();
-
-        String noResultFolder();
+        AnalysisCellStyle css();
     }
 
     interface Templates extends SafeHtmlTemplates {
 
-        @SafeHtmlTemplates.Template("<span name=\"{0}\" title=\"Click here to relaunch this analysis.\" class=\"{1}\">{2}</span>")
-        SafeHtml cell(String elementName, String className, SafeHtml analysisAppName);
+        @SafeHtmlTemplates.Template("<span name=\"{0}\" title=\"{3}\" class=\"{1}\">{2}</span>")
+        SafeHtml cell(String elementName, String className, SafeHtml analysisAppName, String tooltip);
     }
 
     private final Resources res = GWT.create(Resources.class);
@@ -67,8 +61,17 @@ public class AnalysisAppNameCell extends AbstractCell<Analysis> {
             return;
 
         String style = Strings.isNullOrEmpty(model.getResultFolderId()) ? res.css().noResultFolder()
-                : res.css().hasResultFolder();
-        sb.append(templates.cell(ELEMENT_NAME, style, SafeHtmlUtils.fromString(model.getAppName())));
+                : res.css().hasResultFolder() + " "
+                        + ((model.isAppDisabled()) ? res.css().disabledApp() : res.css().enabledApp());
+        String tooltip = null;
+        if (model.isAppDisabled()) {
+            tooltip = I18N.DISPLAY.appDisabled();
+        } else {
+            tooltip = I18N.DISPLAY.relaunchAnalysis();
+        }
+        sb.append(templates.cell(ELEMENT_NAME, style, SafeHtmlUtils.fromString(model.getAppName()),
+                tooltip));
+        ;
     }
 
     @Override
@@ -116,7 +119,7 @@ public class AnalysisAppNameCell extends AbstractCell<Analysis> {
 
     private void doOnClick(Element eventTarget, Analysis value, ValueUpdater<Analysis> valueUpdater) {
         if (eventTarget.getAttribute("name").equalsIgnoreCase(ELEMENT_NAME)
-                && !Strings.isNullOrEmpty(value.getResultFolderId())) {
+                && !Strings.isNullOrEmpty(value.getResultFolderId()) && !value.isAppDisabled()) {
             AppWizardConfig config = ConfigFactory.appWizardConfig(value.getAppId());
             config.setAnalysisId(value);
             config.setRelaunchAnalysis(true);

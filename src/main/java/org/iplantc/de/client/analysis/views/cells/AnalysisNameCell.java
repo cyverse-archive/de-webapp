@@ -21,7 +21,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.TextDecoration;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -37,13 +36,8 @@ public class AnalysisNameCell extends AbstractCell<Analysis> {
 
     interface Resources extends ClientBundle {
         @Source("AnalysisNameCell.css")
-        Style css();
-    }
+        AnalysisCellStyle css();
 
-    interface Style extends CssResource {
-        String hasResultFolder();
-
-        String noResultFolder();
     }
 
     interface Templates extends SafeHtmlTemplates {

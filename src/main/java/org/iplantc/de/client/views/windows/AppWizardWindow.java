@@ -11,6 +11,8 @@ import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices
 import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
 import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
@@ -35,6 +37,13 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
 
         @Override
         public void onSuccess(AppTemplate result) {
+            if (result.isAppDisabled()) {
+                ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(
+                        I18N.DISPLAY.appUnavailable());
+                IplantAnnouncer.getInstance().schedule(config);
+                AppWizardWindow.this.hide();
+                return;
+            }
             presenter.go(AppWizardWindow.this, result);
             AppWizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
             AppWizardWindow.this.fireEvent(new WindowHeadingUpdatedEvent());
@@ -56,8 +65,8 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
     private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
 
-
-    public AppWizardWindow(AppWizardConfig config, final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
+    public AppWizardWindow(AppWizardConfig config, final UUIDServiceAsync uuidService,
+            final AppMetadataServiceFacade appMetadataService) {
         super(null, null);
         setSize("640", "375");
         setBorders(false);
@@ -71,32 +80,33 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
     private void init(final AppWizardView.Presenter presenter, AppWizardConfig config) {
         mask(I18N.DISPLAY.loadingMask());
         if (config.getAppTemplate() != null) {
-            AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(factory, dcServices, new AsyncCallback<AppTemplate>() {
+            AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(factory, dcServices,
+                    new AsyncCallback<AppTemplate>() {
 
-                @Override
-                public void onSuccess(AppTemplate result) {
-                    setHeadingText(result.getLabel());
-                    presenter.go(AppWizardWindow.this, result);
-                    AppWizardWindow.this.unmask();
-                }
+                        @Override
+                        public void onSuccess(AppTemplate result) {
+                            setHeadingText(result.getLabel());
+                            presenter.go(AppWizardWindow.this, result);
+                            AppWizardWindow.this.unmask();
+                        }
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    /*
-                     * JDS Do nothing since this this callback converter is called manually below (i.e.
-                     * no over-the-wire integration)
-                     */
-                }
-            });
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            /*
+                             * JDS Do nothing since this this callback converter is called manually below
+                             * (i.e. no over-the-wire integration)
+                             */
+                        }
+                    });
             cnvt.onSuccess(config.getAppTemplate().getPayload());
 
             // KLUDGE JDS This call to forceLayout should not be necessary.
             forceLayout();
         } else if (config.isRelaunchAnalysis()) {
-            templateService.rerunAnalysis(config.getAnalysisId(), new AppTemplateCallback(
-                    presenter));
+            templateService.rerunAnalysis(config.getAnalysisId(), new AppTemplateCallback(presenter));
         } else {
-            templateService.getAppTemplate(CommonModelUtils.createHasIdFromString(config.getAppId()), new AppTemplateCallback(presenter));
+            templateService.getAppTemplate(CommonModelUtils.createHasIdFromString(config.getAppId()),
+                    new AppTemplateCallback(presenter));
         }
     }
 
