@@ -12,19 +12,6 @@
         </param-value>
     </context-param>
 	<!-- Servlets -->
-    <servlet>
-	   <servlet-name>jsp</servlet-name>
-	   <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
-	   <init-param>
-	       <param-name>compilerSourceVM</param-name>
-	       <param-value>1.5</param-value>
-	   </init-param>
-	   <init-param>
-	       <param-name>compilerTargetVM</param-name>
-	       <param-value>1.5</param-value>
-	   </init-param>
-	   <load-on-startup>3</load-on-startup>
-	</servlet>
 	<servlet>
 		<servlet-name>sessionInitializationServlet</servlet-name>
 		<servlet-class>org.iplantc.de.server.CasSessionInitializationServlet</servlet-class>
