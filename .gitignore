@@ -43,3 +43,6 @@ clavin-*-standalone.jar
 # IntelliJ Idea files
 .idea
 *.iml
+
+# ignore compiled classes
+*.class
