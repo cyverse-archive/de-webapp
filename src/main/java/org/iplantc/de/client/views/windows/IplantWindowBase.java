@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.core.resources.client.theme.window.IPlantWindowAppearance;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
@@ -88,7 +89,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         this(tag, false, true, false, true);
     }
 
-    public IplantWindowBase(WindowAppearance appearance) {
+    public IplantWindowBase(IPlantWindowAppearance appearance) {
         super(appearance);
     }
 
@@ -104,7 +105,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     public IplantWindowBase(String tag, boolean haveStatus, boolean isMinimizable,
             boolean isMaximizable, boolean isClosable) {
-        super(new GrayWindowAppearance());
+        super(GWT.<IPlantWindowAppearance> create(IPlantWindowAppearance.class));
         res.css().ensureInjected();
         setStateId(tag);
 
