@@ -37,7 +37,6 @@ import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.core.client.util.Rectangle;
-import com.sencha.gxt.theme.gray.client.window.GrayWindowAppearance;
 import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
