@@ -423,8 +423,6 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         if (index > -1) {
             getHeader().removeTool(btnMaximize);
             btnMaximize.removeFromParent();
-            // removeButtonListeners(btnMaximize);
-
             // re-insert restore button at same index of maximize button
             getHeader().insertTool(btnRestore, index);
         }
@@ -437,23 +435,10 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         int index = findToolButtonIndex(res.css().xToolRestorewindow());
         if (index > -1) {
             getHeader().removeTool(btnRestore);
-            // removeButtonListeners(btnRestore);
-            // btnMaximize = createMaximizeButton();
-
             // re-insert maximize button at same index as restore button
             getHeader().insertTool(btnMaximize, index);
         }
     }
-
-    // private void removeButtonListeners(Widget btnMaximize2) {
-    // if (handlerRegMap.containsKey(btnMaximize2)) {
-    // for (HandlerRegistration reg : handlerRegMap.get(btnMaximize2)) {
-    // reg.removeHandler();
-    // }
-    // handlerRegMap.remove(btnMaximize2);
-    // }
-    //
-    // }
 
     private int findToolButtonIndex(String btnToolName) {
         int toolCount = getHeader().getToolCount();
