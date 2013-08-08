@@ -10,6 +10,7 @@ import java.util.Random;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.user.client.Element;
+import com.sencha.gxt.core.client.util.Point;
 
 public class CenterDesktopLayout extends LimitedDesktopLayout implements DesktopLayout {
 
@@ -57,7 +58,10 @@ public class CenterDesktopLayout extends LimitedDesktopLayout implements Desktop
 
         boolean maximized = window.isMaximized();
         window.setMaximized(false);
-        window.setPosition(left, top);
+
+        Point position = window.adjustPosition(new Point(left, top));
+        window.setPosition(position.getX(), position.getY());
+
         window.setMaximized(maximized);
     }
 

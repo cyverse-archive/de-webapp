@@ -5,15 +5,19 @@
  */
 package org.iplantc.de.client.desktop.layout;
 
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.user.client.Element;
+import com.sencha.gxt.core.client.util.Point;
 
 public class CascadeDesktopLayout extends LimitedDesktopLayout implements DesktopLayout {
 
-    protected int left;
-    protected int top;
-    protected int offsetIndex;
+    private Point nextWindowPosition;
+
+    public CascadeDesktopLayout() {
+        nextWindowPosition = new Point(0, Constants.CLIENT.deHeaderHeight());
+    }
 
     @Override
     public DesktopLayoutType getDesktopLayoutType() {
@@ -26,9 +30,8 @@ public class CascadeDesktopLayout extends LimitedDesktopLayout implements Deskto
             int containerHeight) {
 
         if (requestType == RequestType.LAYOUT || requestType == RequestType.RESIZE) {
-            left = 0;
-            top = 0;
-            offsetIndex = 0;
+            nextWindowPosition.setX(0);
+            nextWindowPosition.setY(Constants.CLIENT.deHeaderHeight());
         }
 
         super.layoutDesktop(requestWindow, requestType, element, windows, containerWidth,
@@ -39,26 +42,24 @@ public class CascadeDesktopLayout extends LimitedDesktopLayout implements Deskto
     protected void layoutWindow(IPlantWindowInterface window, int containerWidth, int containerHeight,
             int width, int height) {
 
-        int offset = window.getHeaderOffSetHeight();
-
-        if (top + height > containerHeight) {
-            left = ++offsetIndex * offset;
-            top = 0;
+        if (nextWindowPosition.getX() + width > containerWidth) {
+            nextWindowPosition.setX(0);
         }
-
-        if (left + width > containerWidth) {
-            left = 0;
-            top = 0;
-            offsetIndex = 0;
+        if (nextWindowPosition.getY() + height > containerHeight) {
+            nextWindowPosition.setY(Constants.CLIENT.deHeaderHeight());
         }
 
         boolean maximized = window.isMaximized();
         window.setMaximized(false);
-        window.setPosition(left, top);
+
+        nextWindowPosition = window.adjustPosition(nextWindowPosition);
+        window.setPosition(nextWindowPosition.getX(), nextWindowPosition.getY());
+
         window.setMaximized(maximized);
 
-        left += offset;
-        top += offset;
+        int headerOffset = window.getHeaderOffSetHeight();
+        nextWindowPosition.setX(nextWindowPosition.getX() + headerOffset);
+        nextWindowPosition.setY(nextWindowPosition.getY() + headerOffset);
     }
 
 }
