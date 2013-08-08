@@ -54,6 +54,8 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
 
     boolean isMaximized();
 
+    void setMaximized(boolean maximized);
+
     void setMinimized(boolean min);
 
     void setTitle(String wintitle);

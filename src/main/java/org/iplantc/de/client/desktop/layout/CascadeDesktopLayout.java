@@ -41,8 +41,6 @@ public class CascadeDesktopLayout extends LimitedDesktopLayout implements Deskto
 
         int offset = window.getHeaderOffSetHeight();
 
-        window.setPixelSize(width, height);
-
         if (top + height > containerHeight) {
             left = ++offsetIndex * offset;
             top = 0;
@@ -54,7 +52,10 @@ public class CascadeDesktopLayout extends LimitedDesktopLayout implements Deskto
             offsetIndex = 0;
         }
 
+        boolean maximized = window.isMaximized();
+        window.setMaximized(false);
         window.setPosition(left, top);
+        window.setMaximized(maximized);
 
         left += offset;
         top += offset;

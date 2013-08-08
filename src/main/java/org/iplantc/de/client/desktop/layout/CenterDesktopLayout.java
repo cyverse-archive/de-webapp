@@ -55,8 +55,10 @@ public class CenterDesktopLayout extends LimitedDesktopLayout implements Desktop
         left += offset + random.nextInt(VARIANCE);
         top += offset + random.nextInt(VARIANCE);
 
-        window.setPixelSize(width, height);
+        boolean maximized = window.isMaximized();
+        window.setMaximized(false);
         window.setPosition(left, top);
+        window.setMaximized(maximized);
     }
 
 }

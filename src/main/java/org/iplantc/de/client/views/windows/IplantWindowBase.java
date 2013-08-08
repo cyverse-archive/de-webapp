@@ -270,9 +270,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
             @Override
             public void onSelect(SelectEvent event) {
-                maximize();
-                maximized = true;
-                btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
+                setMaximized(true);
             }
         });
         hrList.add(reg);
@@ -308,9 +306,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         reg = btnRestore.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                restore();
-                maximized = false;
-                btnMaximize.removeStyleName(res.css().xToolMaximizewindowHover());
+                setMaximized(false);
             }
         });
         hrList.add(reg);
@@ -479,6 +475,19 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     @Override
     public boolean isMaximized() {
         return maximized;
+    }
+
+    @Override
+    public void setMaximized(boolean maximize) {
+        this.maximized = maximize;
+
+        if (maximize) {
+            maximize();
+            btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
+        } else {
+            restore();
+            btnMaximize.removeStyleName(res.css().xToolMaximizewindowHover());
+        }
     }
 
     @Override

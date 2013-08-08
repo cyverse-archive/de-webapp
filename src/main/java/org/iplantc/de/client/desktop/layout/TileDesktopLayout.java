@@ -72,9 +72,14 @@ public class TileDesktopLayout implements DesktopLayout {
                 int column = layoutIndex % columnCount;
                 int top = MARGIN_TOP + (row * tileHeight + row * SPACING);
                 int left = MARGIN_LEFT + (column * tileWidth + column * SPACING);
+
+                boolean maximized = window.isMaximized();
+                window.setMaximized(false);
                 window.setPixelSize(tileWidth, tileHeight); // must set prior to alignTo
                 window.alignTo(element, new AnchorAlignment(Anchor.TOP_LEFT, Anchor.TOP_LEFT),
                         new int[] {left, top});
+                window.setMaximized(maximized);
+
                 layoutIndex++;
             }
         }
