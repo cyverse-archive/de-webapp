@@ -97,7 +97,7 @@ public class DEWindowManager extends IplantWindowManager {
             lastWindowPosition.setX(lastWindowPosition.getX() + 10);
             lastWindowPosition.setY(lastWindowPosition.getY() + 20);
 
-            lastWindowPosition = window.adjustPosition(lastWindowPosition);
+            lastWindowPosition = window.adjustPositionForView(lastWindowPosition);
 
             window.setPagePosition(lastWindowPosition.getX(), lastWindowPosition.getY());
         }

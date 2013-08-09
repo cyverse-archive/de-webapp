@@ -79,5 +79,5 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
      * @param position A Point representing a potential position for this window.
      * @return An adjusted position that accounts for this window's width and height.
      */
-    Point adjustPosition(Point position);
+    Point adjustPositionForView(Point position);
 }

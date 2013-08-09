@@ -165,7 +165,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     }
 
     @Override
-    public Point adjustPosition(Point position) {
+    public Point adjustPositionForView(Point position) {
         // We need to parse the string width and height here, since the window's element may not be
         // rendered yet, so those values could be 0 or something very large.
         int offsetWidth = Util.parseInt(width, 0);

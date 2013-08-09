@@ -59,7 +59,7 @@ public class CenterDesktopLayout extends LimitedDesktopLayout implements Desktop
         boolean maximized = window.isMaximized();
         window.setMaximized(false);
 
-        Point position = window.adjustPosition(new Point(left, top));
+        Point position = window.adjustPositionForView(new Point(left, top));
         window.setPosition(position.getX(), position.getY());
 
         window.setMaximized(maximized);

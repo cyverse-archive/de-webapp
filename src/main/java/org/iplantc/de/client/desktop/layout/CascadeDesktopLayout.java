@@ -52,7 +52,7 @@ public class CascadeDesktopLayout extends LimitedDesktopLayout implements Deskto
         boolean maximized = window.isMaximized();
         window.setMaximized(false);
 
-        nextWindowPosition = window.adjustPosition(nextWindowPosition);
+        nextWindowPosition = window.adjustPositionForView(nextWindowPosition);
         window.setPosition(nextWindowPosition.getX(), nextWindowPosition.getY());
 
         window.setMaximized(maximized);
