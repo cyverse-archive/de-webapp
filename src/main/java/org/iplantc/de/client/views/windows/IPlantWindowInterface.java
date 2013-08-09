@@ -52,6 +52,8 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
     
     boolean isVisible();
 
+    boolean isResizable();
+
     boolean isMaximized();
 
     void setMaximized(boolean maximized);

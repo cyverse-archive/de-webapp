@@ -75,7 +75,9 @@ public class TileDesktopLayout implements DesktopLayout {
 
                 boolean maximized = window.isMaximized();
                 window.setMaximized(false);
-                window.setPixelSize(tileWidth, tileHeight); // must set prior to alignTo
+                if (window.isResizable()) {
+                    window.setPixelSize(tileWidth, tileHeight); // must set prior to alignTo
+                }
                 window.alignTo(element, new AnchorAlignment(Anchor.TOP_LEFT, Anchor.TOP_LEFT),
                         new int[] {left, top});
                 window.setMaximized(maximized);
