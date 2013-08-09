@@ -62,6 +62,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     protected WindowConfig config;
     protected Status status;
 
+    protected boolean isMaximizable;
     protected boolean maximized;
     protected boolean minimized;
 
@@ -108,6 +109,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         super(GWT.<IPlantWindowAppearance> create(IPlantWindowAppearance.class));
         res.css().ensureInjected();
         setStateId(tag);
+        this.isMaximizable = isMaximizable;
 
         if (haveStatus) {
             status = new Status();
@@ -508,14 +510,16 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     @Override
     public void setMaximized(boolean maximize) {
-        this.maximized = maximize;
+        if (isMaximizable) {
+            this.maximized = maximize;
 
-        if (maximize) {
-            maximize();
-            btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
-        } else {
-            restore();
-            btnMaximize.removeStyleName(res.css().xToolMaximizewindowHover());
+            if (maximize) {
+                maximize();
+                btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
+            } else {
+                restore();
+                btnMaximize.removeStyleName(res.css().xToolMaximizewindowHover());
+            }
         }
     }
 
