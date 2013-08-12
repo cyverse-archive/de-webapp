@@ -5,7 +5,6 @@ package org.iplantc.de.client.preferences.views;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
-import org.iplantc.core.uicommons.client.widgets.ContextualHelpPopup;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.preferences.presenter.PreferencesPresenterImpl;
@@ -14,6 +13,7 @@ import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.button.ButtonBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -43,7 +43,7 @@ public class PreferencesDialog extends IPlantDialog {
         setHeadingText(I18N.DISPLAY.preferences());
         setPixelSize(450, 380);
         setButtons();
-        addHelp();
+        addHelp(contructHelpView());
         PreferencesView view = new PreferencesViewImpl();
         presenter = new PreferencesPresenterImpl(view);
         presenter.go(this);
@@ -56,19 +56,7 @@ public class PreferencesDialog extends IPlantDialog {
         setOkButton();
     }
 
-    private void addHelp() {
-        gelHelpToolButton().addSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                ContextualHelpPopup popup = new ContextualHelpPopup();
-                popup.add(contructHelpView());
-                popup.showAt(help_tool.getAbsoluteLeft(), help_tool.getAbsoluteTop() + 15);
-            }
-        });
-    }
-
-    private HtmlLayoutContainer contructHelpView() {
+    private Widget contructHelpView() {
         HtmlLayoutContainerTemplate templates = GWT.create(HtmlLayoutContainerTemplate.class);
         HtmlLayoutContainer c = new HtmlLayoutContainer(templates.getTemplate());
         c.add(new HTML(I18N.DISPLAY.notifyemail()), new HtmlData(".emailHeader"));
@@ -79,7 +67,7 @@ public class PreferencesDialog extends IPlantDialog {
         c.add(new HTML(I18N.HELP.saveSessionHelp()), new HtmlData(".saveSessionHelp"));
         c.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new HtmlData(".defaultOp"));
         c.add(new HTML(I18N.HELP.defaultOutputFolderHelp()), new HtmlData(".defaultOpHelp"));
-        return c;
+        return c.asWidget();
     }
 
     private void setOkButton() {
