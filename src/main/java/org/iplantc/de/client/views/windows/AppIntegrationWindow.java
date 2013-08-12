@@ -54,8 +54,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private final AppTemplateServices templateService;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
     private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
-    private final AppsWidgetsPropertyPanelLabels labels = GWT
-            .create(AppsWidgetsPropertyPanelLabels.class);
+    private final AppsWidgetsPropertyPanelLabels labels = org.iplantc.core.resources.client.messages.I18N.APPS_LABELS;
 
     public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus,
             final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
