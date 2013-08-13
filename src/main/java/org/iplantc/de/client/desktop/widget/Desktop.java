@@ -392,24 +392,14 @@ public class Desktop implements IsWidget {
         layout(window, RequestType.HIDE);
     }
 
-    private boolean isMaximized() {
-        FastMap<IPlantWindowInterface> deWindows = getWindowManager().getDEWindows();
-        for (String windowKey : deWindows.keySet()) {
-            IPlantWindowInterface window = deWindows.get(windowKey);
-            if (window.isVisible() && window.isMaximized()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void layout(DesktopLayout desktopLayout, IPlantWindowInterface window,
             RequestType requestType) {
-        List<IPlantWindowInterface> windows_list = getWindowManager().getIplantWindows();
-        if (!isMaximized() && windows_list != null && windows_list.size() > 0) {
-            desktopLayout.layoutDesktop(window, requestType, getDesktop().getElement(),
-                    getWindowManager().getIplantWindows(), getDesktop().getOffsetWidth(), getDesktop()
-                            .getOffsetHeight());
+        DEWindowManager winMgr = getWindowManager();
+        List<IPlantWindowInterface> windows_list = winMgr.getIplantWindows();
+        if (windows_list != null && windows_list.size() > 0) {
+            VBoxLayoutContainer layout = getDesktop();
+            desktopLayout.layoutDesktop(window, requestType, layout.getElement(),
+                    winMgr.getIplantWindows(), layout.getOffsetWidth(), layout.getOffsetHeight());
         }
     }
 

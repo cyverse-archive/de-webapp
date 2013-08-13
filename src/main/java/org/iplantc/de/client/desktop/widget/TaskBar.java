@@ -8,6 +8,7 @@ package org.iplantc.de.client.desktop.widget;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent.WindowHeadingUpdatedEventHandler;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
@@ -31,7 +32,7 @@ public class TaskBar extends ToolBar {
      */
     public TaskBar() {
         super(new TaskbarAppearance());
-        setHeight(31);
+        setHeight(Constants.CLIENT.deTaskBarHeight());
         setSpacing(-1);
         setPadding(new Padding(0));
 

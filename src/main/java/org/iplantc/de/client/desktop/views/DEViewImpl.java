@@ -86,6 +86,8 @@ public class DEViewImpl implements DEView {
     private final DEHeaderStyle headerResources;
     private final IPlantAnchor sysMsgsMenuItem;
 
+    private Menu userMenu;
+
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
     }
@@ -116,6 +118,7 @@ public class DEViewImpl implements DEView {
             @Override
             public void onClick(ClickEvent event) {
                 EventBus.getInstance().fireEvent(new ShowSystemMessagesEvent());
+                userMenu.hide();
             }
         });
     }
@@ -236,7 +239,7 @@ public class DEViewImpl implements DEView {
     }
 
     private Menu buildUserMenu() {
-        final Menu userMenu = buildMenu();
+        userMenu = buildMenu();
 
         userMenu.add(buildPrefMenuItem());
         userMenu.add(buildCollabMenuItem());
@@ -264,6 +267,7 @@ public class DEViewImpl implements DEView {
             public void onClick(ClickEvent event) {
                 // doLogout();
                 presenter.doLogout();
+                userMenu.hide();
             }
         });
 
@@ -277,6 +281,7 @@ public class DEViewImpl implements DEView {
             public void onClick(ClickEvent event) {
                 // displayAboutDe();
                 EventBus.getInstance().fireEvent(new ShowAboutWindowEvent());
+                userMenu.hide();
             }
         });
         anchor.setId("idAboutMenuItem");
@@ -288,6 +293,7 @@ public class DEViewImpl implements DEView {
             @Override
             public void onClick(ClickEvent event) {
                 WindowUtil.open(Constants.CLIENT.supportUrl());
+                userMenu.hide();
             }
         });
         anchor.setId("idSupportMenuItem");
@@ -299,6 +305,7 @@ public class DEViewImpl implements DEView {
             @Override
             public void onClick(ClickEvent event) {
                 WindowUtil.open(Constants.CLIENT.forumsUrl());
+                userMenu.hide();
             }
         });
         anchor.setId("idForumMenuItem");
@@ -310,6 +317,7 @@ public class DEViewImpl implements DEView {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.doWelcomeIntro();
+                userMenu.hide();
             }
         });
         anchor.setId("idIntroMenuItem");
@@ -321,6 +329,7 @@ public class DEViewImpl implements DEView {
             @Override
             public void onClick(ClickEvent event) {
                 WindowUtil.open(Constants.CLIENT.deHelpFile());
+                userMenu.hide();
             }
         });
         anchor.setId("idDocMenuItem");
@@ -333,6 +342,7 @@ public class DEViewImpl implements DEView {
             public void onClick(ClickEvent event) {
                 ManageCollaboratorsDailog dialog = new ManageCollaboratorsDailog(MODE.MANAGE);
                 dialog.show();
+                userMenu.hide();
             }
         });
         anchor.setId("idCollabMenuItem");
@@ -344,6 +354,7 @@ public class DEViewImpl implements DEView {
             @Override
             public void onClick(ClickEvent event) {
                 buildAndShowPreferencesDialog();
+                userMenu.hide();
             }
 
         });

@@ -52,7 +52,11 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
     
     boolean isVisible();
 
+    boolean isResizable();
+
     boolean isMaximized();
+
+    void setMaximized(boolean maximized);
 
     void setMinimized(boolean min);
 
@@ -69,4 +73,13 @@ public interface IPlantWindowInterface extends HasActivateHandlers<Window>,
     void alignTo(Element e, AnchorAlignment align, int[] offsets);
 
     void hide();
+
+    /**
+     * Takes a Point representing a potential position for this window and returns an adjusted position
+     * that accounts for this window's width and height.
+     * 
+     * @param position A Point representing a potential position for this window.
+     * @return An adjusted position that accounts for this window's width and height.
+     */
+    Point adjustPositionForView(Point position);
 }

@@ -54,7 +54,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private final AppTemplateServices templateService;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
     private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
-    private final AppsWidgetsPropertyPanelLabels labels = GWT.create(AppsWidgetsPropertyPanelLabels.class);
+    private final AppsWidgetsPropertyPanelLabels labels = org.iplantc.core.resources.client.messages.I18N.APPS_LABELS;
 
     public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus,
             final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
@@ -108,6 +108,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                         public void onSuccess(AppTemplate result) {
                             presenter.go(AppIntegrationWindow.this, result);
                             AppIntegrationWindow.this.forceLayout();
+                            AppIntegrationWindow.this.center();
                         }
 
                         @Override
@@ -134,22 +135,30 @@ public class AppIntegrationWindow extends IplantWindowBase {
             AppIntegrationWindow.this.forceLayout();
         } else {
             mask(I18N.DISPLAY.loadingMask());
-            templateService.getAppTemplateForEdit(CommonModelUtils.createHasIdFromString(config.getAppId()), new AsyncCallback<AppTemplate>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    SimpleServiceError serviceError = AutoBeanCodex.decode(factory, SimpleServiceError.class, caught.getMessage()).as();
-                    IplantAnnouncer.getInstance().schedule(new ErrorAnnouncementConfig(I18N.ERROR.unableToRetrieveWorkflowGuide() + ": " + serviceError.getReason()));
-                    ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
-                    AppIntegrationWindow.this.hide();
-                }
+            templateService.getAppTemplateForEdit(
+                    CommonModelUtils.createHasIdFromString(config.getAppId()),
+                    new AsyncCallback<AppTemplate>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            SimpleServiceError serviceError = AutoBeanCodex.decode(factory,
+                                    SimpleServiceError.class, caught.getMessage()).as();
+                            IplantAnnouncer.getInstance().schedule(
+                                    new ErrorAnnouncementConfig(I18N.ERROR
+                                            .unableToRetrieveWorkflowGuide()
+                                            + ": "
+                                            + serviceError.getReason()));
+                            ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
+                            AppIntegrationWindow.this.hide();
+                        }
 
-                @Override
-                public void onSuccess(AppTemplate result) {
-                    presenter.go(AppIntegrationWindow.this, result);
-                    AppIntegrationWindow.this.unmask();
-                    AppIntegrationWindow.this.forceLayout();
-                }
-            });
+                        @Override
+                        public void onSuccess(AppTemplate result) {
+                            presenter.go(AppIntegrationWindow.this, result);
+                            AppIntegrationWindow.this.unmask();
+                            AppIntegrationWindow.this.forceLayout();
+                            AppIntegrationWindow.this.center();
+                        }
+                    });
         }
     }
 

@@ -28,7 +28,7 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 public class DEWindowManager extends IplantWindowManager {
     private IPlantWindowInterface activeWindow;
     private final FastMap<IPlantWindowInterface> windows = new FastMap<IPlantWindowInterface>();
-    private Point first_window_postion;
+    private Point lastWindowPosition;
     private final ActivateHandler<Window> activateHandler;
     private final DeactivateHandler<Window> deactivateHandler;
     private final HideHandler hideHandler;
@@ -88,12 +88,19 @@ public class DEWindowManager extends IplantWindowManager {
         window.addMinimizeHandler(minimizeHandler);
         window.addShowHandler(showHandler);
         register(window.asWidget());
-        if (getFirst_window_postion() != null) {
-            int new_x = getFirst_window_postion().getX() + ((getCount() - 1) * 10);
-            int new_y = getFirst_window_postion().getY() + ((getCount() - 1) * 20);
-            window.setPagePosition(new_x, new_y);
-        }
+        positionNextWindow(window);
         return window;
+    }
+
+    private void positionNextWindow(IPlantWindowInterface window) {
+        if (lastWindowPosition != null) {
+            lastWindowPosition.setX(lastWindowPosition.getX() + 10);
+            lastWindowPosition.setY(lastWindowPosition.getY() + 20);
+
+            lastWindowPosition = window.adjustPositionForView(lastWindowPosition);
+
+            window.setPagePosition(lastWindowPosition.getX(), lastWindowPosition.getY());
+        }
     }
 
     /**
@@ -121,22 +128,8 @@ public class DEWindowManager extends IplantWindowManager {
         IPlantWindowInterface win = getDEWindows().remove(tag);
         unregister(win.asWidget());
         if (getDEWindows().size() == 0) {
-            first_window_postion = null;
+            lastWindowPosition = null;
         }
-    }
-
-    /**
-     * @param first_window_postion the first_window_postion to set
-     */
-    public void setFirst_window_postion(Point first_window_postion) {
-        this.first_window_postion = first_window_postion;
-    }
-
-    /**
-     * @return the first_window_postion
-     */
-    public Point getFirst_window_postion() {
-        return first_window_postion;
     }
 
     /**
@@ -156,7 +149,7 @@ public class DEWindowManager extends IplantWindowManager {
         window.show();
         window.toFront();
         if (getCount() == 1) {
-            setFirst_window_postion(window.getPosition3(true));
+            lastWindowPosition = window.getPosition3(true);
         }
     }
     

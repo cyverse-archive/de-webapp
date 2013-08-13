@@ -265,10 +265,10 @@ public class PreferencesViewImpl implements PreferencesView {
             fld.setText(event.getCharCode() + "");
             fld.setCursorPos(1);
             fld.focus();
-        } else {
-            if (code != 0) {
-                event.preventDefault();
-            }
         }
+        if (code != 0) {
+            event.preventDefault();
+        }
+
     }
 }

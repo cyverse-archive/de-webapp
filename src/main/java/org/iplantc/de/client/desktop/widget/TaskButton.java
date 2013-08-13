@@ -8,6 +8,7 @@ package org.iplantc.de.client.desktop.widget;
 import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
+import com.google.common.base.Strings;
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.WindowManager;
@@ -24,7 +25,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class TaskButton extends ToggleButton {
 
-    private IPlantWindowInterface win;
+    private static final int MAX_TEXT_LENGTH = 26;
+    private final IPlantWindowInterface win;
 
     /**
      * Creates a task button for the specified window.
@@ -36,7 +38,7 @@ public class TaskButton extends ToggleButton {
         ImageResource icon = IplantResources.RESOURCES.whitelogoSmall();
         String text = win.getTitle();
         if (text != null) {
-            setText(Format.ellipse(text, 26));
+            setText(Format.ellipse(text, MAX_TEXT_LENGTH));
         }
         setIcon(icon);
         setHeight(28);
@@ -47,6 +49,14 @@ public class TaskButton extends ToggleButton {
                 doSelect(event);
             }
         });
+    }
+
+    @Override
+    public void setText(String text) {
+        if (Strings.nullToEmpty(text).length() > MAX_TEXT_LENGTH) {
+            setToolTip(text);
+        }
+        super.setText(Format.ellipse(text, MAX_TEXT_LENGTH));
     }
 
     protected void doSelect(SelectEvent event) {

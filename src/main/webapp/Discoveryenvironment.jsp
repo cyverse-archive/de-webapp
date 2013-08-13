@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="org.iplantc.de.server.DiscoveryEnvironmentProperties"%>
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
@@ -39,24 +40,33 @@ response.setDateHeader("Expires", 0);
 	src="discoveryenvironment/discoveryenvironment.nocache.js"></script>
 <script type="text/javascript" language="javascript"
 	src="scripts/intro.min.js"></script>
-<!-- Google analytics -->
-<script type="text/javascript">
-  var _gaq = _gaq || [];
 
-  _gaq.push(['_setAccount', 'UA-16039757-1']);
+<%
+    ServletContext ctx = getServletConfig().getServletContext();
+    DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
+    if (props.isProduction()) {
+%>
+    <!-- Google analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
 
-  _gaq.push(['_trackPageview']);
-  (function() {
+        _gaq.push(['_setAccount', 'UA-16039757-1']);
 
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        _gaq.push(['_trackPageview']);
+        (function() {
 
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
 
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 
-  })();
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 
-</script>
+        })();
+
+    </script>
+<%
+    }
+%>
 </head>
 
 <!--                                           -->
@@ -70,6 +80,5 @@ response.setDateHeader("Expires", 0);
 		style="position: absolute; width: 0; height: 0; border: 0">
 	</iframe>
 
-</body>
 
 </html>

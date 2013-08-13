@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.core.resources.client.theme.window.IPlantWindowAppearance;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
@@ -31,8 +33,11 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.sencha.gxt.core.client.dom.XDOM;
+import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.core.client.util.Point;
-import com.sencha.gxt.theme.gray.client.window.GrayWindowAppearance;
+import com.sencha.gxt.core.client.util.Rectangle;
+import com.sencha.gxt.core.client.util.Util;
 import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
@@ -57,6 +62,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     protected WindowConfig config;
     protected Status status;
 
+    protected boolean isMaximizable;
     protected boolean maximized;
     protected boolean minimized;
 
@@ -73,6 +79,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     private final DeResources res = GWT.create(DeResources.class);
 
     private final WindowStateFactory wsf = GWT.create(WindowStateFactory.class);
+    private ToolButton maxBtn;
 
     /**
      * Constructs an instance of the window.
@@ -83,7 +90,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         this(tag, false, true, false, true);
     }
 
-    public IplantWindowBase(WindowAppearance appearance) {
+    public IplantWindowBase(IPlantWindowAppearance appearance) {
         super(appearance);
     }
 
@@ -99,9 +106,10 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     public IplantWindowBase(String tag, boolean haveStatus, boolean isMinimizable,
             boolean isMaximizable, boolean isClosable) {
-        super(new GrayWindowAppearance());
+        super(GWT.<IPlantWindowAppearance> create(IPlantWindowAppearance.class));
         res.css().ensureInjected();
         setStateId(tag);
+        this.isMaximizable = isMaximizable;
 
         if (haveStatus) {
             status = new Status();
@@ -117,6 +125,8 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         }
         if (isMaximizable) {
             btnMaximize = createMaximizeButton();
+            // SRI: if a window is maximizable, then it is restorable.
+            createRestoreButton();
             getHeader().addTool(btnMaximize);
             getHeader().sinkEvents(Event.ONDBLCLICK);
             getHeader().addHandler(createHeaderDblClickHandler(), DoubleClickEvent.getType());
@@ -154,6 +164,58 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
 
     protected void doHide() {
         hide();
+    }
+
+    @Override
+    public Point adjustPositionForView(Point position) {
+        // We need to parse the string width and height here, since the window's element may not be
+        // rendered yet, so those values could be 0 or something very large.
+        int offsetWidth = Util.parseInt(width, 0);
+        int offsetHeight = Util.parseInt(height, 0) + Constants.CLIENT.deTaskBarHeight();
+
+        // Calculate the maximum X and Y position for this window.
+        int maxX = XDOM.getViewportWidth();
+        int maxY = XDOM.getViewportHeight();
+
+        XElement container = (XElement)getContainer();
+        if (container != null) {
+            maxX = container.getBounds().getWidth();
+            maxY = container.getBounds().getHeight();
+        }
+
+        maxX = Math.max(maxX - offsetWidth, 0);
+        maxY = Math.max(maxY - offsetHeight, 0);
+
+        // Calculate the adjusted position.
+        Point adjusted = new Point(position.getX(), position.getY());
+        if (adjusted.getX() > maxX) {
+            adjusted.setX(0);
+        }
+        if (adjusted.getY() > maxY) {
+            adjusted.setY(Constants.CLIENT.deHeaderHeight());
+        }
+
+        return adjusted;
+    }
+
+    @Override
+    /**
+     * SRI -
+     * fit container for maximize by off setting for header and taskbar
+     * 
+     */
+    protected void fitContainer() {
+        // Offset for header height and real taskbar height.
+        int maxHeightOffset = Constants.CLIENT.deHeaderHeight() + Constants.CLIENT.deTaskBarHeight() - 5;
+        if (getContainer() != null) {
+            Rectangle bounds = ((XElement)getContainer()).getBounds();
+            setPagePosition(bounds.getX(), bounds.getY());
+            setPixelSize(bounds.getWidth(), bounds.getHeight() - maxHeightOffset);
+        } else {
+            setPosition(0, 0);
+            setPixelSize(XDOM.getViewportWidth(), XDOM.getViewportHeight() - maxHeightOffset);
+            center();
+        }
     }
 
     private ToolButton createLayoutButton() {
@@ -228,50 +290,44 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     }
 
     private ToolButton createMaximizeButton() {
-        final ToolButton newMaxBtn = new ToolButton(res.css().xToolMaximizewindow());
-        newMaxBtn.setId("idmaximize"); //$NON-NLS-1$
-        newMaxBtn.sinkEvents(Event.ONMOUSEOUT);
-        newMaxBtn.setToolTip(I18N.DISPLAY.maximize());
+        maxBtn = new ToolButton(res.css().xToolMaximizewindow());
+        maxBtn.setId("idmaximize"); //$NON-NLS-1$
+        maxBtn.sinkEvents(Event.ONMOUSEOUT);
+        maxBtn.setToolTip(I18N.DISPLAY.maximize());
 
         ArrayList<HandlerRegistration> hrList = new ArrayList<HandlerRegistration>();
         HandlerRegistration reg;
-        reg = newMaxBtn.addSelectHandler(new SelectHandler() {
+        reg = maxBtn.addSelectHandler(new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
-                if (!isMaximized()) {
-                    maximize();
-                    maximized = true;
-                } else {
-                    restore();
-                    maximized = false;
-                }
+                setMaximized(true);
             }
         });
         hrList.add(reg);
 
-        reg = newMaxBtn.addHandler(new MouseOverHandler() {
+        reg = maxBtn.addHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                newMaxBtn.addStyleName(res.css().xToolMaximizewindowHover());
+                maxBtn.addStyleName(res.css().xToolMaximizewindowHover());
             }
         }, MouseOverEvent.getType());
         hrList.add(reg);
 
-        reg = newMaxBtn.addHandler(new MouseOutHandler() {
+        reg = maxBtn.addHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                newMaxBtn.removeStyleName(res.css().xToolMaximizewindowHover());
+                maxBtn.removeStyleName(res.css().xToolMaximizewindowHover());
             }
         }, MouseOutEvent.getType());
         hrList.add(reg);
 
-        handlerRegMap.put(newMaxBtn, hrList);
-        return newMaxBtn;
+        handlerRegMap.put(maxBtn, hrList);
+        return maxBtn;
     }
 
     private ToolButton createRestoreButton() {
-        final ToolButton btnRestore = new ToolButton(res.css().xToolRestorewindow());
+        btnRestore = new ToolButton(res.css().xToolRestorewindow());
         btnRestore.setId("idrestore"); //$NON-NLS-1$
         btnRestore.sinkEvents(Event.ONMOUSEOUT);
         btnRestore.setToolTip(I18N.DISPLAY.restore());
@@ -281,7 +337,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         reg = btnRestore.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                restore();
+                setMaximized(false);
             }
         });
         hrList.add(reg);
@@ -394,9 +450,6 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         if (index > -1) {
             getHeader().removeTool(btnMaximize);
             btnMaximize.removeFromParent();
-            removeButtonListeners(btnMaximize);
-            btnRestore = createRestoreButton();
-
             // re-insert restore button at same index of maximize button
             getHeader().insertTool(btnRestore, index);
         }
@@ -409,22 +462,9 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         int index = findToolButtonIndex(res.css().xToolRestorewindow());
         if (index > -1) {
             getHeader().removeTool(btnRestore);
-            removeButtonListeners(btnRestore);
-            btnMaximize = createMaximizeButton();
-
             // re-insert maximize button at same index as restore button
             getHeader().insertTool(btnMaximize, index);
         }
-    }
-
-    private void removeButtonListeners(Widget btnMaximize2) {
-        if (handlerRegMap.containsKey(btnMaximize2)) {
-            for (HandlerRegistration reg : handlerRegMap.get(btnMaximize2)) {
-                reg.removeHandler();
-            }
-            handlerRegMap.remove(btnMaximize2);
-        }
-
     }
 
     private int findToolButtonIndex(String btnToolName) {
@@ -466,6 +506,21 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
     @Override
     public boolean isMaximized() {
         return maximized;
+    }
+
+    @Override
+    public void setMaximized(boolean maximize) {
+        if (isMaximizable) {
+            this.maximized = maximize;
+
+            if (maximize) {
+                maximize();
+                btnRestore.removeStyleName(res.css().xToolRestorewindowHover());
+            } else {
+                restore();
+                btnMaximize.removeStyleName(res.css().xToolMaximizewindowHover());
+            }
+        }
     }
 
     @Override

@@ -59,11 +59,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /**
- *
+ * 
  * A presenter for analyses view
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolbarView.Presenter {
 
@@ -131,8 +131,8 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
                 @Override
                 public void onFailure(Throwable caught) {
-                	apv.unmask();
-                	ErrorHandler.post(caught);
+                    apv.unmask();
+                    ErrorHandler.post(caught);
 
                 }
             });
@@ -147,6 +147,9 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
             return;
         }
         Analysis selectedAnalysis = view.getSelectedAnalyses().get(0);
+        if (selectedAnalysis.isAppDisabled()) {
+            return;
+        }
         AppWizardConfig config = ConfigFactory.appWizardConfig(selectedAnalysis.getAppId());
         config.setAnalysisId(selectedAnalysis);
         config.setRelaunchAnalysis(true);
@@ -179,7 +182,12 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
                 enableCancelAnalysisButtonByStatus();
                 toolbar.setDeleteButtonEnabled(true);
                 toolbar.setViewParamButtonEnabled(true);
-                toolbar.setRelaunchAnalysisEnabled(true);
+                Analysis selectedAnalysis = view.getSelectedAnalyses().get(0);
+                if (selectedAnalysis.isAppDisabled()) {
+                    toolbar.setRelaunchAnalysisEnabled(false);
+                } else {
+                    toolbar.setRelaunchAnalysisEnabled(true);
+                }
                 break;
 
             default:
@@ -406,12 +414,12 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
      * page size are only set in the reused config by the loader after an initial grid load, which may be
      * by-passed by the {@link AnalysisSearchField#filterByAnalysisId} call in
      * {@link AnalysesPresenter#setSelectedAnalyses}.
-     *
+     * 
      * A benefit of selecting analyses with this LoadHandler is if the analysis to select has already
      * loaded when this handler is called, then it can be selected immediately without filtering.
-     *
+     * 
      * @author psarando
-     *
+     * 
      */
     private class FirstLoadHandler implements
             LoadHandler<FilterPagingLoadConfig, PagingLoadResult<Analysis>> {

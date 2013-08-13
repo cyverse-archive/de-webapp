@@ -133,7 +133,6 @@ public class DEPresenter implements DEView.Presenter {
             public void onSuccess(Map<String, String> result) {
                 DEProperties.getInstance().initialize(result);
                 getUserInfo();
-                getUserPreferences();
                 setBrowserContextMenuEnabled(DEProperties.getInstance().isContextClickEnabled());
             }
         });
@@ -176,6 +175,7 @@ public class DEPresenter implements DEView.Presenter {
                 initKeepaliveTimer();
                 initUserHomeDir();
                 doWorkspaceDisplay();
+                getUserPreferences();
 
             }
         });

@@ -55,4 +55,10 @@ public interface Analysis extends HasId, HasName, HasDescription {
 
     @PropertyName("wiki_url")
     public String getWikiUrl();
+
+    @PropertyName("app_disabled")
+    public boolean isAppDisabled();
+
+    @PropertyName("app_disabled")
+    public void setAppDisabled(boolean disabled);
 }
