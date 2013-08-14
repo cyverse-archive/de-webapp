@@ -235,15 +235,18 @@ public class PreferencesViewImpl implements PreferencesView {
     public boolean isValid() {
         boolean valid = defaultOpFolder.isValid(false) && appKbSc.isValid() && dataKbSc.isValid()
                 && anaKbSc.isValid() && notKbSc.isValid() && closeKbSc.isValid();
-        populateKbMap();
-        resetKbFieldErrors();
-        for (TextField ks : kbMap.keySet()) {
-            for (TextField sc : kbMap.keySet()) {
-                if (ks != sc) {
-                    if (kbMap.get(ks).equals(kbMap.get(sc))) {
-                        ks.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
-                        sc.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
-                        valid = false;
+
+        if (valid) {
+            populateKbMap();
+            resetKbFieldErrors();
+            for (TextField ks : kbMap.keySet()) {
+                for (TextField sc : kbMap.keySet()) {
+                    if (ks != sc) {
+                        if (kbMap.get(ks).equals(kbMap.get(sc))) {
+                            ks.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
+                            sc.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
+                            valid = false;
+                        }
                     }
                 }
             }

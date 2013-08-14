@@ -4,6 +4,8 @@
 package org.iplantc.de.client.preferences.views;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
@@ -80,6 +82,10 @@ public class PreferencesDialog extends IPlantDialog {
                     hide();
                     PreferencesUpdatedEvent pue = new PreferencesUpdatedEvent();
                     EventBus.getInstance().fireEvent(pue);
+                } else {
+                    ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(
+                            "Please complete all required fields to save preferences!");
+                    IplantAnnouncer.getInstance().schedule(config);
                 }
             }
         });
