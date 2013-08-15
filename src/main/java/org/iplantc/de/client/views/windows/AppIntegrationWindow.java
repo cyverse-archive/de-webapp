@@ -66,7 +66,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                 I18N.DISPLAY, uuidService);
         presenter.setOnlyLabelEditMode(config.isOnlyLabelEditMode());
         setTitle(I18N.DISPLAY.createApps());
-        setSize("600", "375");
+        setSize("800", "480");
 
         addRestoreHandler(new RestoreHandler() {
 
