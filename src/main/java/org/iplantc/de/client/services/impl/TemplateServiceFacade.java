@@ -386,8 +386,7 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 	 */
 	@Override
 	public void publishWorkflow(String body, AsyncCallback<String> callback) {
-		String address = DEProperties.getInstance()
-				.getUnproctedMuleServiceBaseUrl() + "update-workflow";
+		String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "update-workflow";
 
 		ServiceCallWrapper wrapper = new ServiceCallWrapper(
 				ServiceCallWrapper.Type.POST, address, body);
