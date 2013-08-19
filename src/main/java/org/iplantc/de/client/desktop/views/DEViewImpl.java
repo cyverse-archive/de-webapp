@@ -44,6 +44,8 @@ import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
@@ -161,13 +163,34 @@ public class DEViewImpl implements DEView {
         HtmlLayoutContainer c = new HtmlLayoutContainer(templates.getTemplate());
         c.add(buildNotificationMenu(I18N.DISPLAY.notifications()), new HtmlData(".cell1"));
         c.add(buildActionsMenu(), new HtmlData(".cell2"));
+        ToolBar helpbar = buildHelpMenu();
+        c.add(helpbar, new HtmlData(".cell5"));
         c.add(new HTML("&nbsp;&nbsp;"), new HtmlData(".cell3"));
+        c.add(new HTML("&nbsp;&nbsp;"), new HtmlData(".cell4"));
         return c;
 
     }
 
+    private ToolBar buildHelpMenu() {
+        TextButton help = new TextButton();
+        help.setId("idForumMenuItem");
+        help.addSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                WindowUtil.open(Constants.CLIENT.forumsUrl());
+            }
+        });
+        help.setToolTip(I18N.DISPLAY.help());
+        help.setIcon(IplantResources.RESOURCES.help());
+        ToolBar helpbar = new ToolBar();
+        helpbar.setPixelSize(100, 30);
+        helpbar.add(help);
+        return helpbar;
+    }
+
     public interface HtmlLayoutContainerTemplate extends XTemplates {
-        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\"/><td class=\" cell3\"/><td class=\"cell2\"/></tr></tbody></table>")
+        @XTemplate("<table width=\"100%\" height=\"100%\"><tbody><tr><td height=\"100%\" class=\"cell1\"/><td class=\"cell3\"/><td class=\"cell2\"/><td class=\"cell4\"/><td class=\"cell5\"/></tr></tbody></table>")
         SafeHtml getTemplate();
     }
 
@@ -250,7 +273,6 @@ public class DEViewImpl implements DEView {
 
         userMenu.add(buildHelpMenuItem());
         userMenu.add(buildIntroMenuItem());
-        userMenu.add(buildFourmsMenuItem());
         userMenu.add(buildContactMenuItem());
         userMenu.add(buildAboutMenuItem());
 
@@ -297,18 +319,6 @@ public class DEViewImpl implements DEView {
             }
         });
         anchor.setId("idSupportMenuItem");
-        return anchor;
-    }
-
-    private IPlantAnchor buildFourmsMenuItem() {
-        IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.forums(), -1, new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.forumsUrl());
-                userMenu.hide();
-            }
-        });
-        anchor.setId("idForumMenuItem");
         return anchor;
     }
 
