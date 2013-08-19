@@ -1,9 +1,8 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uidiskresource.client.events.DiskResourceRefreshEvent;
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
@@ -12,6 +11,7 @@ import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.idroplite.views.IDropLiteViewImpl;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.Command;
 import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.Style.HideMode;
@@ -84,9 +84,8 @@ public class IDropLiteAppletWindow extends IplantWindowBase {
 
         // refresh manage data window
         String refreshPath = idlwc.getCurrentFolder().getId();
-        if (refreshPath != null && !refreshPath.isEmpty()) {
-            DiskResourceRefreshEvent event = new DiskResourceRefreshEvent(Constants.CLIENT.myDataTag(),
-                    refreshPath, null);
+        if (!Strings.isNullOrEmpty(refreshPath)) {
+            DiskResourceRefreshEvent event = new DiskResourceRefreshEvent(refreshPath, null);
             EventBus.getInstance().fireEvent(event);
         }
     }
