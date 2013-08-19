@@ -184,7 +184,7 @@ public class DEViewImpl implements DEView {
         help.setToolTip(I18N.DISPLAY.help());
         help.setIcon(IplantResources.RESOURCES.help());
         ToolBar helpbar = new ToolBar();
-        helpbar.setPixelSize(100, 30);
+        helpbar.setPixelSize(40, 30);
         helpbar.add(help);
         return helpbar;
     }
