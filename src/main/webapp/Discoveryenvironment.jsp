@@ -23,6 +23,7 @@ response.setDateHeader("Expires", 0);
 <link type="text/css" rel="stylesheet" href="gxt/css/gxt-gray.css">
 <link type="image/x-icon" rel="shortcut icon" href="images/favicon.ico">
 <link type ="text/css" rel="stylesheet" href="./introjs.min.css">
+<link type="text/css" rel="stylesheet" href="./codemirror.css">
 
 
 
@@ -40,6 +41,10 @@ response.setDateHeader("Expires", 0);
 	src="discoveryenvironment/discoveryenvironment.nocache.js"></script>
 <script type="text/javascript" language="javascript"
 	src="scripts/intro.min.js"></script>
+<script type="text/javascript" language="javascript"
+	src="scripts/codemirror.js"></script>
+<script type="text/javascript" language="javascript"
+	src="scripts/javascript.js"></script>
 
 <%
     ServletContext ctx = getServletConfig().getServletContext();
