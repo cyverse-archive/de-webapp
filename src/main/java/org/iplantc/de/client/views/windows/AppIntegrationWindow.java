@@ -99,16 +99,23 @@ public class AppIntegrationWindow extends IplantWindowBase {
         presenter.setBeforeHideHandlerRegistration(hr);
     }
 
-    private void init(final AppsIntegrationView.Presenter presenter, AppsIntegrationWindowConfig config) {
+    private void init(final AppsIntegrationView.Presenter presenter,
+            final AppsIntegrationWindowConfig config) {
         if (config.getAppTemplate() != null) {
             AppTemplateCallbackConverter at = new AppTemplateCallbackConverter(factory, dcServices,
                     new AsyncCallback<AppTemplate>() {
 
                         @Override
                         public void onSuccess(AppTemplate result) {
+                            // KLUDGE until service returns this value in JSON response.
+                            result.setPublic(result.isPublic() || config.isOnlyLabelEditMode());
                             presenter.go(AppIntegrationWindow.this, result);
                             AppIntegrationWindow.this.forceLayout();
                             AppIntegrationWindow.this.center();
+
+                            if (result.isPublic()) {
+                                setTitle(result.getName());
+                            }
                         }
 
                         @Override
@@ -153,10 +160,16 @@ public class AppIntegrationWindow extends IplantWindowBase {
 
                         @Override
                         public void onSuccess(AppTemplate result) {
+                            // KLUDGE until service returns this value in JSON response.
+                            result.setPublic(result.isPublic() || config.isOnlyLabelEditMode());
                             presenter.go(AppIntegrationWindow.this, result);
                             AppIntegrationWindow.this.unmask();
                             AppIntegrationWindow.this.forceLayout();
                             AppIntegrationWindow.this.center();
+
+                            if (result.isPublic()) {
+                                setTitle(result.getName());
+                            }
                         }
                     });
         }
