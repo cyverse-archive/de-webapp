@@ -10,9 +10,12 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.json.client.JSONObject;
@@ -21,9 +24,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -46,7 +50,7 @@ public class TextViewerImpl implements FileViewer {
     private final Widget widget;
 
     @UiField
-    TextArea textArea;
+    SimpleContainer center;
 
     @UiField
     BorderLayoutContainer con;
@@ -61,12 +65,12 @@ public class TextViewerImpl implements FileViewer {
     private int totalPages;
 
     private String data;
+    private JavaScriptObject jso;
 
     public TextViewerImpl(File file) {
         this.file = file;
         file_size = Long.parseLong(file.getSize());
         widget = uiBinder.createAndBindUi(this);
-        textArea.getElement().setAttribute("wrap", "off");
         addWrapHandler();
         loadData();
         computeTotalPages();
@@ -82,6 +86,17 @@ public class TextViewerImpl implements FileViewer {
         addPageSizeChangeHandler();
 
         addSelectPageKeyHandler();
+
+        center.addResizeHandler(new ResizeHandler() {
+
+            @Override
+            public void onResize(ResizeEvent event) {
+                if (jso != null) {
+                    resizeDisplay(jso, center.getElement().getOffsetWidth(), center.getElement()
+                            .getOffsetHeight());
+                }
+            }
+        });
     }
 
     private void computeTotalPages() {
@@ -271,11 +286,26 @@ public class TextViewerImpl implements FileViewer {
 
     @Override
     public void setData(Object data) {
-        if (toolbar.isWrapText()) {
-            textArea.getElement().setAttribute("wrap", "on");
-        } else {
-            textArea.getElement().setAttribute("wrap", "off");
-        }
-        textArea.setValue((String)data);
+        center.getElement().removeChildren();
+        center.forceLayout();
+        jso = displayData(center.getElement(), (String)data, center.getElement().getOffsetWidth(),
+                center.getElement().getOffsetHeight(), toolbar.isWrapText());
     }
+
+    public static native JavaScriptObject displayData(XElement textArea, String val, int width,
+            int height, boolean wrap) /*-{
+		var myCodeMirror = $wnd.CodeMirror(textArea, {
+			value : val
+		});
+		myCodeMirror.setOption("lineWrapping", wrap);
+		myCodeMirror.setSize(width, height);
+		myCodeMirror.setOption("readOnly", true);
+
+		return myCodeMirror;
+    }-*/;
+
+    public static native void resizeDisplay(JavaScriptObject jso, int width, int height) /*-{
+		jso.setSize(width, height);
+    }-*/;
+
 }
