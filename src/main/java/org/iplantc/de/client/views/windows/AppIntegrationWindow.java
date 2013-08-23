@@ -21,6 +21,7 @@ import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.widgets.ContextualHelpToolButton;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.UUIDServiceAsync;
@@ -30,7 +31,10 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
@@ -48,7 +52,21 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  * 
  */
 public class AppIntegrationWindow extends IplantWindowBase {
+    interface PublicAppTitleTemplate extends SafeHtmlTemplates {
 
+        @SafeHtmlTemplates.Template("<div>"
+                + "<span style='color: red;"
+                + " position: absolute;'>{1}</span>"
+                + "<span style='float: left;"
+                + " overflow: hidden;"
+                + " text-overflow: ellipsis;"
+                + " white-space: nowrap;"
+                + " width: 50%;'>{0}</span>"
+                + "</div>")
+        SafeHtml editPublicAppWarningTitle(String title, String warningText);
+    }
+
+    private final static PublicAppTitleTemplate templates = GWT.create(PublicAppTitleTemplate.class);
     private final AppsIntegrationView.Presenter presenter;
     protected List<HandlerRegistration> handlers;
     private final AppTemplateServices templateService;
@@ -67,6 +85,8 @@ public class AppIntegrationWindow extends IplantWindowBase {
         presenter.setOnlyLabelEditMode(config.isOnlyLabelEditMode());
         setTitle(I18N.DISPLAY.createApps());
         setSize("800", "480");
+        setMinWidth(725);
+        setMinHeight(375);
 
         addRestoreHandler(new RestoreHandler() {
 
@@ -114,7 +134,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                             AppIntegrationWindow.this.center();
 
                             if (result.isPublic()) {
-                                setTitle(result.getName());
+                                setEditPublicAppHeader(result.getName());
                             }
                         }
 
@@ -168,11 +188,19 @@ public class AppIntegrationWindow extends IplantWindowBase {
                             AppIntegrationWindow.this.center();
 
                             if (result.isPublic()) {
-                                setTitle(result.getName());
+                                setEditPublicAppHeader(result.getName());
                             }
                         }
                     });
         }
+    }
+
+    private void setEditPublicAppHeader(String appName) {
+        setHeadingHtml(templates.editPublicAppWarningTitle(appName,
+                I18N.APPS_MESSAGES.editPublicAppWarning()));
+
+        HTML help = new HTML(I18N.APPS_HELP.editPublicAppHelp());
+        getHeader().insertTool(new ContextualHelpToolButton(help), 0);
     }
 
     @Override
