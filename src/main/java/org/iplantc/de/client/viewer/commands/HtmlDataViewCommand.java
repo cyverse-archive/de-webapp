@@ -12,9 +12,9 @@ import org.iplantc.de.client.viewer.views.FileViewer;
 public class HtmlDataViewCommand implements ViewCommand {
 
     @Override
-    public FileViewer execute(File file) {
+    public FileViewer execute(File file, String infoType) {
         WindowUtil.open(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(file.getId())
- + "&attachment=0"); //$NON-NLS-1$
+                + "&attachment=0"); //$NON-NLS-1$
         return null;
     }
 

@@ -65,10 +65,14 @@ public class TextViewerImpl implements FileViewer {
     private int totalPages;
 
     private String data;
-    private JavaScriptObject jso;
 
-    public TextViewerImpl(File file) {
+    protected JavaScriptObject jso;
+
+    private String infoType;
+
+    public TextViewerImpl(File file, String infoType) {
         this.file = file;
+        this.infoType = infoType;
         file_size = Long.parseLong(file.getSize());
         widget = uiBinder.createAndBindUi(this);
         addWrapHandler();
@@ -286,16 +290,21 @@ public class TextViewerImpl implements FileViewer {
 
     @Override
     public void setData(Object data) {
-        center.getElement().removeChildren();
-        center.forceLayout();
-        jso = displayData(center.getElement(), (String)data, center.getElement().getOffsetWidth(),
-                center.getElement().getOffsetHeight(), toolbar.isWrapText());
+        clearDisplay();
+        jso = displayData(center.getElement(), infoType, (String)data, center.getElement()
+                .getOffsetWidth(), center.getElement().getOffsetHeight(), toolbar.isWrapText());
     }
 
-    public static native JavaScriptObject displayData(XElement textArea, String val, int width,
-            int height, boolean wrap) /*-{
+    protected void clearDisplay() {
+        center.getElement().removeChildren();
+        center.forceLayout();
+    }
+
+    public static native JavaScriptObject displayData(XElement textArea, String mode, String val,
+            int width, int height, boolean wrap) /*-{
 		var myCodeMirror = $wnd.CodeMirror(textArea, {
-			value : val
+			value : val,
+			mode : mode
 		});
 		myCodeMirror.setOption("lineWrapping", wrap);
 		myCodeMirror.setSize(width, height);

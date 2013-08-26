@@ -13,5 +13,5 @@ public interface ViewCommand {
     /**
      * Execute command.
      */
-    FileViewer execute(File file);
+    FileViewer execute(File file, String infoType);
 }

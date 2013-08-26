@@ -45,6 +45,11 @@ response.setDateHeader("Expires", 0);
 	src="scripts/codemirror.js"></script>
 <script type="text/javascript" language="javascript"
 	src="scripts/javascript.js"></script>
+<script type="text/javascript" language="javascript"
+	src="scripts/shell.js"></script>
+<script type="text/javascript" language="javascript"
+	src="scripts/nexus.js"></script>
+	
 
 <%
     ServletContext ctx = getServletConfig().getServletContext();
