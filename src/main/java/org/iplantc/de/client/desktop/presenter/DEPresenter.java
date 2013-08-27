@@ -63,7 +63,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Defines the default view of the workspace.
- *
+ * 
  * @author sriram
  */
 public class DEPresenter implements DEView.Presenter {
@@ -263,6 +263,7 @@ public class DEPresenter implements DEView.Presenter {
     public static native void doIntro() /*-{
 		var introjs = $wnd.introJs();
 		introjs.setOption("showStepNumbers", false);
+		introjs.setOption("skipLabel", "Exit");
 		introjs.start();
 
     }-*/;
@@ -279,17 +280,18 @@ public class DEPresenter implements DEView.Presenter {
 
     // Sriram : We need a generic way to process query strings. This is temp. solution for CORE-4694
     private void processQueryStrings() {
-    	Map<String, List<String>> params = Window.Location.getParameterMap();
-    	for (String key:params.keySet()) {
-    		if(key.equalsIgnoreCase("type")) {
-    			String val = params.get(key).get(0);
-    			if(val.equalsIgnoreCase("data")) {
-    				DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory.diskResourceWindowConfig();
-    				diskResourceWindowConfig.setMaximized(true);
-					eventBus.fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig));
-    			}
-    		}
-    	}
+        Map<String, List<String>> params = Window.Location.getParameterMap();
+        for (String key : params.keySet()) {
+            if (key.equalsIgnoreCase("type")) {
+                String val = params.get(key).get(0);
+                if (val.equalsIgnoreCase("data")) {
+                    DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory
+                            .diskResourceWindowConfig();
+                    diskResourceWindowConfig.setMaximized(true);
+                    eventBus.fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig));
+                }
+            }
+        }
     }
 
     private void addKeyBoardEvents() {
@@ -399,7 +401,7 @@ public class DEPresenter implements DEView.Presenter {
 
     /**
      * Disable the context menu of the browser using native JavaScript.
-     *
+     * 
      * This disables the user's ability to right-click on this widget and get the browser's context menu
      */
     private native void setBrowserContextMenuEnabled(boolean enabled)
