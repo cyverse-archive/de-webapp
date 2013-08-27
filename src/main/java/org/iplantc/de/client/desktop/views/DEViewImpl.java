@@ -87,7 +87,6 @@ public class DEViewImpl implements DEView {
     private final HeaderTemplate r;
     private final DEHeaderStyle headerResources;
     private final IPlantAnchor sysMsgsMenuItem;
-
     private Menu userMenu;
 
     @UiTemplate("DEView.ui.xml")
@@ -142,6 +141,8 @@ public class DEViewImpl implements DEView {
                         int new_count = ncue.getTotal();
                         if (new_count > 0 && new_count > lblNotifications.getCount()) {
                             notificationsView.fetchUnseenNotifications();
+                        } else {
+                            notificationsView.setUnseenNotificationsFetchedOnce(true);
                         }
                         notificationsView.setUnseenCount(new_count);
                         lblNotifications.setCount(new_count);
