@@ -10,6 +10,7 @@ import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.core.uiapps.widgets.client.models.Argument;
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentGroup;
+import org.iplantc.core.uiapps.widgets.client.models.util.AppTemplateUtils;
 import org.iplantc.core.uiapps.widgets.client.services.AppMetadataServiceFacade;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices;
@@ -35,6 +36,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -59,17 +62,22 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  */
 public class AppIntegrationWindow extends IplantWindowBase {
     interface PublicAppTitleTemplate extends SafeHtmlTemplates {
-
-        @SafeHtmlTemplates.Template("<div>"
-                + "<span style='color: red;"
-                + " position: absolute;'>{1}</span>"
-                + "<span style='float: left;"
-                + " overflow: hidden;"
-                + " text-overflow: ellipsis;"
-                + " white-space: nowrap;"
-                + " width: 50%;'>{0}</span>"
+        @Template("<div>"
+                + "<span class='{3}'>{2}</span>" 
+                + "<span class='{1}'>{0}</span>"
                 + "</div>")
-        SafeHtml editPublicAppWarningTitle(SafeHtml title, String warningText);
+        SafeHtml editPublicAppWarningTitle(SafeHtml title, String titleStyle, String warningText, String warningStyle);
+    }
+
+    interface TitleStyles extends CssResource{
+        String warning();
+        
+        String title();
+    }
+    
+    interface Resources extends ClientBundle{
+        @Source("AppIntegrationWindowTitleStyles.css")
+        TitleStyles titleStyles();
     }
 
     private final static PublicAppTitleTemplate templates = GWT.create(PublicAppTitleTemplate.class);
@@ -83,10 +91,12 @@ public class AppIntegrationWindow extends IplantWindowBase {
     private final RenameWindowHeaderCmdImpl renameCmd;
 
     final ContextualHelpToolButton editPublicAppContextHlpTool = new ContextualHelpToolButton(new HTML(I18N.APPS_HELP.editPublicAppHelp()));
+    final Resources res = GWT.create(Resources.class);
 
     public AppIntegrationWindow(AppsIntegrationWindowConfig config, final EventBus eventBus,
             final UUIDServiceAsync uuidService, final AppMetadataServiceFacade appMetadataService) {
         super(null, config);
+        res.titleStyles().ensureInjected();
 
         AppsIntegrationView view = new AppsIntegrationViewImpl(uuidService, appMetadataService);
         templateService = GWT.create(AppTemplateServices.class);
@@ -108,7 +118,6 @@ public class AppIntegrationWindow extends IplantWindowBase {
         // JDS Add presenter as a before hide handler to determine if user has changes before closing.
         HandlerRegistration hr = this.addBeforeHideHandler(presenter);
         presenter.setBeforeHideHandlerRegistration(hr);
-
     }
 
     private void init(final AppsIntegrationView.Presenter presenter,
@@ -148,7 +157,15 @@ public class AppIntegrationWindow extends IplantWindowBase {
             argGrp.setLabel(labels.groupDefaultLabel(1));
             argGrp.setArguments(Lists.<Argument> newArrayList());
             newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
-            renameCmd.setAppTemplate(newAppTemplate);
+
+            /*
+             * JDS Set the id of the AppTemplate passed to the rename command to newAppTemplate. This is
+             * to ensure that the window title is not changed until a new app has been saved.
+             */
+            final AppTemplate copyAppTemplate = AppTemplateUtils.copyAppTemplate(newAppTemplate);
+            copyAppTemplate.setId(Constants.CLIENT.newAppTemplate());
+            renameCmd.setAppTemplate(copyAppTemplate);
+
             presenter.go(this, newAppTemplate, renameCmd);
             AppIntegrationWindow.this.forceLayout();
         } else {
@@ -185,8 +202,8 @@ public class AppIntegrationWindow extends IplantWindowBase {
 
 
     private void setEditPublicAppHeader(String appName) {
-        setHeadingHtml(templates.editPublicAppWarningTitle(SafeHtmlUtils.fromString(appName),
-                I18N.APPS_MESSAGES.editPublicAppWarning()));
+        setHeadingHtml(templates.editPublicAppWarningTitle(SafeHtmlUtils.fromString(appName), res.titleStyles().title(), 
+                I18N.APPS_MESSAGES.editPublicAppWarning(), res.titleStyles().warning()));
 
         // JDS Only insert if not there.
         if (getHeader().getTool(0) != editPublicAppContextHlpTool) {
@@ -252,6 +269,10 @@ public class AppIntegrationWindow extends IplantWindowBase {
     
         @Override
         public void execute() {
+            // JDS Don't update window title for new, un-saved apps.
+            if (appTemplate.getId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
+                return;
+            }
             final String name = !Strings.isNullOrEmpty(appTemplate.getName()) ? appTemplate.getName() : I18N.DISPLAY.createApps();
             if (appTemplate.isPublic()) {
                 window.setEditPublicAppHeader(name);
