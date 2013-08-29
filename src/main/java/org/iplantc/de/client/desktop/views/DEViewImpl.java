@@ -182,10 +182,14 @@ public class DEViewImpl implements DEView {
                 WindowUtil.open(Constants.CLIENT.forumsUrl());
             }
         });
-        help.setToolTip(I18N.DISPLAY.help());
-        help.setIcon(IplantResources.RESOURCES.help());
+        help.setToolTip(I18N.DISPLAY.forums());
+        help.setIcon(IplantResources.RESOURCES.forums());
+        help.getElement().setAttribute("data-intro",
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introAsk());
+        help.getElement().setAttribute("data-position", "left");
+        help.getElement().setAttribute("data-step", "7");
         ToolBar helpbar = new ToolBar();
-        helpbar.setPixelSize(40, 30);
+        helpbar.setPixelSize(45, 30);
         helpbar.add(help);
         return helpbar;
     }
@@ -257,7 +261,7 @@ public class DEViewImpl implements DEView {
         button.getElement().setAttribute("data-step", "5");
 
         ToolBar bar = new ToolBar();
-        bar.setPixelSize(50, 30);
+        bar.setPixelSize(55, 30);
         bar.add(button);
         return bar;
     }
