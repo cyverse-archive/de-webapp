@@ -106,6 +106,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
             ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.warning(),
                     I18N.DISPLAY.analysesExecDeleteWarning());
+            cmb.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
             cmb.addHideHandler(new DeleteMessageBoxHandler(execs));
             cmb.show();
         }
@@ -371,7 +372,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
         @Override
         public void onHide(HideEvent event) {
             ConfirmMessageBox cmb = (ConfirmMessageBox)event.getSource();
-            if (cmb.getHideButton() == cmb.getButtonById(PredefinedButton.YES.name())) {
+            if (cmb.getHideButton() == cmb.getButtonById(PredefinedButton.OK.name())) {
                 String body = buildDeleteRequestBody(execs);
                 Services.ANALYSIS_SERVICE.deleteAnalysis(UserInfo.getInstance().getWorkspaceId(), body,
                         new DeleteSeviceCallback(items_to_delete, execs));
