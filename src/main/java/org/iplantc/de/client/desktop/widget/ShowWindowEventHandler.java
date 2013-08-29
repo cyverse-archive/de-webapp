@@ -60,14 +60,14 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler,
 
     @Override
     public void createNewApp(CreateNewAppEvent event) {
-        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig(Constants.CLIENT.newAppTemplate()));
+        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig(Constants.CLIENT.newAppTemplate()), true);
     }
 
     @Override
     public void onEditApp(EditAppEvent event) {
         AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig(event.getAppToEdit().getId());
         config.setOnlyLabelEditMode(event.isUserIntegratorAndAppPublic());
-        desktop.showWindow(config);
+        desktop.showWindow(config, true);
     }
 
     @Override

@@ -74,6 +74,20 @@ public class NotificationListView implements IsWidget {
     private final HorizontalPanel hyperlinkPanel;
     private boolean unseenNotificationsFetchedOnce;
 
+    /**
+     * @return the unseenNotificationsFetchedOnce
+     */
+    public boolean isUnseenNotificationsFetchedOnce() {
+        return unseenNotificationsFetchedOnce;
+    }
+
+    /**
+     * @param unseenNotificationsFetchedOnce the unseenNotificationsFetchedOnce to set
+     */
+    public void setUnseenNotificationsFetchedOnce(boolean unseenNotificationsFetchedOnce) {
+        this.unseenNotificationsFetchedOnce = unseenNotificationsFetchedOnce;
+    }
+
     public static final int NEW_NOTIFICATIONS_LIMIT = 10;
 
     final Resources resources = GWT.create(Resources.class);
