@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.resources.client.DEFeedbackStyle;
 import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
@@ -33,6 +34,7 @@ import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.sysmsgs.presenter.NewMessagePresenter;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
@@ -54,7 +56,7 @@ import com.sencha.gxt.core.client.util.Size;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
-import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -73,7 +75,7 @@ public class DEPresenter implements DEView.Presenter {
     private final NewMessagePresenter newSysMsgPresenter;
     private final HashMap<String, Command> keyboardShortCuts;
     private boolean keyboardEventsAdded;
-    private TextButton feedbackBtn;
+    private IconButton feedbackBtn;
     private final SaveSessionPeriodic ssp;
 
     /**
@@ -176,6 +178,7 @@ public class DEPresenter implements DEView.Presenter {
                 initUserHomeDir();
                 doWorkspaceDisplay();
                 getUserPreferences();
+                processQueryStrings();
 
             }
         });
@@ -226,10 +229,9 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void addFeedbackButton() {
-        DeResources resources = GWT.create(DeResources.class);
-        resources.css().ensureInjected();
-        feedbackBtn = new TextButton(I18N.DISPLAY.feedback());
-        feedbackBtn.setIcon(IplantResources.RESOURCES.feedback());
+        DEFeedbackStyle style = IplantResources.RESOURCES.getFeedbackStyle();
+        style.ensureInjected();
+        feedbackBtn = new IconButton(style.feedback());
         feedbackBtn.addSelectHandler(new SelectHandler() {
 
             @Override
@@ -239,18 +241,17 @@ public class DEPresenter implements DEView.Presenter {
             }
         });
         positionFButton(getViewPortSize());
-        feedbackBtn.addStyleName(resources.css().rotate90());
         feedbackBtn.getElement().updateZIndex(0);
         RootPanel.get().add(feedbackBtn);
         feedbackBtn.getElement().setAttribute("data-intro",
                 org.iplantc.core.resources.client.messages.I18N.TOUR.introFeedback());
-        feedbackBtn.getElement().setAttribute("data-position", "left");
+        feedbackBtn.getElement().setAttribute("data-position", "top");
         feedbackBtn.getElement().setAttribute("data-step", "6");
     }
 
     private void positionFButton(Size s) {
-        int left = s.getWidth() - 50 + XDOM.getBodyScrollLeft();
-        feedbackBtn.setPosition(left, s.getHeight() / 2);
+        int left = s.getWidth() - 235 + XDOM.getBodyScrollLeft();
+        feedbackBtn.setPosition(left, s.getHeight() - 75);
     }
 
     private Size getViewPortSize() {
@@ -261,6 +262,7 @@ public class DEPresenter implements DEView.Presenter {
     public static native void doIntro() /*-{
 		var introjs = $wnd.introJs();
 		introjs.setOption("showStepNumbers", false);
+		introjs.setOption("skipLabel", "Exit");
 		introjs.start();
 
     }-*/;
@@ -273,6 +275,22 @@ public class DEPresenter implements DEView.Presenter {
         keyboardShortCuts.put(us.getNotifiShortCut(), new NotifyKBShortCutCmd());
         keyboardShortCuts.put(us.getCloseShortCut(), new CloseKBShortCutCmd());
         addKeyBoardEvents();
+    }
+
+    // Sriram : We need a generic way to process query strings. This is temp. solution for CORE-4694
+    private void processQueryStrings() {
+        Map<String, List<String>> params = Window.Location.getParameterMap();
+        for (String key : params.keySet()) {
+            if (key.equalsIgnoreCase("type")) {
+                String val = params.get(key).get(0);
+                if (val.equalsIgnoreCase("data")) {
+                    DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory
+                            .diskResourceWindowConfig();
+                    diskResourceWindowConfig.setMaximized(true);
+                    eventBus.fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig));
+                }
+            }
+        }
     }
 
     private void addKeyBoardEvents() {
