@@ -3,6 +3,9 @@ package org.iplantc.de.client.views.windows;
 import java.util.List;
 
 import org.iplantc.core.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLabels;
+import org.iplantc.core.uiapps.client.events.AppPublishedEvent;
+import org.iplantc.core.uiapps.client.events.AppPublishedEvent.AppPublishedEventHandler;
+import org.iplantc.core.uiapps.client.models.autobeans.App;
 import org.iplantc.core.uiapps.integration.client.presenter.AppsIntegrationPresenterImpl;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationView;
 import org.iplantc.core.uiapps.integration.client.view.AppsIntegrationViewImpl;
@@ -60,7 +63,7 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  * @author jstroot, sriram, psarando
  * 
  */
-public class AppIntegrationWindow extends IplantWindowBase {
+public class AppIntegrationWindow extends IplantWindowBase implements AppPublishedEventHandler {
     interface PublicAppTitleTemplate extends SafeHtmlTemplates {
         @Template("<div>"
                 + "<span class='{3}'>{2}</span>" 
@@ -118,6 +121,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
         // JDS Add presenter as a before hide handler to determine if user has changes before closing.
         HandlerRegistration hr = this.addBeforeHideHandler(presenter);
         presenter.setBeforeHideHandlerRegistration(hr);
+        eventBus.addHandler(AppPublishedEvent.TYPE, this);
     }
 
     private void init(final AppsIntegrationView.Presenter presenter,
@@ -147,6 +151,7 @@ public class AppIntegrationWindow extends IplantWindowBase {
                     });
             at.onSuccess(config.getAppTemplate().getPayload());
         } else if (config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
+            setTitle(I18N.DISPLAY.createApps());
             // Create empty AppTemplate
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
 
@@ -227,6 +232,24 @@ public class AppIntegrationWindow extends IplantWindowBase {
     public <C extends WindowConfig> void update(C config) {
         AppsIntegrationWindowConfig appIntConfig = (AppsIntegrationWindowConfig)config;
         init(presenter, appIntConfig);
+    }
+
+    @Override
+    public void onAppPublished(AppPublishedEvent appPublishedEvent) {
+        App publishedApp = appPublishedEvent.getPublishedApp();
+        AppTemplate currentAt = presenter.getAppTemplate();
+        // JDS If the published App is the current edited AppTemplate, refetch app Template
+        if (publishedApp.getId().equalsIgnoreCase(currentAt.getId())) {
+    
+            if (presenter.isEditorDirty()) {
+                // JDS If the editor has unsaved changes, inform user that they will be thrown away.
+                IplantAnnouncer.getInstance().schedule(new ErrorAnnouncementConfig("This app has been published before the current changes were saved. All unsaved changes have been discarded."));
+            }
+            AppsIntegrationWindowConfig appIntConfig = ConfigFactory.appsIntegrationWindowConfig(publishedApp.getId());
+            appIntConfig.setOnlyLabelEditMode(true);
+            update(appIntConfig);
+        }
+    
     }
 
     /**
