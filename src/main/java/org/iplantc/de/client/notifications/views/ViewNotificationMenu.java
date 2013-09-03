@@ -41,4 +41,8 @@ public class ViewNotificationMenu extends Menu {
         view.setUnseenCount(new_count);
     }
 
+    public void setUnseenNotificationsFetchedOnce(boolean fetched) {
+        view.setUnseenNotificationsFetchedOnce(fetched);
+    }
+
 }

@@ -13,6 +13,7 @@ import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent.WindowHeadingUpdatedEventHandler;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.Padding;
@@ -54,7 +55,11 @@ public class TaskBar extends ToolBar {
 
             @Override
             public void onWindowHeadingUpdated(WindowHeadingUpdatedEvent event) {
-                taskButton.setText(win.getTitle());
+                if (Strings.isNullOrEmpty(event.getWindowTitle())) {
+                    taskButton.setText(win.getTitle());
+                } else {
+                    taskButton.setText(event.getWindowTitle());
+                }
             }
         }, WindowHeadingUpdatedEvent.TYPE);
         return taskButton;
