@@ -2,7 +2,6 @@ package org.iplantc.de.client.desktop.views;
 
 import org.iplantc.core.uicommons.client.models.UserInfo;
 
-import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -10,6 +9,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.ToggleGroup;
@@ -89,7 +89,7 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
 
     @UiField
     FieldLabel anythingField;
-    private ToggleGroup group;
+    private final ToggleGroup group;
 
     @UiField
     TextField otherSatisfiedField;
@@ -183,7 +183,7 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
     public JSONObject toJson() {
         JSONObject obj = new JSONObject();
         obj.put(UserInfo.ATTR_USERNAME, new JSONString(UserInfo.getInstance().getUsername()));
-        obj.put("User-agent", new JSONString(GXT.getUserAgent()));
+        obj.put("User-agent", new JSONString(Navigator.getUserAgent()));
         obj.put(reasonField.getText(), getAnswer1());
         obj.put(compelteField.getText(), getAnswer2());
         if (getAnswer3() != null) {
