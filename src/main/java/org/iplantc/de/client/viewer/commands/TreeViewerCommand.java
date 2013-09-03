@@ -25,7 +25,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 public class TreeViewerCommand implements ViewCommand {
 
     @Override
-    public FileViewer execute(File file) {
+    public FileViewer execute(File file, String infoType) {
         FileViewer viewer = new TreeViwerImpl(buildColumnModel(), new ListStore<TreeUrl>(
                 new TreeUrlKeyProvider()));
         return viewer;

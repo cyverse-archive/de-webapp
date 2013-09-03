@@ -10,8 +10,8 @@ import org.iplantc.de.client.viewer.views.TextViewerImpl;
 public class TextDataViewCommand implements ViewCommand {
 
     @Override
-    public FileViewer execute(final File file) {
-        final FileViewer view = new TextViewerImpl(file);
+    public FileViewer execute(final File file, String infoType) {
+        final FileViewer view = new TextViewerImpl(file, infoType);
         return view;
     }
 }
