@@ -17,7 +17,7 @@
 		<!-- Current GWT Version -->
       <gwt.version>2.5.0</gwt.version>
 		<!-- Current ExtGWT Version -->
-      <gxt.version>3.0.1</gxt.version>
+      <gxt.version>3.0.6</gxt.version>
         <!-- Define OS/Platform Independent Character Encoding -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
@@ -442,5 +442,10 @@
       		<name>iPlant Collaborative local repository</name>
       		<url>http://projects.iplantcollaborative.org/archiva/repository/internal/</url>
       	</repository>
+      	<repository>
+            <id>sencha-commercial-release</id>
+            <name>Commercially licensed Sencha artifacts</name>
+            <url>https://maven.sencha.com/repo/support-commercial-release/</url>
+        </repository>
    </repositories>
 </project>
