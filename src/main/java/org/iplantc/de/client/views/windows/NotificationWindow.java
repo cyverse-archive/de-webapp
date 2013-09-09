@@ -3,6 +3,7 @@
  */
 package org.iplantc.de.client.views.windows;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,12 +16,14 @@ import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.notifications.views.NotificationView;
 import org.iplantc.de.client.notifications.views.NotificationViewImpl;
 import org.iplantc.de.client.notifications.views.cells.NotificationMessageCell;
-import org.iplantc.de.client.notifications.views.cells.NotificationMessageTmestampCell;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.NotifyWindowConfig;
 
+import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
@@ -76,9 +79,26 @@ public class NotificationWindow extends IplantWindowBase {
         colMessage.setSortable(false);
         colMessage.setMenuDisabled(true);
 
-        ColumnConfig<NotificationMessage, NotificationMessage> colTimestamp = new ColumnConfig<NotificationMessage, NotificationMessage>(
-                new IdentityValueProvider<NotificationMessage>(), 170);
-        colTimestamp.setCell(new NotificationMessageTmestampCell());
+        ColumnConfig<NotificationMessage, Date> colTimestamp = new ColumnConfig<NotificationMessage, Date>(
+                new ValueProvider<NotificationMessage, Date>() {
+
+                    @Override
+                    public Date getValue(NotificationMessage object) {
+                        return new Date(object.getTimestamp());
+                    }
+
+                    @Override
+                    public void setValue(NotificationMessage object, Date value) {
+                        // do nothing
+                    }
+
+                    @Override
+                    public String getPath() {
+                        return "timestamp";
+                    }
+                }, 170);
+        colTimestamp.setCell(new DateCell(DateTimeFormat
+                .getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM)));
         colTimestamp.setHeader(I18N.DISPLAY.createdDateGridHeader());
 
         configs.add(colTimestamp);
