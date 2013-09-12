@@ -6,6 +6,7 @@ package org.iplantc.de.client.viewer.factory;
 import org.iplantc.de.client.viewer.commands.HtmlDataViewCommand;
 import org.iplantc.de.client.viewer.commands.ImageDataViewCommand;
 import org.iplantc.de.client.viewer.commands.PdfDataViewCommand;
+import org.iplantc.de.client.viewer.commands.ShellScriptViewCommand;
 import org.iplantc.de.client.viewer.commands.TextDataViewCommand;
 import org.iplantc.de.client.viewer.commands.TreeViewerCommand;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
@@ -48,7 +49,7 @@ public class MimeTypeViewerResolverFactory {
                 break;
 
             case X_SH:
-                cmd = new TextDataViewCommand();
+                cmd = new ShellScriptViewCommand();
                 break;
 
             case GIF:

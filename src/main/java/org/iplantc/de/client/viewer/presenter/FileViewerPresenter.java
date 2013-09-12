@@ -76,7 +76,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         String mimeType = JsonUtil.getString(manifest, "content-type");
         ViewCommand cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType
                 .fromTypeString(mimeType));
-        FileViewer viewer = cmd.execute(file);
+        String infoType = JsonUtil.getString(manifest, "info-type");
+        FileViewer viewer = cmd.execute(file, infoType);
 
         if (viewer != null) {
             viewers.add(viewer);
@@ -86,7 +87,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
         if (treeViewer) {
             cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("tree"));
-            FileViewer treeViewer = cmd.execute(file);
+            FileViewer treeViewer = cmd.execute(file, infoType);
             List<TreeUrl> urls = getManifestTreeUrls();
             if (urls != null && urls.size() > 0) {
                 treeViewer.setData(urls);

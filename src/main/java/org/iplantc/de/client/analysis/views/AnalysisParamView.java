@@ -106,15 +106,15 @@ public class AnalysisParamView implements IsWidget {
     }
 
     public void mask() {
-    	con.mask(I18N.DISPLAY.loadingMask());
+        con.mask(I18N.DISPLAY.loadingMask());
     }
 
     public void unmask() {
-    	con.unmask();
+        con.unmask();
     }
 
     private void saveFile(final String path, String fileContents) {
-    	mask();
+        mask();
         Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, fileContents,
                 new SaveasServiceCallbackHandler(path));
     }
@@ -125,7 +125,7 @@ public class AnalysisParamView implements IsWidget {
                 + I18N.DISPLAY.paramValue() + "\n");
         List<AnalysisParameter> params = grid.getStore().getAll();
         for (AnalysisParameter ap : params) {
-            sw.append(ap.getName() + "\t" + ap.getType() + "\t" + ap.getValue() + "\n");
+            sw.append(ap.getName() + "\t" + ap.getType() + "\t" + ap.getDisplayValue() + "\n");
         }
 
         return sw.toString();
@@ -143,7 +143,7 @@ public class AnalysisParamView implements IsWidget {
 
         @Override
         public void onSuccess(String result) {
-        	unmask();
+            unmask();
             JSONObject obj = JSONParser.parseStrict(result).isObject();
             DefaultUploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
             uch.onCompletion(fileName, JsonUtil.getObject(obj, "file").toString());
@@ -151,7 +151,7 @@ public class AnalysisParamView implements IsWidget {
 
         @Override
         public void onFailure(Throwable caught) {
-        	unmask();
+            unmask();
             ErrorHandler.post(I18N.ERROR.saveParamFailed(), caught);
         }
     }

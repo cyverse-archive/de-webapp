@@ -46,7 +46,7 @@
 					</toolbar:TextViewPagingToolBar>
 				</container:north>
 				<container:center layoutData="{centerData}">
-						<g:TextArea debugId="idViewArea" ui:field="textArea"></g:TextArea>
+						<container:SimpleContainer ui:field="center"></container:SimpleContainer>
 				</container:center>
 			</container:BorderLayoutContainer>
 		</container:child>
