@@ -18,12 +18,15 @@ import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
+import org.iplantc.core.uidiskresource.client.events.FileUploadedEvent;
+import org.iplantc.core.uidiskresource.client.events.FileUploadedEvent.FileUploadedEventHandler;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
 import org.iplantc.de.client.desktop.views.DEView;
+import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
@@ -119,6 +122,18 @@ public class DEPresenter implements DEView.Presenter {
 
             }
         });
+
+        eventBus.addHandler(FileUploadedEvent.TYPE, new FileUploadedEventHandler() {
+            @Override
+            public void onFileUploaded(FileUploadedEvent event) {
+                DefaultUploadCompleteHandler duc = new DefaultUploadCompleteHandler(event
+                        .getUploadDestFolderFolder().toString());
+                JSONObject obj = JsonUtil.getObject(event.getResponse());
+                String fileJson = JsonUtil.getObject(obj, "file").toString();
+                duc.onCompletion(event.getFilepath(), fileJson);
+            }
+        });
+
     }
 
     /**
