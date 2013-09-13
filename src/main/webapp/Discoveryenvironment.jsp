@@ -19,8 +19,6 @@ response.setDateHeader("Expires", 0);
 <!--                                                               -->
 <!-- Consider inlining CSS to reduce the number of requested files -->
 <!--                                                               -->
-<link type="text/css" rel="stylesheet" href="gxt/css/gxt-all.css">
-<link type="text/css" rel="stylesheet" href="gxt/css/gxt-gray.css">
 <link type="image/x-icon" rel="shortcut icon" href="images/favicon.ico">
 <link type ="text/css" rel="stylesheet" href="./introjs.min.css">
 <link type="text/css" rel="stylesheet" href="./codemirror.css">
