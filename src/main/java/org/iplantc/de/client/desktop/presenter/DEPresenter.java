@@ -230,6 +230,7 @@ public class DEPresenter implements DEView.Presenter {
 
     private void doWorkspaceDisplay() {
         view.drawHeader();
+        RootPanel.get().clear();
         RootLayoutPanel.get().add(view.asWidget());
         addFeedbackButton();
         Window.addResizeHandler(new ResizeHandler() {
