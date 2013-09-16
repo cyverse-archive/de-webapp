@@ -44,7 +44,9 @@ public class PipelineEditorWindow extends IplantWindowBase {
                 initPipelineJson = presenter.getPublishJson(pipeline);
             } else {
                 Splittable serviceWorkflowJson = pipelineConfig.getServiceWorkflowJson();
-                initPipelineJson = serviceWorkflowJson.getPayload();
+                if (serviceWorkflowJson != null) {
+                    initPipelineJson = serviceWorkflowJson.getPayload();
+                }
                 presenter.setPipeline(serviceWorkflowJson);
             }
 
