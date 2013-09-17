@@ -236,8 +236,8 @@ public class DEPresenter implements DEView.Presenter {
                 positionFButton(getViewPortSize());
             }
         });
-        view.drawHeader();
         RootLayoutPanel.get().clear();
+        view.drawHeader();
         RootLayoutPanel.get().add(view.asWidget());
         addFeedbackButton();
         initMessagePoller();
