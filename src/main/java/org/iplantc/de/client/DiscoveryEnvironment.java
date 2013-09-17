@@ -8,8 +8,6 @@ import org.iplantc.de.client.desktop.views.DEViewImpl;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Defines the web application entry point for the system.
@@ -21,7 +19,6 @@ public class DiscoveryEnvironment implements EntryPoint {
      */
     @Override
     public void onModuleLoad() {
-        RootPanel.get().add(new Image("./images/loading_spinner.gif"));
         setEntryPointTitle();
         DeResources resources = GWT.create(DeResources.class);
         resources.css().ensureInjected();

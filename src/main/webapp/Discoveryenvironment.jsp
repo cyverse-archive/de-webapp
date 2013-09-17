@@ -50,6 +50,7 @@ response.setDateHeader("Expires", 0);
 	
 
 <%
+    out.println("<img src='./images/loading_spinner.gif'/>");
     ServletContext ctx = getServletConfig().getServletContext();
     DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
     if (props.isProduction()) {

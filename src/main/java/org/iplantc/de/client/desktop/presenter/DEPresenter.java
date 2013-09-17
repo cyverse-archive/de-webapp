@@ -229,10 +229,6 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void doWorkspaceDisplay() {
-        view.drawHeader();
-        RootPanel.get().clear();
-        RootLayoutPanel.get().add(view.asWidget());
-        addFeedbackButton();
         Window.addResizeHandler(new ResizeHandler() {
 
             @Override
@@ -240,7 +236,10 @@ public class DEPresenter implements DEView.Presenter {
                 positionFButton(getViewPortSize());
             }
         });
-
+        view.drawHeader();
+        RootLayoutPanel.get().clear();
+        RootLayoutPanel.get().add(view.asWidget());
+        addFeedbackButton();
         initMessagePoller();
     }
 
@@ -267,7 +266,9 @@ public class DEPresenter implements DEView.Presenter {
 
     private void positionFButton(Size s) {
         int left = s.getWidth() - 235 + XDOM.getBodyScrollLeft();
-        feedbackBtn.setPosition(left, s.getHeight() - 75);
+        if (feedbackBtn != null) {
+            feedbackBtn.setPosition(left, s.getHeight() - 135);
+        }
     }
 
     private Size getViewPortSize() {
