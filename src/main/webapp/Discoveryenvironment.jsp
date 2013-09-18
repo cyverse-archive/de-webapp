@@ -19,8 +19,6 @@ response.setDateHeader("Expires", 0);
 <!--                                                               -->
 <!-- Consider inlining CSS to reduce the number of requested files -->
 <!--                                                               -->
-<link type="text/css" rel="stylesheet" href="gxt/css/gxt-all.css">
-<link type="text/css" rel="stylesheet" href="gxt/css/gxt-gray.css">
 <link type="image/x-icon" rel="shortcut icon" href="images/favicon.ico">
 <link type ="text/css" rel="stylesheet" href="./introjs.min.css">
 <link type="text/css" rel="stylesheet" href="./codemirror.css">
@@ -52,6 +50,7 @@ response.setDateHeader("Expires", 0);
 	
 
 <%
+	out.println("<p style='position:absolute;top:45%; left:48%  margin-top: 45%; margin-left: 48%;'>Loading...Please wait!</p><img style='position:absolute;top:50%; left:50%  margin-top: 50%; margin-left: 50%;' src='./images/loading_spinner.gif'/>");
     ServletContext ctx = getServletConfig().getServletContext();
     DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
     if (props.isProduction()) {

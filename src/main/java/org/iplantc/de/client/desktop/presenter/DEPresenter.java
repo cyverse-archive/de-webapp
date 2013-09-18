@@ -18,12 +18,15 @@ import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
+import org.iplantc.core.uidiskresource.client.events.FileUploadedEvent;
+import org.iplantc.core.uidiskresource.client.events.FileUploadedEvent.FileUploadedEventHandler;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
 import org.iplantc.de.client.desktop.views.DEView;
+import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
@@ -119,6 +122,18 @@ public class DEPresenter implements DEView.Presenter {
 
             }
         });
+
+        eventBus.addHandler(FileUploadedEvent.TYPE, new FileUploadedEventHandler() {
+            @Override
+            public void onFileUploaded(FileUploadedEvent event) {
+                DefaultUploadCompleteHandler duc = new DefaultUploadCompleteHandler(event
+                        .getUploadDestFolderFolder().toString());
+                JSONObject obj = JsonUtil.getObject(event.getResponse());
+                String fileJson = JsonUtil.getObject(obj, "file").toString();
+                duc.onCompletion(event.getFilepath(), fileJson);
+            }
+        });
+
     }
 
     /**
@@ -214,9 +229,6 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void doWorkspaceDisplay() {
-        view.drawHeader();
-        RootLayoutPanel.get().add(view.asWidget());
-        addFeedbackButton();
         Window.addResizeHandler(new ResizeHandler() {
 
             @Override
@@ -224,7 +236,10 @@ public class DEPresenter implements DEView.Presenter {
                 positionFButton(getViewPortSize());
             }
         });
-
+        RootLayoutPanel.get().clear();
+        view.drawHeader();
+        RootLayoutPanel.get().add(view.asWidget());
+        addFeedbackButton();
         initMessagePoller();
     }
 
@@ -251,7 +266,9 @@ public class DEPresenter implements DEView.Presenter {
 
     private void positionFButton(Size s) {
         int left = s.getWidth() - 235 + XDOM.getBodyScrollLeft();
-        feedbackBtn.setPosition(left, s.getHeight() - 75);
+        if (feedbackBtn != null) {
+            feedbackBtn.setPosition(left, s.getHeight() - 80);
+        }
     }
 
     private Size getViewPortSize() {
