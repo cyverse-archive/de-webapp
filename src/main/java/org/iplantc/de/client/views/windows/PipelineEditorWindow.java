@@ -72,29 +72,35 @@ public class PipelineEditorWindow extends IplantWindowBase {
     public void hide() {
         if (initPipelineJson != null
                 && !initPipelineJson.equals(presenter.getPublishJson(presenter.getPipeline()))) {
-            MessageBox box = new MessageBox(I18N.DISPLAY.save(), "");
-            box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
-            box.setIcon(MessageBox.ICONS.question());
-            box.setMessage(I18N.DISPLAY.unsavedChanges());
-            box.addHideHandler(new HideHandler() {
-
-                @Override
-                public void onHide(HideEvent event) {
-                    Dialog btn = (Dialog)event.getSource();
-                    if (btn.getHideButton().getText().equalsIgnoreCase(PredefinedButton.NO.toString())) {
-                        PipelineEditorWindow.super.hide();
-                    }
-                    if (btn.getHideButton().getText().equalsIgnoreCase(PredefinedButton.YES.toString())) {
-                        presenter.saveOnClose();
-                        close_after_save = true;
-                    }
-
-                }
-            });
-            box.show();
+            checkForSave();
+        } else if (initPipelineJson == null && presenter.getPublishJson(presenter.getPipeline()) != null) {
+            checkForSave();
         } else {
             PipelineEditorWindow.super.hide();
         }
+    }
+
+    private void checkForSave() {
+        MessageBox box = new MessageBox(I18N.DISPLAY.save(), "");
+        box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
+        box.setIcon(MessageBox.ICONS.question());
+        box.setMessage(I18N.DISPLAY.unsavedChanges());
+        box.addHideHandler(new HideHandler() {
+
+            @Override
+            public void onHide(HideEvent event) {
+                Dialog btn = (Dialog)event.getSource();
+                if (btn.getHideButton().getText().equalsIgnoreCase(PredefinedButton.NO.toString())) {
+                    PipelineEditorWindow.super.hide();
+                }
+                if (btn.getHideButton().getText().equalsIgnoreCase(PredefinedButton.YES.toString())) {
+                    presenter.saveOnClose();
+                    close_after_save = true;
+                }
+
+            }
+        });
+        box.show();
     }
 
     @Override
