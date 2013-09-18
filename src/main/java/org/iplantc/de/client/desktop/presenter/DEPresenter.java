@@ -267,7 +267,7 @@ public class DEPresenter implements DEView.Presenter {
     private void positionFButton(Size s) {
         int left = s.getWidth() - 235 + XDOM.getBodyScrollLeft();
         if (feedbackBtn != null) {
-            feedbackBtn.setPosition(left, s.getHeight() - 135);
+            feedbackBtn.setPosition(left, s.getHeight() - 80);
         }
     }
 
