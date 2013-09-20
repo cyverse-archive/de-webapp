@@ -63,9 +63,10 @@ public class PipelineEditorWindow extends IplantWindowBase {
             if (close_after_save) {
                 close_after_save = false;
                 PipelineEditorWindow.super.hide();
+            } else {
+                initPipelineJson = presenter.getPublishJson(presenter.getPipeline());
             }
         }
-
     }
 
     @Override
