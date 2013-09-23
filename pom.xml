@@ -1,117 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-   xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.iplantc.de</groupId>
-   <artifactId>de-web</artifactId>
-   <packaging>war</packaging>
-   <version>dev-SNAPSHOT</version>
-   <name>Discovery Environment Web Application</name>
-   <url>http://iplantcollaborative.org</url>
-	<!-- convenience to define GWT version in one place -->
-   <properties>
-		<!-- Target Java Version -->
-      <jdk.version>1.6</jdk.version>
-		<!-- Current GWT Version -->
-      <gwt.version>2.5.0</gwt.version>
-		<!-- Current ExtGWT Version -->
-      <gxt.version>3.0.6</gxt.version>
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.iplantc.de</groupId>
+    <artifactId>de-web</artifactId>
+    <packaging>war</packaging>
+    <version>dev-SNAPSHOT</version>
+    <name>Discovery Environment Web Application</name>
+    <url>http://iplantcollaborative.org</url>
+    <!-- convenience to define GWT version in one place -->
+    <properties>
+        <!-- Target Java Version -->
+        <jdk.version>1.6</jdk.version>
+        <!-- Current GWT Version -->
+        <gwt.version>2.5.0</gwt.version>
+        <!-- Current ExtGWT Version -->
+        <gxt.version>3.0.6</gxt.version>
         <!-- Define OS/Platform Independent Character Encoding -->
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
-      <hibernate.version>3.6.8.Final</hibernate.version>
-      <googleGuava.version>13.0.1</googleGuava.version>
-   </properties>
-   <dependencies>
-      <dependency>
-         <groupId>org.safehaus.jug</groupId>
-         <artifactId>jug.osgi</artifactId>
-         <version>2.0.0</version>
-      </dependency>
-      <dependency>
-         <groupId>commons-lang</groupId>
-         <artifactId>commons-lang</artifactId>
-         <version>2.6</version>
-      </dependency>
-      <dependency>
-         <groupId>net.sf.json-lib</groupId>
-         <artifactId>json-lib</artifactId>
-         <version>2.4</version>
-         <classifier>jdk15</classifier>
-      </dependency>
-      <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-         <version>1.2.14</version>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>1.5.8</version>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-log4j12</artifactId>
-         <version>1.5.8</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>clavin-java</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-resources</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-apps-widgets</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-applications</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-pipelines</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-diskresource</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.de</groupId>
-         <artifactId>de-common</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.de</groupId>
-         <artifactId>confluence-client</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>jsonutil</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-commons</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.iplantc.core</groupId>
-         <artifactId>ui-apps-integration</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+        <hibernate.version>3.6.8.Final</hibernate.version>
+        <googleGuava.version>13.0.1</googleGuava.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.safehaus.jug</groupId>
+            <artifactId>jug.osgi</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>clavin-java</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-apps-widgets</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-applications</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-pipelines</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-diskresource</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.de</groupId>
+            <artifactId>de-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.de</groupId>
+            <artifactId>confluence-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>jsonutil</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.iplantc.core</groupId>
+            <artifactId>ui-apps-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
@@ -153,9 +152,9 @@
         </dependency>
 
         <dependency>
-           <groupId>com.google.guava</groupId>
-           <artifactId>guava-gwt</artifactId>
-           <version>${googleGuava.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-gwt</artifactId>
+            <version>${googleGuava.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sencha.gxt</groupId>
@@ -207,7 +206,8 @@
             <groupId>org.irods.idrop</groupId>
             <artifactId>idrop-lite</artifactId>
             <version>1.0.2-SNAPSHOT</version>
-            <scope>provided</scope> <!-- we don't want the applet in WEB-INF/classes -->
+            <scope>provided</scope>
+            <!-- we don't want the applet in WEB-INF/classes -->
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
@@ -277,7 +277,7 @@
                     <mode>htmlunit</mode>
                     <gen>${basedir}/gwt-gen</gen>
                     <module>org.iplantc.de.discoveryenvironment</module>
-		            <compileReport>true</compileReport>
+                    <compileReport>true</compileReport>
                     <compilerMetrics>true</compilerMetrics>
                     <XsoycDetailed>true</XsoycDetailed>
                 </configuration>
@@ -313,13 +313,13 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-						<!-- copy resources before the war is packaged -->
+                        <!-- copy resources before the war is packaged -->
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-							<!-- Copy the MANIFEST.MF file into an area accessible by servlets -->
+                            <!-- Copy the MANIFEST.MF file into an area accessible by servlets -->
                             <outputDirectory>${basedir}/war/WEB-INF/classes</outputDirectory>
                             <resources>
                                 <resource>
@@ -357,17 +357,17 @@
                 </executions>
             </plugin>
             <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-surefire-plugin</artifactId>
-               <version>2.12.4</version>
-               <dependencies>
-                  <dependency>
-                     <!-- Specify Junit Provider -->
-                     <groupId>org.apache.maven.surefire</groupId>
-                     <artifactId>surefire-junit47</artifactId>
-                     <version>2.12.4</version>
-                  </dependency>
-               </dependencies>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <dependencies>
+                    <dependency>
+                        <!-- Specify Junit Provider -->
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.12.4</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -418,29 +418,29 @@
                 </configuration>
             </plugin>
             <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>gwt-maven-plugin</artifactId>
-               <version>${gwt.version}</version>
-               <reportSets>
-                  <reportSet>
-                     <reports>
-                        <report>compile-report</report>
-                     </reports>
-                 </reportSet>
-              </reportSets>
-           </plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwt.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>compile-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
         </plugins>
     </reporting>
     <repositories>
-      	<repository>
-      		<id>iplantCollaborative</id>
-      		<name>iPlant Collaborative local repository</name>
-      		<url>http://projects.iplantcollaborative.org/archiva/repository/internal/</url>
-      	</repository>
-      	<repository>
+        <repository>
+            <id>iplantCollaborative</id>
+            <name>iPlant Collaborative local repository</name>
+            <url>http://projects.iplantcollaborative.org/archiva/repository/internal/</url>
+        </repository>
+        <repository>
             <id>sencha-commercial-release</id>
             <name>Commercially licensed Sencha artifacts</name>
             <url>https://maven.sencha.com/repo/support-commercial-release/</url>
         </repository>
-   </repositories>
+    </repositories>
 </project>
