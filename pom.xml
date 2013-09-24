@@ -305,6 +305,9 @@
                         <fileset>
                             <directory>${basedir}/gwt-gen</directory>
                         </fileset>
+                        <fileset>
+                            <directory>${basedir}/gwt-unitCache</directory>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
