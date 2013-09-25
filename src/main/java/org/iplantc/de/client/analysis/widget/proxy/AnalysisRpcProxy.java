@@ -1,5 +1,6 @@
 package org.iplantc.de.client.analysis.widget.proxy;
 
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.de.client.Services;
@@ -44,8 +45,8 @@ public class AnalysisRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoa
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        // TODO add a message for the user?
-                        ErrorHandler.post(caught);
+                        ErrorHandler.post(I18N.DISPLAY.analysesRetrievalFailure(), caught);
+                        callback.onFailure(caught);
                     }
                 });
     }
