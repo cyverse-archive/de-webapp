@@ -5,6 +5,7 @@ import org.iplantc.core.pipelines.client.presenter.PipelineViewPresenter;
 import org.iplantc.core.pipelines.client.views.PipelineView;
 import org.iplantc.core.pipelines.client.views.PipelineViewImpl;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.core.uicommons.client.info.SuccessAnnouncementConfig;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -59,7 +60,7 @@ public class PipelineEditorWindow extends IplantWindowBase {
     class PublishCallbackCommand implements Command {
         @Override
         public void execute() {
-            IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.publishWorkflowSuccess());
+            IplantAnnouncer.getInstance().schedule(new SuccessAnnouncementConfig(I18N.DISPLAY.publishWorkflowSuccess()));
             if (close_after_save) {
                 close_after_save = false;
                 PipelineEditorWindow.super.hide();
