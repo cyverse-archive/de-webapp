@@ -28,7 +28,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
  */
 public class AboutApplicationWindow extends IplantWindowBase {
     private AboutApplicationData model;
-    private DeResources res;
+    private final DeResources res;
 
     public AboutApplicationWindow(AboutWindowConfig config) {
         super("");
@@ -78,8 +78,8 @@ public class AboutApplicationWindow extends IplantWindowBase {
         pnlDetails.setHeaderVisible(false);
 
         HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
-                model.getBuildNumber(), Window.Navigator.getUserAgent(),
-                I18N.DISPLAY.projectCopyrightStatement(), I18N.DISPLAY.nsfProjectText()));
+                model.getBuildNumber(), Window.Navigator.getUserAgent(), 
+                I18N.DISPLAY.projectCopyrightStatement().asString(), I18N.DISPLAY.nsfProjectText().asString()));
         pnlDetails.add(txt);
 
         return pnlDetails;

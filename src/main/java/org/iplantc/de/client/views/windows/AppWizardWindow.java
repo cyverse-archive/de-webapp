@@ -8,7 +8,7 @@ import org.iplantc.core.uiapps.widgets.client.presenter.AppWizardPresenterImpl;
 import org.iplantc.core.uiapps.widgets.client.services.AppMetadataServiceFacade;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices;
-import org.iplantc.core.uiapps.widgets.client.services.impl.AppTemplateCallbackConverter;
+import org.iplantc.core.uiapps.widgets.client.services.impl.converters.AppTemplateCallbackConverter;
 import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
