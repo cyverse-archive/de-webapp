@@ -71,11 +71,16 @@ public class PipelineEditorWindow extends IplantWindowBase {
 
     @Override
     public void hide() {
-        if (initPipelineJson != null
-                && !initPipelineJson.equals(presenter.getPublishJson(presenter.getPipeline()))) {
-            checkForSave();
-        } else if (initPipelineJson == null && presenter.getPublishJson(presenter.getPipeline()) != null) {
-            checkForSave();
+        if (!isMinimized()) {
+            if (initPipelineJson != null
+                    && !initPipelineJson.equals(presenter.getPublishJson(presenter.getPipeline()))) {
+                checkForSave();
+            } else if (initPipelineJson == null
+                    && presenter.getPublishJson(presenter.getPipeline()) != null) {
+                checkForSave();
+            } else {
+                PipelineEditorWindow.super.hide();
+            }
         } else {
             PipelineEditorWindow.super.hide();
         }
