@@ -57,11 +57,19 @@ public class DeDiskResourceWindow extends IplantWindowBase {
 
             @Override
             public void onShow(ShowEvent event) {
-            	if(config!= null && config.isMaximized())
-                DeDiskResourceWindow.this.maximize();
+                if (config != null && config.isMaximized())
+                    DeDiskResourceWindow.this.maximize();
             }
         });
 
+    }
+
+    @Override
+    public void hide() {
+        if (!isMinimized()) {
+            presenter.cleanUp();
+        }
+        super.hide();
     }
 
     @Override
