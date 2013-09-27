@@ -98,7 +98,6 @@ public class AnalysisParamView implements IsWidget {
                 String fileContents = writeTabFile();
                 saveFile(saveDialog.getSelectedFolder().getId() + "/" + saveDialog.getFileName(),
                         fileContents);
-
             }
         });
         saveDialog.show();
