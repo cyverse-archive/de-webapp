@@ -20,45 +20,25 @@ import com.google.web.bindery.autobean.shared.Splittable;
 
 public class AnalysisParameterValueParser {
 
-    /*public static enum TYPES {
-        TEXT, MULTILINETEXT, FLAG, NUMBER, INTEGER, DOUBLE, VALUESELECTION, SELECTION, TEXTSELECTION, INTEGERSELECTION, DOUBLESELECTION, TREESELECTION, ENVIRONMENTVARIABLE, OUTPUT, INPUT
-    }*/
-
     static AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
 
     public static List<AnalysisParameter> parse(final List<AnalysisParameter> paramList) {
 
         List<AnalysisParameter> parsedList = new ArrayList<AnalysisParameter>();
         for (AnalysisParameter ap : paramList) {
-//            String type = ap.getType();
-            if(AppTemplateUtils.isTextType(ap.getType())){
-            /*if (type.equalsIgnoreCase(TYPES.TEXT.toString())
-                    || type.equalsIgnoreCase(TYPES.MULTILINETEXT.toString())
-                    || type.equalsIgnoreCase(TYPES.ENVIRONMENTVARIABLE.toString())
-                    || type.equalsIgnoreCase(TYPES.OUTPUT.toString())
-                    || type.equalsIgnoreCase(TYPES.NUMBER.toString())
-                    || type.equalsIgnoreCase(TYPES.INTEGER.toString())
-                    || type.equalsIgnoreCase(TYPES.DOUBLE.toString())) {*/
-
+            if (AppTemplateUtils.isTextType(ap.getType())) {
                 parsedList.addAll(parseStringValue(ap));
-            /*} else if (type.equalsIgnoreCase(TYPES.INPUT.toString())) {*/
             } else if (ap.getType().equals(ArgumentType.Input)) {
-                if (!ap.getInfoType().equalsIgnoreCase("ReferenceAnnotation")) {
+                if (!ap.getInfoType().equalsIgnoreCase("ReferenceAnnotation")
+                        && !ap.getInfoType().equalsIgnoreCase("ReferenceSequence")
+                        && !ap.getInfoType().equalsIgnoreCase("ReferenceGenome")) {
                     parsedList.addAll(parseStringValue(ap));
                 } else {
                     parsedList.addAll(parseSelectionValue(ap));
                 }
-
-            /*} else if (type.equalsIgnoreCase(TYPES.VALUESELECTION.toString())
-                    || type.equalsIgnoreCase(TYPES.SELECTION.toString())
-                    || type.equalsIgnoreCase(TYPES.TEXTSELECTION.toString())
-                    || type.equalsIgnoreCase(TYPES.INTEGERSELECTION.toString())
-                    || type.equalsIgnoreCase(TYPES.DOUBLESELECTION.toString())
-                    || type.equalsIgnoreCase(TYPES.TREESELECTION.toString())) {*/
-            } else if(AppTemplateUtils.isSelectionArgumentType(ap.getType())){
+            } else if (AppTemplateUtils.isSelectionArgumentType(ap.getType())) {
                 parsedList.addAll(parseSelectionValue(ap));
             }
-
         }
 
         return parsedList;
@@ -68,8 +48,7 @@ public class AnalysisParameterValueParser {
     static List<AnalysisParameter> parseSelectionValue(final AnalysisParameter ap) {
         Splittable s = ap.getValue();
         Splittable val = s.get("value");
-        if ((val != null) 
-                && (Strings.isNullOrEmpty(val.getPayload()) || !val.isKeyed())) {
+        if ((val != null) && (Strings.isNullOrEmpty(val.getPayload()) || !val.isKeyed())) {
             return Collections.emptyList();
         }
         AutoBean<SelectionValue> ab = AutoBeanCodex.decode(factory, SelectionValue.class, val);
