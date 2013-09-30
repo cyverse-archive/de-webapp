@@ -2,6 +2,7 @@ package org.iplantc.de.client.notifications.models.payload;
 
 import java.util.List;
 
+import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.core.uicommons.client.models.HasId;
 
 import com.google.gwt.user.client.ui.HasName;
