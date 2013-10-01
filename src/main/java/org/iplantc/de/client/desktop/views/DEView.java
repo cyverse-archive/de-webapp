@@ -33,6 +33,8 @@ public interface DEView extends IsWidget {
         void doPeriodicSessionSave();
 
         void doWelcomeIntro();
+
+        void cleanUp();
     }
 
     /**
@@ -66,5 +68,7 @@ public interface DEView extends IsWidget {
     void updateUnseenSystemMessageCount(long numUnseenSysMsgs);
 
     Desktop getDesktop();
+
+    void cleanUp();
 
 }
