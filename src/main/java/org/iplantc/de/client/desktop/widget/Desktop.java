@@ -42,6 +42,7 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Margins;
@@ -89,6 +90,8 @@ public class Desktop implements IsWidget {
     private WindowHandler handler;
     private IPlantWindowInterface activeWindow;
 
+    private List<HandlerRegistration> eventHandlers = new ArrayList<HandlerRegistration>();
+
     /**
      * @return the activeWindow
      */
@@ -135,30 +138,43 @@ public class Desktop implements IsWidget {
         // Launching Tito and App windows
         ShowWindowEventHandler showWindowHandler = new ShowWindowEventHandler(this);
         CloseActiveWindowEventHandler closeActiveWindowHandler = new CloseActiveWindowEventHandler(this);
-        eventbus.addHandler(EditAppEvent.TYPE, showWindowHandler);
-        eventbus.addHandler(CreateNewAppEvent.TYPE, showWindowHandler);
-        eventbus.addHandler(CreateNewWorkflowEvent.TYPE, showWindowHandler);
-        eventbus.addHandler(EditWorkflowEvent.TYPE, showWindowHandler);
+        eventHandlers.add(eventbus.addHandler(EditAppEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventbus.addHandler(CreateNewAppEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventbus.addHandler(CreateNewWorkflowEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventbus.addHandler(EditWorkflowEvent.TYPE, showWindowHandler));
 
         // Launching File Preview windows
-        eventbus.addHandler(ShowFilePreviewEvent.TYPE, showWindowHandler);
+        eventHandlers.add(eventbus.addHandler(ShowFilePreviewEvent.TYPE, showWindowHandler));
 
-        eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler);
-        eventbus.addHandler(WindowShowRequestEvent.TYPE, showWindowHandler);
-        eventbus.addHandler(RunAppEvent.TYPE, showWindowHandler);
-        eventBus.addHandler(ShowSystemMessagesEvent.TYPE, showWindowHandler);
-        eventbus.addHandler(WindowCloseRequestEvent.TYPE, closeActiveWindowHandler);
-        eventbus.addHandler(WindowLayoutRequestEvent.TYPE, new WindowLayoutRequestEventHandlerImpl());
+        eventHandlers.add(eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventbus.addHandler(WindowShowRequestEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventbus.addHandler(RunAppEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventBus.addHandler(ShowSystemMessagesEvent.TYPE, showWindowHandler));
+        eventHandlers.add(eventbus.addHandler(WindowCloseRequestEvent.TYPE, closeActiveWindowHandler));
+        eventHandlers.add(eventbus.addHandler(WindowLayoutRequestEvent.TYPE,
+                new WindowLayoutRequestEventHandlerImpl()));
     }
 
     private void initEventHandlers(final EventBus eventbus) {
 
-        eventbus.addHandler(RequestBulkDownloadEvent.TYPE, new DesktopFileTransferEventHandler(this));
-        eventbus.addHandler(RequestBulkUploadEvent.TYPE, new DesktopFileTransferEventHandler(this));
-        eventbus.addHandler(RequestImportFromUrlEvent.TYPE, new DesktopFileTransferEventHandler(this));
-        eventbus.addHandler(RequestSimpleDownloadEvent.TYPE, new DesktopFileTransferEventHandler(this));
-        eventbus.addHandler(RequestSimpleUploadEvent.TYPE, new DesktopFileTransferEventHandler(this));
+        eventHandlers.add(eventbus.addHandler(RequestBulkDownloadEvent.TYPE,
+                new DesktopFileTransferEventHandler(this)));
+        eventHandlers.add(eventbus.addHandler(RequestBulkUploadEvent.TYPE,
+                new DesktopFileTransferEventHandler(this)));
+        eventHandlers.add(eventbus.addHandler(RequestImportFromUrlEvent.TYPE,
+                new DesktopFileTransferEventHandler(this)));
+        eventHandlers.add(eventbus.addHandler(RequestSimpleDownloadEvent.TYPE,
+                new DesktopFileTransferEventHandler(this)));
+        eventHandlers.add(eventbus.addHandler(RequestSimpleUploadEvent.TYPE,
+                new DesktopFileTransferEventHandler(this)));
 
+    }
+
+    public void cleanUp() {
+        EventBus eventBus = EventBus.getInstance();
+        for (HandlerRegistration hr : eventHandlers) {
+            eventBus.removeHandler(hr);
+        }
     }
 
     protected <C extends WindowConfig> void showWindow(final C config) {

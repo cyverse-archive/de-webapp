@@ -21,6 +21,12 @@ public class DEAppsWindow extends IplantWindowBase {
     }
 
     @Override
+    public void doHide() {
+        presenter.cleanUp();
+        super.doHide();
+    }
+
+    @Override
     public WindowState getWindowState() {
         AppsWindowConfig config = ConfigFactory.appsWindowConfig();
         config.setSelectedApp(presenter.getSelectedApp());

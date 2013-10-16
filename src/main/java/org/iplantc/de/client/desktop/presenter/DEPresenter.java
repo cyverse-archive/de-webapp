@@ -1,5 +1,6 @@
 package org.iplantc.de.client.desktop.presenter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -77,6 +79,7 @@ public class DEPresenter implements DEView.Presenter {
     private final EventBus eventBus;
     private final NewMessagePresenter newSysMsgPresenter;
     private final HashMap<String, Command> keyboardShortCuts;
+    private final List<HandlerRegistration> eventHandlers = new ArrayList<HandlerRegistration>();
     private boolean keyboardEventsAdded;
     private IconButton feedbackBtn;
     private final SaveSessionPeriodic ssp;
@@ -98,32 +101,34 @@ public class DEPresenter implements DEView.Presenter {
 
     private void initializeEventHandlers() {
 
-        eventBus.addHandler(PreferencesUpdatedEvent.TYPE, new PreferencesUpdatedEventHandler() {
+        eventHandlers.add(eventBus.addHandler(PreferencesUpdatedEvent.TYPE,
+                new PreferencesUpdatedEventHandler() {
 
-            @Override
-            public void onUpdate(final PreferencesUpdatedEvent event) {
-                keyboardShortCuts.clear();
-                setUpKBShortCuts();
-                doPeriodicSessionSave();
-            }
-        });
-        eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
+                    @Override
+                    public void onUpdate(final PreferencesUpdatedEvent event) {
+                        keyboardShortCuts.clear();
+                        setUpKBShortCuts();
+                        doPeriodicSessionSave();
+                    }
+                }));
+        eventHandlers.add(eventBus.addHandler(SystemMessageCountUpdateEvent.TYPE,
                 new SystemMessageCountUpdateEvent.Handler() {
                     @Override
                     public void onCountUpdate(final SystemMessageCountUpdateEvent event) {
                         view.updateUnseenSystemMessageCount(event.getCount());
                     }
-                });
-        eventBus.addHandler(UserSettingsUpdatedEvent.TYPE, new UserSettingsUpdatedEventHandler() {
+                }));
+        eventHandlers.add(eventBus.addHandler(UserSettingsUpdatedEvent.TYPE,
+                new UserSettingsUpdatedEventHandler() {
 
-            @Override
-            public void onUpdate(UserSettingsUpdatedEvent usue) {
-                saveSettings();
+                    @Override
+                    public void onUpdate(UserSettingsUpdatedEvent usue) {
+                        saveSettings();
 
-            }
-        });
+                    }
+                }));
 
-        eventBus.addHandler(FileUploadedEvent.TYPE, new FileUploadedEventHandler() {
+        eventHandlers.add(eventBus.addHandler(FileUploadedEvent.TYPE, new FileUploadedEventHandler() {
             @Override
             public void onFileUploaded(FileUploadedEvent event) {
                 DefaultUploadCompleteHandler duc = new DefaultUploadCompleteHandler(event
@@ -132,8 +137,17 @@ public class DEPresenter implements DEView.Presenter {
                 String fileJson = JsonUtil.getObject(obj, "file").toString();
                 duc.onCompletion(event.getFilepath(), fileJson);
             }
-        });
+        }));
 
+    }
+
+    @Override
+    public void cleanUp() {
+        EventBus eventBus = EventBus.getInstance();
+        for (HandlerRegistration hr : eventHandlers) {
+            eventBus.removeHandler(hr);
+        }
+        view.cleanUp();
     }
 
     /**
@@ -435,6 +449,7 @@ public class DEPresenter implements DEView.Presenter {
     public void doLogout() {
         // Need to stop polling
         MessagePoller.getInstance().stop();
+        cleanUp();
 
         String address = DEProperties.getInstance().getMuleServiceBaseUrl()
                 + "logout?login-time=" + UserInfo.getInstance().getLoginTime(); //$NON-NLS-1$

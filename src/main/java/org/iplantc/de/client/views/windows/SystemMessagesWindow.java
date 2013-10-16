@@ -14,15 +14,15 @@ import com.google.gwt.user.client.Window;
 public final class SystemMessagesWindow extends IplantWindowBase {
 
     private static int computeDefaultWidth() {
-        return Math.max(400, Window.getClientWidth() / 3);
+        return Math.max(600, Window.getClientWidth() / 3);
     }
 
     private static int computeDefaultHeight() {
-        return Math.max(300, Window.getClientHeight() / 3);
+        return Math.max(400, Window.getClientHeight() / 3);
     }
 
-	private final MessagesPresenter presenter;
-	
+    private final MessagesPresenter presenter;
+
     /**
      * the constructor
      * 
@@ -31,21 +31,21 @@ public final class SystemMessagesWindow extends IplantWindowBase {
     public SystemMessagesWindow(final SystemMessagesWindowConfig config) {
         super("", config);
         this.presenter = new MessagesPresenter(config.getSelectedMessage());
-		setTitle(I18N.DISPLAY.systemMessagesLabel());
+        setTitle(I18N.DISPLAY.systemMessagesLabel());
         this.setWidth(computeDefaultWidth());
         this.setHeight(computeDefaultHeight());
         presenter.go(this);
-	}
+    }
 
     /**
      * @see IplantWindowBase#getWindowState()
      */
-	@Override
-	public WindowState getWindowState() {
+    @Override
+    public WindowState getWindowState() {
         final String selMsg = presenter.getSelectedMessageId();
         return createWindowState(ConfigFactory.systemMessagesWindowConfig(selMsg));
-	}
-	
+    }
+
     /**
      * @see IplantWindowBase#doHide()
      */

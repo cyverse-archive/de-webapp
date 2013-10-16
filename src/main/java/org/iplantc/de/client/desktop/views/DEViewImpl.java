@@ -3,6 +3,7 @@
  */
 package org.iplantc.de.client.desktop.views;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.resources.client.DEHeaderStyle;
@@ -27,6 +28,7 @@ import org.iplantc.de.client.preferences.views.PreferencesDialog;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -89,6 +91,8 @@ public class DEViewImpl implements DEView {
     private final IPlantAnchor sysMsgsMenuItem;
     private Menu userMenu;
 
+    private List<HandlerRegistration> eventHandlers = new ArrayList<HandlerRegistration>();
+
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
     }
@@ -133,7 +137,7 @@ public class DEViewImpl implements DEView {
         EventBus eventbus = EventBus.getInstance();
 
         // handle data events
-        eventbus.addHandler(NotificationCountUpdateEvent.TYPE,
+        eventHandlers.add(eventbus.addHandler(NotificationCountUpdateEvent.TYPE,
                 new NotificationCountUpdateEventHandler() {
 
                     @Override
@@ -148,7 +152,7 @@ public class DEViewImpl implements DEView {
                         lblNotifications.setCount(new_count);
 
                     }
-                });
+                }));
     }
 
     @Override
@@ -456,6 +460,17 @@ public class DEViewImpl implements DEView {
     @Override
     public Desktop getDesktop() {
         return desktop;
+    }
+
+    @Override
+    public void cleanUp() {
+        EventBus eventBus = EventBus.getInstance();
+        for (HandlerRegistration hr : eventHandlers) {
+            eventBus.removeHandler(hr);
+        }
+
+        desktop.cleanUp();
+
     }
 
 }
