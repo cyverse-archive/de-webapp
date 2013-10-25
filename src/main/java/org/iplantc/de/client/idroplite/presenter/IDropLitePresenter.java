@@ -52,7 +52,7 @@ public class IDropLitePresenter implements Presenter {
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
                 int adjustSize = CONTENT_PADDING * 2;
 
-                appletData.put("uploadDest", new JSONString(idlwc.getUploadFolderDest().getId())); //$NON-NLS-1$
+                appletData.put("uploadDest", new JSONString(idlwc.getUploadFolderDest().getPath())); //$NON-NLS-1$
 
                 return IDropLiteUtil.getAppletForUpload(appletData, view.getViewWidth(),
                         view.getViewHeight() - adjustSize);
