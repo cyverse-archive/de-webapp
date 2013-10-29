@@ -15,9 +15,12 @@ import org.iplantc.core.uicommons.client.events.UserSettingsUpdatedEvent;
 import org.iplantc.core.uicommons.client.events.UserSettingsUpdatedEventHandler;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.requests.KeepaliveTimer;
 import org.iplantc.core.uidiskresource.client.events.FileUploadedEvent;
 import org.iplantc.core.uidiskresource.client.events.FileUploadedEvent.FileUploadedEventHandler;
@@ -42,12 +45,15 @@ import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -55,6 +61,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.util.KeyNav;
 import com.sencha.gxt.core.client.util.Size;
@@ -315,10 +323,25 @@ public class DEPresenter implements DEView.Presenter {
             if (key.equalsIgnoreCase("type")) {
                 String val = params.get(key).get(0);
                 if (val.equalsIgnoreCase("data")) {
+                    String selectedFolder = URL.decode(Window.Location.getParameter("folder"));
                     DiskResourceWindowConfig diskResourceWindowConfig = ConfigFactory
                             .diskResourceWindowConfig();
                     diskResourceWindowConfig.setMaximized(true);
-                    eventBus.fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig));
+                    if (!Strings.isNullOrEmpty(selectedFolder)) {
+                        final DiskResourceAutoBeanFactory drFactory = GWT
+                                .create(DiskResourceAutoBeanFactory.class);
+                        AutoBean<Folder> fAb = AutoBeanCodex.decode(drFactory, Folder.class,
+                                "{\"id\":\"" + selectedFolder + "\"}");
+                        ArrayList<HasId> newArrayList = Lists.newArrayList();
+                        Folder folder = fAb.as();
+                        newArrayList.add(folder);
+                        diskResourceWindowConfig.setSelectedFolder(folder);
+                        diskResourceWindowConfig.setSelectedDiskResources(newArrayList);
+                        EventBus.getInstance().fireEvent(
+                                new WindowShowRequestEvent(diskResourceWindowConfig, true));
+                    } else {
+                        eventBus.fireEvent(new WindowShowRequestEvent(diskResourceWindowConfig));
+                    }
                 }
             }
         }
