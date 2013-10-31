@@ -1,9 +1,7 @@
 package org.iplantc.de.client.analysis.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,9 +12,7 @@ import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.analysis.models.SelectionValue;
 import org.iplantc.de.client.analysis.models.SimpleValue;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gwt.core.shared.GWT;
@@ -28,15 +24,11 @@ public class AnalysisParameterValueParser {
 
     static AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
 
-    private static List<String> REFERENCE_GENOME_TYPES
-        = Arrays.asList("ReferenceAnnotation", "ReferenceSequence", "ReferenceGenome");
+    private static Set<String> REFERENCE_GENOME_TYPES
+        = Sets.newHashSet("referenceannotation", "referencesequence", "referencegenome");
 
     private static boolean isReferenceGenomeType(final String typeName) {
-        return Iterables.any(REFERENCE_GENOME_TYPES, new Predicate<String>() {
-            public boolean apply(String input) {
-                return input.equalsIgnoreCase(typeName);
-            }
-        });
+        return REFERENCE_GENOME_TYPES.contains(typeName.toLowerCase());
     }
 
     private static final Set<ArgumentType> INPUT_TYPES = Sets.immutableEnumSet(
@@ -54,7 +46,7 @@ public class AnalysisParameterValueParser {
             if (AppTemplateUtils.isTextType(ap.getType()) || ap.getType().equals(ArgumentType.Flag)) {
                 parsedList.addAll(parseStringValue(ap));
             } else if (isInputType(ap.getType())) {
-                if (isReferenceGenomeType(ap.getInfoType())) {
+                if (!isReferenceGenomeType(ap.getInfoType())) {
                     parsedList.addAll(parseStringValue(ap));
                 } else {
                     parsedList.addAll(parseSelectionValue(ap));
