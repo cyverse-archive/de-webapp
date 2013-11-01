@@ -37,10 +37,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class TextViewerImpl implements FileViewer {
 
-    public static final int MIN_PAGE_SIZE_KB = 8;
-    public static final int MAX_PAGE_SIZE_KB = 64;
-    public static final int PAGE_INCREMENT_SIZE_KB = 8;
-
     private static TextViewerUiBinder uiBinder = GWT.create(TextViewerUiBinder.class);
 
     @UiTemplate("TextViewer.ui.xml")
