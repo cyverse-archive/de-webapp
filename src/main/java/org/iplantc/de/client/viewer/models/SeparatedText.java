@@ -1,5 +1,7 @@
 package org.iplantc.de.client.viewer.models;
 
+import java.util.List;
+
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
 public interface SeparatedText {
@@ -27,7 +29,5 @@ public interface SeparatedText {
 
     @PropertyName("max-cols")
     public String getMaxColumns();
-
-    SeparatedTextData getData();
 
 }
