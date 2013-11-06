@@ -8,13 +8,14 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.viewer.models.SeparatedText;
-import org.iplantc.de.client.viewer.models.SeparatedTextAutoBeanFactory;
+import org.iplantc.de.client.viewer.models.StructuredText;
+import org.iplantc.de.client.viewer.models.StructuredTextAutoBeanFactory;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -22,6 +23,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -30,34 +32,34 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.widget.core.client.grid.LiveGridView;
 
-public class SeparatedTextViewer implements FileViewer {
+public class StrcturedTextViewerImpl extends AbstractTextViewer {
 
     private Grid<JSONObject> grid;
-    private SeparatedTextViewToolBar toolbar;
+    private TextViewPagingToolBar toolbar;
     private ListStore<JSONObject> store;
-    private LiveGridView<SeparatedTextViewer> liveView;
     private BorderLayoutContainer container;
     private ContentPanel north;
-    private ContentPanel center;
-    private final File file;
-    private final String infoType;
+    private VerticalLayoutContainer center;
     private final String COMMA_SEPARATOR = ",";
     private final String TAB_SEPARATOR = "\t";
-    private final String LINE_ENDING = "\n";
+    private StructuredText text_bean;
 
-    private final SeparatedTextAutoBeanFactory factory = GWT.create(SeparatedTextAutoBeanFactory.class);
+    private final StructuredTextAutoBeanFactory factory = GWT
+            .create(StructuredTextAutoBeanFactory.class);
+    private boolean hasHeader;
+    private JSONObject headerRow;
 
-    public SeparatedTextViewer(File file, String infoType) {
-        this.file = file;
-        this.infoType = infoType;
+    public StrcturedTextViewerImpl(File file, String infoType) {
+        super(file, infoType);
         initLayout();
         initToolbar();
-        getData();
+        loadData();
     }
 
     private void initLayout() {
@@ -66,47 +68,41 @@ public class SeparatedTextViewer implements FileViewer {
         north.setCollapsible(false);
         north.setHeaderVisible(false);
 
-        center = new ContentPanel();
-        center.setCollapsible(false);
-        center.setHeaderVisible(false);
-
+        center = new VerticalLayoutContainer();
+        center.setScrollMode(ScrollMode.AUTO);
         container.setNorthWidget(north, getNorthData());
         container.setCenterWidget(center, getCenterData());
     }
 
     private void initToolbar() {
-        toolbar = new SeparatedTextViewToolBar();
+        toolbar = new TextViewPagingToolBar(this, infoType, false);
         north.add(toolbar);
     }
 
     private BorderLayoutData getNorthData() {
         BorderLayoutData northData = new BorderLayoutData(30);
         northData.setMargins(new Margins(5));
-        northData.setCollapsible(true);
+        northData.setCollapsible(false);
         northData.setSplit(false);
         return northData;
     }
 
     private MarginData getCenterData() {
-        return new MarginData();
+        VerticalLayoutData data = new VerticalLayoutData(1, .9, new Margins(0));
+        return data;
     }
 
     @Override
-    public void setPresenter(Presenter p) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private void getData() {
+    public void loadData() {
         String url = "read-csv-chunk";
         container.mask(I18N.DISPLAY.loadingMask());
         Services.FILE_EDITOR_SERVICE.getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
-                AutoBean<SeparatedText> bean = AutoBeanCodex
-                        .decode(factory, SeparatedText.class, result);
-                SeparatedText text_bean = bean.as();
+                AutoBean<StructuredText> bean = AutoBeanCodex.decode(factory, StructuredText.class,
+                        result);
+                text_bean = bean.as();
                 if (grid == null) {
                     initGrid(Integer.parseInt(text_bean.getMaxColumns()));
                 }
@@ -133,7 +129,12 @@ public class SeparatedTextViewer implements FileViewer {
 
                             @Override
                             public String getValue(JSONObject object) {
-                                return object.get(index + "").isString().stringValue();
+                                JSONValue val = object.get(index + "");
+                                if (val != null) {
+                                    return val.isString().stringValue();
+                                } else {
+                                    return "";
+                                }
                             }
 
                             @Override
@@ -148,12 +149,15 @@ public class SeparatedTextViewer implements FileViewer {
                                 return null;
                             }
                         });
-                col.setHeader("" + (index + 1));
+                col.setHeader(index + "");
                 configs.add(col);
             }
         }
 
         grid = new Grid<JSONObject>(getStore(), new ColumnModel<JSONObject>(configs));
+        grid.getView().setStripeRows(true);
+        // grid.getView().setForceFit(true);
+        grid.setHeight(center.getOffsetHeight(true));
         center.add(grid);
     }
 
@@ -178,9 +182,13 @@ public class SeparatedTextViewer implements FileViewer {
         JSONObject obj = new JSONObject();
         obj.put("path", new JSONString(file.getId()));
         obj.put("separator", new JSONString(getSeparator()));
-        obj.put("line-ending", new JSONString(LINE_ENDING));
         // position starts at 0
-        obj.put("position", new JSONString("0"));
+        if (text_bean == null) {
+            obj.put("position", new JSONString("0"));
+        } else {
+            int end = Integer.parseInt(text_bean.getEndPosition());
+            obj.put("position", new JSONString((end + 1) + ""));
+        }
         obj.put("chunk-size", new JSONString("" + toolbar.getPageSize()));
         return obj;
     }
@@ -207,6 +215,41 @@ public class SeparatedTextViewer implements FileViewer {
             }
         }
 
+        if (toolbar.getPageNumber() == 1) {
+            defineColumnHeader();
+        }
+
+    }
+
+    private void defineColumnHeader() {
+        ColumnModel<JSONObject> cm = grid.getColumnModel();
+        List<ColumnConfig<JSONObject, ?>> configs = cm.getColumns();
+        JSONObject firstRow = store.get(0);
+        int index = 0;
+        for (ColumnConfig<JSONObject, ?> conf : configs) {
+            JSONString string = firstRow.get(index + "").isString();
+            if (hasHeader) {
+                conf.setHeader((string != null) ? string.stringValue() : index + "");
+            } else {
+                conf.setHeader(index + "");
+            }
+            index++;
+        }
+
+        // converted first row to header. so remove first row
+        if (hasHeader) {
+            store.remove(firstRow);
+            headerRow = firstRow;
+        } else {
+            if (headerRow != null) {
+                // if it was removed prev, add the back row at 1st position
+                store.add(0, headerRow);
+                headerRow = null;
+            }
+        }
+
+        grid.reconfigure(store, cm);
+        grid.getView().refresh(true);
     }
 
     @Override
@@ -216,4 +259,15 @@ public class SeparatedTextViewer implements FileViewer {
         return widget;
     }
 
+    @Override
+    public void loadDataWithHeader(boolean header) {
+        hasHeader = header;
+        if (toolbar.getPageNumber() == 1) {
+            defineColumnHeader();
+        } else {
+            text_bean = null;
+            toolbar.setPageNumber(1);
+            loadData();
+        }
+    }
 }

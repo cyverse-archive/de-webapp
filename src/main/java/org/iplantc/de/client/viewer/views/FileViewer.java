@@ -24,4 +24,10 @@ public interface FileViewer extends IsWidget {
 
     void setData(Object data);
 
+    void loadData();
+
+    long getFileSize();
+
+    String getInfoType();
+
 }

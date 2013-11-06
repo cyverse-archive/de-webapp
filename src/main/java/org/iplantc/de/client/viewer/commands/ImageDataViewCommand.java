@@ -4,8 +4,7 @@
 package org.iplantc.de.client.viewer.commands;
 
 import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.de.client.Services;
-import org.iplantc.de.client.viewer.views.FileViewer;
+import org.iplantc.de.client.viewer.views.AbstractFileViewer;
 import org.iplantc.de.client.viewer.views.ImageViewerImpl;
 
 /**
@@ -15,13 +14,13 @@ import org.iplantc.de.client.viewer.views.ImageViewerImpl;
 public class ImageDataViewCommand implements ViewCommand {
 
     @Override
-    public FileViewer execute(File file, String infoType) {
+    public AbstractFileViewer execute(File file, String infoType) {
 
-        FileViewer view = null;
+        AbstractFileViewer view = null;
 
         if (file != null && !file.getId().isEmpty()) {
             // we got the url of an image... lets add a tab
-            view = new ImageViewerImpl(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(file.getId()));
+            view = new ImageViewerImpl(file);
         }
         return view;
 

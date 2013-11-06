@@ -1,10 +1,8 @@
 package org.iplantc.de.client.viewer.models;
 
-import java.util.List;
-
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
-public interface SeparatedText {
+public interface StructuredText {
 
     @PropertyName("chunk-size")
     public void setChunkSize(String size);

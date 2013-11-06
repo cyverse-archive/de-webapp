@@ -2,11 +2,16 @@ package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.de.client.I18N;
 
+import com.google.common.base.Strings;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.sencha.gxt.theme.gray.client.toolbar.GrayPagingToolBarAppearance;
 import com.sencha.gxt.widget.core.client.Slider;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.NumberField;
@@ -25,8 +30,15 @@ public class TextViewPagingToolBar extends ToolBar {
     protected CheckBox cbxWrap;
     protected Slider pageSize;
     private LabelToolItem sliderLabel;
+    private AbstractTextViewer view;
+    private int totalPages;
+    private boolean allowTextWrap;
+    private CheckBox cbxHeaderRows;
 
-    public TextViewPagingToolBar() {
+    public TextViewPagingToolBar(AbstractTextViewer view, String infoType, boolean allowTextWrap) {
+
+        this.view = view;
+        this.allowTextWrap = allowTextWrap;
 
         sliderLabel = new LabelToolItem(I18N.DISPLAY.pageSize());
         initPageSizeSlider();
@@ -44,18 +56,46 @@ public class TextViewPagingToolBar extends ToolBar {
         last.setIcon(appearance.last());
 
         beforePage = new LabelToolItem();
-        // beforePage.setLabel(getMessages().beforePageText());
 
         afterText = new LabelToolItem();
 
         pageText = new NumberField<Integer>(new NumberPropertyEditor.IntegerPropertyEditor());
         pageText.setWidth("30px");
 
-        cbxWrap = new CheckBox();
-        cbxWrap.setBoxLabel(I18N.DISPLAY.wrap());
-
+        if (allowTextWrap) {
+            cbxWrap = new CheckBox();
+            cbxWrap.setBoxLabel(I18N.DISPLAY.wrap());
+        }
         addToolbarItems();
         pageText.setValue(1);
+        setOptionsByInfoType(infoType);
+
+        addFirstHandler();
+        addLastHandler();
+        addNextHandler();
+        addPrevHandler();
+        addPageSizeChangeHandler();
+        addSelectPageKeyHandler();
+        computeTotalPages();
+    }
+
+    private void setOptionsByInfoType(String infoType) {
+        if (!Strings.isNullOrEmpty(infoType)) {
+            if (infoType.equalsIgnoreCase("csv") || infoType.equalsIgnoreCase("tsv")) {
+                cbxHeaderRows = new CheckBox();
+                cbxHeaderRows.setBoxLabel("First Row Header");
+                cbxHeaderRows.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+                    @Override
+                    public void onValueChange(ValueChangeEvent<Boolean> event) {
+                        view.loadDataWithHeader(event.getValue());
+                    }
+                });
+                add(new FillToolItem());
+                add(cbxHeaderRows);
+            }
+        }
+
     }
 
     private void addToolbarItems() {
@@ -71,8 +111,10 @@ public class TextViewPagingToolBar extends ToolBar {
         add(next);
         add(last);
         add(new SeparatorToolItem());
-        add(new FillToolItem());
-        add(cbxWrap);
+        if (allowTextWrap) {
+            add(new FillToolItem());
+            add(cbxWrap);
+        }
     }
 
     private void initPageSizeSlider() {
@@ -148,12 +190,154 @@ public class TextViewPagingToolBar extends ToolBar {
         cbxWrap.setValue(wrap);
     }
 
-    public void setTotalPagesText(int totalPages) {
+    public void setTotalPagesText() {
         afterText.setLabel("of " + totalPages);
     }
 
     public void addPageSizeChangeHandler(ValueChangeHandler<Integer> changeHandler) {
         pageSize.addValueChangeHandler(changeHandler);
+    }
+
+    private void addFirstHandler() {
+        addFirstSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                setPageNumber(1);
+                setFirstEnabled(false);
+                setPrevEnabled(false);
+                setLastEnabled(true);
+                setNextEnabled(true);
+                view.loadData();
+            }
+        });
+    }
+
+    private void addLastHandler() {
+        addLastSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                setPageNumber(totalPages);
+                setLastEnabled(false);
+                setNextEnabled(false);
+
+                setFirstEnabled(true);
+                setPrevEnabled(true);
+                view.loadData();
+            }
+        });
+    }
+
+    private void addNextHandler() {
+        addNextSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                int temp = getPageNumber() + 1;
+                setPageNumber(temp);
+
+                if (temp == totalPages) {
+                    setLastEnabled(false);
+                    setNextEnabled(false);
+                }
+
+                setFirstEnabled(true);
+                setPrevEnabled(true);
+                view.loadData();
+            }
+        });
+    }
+
+    private void addPrevHandler() {
+        addPrevSelectHandler(new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                int temp = getPageNumber() - 1;
+                setPageNumber(temp);
+                setLastEnabled(true);
+                setNextEnabled(true);
+
+                // chk first page
+                if (temp - 1 == 0) {
+                    setFirstEnabled(false);
+                    setPrevEnabled(false);
+                } else {
+                    setFirstEnabled(true);
+                    setPrevEnabled(true);
+                }
+                view.loadData();
+            }
+        });
+    }
+
+    private void addPageSizeChangeHandler() {
+        addPageSizeChangeHandler(new ValueChangeHandler<Integer>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<Integer> event) {
+                computeTotalPages();
+                setPageNumber(1);
+                view.loadData();
+
+            }
+        });
+    }
+
+    private void addSelectPageKeyHandler() {
+        addSelectPageKeyHandler(new KeyDownHandler() {
+
+            @Override
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                    int pageNumber = getPageNumber();
+                    if (pageNumber <= totalPages && pageNumber > 0) {
+                        pageText.clearInvalid();
+                        view.loadData();
+                        if (pageNumber == 1) {
+                            setFirstEnabled(false);
+                            setPrevEnabled(false);
+                            setLastEnabled(true);
+                            setNextEnabled(true);
+                        } else if (pageNumber == totalPages) {
+                            setLastEnabled(false);
+                            setNextEnabled(false);
+                        } else {
+                            setPrevEnabled(true);
+                            setNextEnabled(true);
+                        }
+                    } else {
+                        pageText.markInvalid(I18N.DISPLAY.inValidPage());
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void computeTotalPages() {
+        long pageSize = getPageSize();
+        totalPages = 0;
+        long fileSize = view.getFileSize();
+        if (fileSize < pageSize) {
+            totalPages = 1;
+        } else {
+            totalPages = (int)((fileSize / pageSize));
+            if (fileSize % pageSize > 0) {
+                totalPages++;
+            }
+
+        }
+
+        if (totalPages == 1) {
+            setFirstEnabled(false);
+            setNextEnabled(false);
+            setPrevEnabled(false);
+            setLastEnabled(false);
+        }
+
+        setTotalPagesText();
     }
 
 }
