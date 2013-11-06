@@ -67,4 +67,9 @@ public abstract class AbstractFileViewer implements FileViewer {
         return infoType;
     }
 
+    @Override
+    public String getViewName() {
+        return file.getName();
+    }
+
 }

@@ -81,7 +81,7 @@ public class TextViewPagingToolBar extends ToolBar {
 
     private void setOptionsByInfoType(String infoType) {
         if (!Strings.isNullOrEmpty(infoType)) {
-            if (infoType.equalsIgnoreCase("csv") || infoType.equalsIgnoreCase("tsv")) {
+            if (view instanceof StrcturedTextViewerImpl) {
                 cbxHeaderRows = new CheckBox();
                 cbxHeaderRows.setBoxLabel("First Row Header");
                 cbxHeaderRows.addValueChangeHandler(new ValueChangeHandler<Boolean>() {

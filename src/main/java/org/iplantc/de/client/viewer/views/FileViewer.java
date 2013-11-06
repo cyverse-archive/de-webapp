@@ -30,4 +30,6 @@ public interface FileViewer extends IsWidget {
 
     String getInfoType();
 
+    String getViewName();
+
 }

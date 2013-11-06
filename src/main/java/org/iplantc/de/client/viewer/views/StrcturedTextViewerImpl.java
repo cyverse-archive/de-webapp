@@ -12,6 +12,8 @@ import org.iplantc.de.client.viewer.models.StructuredText;
 import org.iplantc.de.client.viewer.models.StructuredTextAutoBeanFactory;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -88,8 +90,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     }
 
     private MarginData getCenterData() {
-        VerticalLayoutData data = new VerticalLayoutData(1, .9, new Margins(0));
-        return data;
+        return new MarginData();
     }
 
     @Override
@@ -156,9 +157,8 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
 
         grid = new Grid<JSONObject>(getStore(), new ColumnModel<JSONObject>(configs));
         grid.getView().setStripeRows(true);
-        // grid.getView().setForceFit(true);
         grid.setHeight(center.getOffsetHeight(true));
-        center.add(grid);
+        center.add(grid, new VerticalLayoutData(1, 1, new Margins(0)));
     }
 
     private ListStore<JSONObject> getStore() {
@@ -269,5 +269,10 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
             toolbar.setPageNumber(1);
             loadData();
         }
+    }
+
+    @Override
+    public String getViewName() {
+        return "Tabular View:" + file.getName();
     }
 }

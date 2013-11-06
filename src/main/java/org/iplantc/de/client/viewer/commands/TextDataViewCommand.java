@@ -1,5 +1,8 @@
 package org.iplantc.de.client.viewer.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.viewer.views.StrcturedTextViewerImpl;
@@ -13,18 +16,20 @@ import com.google.common.base.Strings;
 public class TextDataViewCommand implements ViewCommand {
 
     @Override
-    public FileViewer execute(final File file, String infoType) {
-        final FileViewer view = getViewerByInfoType(file, infoType);
-        return view;
+    public List<FileViewer> execute(final File file, String infoType) {
+        final List<FileViewer> viewers = getViewerByInfoType(file, infoType);
+        return viewers;
     }
 
-    private FileViewer getViewerByInfoType(final File file, String infoType) {
+    private List<FileViewer> getViewerByInfoType(final File file, String infoType) {
+        List<FileViewer> viewers = new ArrayList<FileViewer>();
         if (!Strings.isNullOrEmpty(infoType)) {
             if (infoType.equals("csv") || infoType.equals("tsv")) {
-                return new StrcturedTextViewerImpl(file, infoType);
+                viewers.add(new StrcturedTextViewerImpl(file, infoType));
 
             }
         }
-        return new TextViewerImpl(file, infoType);
+        viewers.add(new TextViewerImpl(file, infoType));
+        return viewers;
     }
 }

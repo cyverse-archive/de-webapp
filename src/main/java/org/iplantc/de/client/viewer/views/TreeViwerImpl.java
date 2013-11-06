@@ -101,4 +101,9 @@ public class TreeViwerImpl extends AbstractFileViewer {
 
     }
 
+    @Override
+    public String getViewName() {
+        return "Tree View:" + file.getName();
+    }
+
 }

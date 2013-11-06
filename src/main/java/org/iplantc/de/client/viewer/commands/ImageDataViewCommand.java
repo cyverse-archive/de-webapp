@@ -3,6 +3,9 @@
  */
 package org.iplantc.de.client.viewer.commands;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.viewer.views.AbstractFileViewer;
 import org.iplantc.de.client.viewer.views.ImageViewerImpl;
@@ -14,7 +17,7 @@ import org.iplantc.de.client.viewer.views.ImageViewerImpl;
 public class ImageDataViewCommand implements ViewCommand {
 
     @Override
-    public AbstractFileViewer execute(File file, String infoType) {
+    public List<AbstractFileViewer> execute(File file, String infoType) {
 
         AbstractFileViewer view = null;
 
@@ -22,7 +25,7 @@ public class ImageDataViewCommand implements ViewCommand {
             // we got the url of an image... lets add a tab
             view = new ImageViewerImpl(file);
         }
-        return view;
+        return Arrays.asList(view);
 
     }
 

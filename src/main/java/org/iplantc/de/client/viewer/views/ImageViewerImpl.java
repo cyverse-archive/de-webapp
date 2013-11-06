@@ -62,5 +62,4 @@ public class ImageViewerImpl extends AbstractFileViewer {
     public void loadData() {
         // Do nothing intentionally
     }
-
 }
