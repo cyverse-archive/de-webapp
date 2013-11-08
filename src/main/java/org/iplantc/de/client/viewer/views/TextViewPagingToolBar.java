@@ -36,6 +36,7 @@ public class TextViewPagingToolBar extends ToolBar {
     private CheckBox cbxHeaderRows;
     private NumberField<Integer> skipRowsCount;
     private LabelToolItem skipRowsLabel;
+    private LabelToolItem cbxHeaderLabel;
 
     public TextViewPagingToolBar(AbstractTextViewer view, String infoType, boolean allowTextWrap) {
 
@@ -94,7 +95,7 @@ public class TextViewPagingToolBar extends ToolBar {
     }
 
     private void addSkipRowsFields() {
-        skipRowsLabel = new LabelToolItem("Skip First N Line(s)");
+        skipRowsLabel = new LabelToolItem(I18N.DISPLAY.fileViewerSkipLines());
         add(skipRowsLabel);
 
         skipRowsCount = new NumberField<Integer>(new NumberPropertyEditor.IntegerPropertyEditor());
@@ -119,7 +120,8 @@ public class TextViewPagingToolBar extends ToolBar {
 
     private void addHeaderRowChkBox() {
         cbxHeaderRows = new CheckBox();
-        cbxHeaderRows.setBoxLabel("First Row Header");
+
+        cbxHeaderLabel = new LabelToolItem(I18N.DISPLAY.fileViewerHeaderRow());
         cbxHeaderRows.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
             @Override
@@ -128,6 +130,7 @@ public class TextViewPagingToolBar extends ToolBar {
             }
         });
         add(new FillToolItem());
+        add(cbxHeaderLabel);
         add(cbxHeaderRows);
     }
 
@@ -234,6 +237,10 @@ public class TextViewPagingToolBar extends ToolBar {
 
     public void setTotalPagesText() {
         afterText.setLabel("of " + totalPages);
+    }
+
+    public int getToltalPages() {
+        return totalPages;
     }
 
     public void addPageSizeChangeHandler(ValueChangeHandler<Integer> changeHandler) {

@@ -196,13 +196,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
         JSONObject obj = new JSONObject();
         obj.put("path", new JSONString(file.getId()));
         obj.put("separator", new JSONString(getSeparator()));
-        // position starts at 0
-        if (text_bean == null) {
-            obj.put("position", new JSONString("0"));
-        } else {
-            int end = Integer.parseInt(text_bean.getEndPosition());
-            obj.put("position", new JSONString((end + 1) + ""));
-        }
+        obj.put("page", new JSONString(toolbar.getPageNumber() + ""));
         obj.put("chunk-size", new JSONString("" + toolbar.getPageSize()));
         return obj;
     }
@@ -225,6 +219,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
         JSONArray arr = obj.get("csv").isArray();
 
         if (arr != null && arr.size() > 0) {
+            store.clear();
             for (int i = 0; i < arr.size(); i++) {
                 store.add(arr.get(i).isObject());
             }
