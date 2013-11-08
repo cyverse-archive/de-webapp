@@ -38,8 +38,39 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.Verti
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
+import com.sencha.gxt.widget.core.client.grid.filters.StringFilter;
 
 public class StrcturedTextViewerImpl extends AbstractTextViewer {
+
+    private final class StructuredTextValueProvider implements ValueProvider<JSONObject, String> {
+        private final int index;
+
+        private StructuredTextValueProvider(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String getValue(JSONObject object) {
+            JSONValue val = object.get(index + "");
+            if (val != null) {
+                return val.isString().stringValue();
+            } else {
+                return "";
+            }
+        }
+
+        @Override
+        public void setValue(JSONObject object, String value) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public String getPath() {
+            return index + "";
+        }
+    }
 
     private Grid<JSONObject> grid;
     private TextViewPagingToolBar toolbar;
@@ -122,41 +153,24 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
 
     private void initGrid(int columns) {
         List<ColumnConfig<JSONObject, ?>> configs = new ArrayList<ColumnConfig<JSONObject, ?>>();
+        GridFilters<JSONObject> filters = new GridFilters<JSONObject>();
         if (columns > 0) {
             for (int i = 0; i < columns; i++) {
                 final int index = i;
+                StructuredTextValueProvider valueProvider = new StructuredTextValueProvider(index);
                 ColumnConfig<JSONObject, String> col = new ColumnConfig<JSONObject, String>(
-                        new ValueProvider<JSONObject, String>() {
-
-                            @Override
-                            public String getValue(JSONObject object) {
-                                JSONValue val = object.get(index + "");
-                                if (val != null) {
-                                    return val.isString().stringValue();
-                                } else {
-                                    return "";
-                                }
-                            }
-
-                            @Override
-                            public void setValue(JSONObject object, String value) {
-                                // TODO Auto-generated method stub
-
-                            }
-
-                            @Override
-                            public String getPath() {
-                                // TODO Auto-generated method stub
-                                return null;
-                            }
-                        });
+                        valueProvider);
                 col.setHeader(index + "");
+                StringFilter<JSONObject> strFilter = new StringFilter<JSONObject>(valueProvider);
+                filters.addFilter(strFilter);
                 configs.add(col);
             }
         }
 
         grid = new Grid<JSONObject>(getStore(), new ColumnModel<JSONObject>(configs));
         grid.getView().setStripeRows(true);
+        filters.initPlugin(grid);
+        filters.setLocal(true);
         grid.setHeight(center.getOffsetHeight(true));
         center.add(grid, new VerticalLayoutData(1, 1, new Margins(0)));
     }
@@ -216,7 +230,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
             }
         }
 
-        if (toolbar.getPageNumber() == 1) {
+        if (toolbar.getPageNumber() == 1 && headerRow == null) {
             defineColumnHeader();
         }
 
