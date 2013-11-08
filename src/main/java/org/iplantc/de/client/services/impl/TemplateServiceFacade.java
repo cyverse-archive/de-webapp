@@ -126,7 +126,7 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 	@Override
 	public void getAppDetails(String id, AsyncCallback<String> callback) {
 		String address = DEProperties.getInstance()
-				.getUnproctedMuleServiceBaseUrl() + "analysis-details/" + id; //$NON-NLS-1$
+				.getMuleServiceBaseUrl() + "app-details/" + id; //$NON-NLS-1$
 
 		ServiceCallWrapper wrapper = new ServiceCallWrapper(
 				ServiceCallWrapper.Type.GET, address);
