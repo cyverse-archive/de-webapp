@@ -12,8 +12,7 @@ import org.iplantc.de.client.viewer.models.StructuredText;
 import org.iplantc.de.client.viewer.models.StructuredTextAutoBeanFactory;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -51,6 +50,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     private final String COMMA_SEPARATOR = ",";
     private final String TAB_SEPARATOR = "\t";
     private StructuredText text_bean;
+    private List<JSONObject> skippedRows;
 
     private final StructuredTextAutoBeanFactory factory = GWT
             .create(StructuredTextAutoBeanFactory.class);
@@ -197,7 +197,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
         if (infoType.equalsIgnoreCase("csv")) {
             return COMMA_SEPARATOR;
         } else if (infoType.equalsIgnoreCase("tsv")) {
-            return TAB_SEPARATOR;
+            return URL.encode(TAB_SEPARATOR);
         } else {
             return " ";
         }
@@ -227,7 +227,8 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
         JSONObject firstRow = store.get(0);
         int index = 0;
         for (ColumnConfig<JSONObject, ?> conf : configs) {
-            JSONString string = firstRow.get(index + "").isString();
+            JSONString string = (firstRow.get(index + "") != null) ? firstRow.get(index + "").isString()
+                    : null;
             if (hasHeader) {
                 conf.setHeader((string != null) ? string.stringValue() : index + "");
             } else {
@@ -262,17 +263,48 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     @Override
     public void loadDataWithHeader(boolean header) {
         hasHeader = header;
-        if (toolbar.getPageNumber() == 1) {
-            defineColumnHeader();
-        } else {
-            text_bean = null;
-            toolbar.setPageNumber(1);
-            loadData();
-        }
+        defineColumnHeader();
     }
 
     @Override
     public String getViewName() {
-        return "Tabular View:" + file.getName();
+        return "Tabular View: " + file.getName();
+    }
+
+    @Override
+    public void skipRows(int val) {
+        if (val > 0 && val < store.size() + ((skippedRows != null) ? skippedRows.size() : 0)) {
+            if (skippedRows == null) {
+                skippedRows = new ArrayList<JSONObject>();
+                // increment
+                skippedRows.addAll(store.subList(0, val));
+            } else if (skippedRows.size() > val) {
+                // reduction
+                for (int j = skippedRows.size() - 1; j >= val; j--) {
+                    store.add(0, skippedRows.remove(j));
+                }
+            } else if (skippedRows.size() < val) {
+                // increment
+                skippedRows.addAll(store.subList(0, val - skippedRows.size()));
+            }
+            for (JSONObject obj : skippedRows) {
+                store.remove(obj);
+            }
+
+            // redefine column headers if necessary
+            if (hasHeader) {
+                defineColumnHeader();
+            }
+
+        } else {
+            if (val == 0 && skippedRows != null && skippedRows.size() > 0) {
+                // add back the skipped rows.
+                for (int j = 0; j < skippedRows.size(); j++) {
+                    store.add(j, skippedRows.get(j));
+                }
+            }
+            skippedRows = null;
+        }
+
     }
 }

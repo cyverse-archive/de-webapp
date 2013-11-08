@@ -167,4 +167,10 @@ public class TextViewerImpl extends AbstractTextViewer {
 
     }
 
+    @Override
+    public void skipRows(int val) {
+        // do nothing intentionally
+
+    }
+
 }

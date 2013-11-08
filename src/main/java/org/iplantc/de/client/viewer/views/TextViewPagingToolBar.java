@@ -34,6 +34,8 @@ public class TextViewPagingToolBar extends ToolBar {
     private int totalPages;
     private boolean allowTextWrap;
     private CheckBox cbxHeaderRows;
+    private NumberField<Integer> skipRowsCount;
+    private LabelToolItem skipRowsLabel;
 
     public TextViewPagingToolBar(AbstractTextViewer view, String infoType, boolean allowTextWrap) {
 
@@ -81,21 +83,52 @@ public class TextViewPagingToolBar extends ToolBar {
 
     private void setOptionsByInfoType(String infoType) {
         if (!Strings.isNullOrEmpty(infoType)) {
+            // SS: this is bad.
             if (view instanceof StrcturedTextViewerImpl) {
-                cbxHeaderRows = new CheckBox();
-                cbxHeaderRows.setBoxLabel("First Row Header");
-                cbxHeaderRows.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-                    @Override
-                    public void onValueChange(ValueChangeEvent<Boolean> event) {
-                        view.loadDataWithHeader(event.getValue());
-                    }
-                });
+                addHeaderRowChkBox();
                 add(new FillToolItem());
-                add(cbxHeaderRows);
+                addSkipRowsFields();
             }
         }
 
+    }
+
+    private void addSkipRowsFields() {
+        skipRowsLabel = new LabelToolItem("Skip First N Line(s)");
+        add(skipRowsLabel);
+
+        skipRowsCount = new NumberField<Integer>(new NumberPropertyEditor.IntegerPropertyEditor());
+        skipRowsCount.setWidth(30);
+        skipRowsCount.setValue(0);
+        skipRowsCount.setAllowNegative(false);
+        skipRowsCount.setAllowDecimals(false);
+        skipRowsCount.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Integer> event) {
+                if (skipRowsCount.getValue() == null) {
+                    view.skipRows(0);
+                    skipRowsCount.setValue(0);
+                } else {
+                    view.skipRows(skipRowsCount.getValue());
+                }
+
+            }
+        });
+        add(skipRowsCount);
+    }
+
+    private void addHeaderRowChkBox() {
+        cbxHeaderRows = new CheckBox();
+        cbxHeaderRows.setBoxLabel("First Row Header");
+        cbxHeaderRows.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                view.loadDataWithHeader(event.getValue());
+            }
+        });
+        add(new FillToolItem());
+        add(cbxHeaderRows);
     }
 
     private void addToolbarItems() {
@@ -184,6 +217,15 @@ public class TextViewPagingToolBar extends ToolBar {
 
     public void setPageNumber(int i) {
         pageText.setValue(i);
+        if (skipRowsCount != null) {
+            if (i != 1) {
+                skipRowsCount.setEnabled(false);
+                cbxHeaderRows.setEnabled(false);
+            } else {
+                cbxHeaderRows.setEnabled(true);
+                skipRowsCount.setEnabled(true);
+            }
+        }
     }
 
     public void setWordWrap(boolean wrap) {

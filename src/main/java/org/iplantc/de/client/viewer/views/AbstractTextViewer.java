@@ -10,4 +10,6 @@ public abstract class AbstractTextViewer extends AbstractFileViewer {
 
     public abstract void loadDataWithHeader(boolean header);
 
+    public abstract void skipRows(int val);
+
 }
