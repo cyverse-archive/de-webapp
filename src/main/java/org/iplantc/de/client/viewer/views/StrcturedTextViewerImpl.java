@@ -196,7 +196,8 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     private String getSeparator() {
         if (infoType.equalsIgnoreCase("csv")) {
             return COMMA_SEPARATOR;
-        } else if (infoType.equalsIgnoreCase("tsv")) {
+        } else if (infoType.equalsIgnoreCase("tsv") || infoType.equalsIgnoreCase("vcf")
+                || infoType.equalsIgnoreCase("gff")) {
             return URL.encode(TAB_SEPARATOR);
         } else {
             return " ";

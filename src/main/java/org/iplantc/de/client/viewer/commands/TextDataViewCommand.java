@@ -24,7 +24,8 @@ public class TextDataViewCommand implements ViewCommand {
     private List<FileViewer> getViewerByInfoType(final File file, String infoType) {
         List<FileViewer> viewers = new ArrayList<FileViewer>();
         if (!Strings.isNullOrEmpty(infoType)) {
-            if (infoType.equals("csv") || infoType.equals("tsv") || infoType.equals("vcf")) {
+            if (infoType.equals("csv") || infoType.equals("tsv") || infoType.equals("vcf")
+                    || infoType.equals("gff")) {
                 viewers.add(new StrcturedTextViewerImpl(file, infoType));
 
             }
