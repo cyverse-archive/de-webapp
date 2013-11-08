@@ -122,7 +122,7 @@ public class AnalysisServiceFacade {
     }
 
     public void getAnalysisParams(String analysisId, AsyncCallback<String> callback) {
-        String address = DEProperties.getInstance().getUnproctedMuleServiceBaseUrl()
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
                 + "get-property-values/" + analysisId;
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
 

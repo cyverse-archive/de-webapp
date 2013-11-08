@@ -3,6 +3,7 @@ package org.iplantc.de.client.analysis.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
 import org.iplantc.core.uiapps.widgets.client.models.util.AppTemplateUtils;
@@ -13,6 +14,7 @@ import org.iplantc.de.client.analysis.models.SimpleValue;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.core.shared.GWT;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
@@ -22,16 +24,29 @@ public class AnalysisParameterValueParser {
 
     static AnalysesAutoBeanFactory factory = GWT.create(AnalysesAutoBeanFactory.class);
 
+    private static Set<String> REFERENCE_GENOME_TYPES
+        = Sets.newHashSet("referenceannotation", "referencesequence", "referencegenome");
+
+    private static boolean isReferenceGenomeType(final String typeName) {
+        return REFERENCE_GENOME_TYPES.contains(typeName.toLowerCase());
+    }
+
+    private static final Set<ArgumentType> INPUT_TYPES = Sets.immutableEnumSet(
+            ArgumentType.Input, ArgumentType.FileInput, ArgumentType.FolderInput,
+            ArgumentType.MultiFileSelector);
+
+    private static boolean isInputType(ArgumentType type) {
+        return INPUT_TYPES.contains(type);
+    }
+
     public static List<AnalysisParameter> parse(final List<AnalysisParameter> paramList) {
 
         List<AnalysisParameter> parsedList = new ArrayList<AnalysisParameter>();
         for (AnalysisParameter ap : paramList) {
-            if (AppTemplateUtils.isTextType(ap.getType())) {
+            if (AppTemplateUtils.isTextType(ap.getType()) || ap.getType().equals(ArgumentType.Flag)) {
                 parsedList.addAll(parseStringValue(ap));
-            } else if (ap.getType().equals(ArgumentType.Input)) {
-                if (!ap.getInfoType().equalsIgnoreCase("ReferenceAnnotation")
-                        && !ap.getInfoType().equalsIgnoreCase("ReferenceSequence")
-                        && !ap.getInfoType().equalsIgnoreCase("ReferenceGenome")) {
+            } else if (isInputType(ap.getType())) {
+                if (!isReferenceGenomeType(ap.getInfoType())) {
                     parsedList.addAll(parseStringValue(ap));
                 } else {
                     parsedList.addAll(parseSelectionValue(ap));
