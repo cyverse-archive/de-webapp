@@ -1,38 +1,36 @@
 package org.iplantc.de.client.views.windows;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+
 import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent;
 import org.iplantc.core.uiapps.widgets.client.events.AnalysisLaunchEvent.AnalysisLaunchEventHandler;
+import org.iplantc.core.uiapps.widgets.client.gin.AppLaunchInjector;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplate;
 import org.iplantc.core.uiapps.widgets.client.models.AppTemplateAutoBeanFactory;
-import org.iplantc.core.uiapps.widgets.client.presenter.AppWizardPresenterImpl;
-import org.iplantc.core.uiapps.widgets.client.services.AppMetadataServiceFacade;
 import org.iplantc.core.uiapps.widgets.client.services.AppTemplateServices;
 import org.iplantc.core.uiapps.widgets.client.services.DeployedComponentServices;
 import org.iplantc.core.uiapps.widgets.client.services.impl.converters.AppTemplateCallbackConverter;
-import org.iplantc.core.uiapps.widgets.client.view.AppWizardView;
+import org.iplantc.core.uiapps.widgets.client.view.AppLaunchView;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.CommonModelUtils;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.UUIDServiceAsync;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-
-public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchEventHandler {
+public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchEventHandler {
 
     private final class AppTemplateCallback implements AsyncCallback<AppTemplate> {
-        private final AppWizardView.Presenter presenter;
+        private final AppLaunchView.Presenter presenter1;
 
-        private AppTemplateCallback(AppWizardView.Presenter presenter) {
-            this.presenter = presenter;
+        private AppTemplateCallback(AppLaunchView.Presenter presenter) {
+            this.presenter1 = presenter;
         }
 
         @Override
@@ -41,43 +39,42 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
                 ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(
                         I18N.DISPLAY.appUnavailable());
                 IplantAnnouncer.getInstance().schedule(config);
-                AppWizardWindow.this.hide();
+                AppLaunchWindow.this.hide();
                 return;
             }
-            presenter.go(AppWizardWindow.this, result);
-            AppWizardWindow.this.setHeadingText(presenter.getAppTemplate().getLabel());
-            AppWizardWindow.this.fireEvent(new WindowHeadingUpdatedEvent());
+            presenter1.go(AppLaunchWindow.this, result);
+            AppLaunchWindow.this.setHeadingText(presenter1.getAppTemplate().getLabel());
+            AppLaunchWindow.this.fireEvent(new WindowHeadingUpdatedEvent());
             // KLUDGE JDS This call to forceLayout should not be necessary.
-            AppWizardWindow.this.forceLayout();
-            AppWizardWindow.this.unmask();
+            AppLaunchWindow.this.forceLayout();
+            AppLaunchWindow.this.unmask();
         }
 
         @Override
         public void onFailure(Throwable caught) {
-            AppWizardWindow.this.unmask();
+            AppLaunchWindow.this.unmask();
             ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
         }
     }
 
-    private final AppWizardView.Presenter presenter;
+    private final AppLaunchView.Presenter presenter;
     private final AppTemplateServices templateService = GWT.create(AppTemplateServices.class);
     private final String appId;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
     private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
 
-    public AppWizardWindow(AppWizardConfig config, final UUIDServiceAsync uuidService,
-            final AppMetadataServiceFacade appMetadataService) {
+    public AppLaunchWindow(AppWizardConfig config) {
         super(null, null);
         setSize("640", "375");
         setBorders(false);
 
-        presenter = new AppWizardPresenterImpl(uuidService, appMetadataService);
+        presenter = AppLaunchInjector.INSTANCE.getAppLaunchPresenter();
         presenter.addAnalysisLaunchHandler(this);
         appId = config.getAppId();
         init(presenter, config);
     }
 
-    private void init(final AppWizardView.Presenter presenter, AppWizardConfig config) {
+    private void init(final AppLaunchView.Presenter presenter, AppWizardConfig config) {
         mask(I18N.DISPLAY.loadingMask());
         if (config.getAppTemplate() != null) {
             AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(factory, dcServices,
@@ -86,8 +83,8 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
                         @Override
                         public void onSuccess(AppTemplate result) {
                             setHeadingText(result.getLabel());
-                            presenter.go(AppWizardWindow.this, result);
-                            AppWizardWindow.this.unmask();
+                            presenter.go(AppLaunchWindow.this, result);
+                            AppLaunchWindow.this.unmask();
                         }
 
                         @Override
@@ -121,7 +118,6 @@ public class AppWizardWindow extends IplantWindowBase implements AnalysisLaunchE
     public void onAnalysisLaunch(AnalysisLaunchEvent analysisLaunchEvent) {
         if (analysisLaunchEvent.getAppTemplateId().getId().equalsIgnoreCase(appId)) {
             hide();
-            // TODO JDS Need to kick off notification
         }
     }
 
