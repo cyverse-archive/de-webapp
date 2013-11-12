@@ -86,9 +86,9 @@ public class TextViewPagingToolBar extends ToolBar {
         if (!Strings.isNullOrEmpty(infoType)) {
             // SS: this is bad.
             if (view instanceof StrcturedTextViewerImpl) {
-                addHeaderRowChkBox();
-                add(new FillToolItem());
                 addSkipRowsFields();
+                add(new FillToolItem());
+                addHeaderRowChkBox();
             }
         }
 
@@ -126,7 +126,9 @@ public class TextViewPagingToolBar extends ToolBar {
 
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                view.loadDataWithHeader(event.getValue());
+                Boolean hasHeader = event.getValue();
+                view.loadDataWithHeader(hasHeader);
+                skipRowsCount.setEnabled(!hasHeader);
             }
         });
         add(new FillToolItem());
@@ -349,12 +351,18 @@ public class TextViewPagingToolBar extends ToolBar {
                             setPrevEnabled(false);
                             setLastEnabled(true);
                             setNextEnabled(true);
+                            skipRowsCount.setEnabled(true);
+                            cbxHeaderRows.setEnabled(true);
                         } else if (pageNumber == totalPages) {
                             setLastEnabled(false);
                             setNextEnabled(false);
+                            cbxHeaderRows.setEnabled(false);
+                            skipRowsCount.setEnabled(false);
                         } else {
                             setPrevEnabled(true);
                             setNextEnabled(true);
+                            cbxHeaderRows.setEnabled(false);
+                            skipRowsCount.setEnabled(false);
                         }
                     } else {
                         pageText.markInvalid(I18N.DISPLAY.inValidPage());
