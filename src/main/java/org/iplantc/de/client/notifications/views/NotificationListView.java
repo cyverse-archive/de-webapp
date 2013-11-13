@@ -401,9 +401,12 @@ public class NotificationListView implements IsWidget {
 
                     @Override
                     public void onSelectionChanged(SelectionChangedEvent<NotificationMessage> event) {
-                        final NotificationMessage msg = event.getSelection().get(0);
-                        if (msg != null) {
-                            NotificationHelper.getInstance().view(msg);
+                        List<NotificationMessage> selected = event.getSelection();
+                        if (selected != null && !selected.isEmpty()) {
+                            NotificationMessage msg = selected.get(0);
+                            if (msg != null) {
+                                NotificationHelper.getInstance().view(msg);
+                            }
                         }
                     }
 

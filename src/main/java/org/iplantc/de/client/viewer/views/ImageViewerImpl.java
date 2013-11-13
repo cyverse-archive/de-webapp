@@ -1,5 +1,8 @@
 package org.iplantc.de.client.viewer.views;
 
+import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.client.Services;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -15,7 +18,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
  * @author sriram
  * 
  */
-public class ImageViewerImpl implements FileViewer {
+public class ImageViewerImpl extends AbstractFileViewer {
 
     private static ImageViewerUiBinder uiBinder = GWT.create(ImageViewerUiBinder.class);
 
@@ -27,8 +30,11 @@ public class ImageViewerImpl implements FileViewer {
     @UiField
     VerticalLayoutContainer con;
 
-    public ImageViewerImpl(String url) {
-        img = new Image(url);
+    private File file;
+
+    public ImageViewerImpl(File file) {
+        super(file, null);
+        img = new Image(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(this.file.getId()));
         widget = uiBinder.createAndBindUi(this);
         con.setScrollMode(ScrollMode.AUTO);
     }
@@ -37,17 +43,14 @@ public class ImageViewerImpl implements FileViewer {
     interface ImageViewerUiBinder extends UiBinder<Widget, ImageViewerImpl> {
     }
 
-    public ImageViewerImpl() {
-        widget = uiBinder.createAndBindUi(this);
-    }
-
     @Override
     public Widget asWidget() {
         return widget;
     }
 
     @Override
-    public void setPresenter(Presenter p) {/* Not Used */}
+    public void setPresenter(Presenter p) {/* Not Used */
+    }
 
     @Override
     public void setData(Object data) {
@@ -55,4 +58,8 @@ public class ImageViewerImpl implements FileViewer {
 
     }
 
+    @Override
+    public void loadData() {
+        // Do nothing intentionally
+    }
 }

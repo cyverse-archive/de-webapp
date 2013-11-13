@@ -11,9 +11,6 @@ import org.iplantc.de.client.Services;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -28,18 +25,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * @author sriram
  * 
  */
-public class TextViewerImpl implements FileViewer {
-
-    public static final int MIN_PAGE_SIZE_KB = 8;
-    public static final int MAX_PAGE_SIZE_KB = 64;
-    public static final int PAGE_INCREMENT_SIZE_KB = 8;
+public class TextViewerImpl extends AbstractTextViewer {
 
     private static TextViewerUiBinder uiBinder = GWT.create(TextViewerUiBinder.class);
 
@@ -55,10 +46,8 @@ public class TextViewerImpl implements FileViewer {
     @UiField
     BorderLayoutContainer con;
 
-    @UiField
+    @UiField(provided = true)
     TextViewPagingToolBar toolbar;
-
-    private File file;
 
     private long file_size;
 
@@ -68,28 +57,14 @@ public class TextViewerImpl implements FileViewer {
 
     protected JavaScriptObject jso;
 
-    private String infoType;
-
     public TextViewerImpl(File file, String infoType) {
-        this.file = file;
-        this.infoType = infoType;
-        file_size = Long.parseLong(file.getSize());
+        super(file, infoType);
+        toolbar = initToolBar();
         widget = uiBinder.createAndBindUi(this);
+
         addWrapHandler();
+
         loadData();
-        computeTotalPages();
-
-        addFirstHandler();
-
-        addPrevHandler();
-
-        addNextHandler();
-
-        addLastHandler();
-
-        addPageSizeChangeHandler();
-
-        addSelectPageKeyHandler();
 
         center.addResizeHandler(new ResizeHandler() {
 
@@ -103,26 +78,8 @@ public class TextViewerImpl implements FileViewer {
         });
     }
 
-    private void computeTotalPages() {
-        long pageSize = toolbar.getPageSize();
-        if (file_size < pageSize) {
-            totalPages = 1;
-        } else {
-            totalPages = (int)((file_size / pageSize));
-            if (file_size % pageSize > 0) {
-                totalPages++;
-            }
-
-        }
-
-        if (totalPages == 1) {
-            toolbar.setFirstEnabled(false);
-            toolbar.setNextEnabled(false);
-            toolbar.setPrevEnabled(false);
-            toolbar.setLastEnabled(false);
-        }
-
-        toolbar.setTotalPagesText(totalPages);
+    TextViewPagingToolBar initToolBar() {
+        return new TextViewPagingToolBar(this, infoType, true);
     }
 
     private void addWrapHandler() {
@@ -131,89 +88,6 @@ public class TextViewerImpl implements FileViewer {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
                 setData(data);
-            }
-        });
-    }
-
-    private void addPageSizeChangeHandler() {
-        toolbar.addPageSizeChangeHandler(new ValueChangeHandler<Integer>() {
-
-            @Override
-            public void onValueChange(ValueChangeEvent<Integer> event) {
-                computeTotalPages();
-                toolbar.setPageNumber(1);
-                loadData();
-
-            }
-        });
-    }
-
-    private void addLastHandler() {
-        toolbar.addLastSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                toolbar.setPageNumber(totalPages);
-                toolbar.setLastEnabled(false);
-                toolbar.setNextEnabled(false);
-
-                toolbar.setFirstEnabled(true);
-                toolbar.setPrevEnabled(true);
-                loadData();
-            }
-        });
-    }
-
-    private void addNextHandler() {
-        toolbar.addNextSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                int temp = toolbar.getPageNumber() + 1;
-                toolbar.setPageNumber(temp);
-
-                if (temp == totalPages) {
-                    toolbar.setLastEnabled(false);
-                    toolbar.setNextEnabled(false);
-                }
-
-                toolbar.setFirstEnabled(true);
-                toolbar.setPrevEnabled(true);
-                loadData();
-            }
-        });
-    }
-
-    private void addPrevHandler() {
-        toolbar.addPrevSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                int temp = toolbar.getPageNumber() - 1;
-                toolbar.setPageNumber(temp);
-                // chk first page
-                if (temp - 1 == 0) {
-                    toolbar.setFirstEnabled(false);
-                    toolbar.setPrevEnabled(false);
-                    toolbar.setLastEnabled(true);
-                    toolbar.setNextEnabled(true);
-                }
-                loadData();
-            }
-        });
-    }
-
-    private void addFirstHandler() {
-        toolbar.addFirstSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                toolbar.setPageNumber(1);
-                toolbar.setFirstEnabled(false);
-                toolbar.setPrevEnabled(false);
-                toolbar.setLastEnabled(true);
-                toolbar.setNextEnabled(true);
-                loadData();
             }
         });
     }
@@ -227,7 +101,8 @@ public class TextViewerImpl implements FileViewer {
         return obj;
     }
 
-    private void loadData() {
+    @Override
+    public void loadData() {
         String url = "read-chunk";
         con.mask(I18N.DISPLAY.loadingMask());
         Services.FILE_EDITOR_SERVICE.getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
@@ -246,37 +121,6 @@ public class TextViewerImpl implements FileViewer {
             }
         });
 
-    }
-
-    private void addSelectPageKeyHandler() {
-        toolbar.addSelectPageKeyHandler(new KeyDownHandler() {
-
-            @Override
-            public void onKeyDown(KeyDownEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    int pageNumber = toolbar.getPageNumber();
-                    if (pageNumber <= totalPages && pageNumber > 0) {
-                        toolbar.pageText.clearInvalid();
-                        loadData();
-                        if (pageNumber == 1) {
-                            toolbar.setFirstEnabled(false);
-                            toolbar.setPrevEnabled(false);
-                            toolbar.setLastEnabled(true);
-                            toolbar.setNextEnabled(true);
-                        } else if (pageNumber == totalPages) {
-                            toolbar.setLastEnabled(false);
-                            toolbar.setNextEnabled(false);
-                        } else {
-                            toolbar.setPrevEnabled(true);
-                            toolbar.setNextEnabled(true);
-                        }
-                    } else {
-                        toolbar.pageText.markInvalid(I18N.DISPLAY.inValidPage());
-                    }
-                }
-
-            }
-        });
     }
 
     @Override
@@ -316,5 +160,17 @@ public class TextViewerImpl implements FileViewer {
     public static native void resizeDisplay(JavaScriptObject jso, int width, int height) /*-{
 		jso.setSize(width, height);
     }-*/;
+
+    @Override
+    public void loadDataWithHeader(boolean header) {
+        // do nothing intentionally
+
+    }
+
+    @Override
+    public void skipRows(int val) {
+        // do nothing intentionally
+
+    }
 
 }

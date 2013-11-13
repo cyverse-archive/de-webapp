@@ -77,26 +77,28 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         ViewCommand cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType
                 .fromTypeString(mimeType));
         String infoType = JsonUtil.getString(manifest, "info-type");
-        FileViewer viewer = cmd.execute(file, infoType);
+        List<? extends FileViewer> viewers_list = cmd.execute(file, infoType);
 
-        if (viewer != null) {
-            viewers.add(viewer);
-            container.getWidget().add(viewer.asWidget(), file.getName());
+        if (viewers_list != null && viewers_list.size() > 0) {
+            viewers.addAll(viewers_list);
+            for (FileViewer view : viewers) {
+                container.getWidget().add(view.asWidget(), view.getViewName());
+            }
             container.unmask();
         }
 
         if (treeViewer) {
             cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("tree"));
-            FileViewer treeViewer = cmd.execute(file, infoType);
+            List<? extends FileViewer> treeViewers = cmd.execute(file, infoType);
             List<TreeUrl> urls = getManifestTreeUrls();
             if (urls != null && urls.size() > 0) {
-                treeViewer.setData(urls);
+                treeViewers.get(0).setData(urls);
             } else {
-                callTreeCreateService(treeViewer);
+                callTreeCreateService(treeViewers.get(0));
             }
 
-            viewers.add(treeViewer);
-            container.getWidget().add(treeViewer.asWidget(), "Tree view");
+            viewers.add(treeViewers.get(0));
+            container.getWidget().add(treeViewers.get(0).asWidget(), treeViewers.get(0).getViewName());
         }
 
         if (viewers.size() == 0) {

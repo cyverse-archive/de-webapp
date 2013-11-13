@@ -41,7 +41,7 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void init() {
-        setSize("600px", "375px");
+        setSize("670px", "400px");
         this.file = configAB.getFile();
         getFileManifest();
         setTitle(file.getName());

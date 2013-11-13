@@ -91,7 +91,7 @@ public class DEViewImpl implements DEView {
     private final IPlantAnchor sysMsgsMenuItem;
     private Menu userMenu;
 
-    private List<HandlerRegistration> eventHandlers = new ArrayList<HandlerRegistration>();
+    private final List<HandlerRegistration> eventHandlers = new ArrayList<HandlerRegistration>();
 
     @UiTemplate("DEView.ui.xml")
     interface DEViewUiBinder extends UiBinder<Widget, DEViewImpl> {
@@ -204,12 +204,27 @@ public class DEViewImpl implements DEView {
     }
 
     private ToolBar buildNotificationMenu(String menuHeaderText) {
+        buildNotificationMenu();
+
         lblNotifications = new NotificationIndicator(0);
         lblNotifications.ensureDebugId("lblNotifyCnt");
 
         final TextButton button = new TextButton(menuHeaderText);
         button.setHeight(18);
         button.ensureDebugId("id" + menuHeaderText);
+        button.setMenu(notificationsView);
+        button.getElement().setAttribute("data-intro",
+                org.iplantc.core.resources.client.messages.I18N.TOUR.introNotifications());
+        button.getElement().setAttribute("data-position", "left");
+        button.getElement().setAttribute("data-step", "4");
+        ToolBar bar = new ToolBar();
+        bar.setPixelSize(120, 30);
+        bar.add(button);
+        bar.add(lblNotifications);
+        return bar;
+    }
+
+    private void buildNotificationMenu() {
         notificationsView = new ViewNotificationMenu(eventBus);
         notificationsView.setStyleName(resources.css().de_header_menu_body());
         notificationsView.addShowHandler(new ShowHandler() {
@@ -225,16 +240,9 @@ public class DEViewImpl implements DEView {
                 notificationsView.removeStyleName(resources.css().de_header_menu());
             }
         });
-        button.setMenu(notificationsView);
-        button.getElement().setAttribute("data-intro",
-                org.iplantc.core.resources.client.messages.I18N.TOUR.introNotifications());
-        button.getElement().setAttribute("data-position", "left");
-        button.getElement().setAttribute("data-step", "4");
-        ToolBar bar = new ToolBar();
-        bar.setPixelSize(120, 30);
-        bar.add(button);
-        bar.add(lblNotifications);
-        return bar;
+
+        // do an initial fetch of the last 10 messages.
+        notificationsView.fetchUnseenNotifications();
     }
 
     private ToolBar buildActionsMenu() {

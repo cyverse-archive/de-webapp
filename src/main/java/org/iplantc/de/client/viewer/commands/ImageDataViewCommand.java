@@ -3,9 +3,11 @@
  */
 package org.iplantc.de.client.viewer.commands;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.de.client.Services;
-import org.iplantc.de.client.viewer.views.FileViewer;
+import org.iplantc.de.client.viewer.views.AbstractFileViewer;
 import org.iplantc.de.client.viewer.views.ImageViewerImpl;
 
 /**
@@ -15,15 +17,15 @@ import org.iplantc.de.client.viewer.views.ImageViewerImpl;
 public class ImageDataViewCommand implements ViewCommand {
 
     @Override
-    public FileViewer execute(File file, String infoType) {
+    public List<AbstractFileViewer> execute(File file, String infoType) {
 
-        FileViewer view = null;
+        AbstractFileViewer view = null;
 
         if (file != null && !file.getId().isEmpty()) {
             // we got the url of an image... lets add a tab
-            view = new ImageViewerImpl(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(file.getId()));
+            view = new ImageViewerImpl(file);
         }
-        return view;
+        return Arrays.asList(view);
 
     }
 
