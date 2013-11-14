@@ -10,22 +10,16 @@ public interface StructuredText {
     @PropertyName("chunk-size")
     public String getChunkSize();
 
-    @PropertyName("end")
-    public void setEndPosition(String end);
-
-    @PropertyName("end")
-    public String getEndPosition();
-
-    @PropertyName("start")
-    public void setStartPosition(String start);
-
-    @PropertyName("start")
-    public String getStartPosition();
-
     @PropertyName("max-cols")
     public void setMaxColumns(String maxCols);
 
     @PropertyName("max-cols")
     public String getMaxColumns();
+
+    @PropertyName("page")
+    public String getPage();
+
+    @PropertyName("page")
+    public void setPage(String page);
 
 }
