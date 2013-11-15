@@ -1,6 +1,25 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.List;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+
+import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
+import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
+import com.sencha.gxt.widget.core.client.event.RestoreEvent;
+import com.sencha.gxt.widget.core.client.event.RestoreEvent.RestoreHandler;
+import com.sencha.gxt.widget.core.client.event.ShowEvent;
+import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
 import org.iplantc.core.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLabels;
 import org.iplantc.core.uiapps.client.events.AppPublishedEvent;
@@ -32,25 +51,7 @@ import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
-import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
-import com.sencha.gxt.widget.core.client.event.RestoreEvent;
-import com.sencha.gxt.widget.core.client.event.RestoreEvent.RestoreHandler;
-import com.sencha.gxt.widget.core.client.event.ShowEvent;
-import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
+import java.util.List;
 
 /**
  * A window for the App Integration editor 
@@ -147,7 +148,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
                         }
                     });
             at.onSuccess(config.getAppTemplate().getPayload());
-        } else if (config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
+        } else if (Strings.isNullOrEmpty(config.getAppId()) || config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
             setTitle(I18N.DISPLAY.createApps());
             // Create empty AppTemplate
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
@@ -159,13 +160,13 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
             argGrp.setLabel(labels.groupDefaultLabel(1));
             argGrp.setArguments(Lists.<Argument> newArrayList());
             newAppTemplate.setArgumentGroups(Lists.<ArgumentGroup> newArrayList(argGrp));
+            newAppTemplate.setId(Constants.CLIENT.newAppTemplate());
 
             /*
              * JDS Set the id of the AppTemplate passed to the rename command to newAppTemplate. This is
              * to ensure that the window title is not changed until a new app has been saved.
              */
             final AppTemplate copyAppTemplate = AppTemplateUtils.copyAppTemplate(newAppTemplate);
-            copyAppTemplate.setId(Constants.CLIENT.newAppTemplate());
             renameCmd.setAppTemplate(copyAppTemplate);
 
             presenter.go(this, newAppTemplate, renameCmd);
@@ -219,8 +220,8 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
     }
 
     private AppsIntegrationWindowConfig getUpdatedConfig() {
-        AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig("");
         AppTemplate appTemplate = presenter.getAppTemplate();
+        AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig(appTemplate == null ? "" : Strings.nullToEmpty(appTemplate.getId()));
         config.setAppTemplate(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(appTemplate)));
         return config;
     }
@@ -290,7 +291,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
         @Override
         public void execute() {
             // JDS Don't update window title for new, un-saved apps.
-            if (appTemplate.getId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
+            if (Strings.nullToEmpty(appTemplate.getId()).equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
                 return;
             }
             final String name = !Strings.isNullOrEmpty(appTemplate.getName()) ? appTemplate.getName() : I18N.DISPLAY.createApps();
