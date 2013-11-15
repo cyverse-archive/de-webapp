@@ -440,7 +440,8 @@ public class DEPresenter implements DEView.Presenter {
 
             @Override
             public void onSuccess(String result) {
-                UserInfo.getInstance().setHomePath(result);
+                JSONObject obj = JsonUtil.getObject(result);
+                UserInfo.getInstance().setHomePath(obj.get("path").isString().toString());
             }
 
             @Override
