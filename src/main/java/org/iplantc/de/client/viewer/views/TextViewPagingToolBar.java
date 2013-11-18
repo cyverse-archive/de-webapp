@@ -334,7 +334,6 @@ public class TextViewPagingToolBar extends ToolBar {
                 computeTotalPages();
                 setPageNumber(1);
                 view.loadData();
-
             }
         });
     }
@@ -389,15 +388,22 @@ public class TextViewPagingToolBar extends ToolBar {
             }
 
         }
+        setTotalPagesText();
+        setPageNavButtonState();
+    }
 
-        if (totalPages == 1) {
+    private void setPageNavButtonState() {
+        if (totalPages > 1) {
+            setFirstEnabled(false);
+            setPrevEnabled(false);
+            setLastEnabled(true);
+            setNextEnabled(true);
+        } else {
             setFirstEnabled(false);
             setNextEnabled(false);
             setPrevEnabled(false);
             setLastEnabled(false);
         }
-
-        setTotalPagesText();
     }
 
 }
