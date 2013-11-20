@@ -67,6 +67,7 @@ public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchE
         super(null, null);
         setSize("640", "375");
         setMinWidth(300);
+        setMinHeight(350);
         setBorders(false);
 
         presenter = AppLaunchInjector.INSTANCE.getAppLaunchPresenter();
