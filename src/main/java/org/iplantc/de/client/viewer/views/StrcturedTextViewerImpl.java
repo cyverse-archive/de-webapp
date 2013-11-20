@@ -225,8 +225,16 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
             }
         }
 
-        if (toolbar.getPageNumber() == 1 && headerRow == null) {
-            defineColumnHeader();
+        if (toolbar.getPageNumber() == 1) {
+            skipRows(toolbar.getSkipRowCount());
+            if (hasHeader) {
+                if (headerRow == null) {
+                    defineColumnHeader();
+                } else {
+                    // just remove the first row bcos header is set
+                    store.remove(0);
+                }
+            }
         }
 
     }
@@ -296,14 +304,13 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
             } else if (skippedRows.size() < val) {
                 // increment
                 skippedRows.addAll(store.subList(0, val - skippedRows.size()));
+            } else {
+                // same size
+                skippedRows.clear();
+                skippedRows.addAll(store.subList(0, val));
             }
             for (JSONObject obj : skippedRows) {
                 store.remove(obj);
-            }
-
-            // redefine column headers if necessary
-            if (hasHeader) {
-                defineColumnHeader();
             }
 
         } else {

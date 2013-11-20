@@ -30,8 +30,6 @@ public class ImageViewerImpl extends AbstractFileViewer {
     @UiField
     VerticalLayoutContainer con;
 
-    private File file;
-
     public ImageViewerImpl(File file) {
         super(file, null);
         img = new Image(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(this.file.getId()));

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.iplantc.core.uiapps.widgets.client.view.editors.validation.AnalysisOutputValidator;
 import org.iplantc.core.uicommons.client.Constants;
-import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.UserSettings;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uidiskresource.client.views.widgets.FolderSelectorField;
 import org.iplantc.de.client.I18N;
 
@@ -147,10 +147,10 @@ public class PreferencesViewImpl implements PreferencesView {
         defaultOpFolder.setId("idDefaultFolderSelector"); //$NON-NLS-1$
 
         defaultOpFolder.addValidator(new AnalysisOutputValidator());
-        defaultOpFolder.addValueChangeHandler(new ValueChangeHandler<HasId>() {
+        defaultOpFolder.addValueChangeHandler(new ValueChangeHandler<Folder>() {
 
             @Override
-            public void onValueChange(ValueChangeEvent<HasId> event) {
+            public void onValueChange(ValueChangeEvent<Folder> event) {
                 defaultOpFolder.validate(false);
             }
         });
@@ -192,14 +192,14 @@ public class PreferencesViewImpl implements PreferencesView {
         anaKbSc.setValue(Constants.CLIENT.analysisKeyShortCut());
         notKbSc.setValue(Constants.CLIENT.notifyKeyShortCut());
         closeKbSc.setValue(Constants.CLIENT.closeKeyShortCut());
-        defaultOpFolder.setValueFromStringId(us.getSystemDefaultOutputFolder());
+        defaultOpFolder.setValue(us.getSystemDefaultOutputFolder());
     }
 
     @Override
     public void setValues() {
         cboNotifyEmail.setValue(us.isEnableEmailNotification());
         cboLastPath.setValue(us.isRememberLastPath());
-        defaultOpFolder.setValueFromStringId(us.getDefaultOutputFolder());
+        defaultOpFolder.setValue(us.getDefaultOutputFolder());
         cboSaveSession.setValue(us.isSaveSession());
 
         appKbSc.setValue(us.getAppsShortCut());
@@ -214,7 +214,7 @@ public class PreferencesViewImpl implements PreferencesView {
         us.setEnableEmailNotification(cboNotifyEmail.getValue());
         us.setRememberLastPath(cboLastPath.getValue());
         us.setSaveSession(cboSaveSession.getValue());
-        us.setDefaultOutputFolder(defaultOpFolder.getValue().getId());
+        us.setDefaultOutputFolder(defaultOpFolder.getValue());
         us.setAppsShortCut(appKbSc.getValue());
         us.setDataShortCut(dataKbSc.getValue());
         us.setAnalysesShortCut(anaKbSc.getValue());

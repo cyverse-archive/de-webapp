@@ -106,16 +106,19 @@ public class TextViewPagingToolBar extends ToolBar {
         skipRowsCount.addValueChangeHandler(new ValueChangeHandler<Integer>() {
             @Override
             public void onValueChange(ValueChangeEvent<Integer> event) {
-                if (skipRowsCount.getValue() == null) {
-                    view.skipRows(0);
-                    skipRowsCount.setValue(0);
-                } else {
-                    view.skipRows(skipRowsCount.getValue());
-                }
-
+                view.skipRows(getSkipRowCount());
+                skipRowsCount.setValue(getSkipRowCount());
             }
         });
         add(skipRowsCount);
+    }
+
+    public int getSkipRowCount() {
+        if (skipRowsCount.getValue() == null) {
+            return 0;
+        } else {
+            return skipRowsCount.getValue();
+        }
     }
 
     private void addHeaderRowChkBox() {
@@ -228,7 +231,7 @@ public class TextViewPagingToolBar extends ToolBar {
                 cbxHeaderRows.setEnabled(false);
             } else {
                 cbxHeaderRows.setEnabled(true);
-                skipRowsCount.setEnabled(true);
+                skipRowsCount.setEnabled(!cbxHeaderRows.getValue());
             }
         }
     }
@@ -331,7 +334,6 @@ public class TextViewPagingToolBar extends ToolBar {
                 computeTotalPages();
                 setPageNumber(1);
                 view.loadData();
-
             }
         });
     }
@@ -351,7 +353,7 @@ public class TextViewPagingToolBar extends ToolBar {
                             setPrevEnabled(false);
                             setLastEnabled(true);
                             setNextEnabled(true);
-                            skipRowsCount.setEnabled(true);
+                            skipRowsCount.setEnabled(!cbxHeaderRows.getValue());
                             cbxHeaderRows.setEnabled(true);
                         } else if (pageNumber == totalPages) {
                             setLastEnabled(false);
@@ -386,15 +388,22 @@ public class TextViewPagingToolBar extends ToolBar {
             }
 
         }
+        setTotalPagesText();
+        setPageNavButtonState();
+    }
 
-        if (totalPages == 1) {
+    private void setPageNavButtonState() {
+        if (totalPages > 1) {
+            setFirstEnabled(false);
+            setPrevEnabled(false);
+            setLastEnabled(true);
+            setNextEnabled(true);
+        } else {
             setFirstEnabled(false);
             setNextEnabled(false);
             setPrevEnabled(false);
             setLastEnabled(false);
         }
-
-        setTotalPagesText();
     }
 
 }
