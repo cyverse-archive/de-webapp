@@ -66,6 +66,7 @@ public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchE
     public AppLaunchWindow(AppWizardConfig config) {
         super(null, null);
         setSize("640", "375");
+        setMinWidth(300);
         setBorders(false);
 
         presenter = AppLaunchInjector.INSTANCE.getAppLaunchPresenter();
