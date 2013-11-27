@@ -7,8 +7,8 @@ import com.sencha.gxt.core.client.dom.XElement;
 
 public class ShellScriptViewerImpl extends TextViewerImpl {
 
-    public ShellScriptViewerImpl(File file) {
-        super(file, "");
+    public ShellScriptViewerImpl(File file, boolean editing) {
+        super(file, "", editing);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ShellScriptViewerImpl extends TextViewerImpl {
 		});
 		myCodeMirror.setOption("lineWrapping", wrap);
 		myCodeMirror.setSize(width, height);
-		myCodeMirror.setOption("readOnly", true);
+		myCodeMirror.setOption("readOnly", editing);
 
 		return myCodeMirror;
     }-*/;

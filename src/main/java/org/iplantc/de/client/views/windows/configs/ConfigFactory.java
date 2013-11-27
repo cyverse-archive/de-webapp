@@ -1,11 +1,15 @@
 package org.iplantc.de.client.views.windows.configs;
 
+import java.util.Date;
+
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.models.WindowType;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.Splittable;
@@ -56,7 +60,14 @@ public class ConfigFactory {
                 factory.fileViewerWindowConfig());
         fvwc.as().setFile(file);
         fvwc.as().setShowTreeTab(b);
-        applyTag(file.getId(), fvwc);
+        if (file != null) {
+            applyTag(file.getId(), fvwc);
+        } else {
+            applyTag(
+                    "Untitled-"
+                            + DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT).format(new Date()),
+                    fvwc);
+        }
 
         return fvwc.as();
     }

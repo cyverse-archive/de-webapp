@@ -48,13 +48,16 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
     private final boolean treeViewer;
 
+    private final boolean editing;
+
     private final TreeUrlAutoBeanFactory factory = GWT.create(TreeUrlAutoBeanFactory.class);
 
-    public FileViewerPresenter(File file, JSONObject manifest, boolean treeViewer) {
+    public FileViewerPresenter(File file, JSONObject manifest, boolean treeViewer, boolean editing) {
         this.manifest = manifest;
         viewers = new ArrayList<FileViewer>();
         this.file = file;
         this.treeViewer = treeViewer;
+        this.editing = editing;
     }
 
     /*
@@ -77,7 +80,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         ViewCommand cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType
                 .fromTypeString(mimeType));
         String infoType = JsonUtil.getString(manifest, "info-type");
-        List<? extends FileViewer> viewers_list = cmd.execute(file, infoType);
+        List<? extends FileViewer> viewers_list = cmd.execute(file, infoType, editing);
 
         if (viewers_list != null && viewers_list.size() > 0) {
             viewers.addAll(viewers_list);
@@ -89,7 +92,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
         if (treeViewer) {
             cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("tree"));
-            List<? extends FileViewer> treeViewers = cmd.execute(file, infoType);
+            List<? extends FileViewer> treeViewers = cmd.execute(file, infoType, editing);
             List<TreeUrl> urls = getManifestTreeUrls();
             if (urls != null && urls.size() > 0) {
                 treeViewers.get(0).setData(urls);

@@ -1,5 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
+import java.util.Date;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
@@ -16,7 +18,10 @@ import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -44,9 +49,17 @@ public class FileViewerWindow extends IplantWindowBase {
         setSize("670px", "400px");
         this.file = configAB.getFile();
         getFileManifest();
-        setTitle(file.getName());
+        if (file != null) {
+            setTitle(file.getName());
+        } else {
+            setTitle("Untitled-" + Math.random());
+        }
+    }
+
+    private void initWidget() {
         tabPanel = new PlainTabPanel();
         add(tabPanel);
+        forceLayout();
     }
 
     /**
@@ -66,9 +79,11 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void doClose() {
-        EventBus eventbus = EventBus.getInstance();
-        FileEditorWindowClosedEvent event = new FileEditorWindowClosedEvent(file.getId());
-        eventbus.fireEvent(event);
+        if (file != null) {
+            EventBus eventbus = EventBus.getInstance();
+            FileEditorWindowClosedEvent event = new FileEditorWindowClosedEvent(file.getId());
+            eventbus.fireEvent(event);
+        }
     }
 
     @Override
@@ -96,34 +111,48 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void getFileManifest() {
-        Services.FILE_EDITOR_SERVICE.getManifest(file.getId(), new AsyncCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                if (result != null) {
-                    manifest = JsonUtil.getObject(result);
-                    FileViewer.Presenter p = new FileViewerPresenter(file, manifest, isTreeTab(manifest));
-                    p.go(FileViewerWindow.this);
-                } else {
-                    onFailure(null);
+        if (file != null) {
+            Services.FILE_EDITOR_SERVICE.getManifest(file.getId(), new AsyncCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    if (result != null) {
+                        manifest = JsonUtil.getObject(result);
+                        FileViewer.Presenter p = new FileViewerPresenter(file, manifest,
+                                isTreeTab(manifest), configAB.isEditing());
+                        initWidget();
+                        p.go(FileViewerWindow.this);
+                    } else {
+                        onFailure(null);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable caught) {
-                DiskResourceErrorAutoBeanFactory factory = GWT
-                        .create(DiskResourceErrorAutoBeanFactory.class);
-                String message = caught.getMessage();
-                FileViewerWindow.this.hide();
+                @Override
+                public void onFailure(Throwable caught) {
+                    DiskResourceErrorAutoBeanFactory factory = GWT
+                            .create(DiskResourceErrorAutoBeanFactory.class);
+                    String message = caught.getMessage();
+                    FileViewerWindow.this.hide();
 
-                if (JsonUtils.safeToEval(message)) {
-                    AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory,
-                            ErrorGetManifest.class, message);
-                    ErrorHandler.post(errorBean.as(), caught);
-                } else {
-                    ErrorHandler.post(I18N.ERROR.retrieveStatFailed(), caught);
+                    if (JsonUtils.safeToEval(message)) {
+                        AutoBean<ErrorGetManifest> errorBean = AutoBeanCodex.decode(factory,
+                                ErrorGetManifest.class, message);
+                        ErrorHandler.post(errorBean.as(), caught);
+                    } else {
+                        ErrorHandler.post(I18N.ERROR.retrieveStatFailed(), caught);
+                    }
                 }
+            });
+        } else {
+            if (configAB.isEditing()) {
+                JSONObject manifest = new JSONObject();
+                manifest.put("content-type", new JSONString("plain"));
+                FileViewer.Presenter p = new FileViewerPresenter(file, manifest, isTreeTab(manifest),
+                        configAB.isEditing());
+                initWidget();
+                p.go(FileViewerWindow.this);
+
             }
-        });
+        }
     }
 
 }

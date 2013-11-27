@@ -15,5 +15,5 @@ public interface ViewCommand {
     /**
      * Execute command.
      */
-    List<? extends FileViewer> execute(File file, String infoType);
+    List<? extends FileViewer> execute(File file, String infoType, boolean editing);
 }

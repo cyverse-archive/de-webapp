@@ -16,12 +16,22 @@ import com.google.common.base.Strings;
 public class TextDataViewCommand implements ViewCommand {
 
     @Override
-    public List<FileViewer> execute(final File file, String infoType) {
-        final List<FileViewer> viewers = getViewerByInfoType(file, infoType);
+    public List<FileViewer> execute(final File file, String infoType, boolean editing) {
+        Long size = 0l;
+        if (file != null) {
+            size = Long.parseLong(file.getSize());
+        }
+        List<FileViewer> viewers = null;
+        // currently we support editing for files of 8kb or less only
+        if (editing && size <= 8192) {
+            viewers = getViewerByInfoType(file, infoType, editing);
+        } else {
+            viewers = getViewerByInfoType(file, infoType, false);
+        }
         return viewers;
     }
 
-    private List<FileViewer> getViewerByInfoType(final File file, String infoType) {
+    private List<FileViewer> getViewerByInfoType(final File file, String infoType, boolean editing) {
         List<FileViewer> viewers = new ArrayList<FileViewer>();
         if (!Strings.isNullOrEmpty(infoType)) {
             if (infoType.equals("csv") || infoType.equals("tsv") || infoType.equals("vcf")
@@ -30,7 +40,7 @@ public class TextDataViewCommand implements ViewCommand {
 
             }
         }
-        viewers.add(new TextViewerImpl(file, infoType));
+        viewers.add(new TextViewerImpl(file, infoType, editing));
         return viewers;
     }
 }

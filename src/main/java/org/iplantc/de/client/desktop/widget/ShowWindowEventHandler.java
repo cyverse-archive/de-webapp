@@ -9,6 +9,8 @@ import org.iplantc.core.uiapps.client.events.EditWorkflowEvent.EditWorkflowEvent
 import org.iplantc.core.uiapps.client.events.RunAppEvent;
 import org.iplantc.core.uiapps.client.events.RunAppEvent.RunAppEventHandler;
 import org.iplantc.core.uiapps.client.events.handlers.CreateNewWorkflowEventHandler;
+import org.iplantc.core.uidiskresource.client.events.CreateNewFileEvent;
+import org.iplantc.core.uidiskresource.client.events.CreateNewFileEvent.CreateNewFileEventHandler;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
 import org.iplantc.de.client.Constants;
@@ -25,11 +27,11 @@ import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
 
 import com.google.web.bindery.autobean.shared.Splittable;
 
-final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, 
-		ShowFilePreviewEventHandler, CreateNewAppEventHandler, CreateNewWorkflowEventHandler, 
-		WindowShowRequestEventHandler, RunAppEventHandler, EditAppEventHandler, 
-		EditWorkflowEventHandler, ShowSystemMessagesEvent.Handler {
-	
+final class ShowWindowEventHandler implements ShowAboutWindowEventHandler, ShowFilePreviewEventHandler,
+        CreateNewAppEventHandler, CreateNewWorkflowEventHandler, WindowShowRequestEventHandler,
+        RunAppEventHandler, EditAppEventHandler, EditWorkflowEventHandler,
+        ShowSystemMessagesEvent.Handler, CreateNewFileEventHandler {
+
     private final Desktop desktop;
 
     ShowWindowEventHandler(Desktop desktop) {
@@ -43,7 +45,9 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler,
 
     @Override
     public void showFilePreview(ShowFilePreviewEvent event) {
-        FileViewerWindowConfig fileViewerWindowConfig = ConfigFactory.fileViewerWindowConfig(event.getFile(), false);
+        FileViewerWindowConfig fileViewerWindowConfig = ConfigFactory.fileViewerWindowConfig(
+                event.getFile(), false);
+        fileViewerWindowConfig.setEditing(true);
         desktop.showWindow(fileViewerWindowConfig);
     }
 
@@ -60,12 +64,14 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler,
 
     @Override
     public void createNewApp(CreateNewAppEvent event) {
-        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig(Constants.CLIENT.newAppTemplate()), true);
+        desktop.showWindow(ConfigFactory.appsIntegrationWindowConfig(Constants.CLIENT.newAppTemplate()),
+                true);
     }
 
     @Override
     public void onEditApp(EditAppEvent event) {
-        AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig(event.getAppToEdit().getId());
+        AppsIntegrationWindowConfig config = ConfigFactory.appsIntegrationWindowConfig(event
+                .getAppToEdit().getId());
         config.setOnlyLabelEditMode(event.isUserIntegratorAndAppPublic());
         desktop.showWindow(config, true);
     }
@@ -83,9 +89,17 @@ final class ShowWindowEventHandler implements ShowAboutWindowEventHandler,
         desktop.showWindow(config);
     }
 
-	@Override
-	public void showSystemMessages(final ShowSystemMessagesEvent event) {
+    @Override
+    public void showSystemMessages(final ShowSystemMessagesEvent event) {
         desktop.showWindow(ConfigFactory.systemMessagesWindowConfig(null));
-	}
-	
+    }
+
+    @Override
+    public void onCreateNewFile(CreateNewFileEvent event) {
+        FileViewerWindowConfig fileViewerWindowConfig = ConfigFactory
+                .fileViewerWindowConfig(null, false);
+        fileViewerWindowConfig.setEditing(true);
+        desktop.showWindow(fileViewerWindowConfig);
+    }
+
 }

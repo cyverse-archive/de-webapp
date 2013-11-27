@@ -2,23 +2,17 @@ package org.iplantc.de.client.analysis.views;
 
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.core.uidiskresource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
-import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
+import org.iplantc.de.client.services.impl.FileSaveCallback;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -115,7 +109,7 @@ public class AnalysisParamView implements IsWidget {
     private void saveFile(final String path, String fileContents) {
         mask();
         Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, fileContents,
-                new SaveasServiceCallbackHandler(path));
+                new FileSaveCallback(path, con));
     }
 
     private String writeTabFile() {
@@ -128,31 +122,6 @@ public class AnalysisParamView implements IsWidget {
         }
 
         return sw.toString();
-    }
-
-    private class SaveasServiceCallbackHandler implements AsyncCallback<String> {
-
-        private final String parentFolder;
-        private final String fileName;
-
-        public SaveasServiceCallbackHandler(String path) {
-            this.fileName = DiskResourceUtil.parseNameFromPath(path);
-            this.parentFolder = DiskResourceUtil.parseParent(path);
-        }
-
-        @Override
-        public void onSuccess(String result) {
-            unmask();
-            JSONObject obj = JSONParser.parseStrict(result).isObject();
-            DefaultUploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
-            uch.onCompletion(fileName, JsonUtil.getObject(obj, "file").toString());
-        }
-
-        @Override
-        public void onFailure(Throwable caught) {
-            unmask();
-            ErrorHandler.post(I18N.ERROR.saveParamFailed(), caught);
-        }
     }
 
 }

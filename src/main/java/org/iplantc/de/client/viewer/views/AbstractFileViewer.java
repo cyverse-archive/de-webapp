@@ -69,7 +69,10 @@ public abstract class AbstractFileViewer implements FileViewer {
 
     @Override
     public String getViewName() {
-        return file.getName();
+        if (file != null) {
+            return file.getName();
+        } else {
+            return "Untitled-" + Math.random();
+        }
     }
-
 }
