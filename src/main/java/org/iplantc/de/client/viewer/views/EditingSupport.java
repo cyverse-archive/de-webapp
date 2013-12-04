@@ -4,4 +4,7 @@ public interface EditingSupport {
 
     void save();
 
+    void setDirty(Boolean dirty);
+
+    boolean isDirty();
 }

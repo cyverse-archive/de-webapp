@@ -18,6 +18,10 @@ public interface FileViewer extends IsWidget {
 
     public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
         void composeView(JSONObject manifest);
+
+        void setVeiwDirtyState(boolean dirty);
+
+        boolean isDirty();
     }
 
     void setPresenter(Presenter p);

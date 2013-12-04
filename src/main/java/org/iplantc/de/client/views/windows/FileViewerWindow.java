@@ -1,7 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.Date;
-
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
@@ -12,14 +10,15 @@ import org.iplantc.core.uidiskresource.client.services.errors.DiskResourceErrorA
 import org.iplantc.core.uidiskresource.client.services.errors.ErrorGetManifest;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
+import org.iplantc.de.client.viewer.events.FileSavedEvent;
+import org.iplantc.de.client.viewer.events.FileSavedEvent.FileSavedEventHandler;
+import org.iplantc.de.client.viewer.events.SaveFileEvent;
 import org.iplantc.de.client.viewer.presenter.FileViewerPresenter;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
@@ -27,6 +26,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 /**
  * @author sriram
@@ -38,10 +40,22 @@ public class FileViewerWindow extends IplantWindowBase {
     protected JSONObject manifest;
     protected File file;
     private final FileViewerWindowConfig configAB;
+    private FileViewer.Presenter p;
 
     public FileViewerWindow(FileViewerWindowConfig config) {
         super(null, null);
         this.configAB = config;
+        EventBus.getInstance().addHandler(FileSavedEvent.TYPE, new FileSavedEventHandler() {
+
+            @Override
+            public void onFileSaved(FileSavedEvent event) {
+                file = event.getFile();
+                setTitle(file.getName());
+                tabPanel = null;
+                getFileManifest();
+            }
+
+        });
         init();
     }
 
@@ -57,9 +71,11 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void initWidget() {
-        tabPanel = new PlainTabPanel();
-        add(tabPanel);
-        forceLayout();
+        if (tabPanel == null) {
+            tabPanel = new PlainTabPanel();
+            add(tabPanel);
+            forceLayout();
+        }
     }
 
     /**
@@ -74,8 +90,27 @@ public class FileViewerWindow extends IplantWindowBase {
 
     @Override
     public void doHide() {
-        super.doHide();
-        doClose();
+        if (p != null && p.isDirty()) {
+            final ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.save(),
+                    I18N.DISPLAY.unsavedChanges());
+            cmb.addHideHandler(new HideHandler() {
+
+                @Override
+                public void onHide(HideEvent event) {
+                    if (cmb.getHideButton().getText().equalsIgnoreCase("yes")) {
+                        SaveFileEvent sfe = new SaveFileEvent();
+                        EventBus.getInstance().fireEvent(sfe);
+                    } else {
+                        FileViewerWindow.super.doHide();
+                        doClose();
+                    }
+                }
+            });
+            cmb.show();
+        } else {
+            super.doHide();
+            doClose();
+        }
     }
 
     private void doClose() {
@@ -111,16 +146,18 @@ public class FileViewerWindow extends IplantWindowBase {
     }
 
     private void getFileManifest() {
+        mask(I18N.DISPLAY.loadingMask());
         if (file != null) {
             Services.FILE_EDITOR_SERVICE.getManifest(file.getId(), new AsyncCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
                     if (result != null) {
                         manifest = JsonUtil.getObject(result);
-                        FileViewer.Presenter p = new FileViewerPresenter(file, manifest,
-                                isTreeTab(manifest), configAB.isEditing());
+                        p = new FileViewerPresenter(file, manifest, isTreeTab(manifest), configAB
+                                .isEditing());
                         initWidget();
                         p.go(FileViewerWindow.this);
+                        unmask();
                     } else {
                         onFailure(null);
                     }
@@ -128,6 +165,7 @@ public class FileViewerWindow extends IplantWindowBase {
 
                 @Override
                 public void onFailure(Throwable caught) {
+                    unmask();
                     DiskResourceErrorAutoBeanFactory factory = GWT
                             .create(DiskResourceErrorAutoBeanFactory.class);
                     String message = caught.getMessage();
@@ -146,11 +184,10 @@ public class FileViewerWindow extends IplantWindowBase {
             if (configAB.isEditing()) {
                 JSONObject manifest = new JSONObject();
                 manifest.put("content-type", new JSONString("plain"));
-                FileViewer.Presenter p = new FileViewerPresenter(file, manifest, isTreeTab(manifest),
-                        configAB.isEditing());
+                p = new FileViewerPresenter(file, manifest, isTreeTab(manifest), configAB.isEditing());
                 initWidget();
                 p.go(FileViewerWindow.this);
-
+                unmask();
             }
         }
     }

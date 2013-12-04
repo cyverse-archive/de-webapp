@@ -7,7 +7,11 @@ import org.iplantc.de.client.viewer.events.SaveFileEvent.SaveFileEventHandler;
 public class SaveFileEvent extends GwtEvent<SaveFileEventHandler> {
 
     public interface SaveFileEventHandler extends EventHandler {
-
+        /**
+         * Method to call when save button is pressed
+         * 
+         * @param event
+         */
         void onSave(SaveFileEvent event);
 
     }

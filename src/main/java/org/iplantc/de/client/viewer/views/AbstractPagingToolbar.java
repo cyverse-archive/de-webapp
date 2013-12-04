@@ -1,7 +1,6 @@
-package org.iplantc.de.client.viewer.commands;
+package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.viewer.views.FileViewer;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;

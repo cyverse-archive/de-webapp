@@ -1,7 +1,6 @@
 package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.core.resources.client.messages.I18N;
-import org.iplantc.de.client.viewer.commands.AbstractPagingToolbar;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

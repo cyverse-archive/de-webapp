@@ -52,6 +52,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
     private final TreeUrlAutoBeanFactory factory = GWT.create(TreeUrlAutoBeanFactory.class);
 
+    private boolean isDirty;
+
     public FileViewerPresenter(File file, JSONObject manifest, boolean treeViewer, boolean editing) {
         this.manifest = manifest;
         viewers = new ArrayList<FileViewer>();
@@ -85,6 +87,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         if (viewers_list != null && viewers_list.size() > 0) {
             viewers.addAll(viewers_list);
             for (FileViewer view : viewers) {
+                view.setPresenter(this);
                 container.getWidget().add(view.asWidget(), view.getViewName());
             }
             container.unmask();
@@ -166,6 +169,16 @@ public class FileViewerPresenter implements FileViewer.Presenter {
                 ErrorHandler.post(errMsg, caught);
             }
         });
+    }
+
+    @Override
+    public void setVeiwDirtyState(boolean dirty) {
+        this.isDirty = dirty;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return isDirty;
     }
 
 }

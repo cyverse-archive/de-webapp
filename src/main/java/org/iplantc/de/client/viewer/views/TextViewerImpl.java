@@ -5,8 +5,9 @@ package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.core.uidiskresource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.services.impl.FileSaveCallback;
@@ -29,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * @author sriram
@@ -61,6 +64,8 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 
     protected boolean editing;
 
+    private Presenter presenter;
+
     protected JavaScriptObject jso;
 
     public TextViewerImpl(File file, String infoType, boolean editing) {
@@ -87,6 +92,17 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
                 }
             }
         });
+
+        EventBus.getInstance().addHandler(SaveFileEvent.TYPE, new SaveFileEventHandler() {
+
+            @Override
+            public void onSave(SaveFileEvent event) {
+                save();
+            }
+        }
+
+        );
+
     }
 
     TextViewPagingToolBar initToolBar() {
@@ -150,13 +166,14 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
     }
 
     @Override
-    public void setPresenter(Presenter p) {/* Not Used */
+    public void setPresenter(Presenter p) {
+        this.presenter = p;
     }
 
     @Override
     public void setData(Object data) {
         clearDisplay();
-        jso = displayData(center.getElement(), infoType, (String)data, center.getElement()
+        jso = displayData(this, center.getElement(), infoType, (String)data, center.getElement()
                 .getOffsetWidth(), center.getElement().getOffsetHeight(), toolbar.isWrapText(), editing);
     }
 
@@ -165,8 +182,13 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
         center.forceLayout();
     }
 
-    public static native JavaScriptObject displayData(XElement textArea, String mode, String val,
-            int width, int height, boolean wrap, boolean editing) /*-{
+    @Override
+    public void setDirty(Boolean dirty) {
+        presenter.setVeiwDirtyState(dirty);
+    }
+
+    public static native JavaScriptObject displayData(final TextViewerImpl instance, XElement textArea,
+            String mode, String val, int width, int height, boolean wrap, boolean editing) /*-{
 		var myCodeMirror = $wnd.CodeMirror(textArea, {
 			value : val,
 			mode : mode
@@ -175,6 +197,12 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 		myCodeMirror.setSize(width, height);
 		if (editing) {
 			myCodeMirror.setOption("readOnly", false);
+			myCodeMirror
+					.on(
+							"change",
+							$entry(function() {
+								instance.@org.iplantc.de.client.viewer.views.TextViewerImpl::setDirty(Ljava/lang/Boolean;)(@java.lang.Boolean::TRUE);
+							}));
 		} else {
 			myCodeMirror.setOption("readOnly", true);
 		}
@@ -185,16 +213,45 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 		return jso.getValue();
     }-*/;
 
+    public static native boolean isClean(JavaScriptObject jso) /*-{
+		return jso.isClean();
+    }-*/;
+
     public static native void resizeDisplay(JavaScriptObject jso, int width, int height) /*-{
 		jso.setSize(width, height);
     }-*/;
 
     @Override
     public void save() {
-        System.out.println(getEditorContent(jso));
-        String path = (file != null) ? file.getPath() : JsonUtil.trim(UserInfo.getInstance()
-                .getHomePath()) + "/" + getViewName();
-        Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, getEditorContent(jso), new FileSaveCallback(
-                path, con));
+        con.mask("Saving...");
+        if (file == null) {
+            final SaveAsDialog saveDialog = new SaveAsDialog();
+            saveDialog.addOkButtonSelectHandler(new SelectHandler() {
+
+                @Override
+                public void onSelect(SelectEvent event) {
+                    String destination = saveDialog.getSelectedFolder().getPath() + "/"
+                            + saveDialog.getFileName();
+                    Services.FILE_EDITOR_SERVICE.uploadTextAsFile(destination, getEditorContent(jso),
+                            new FileSaveCallback(destination, con));
+                }
+            });
+            saveDialog.addCancelButtonSelectHandler(new SelectHandler() {
+
+                @Override
+                public void onSelect(SelectEvent event) {
+                    con.unmask();
+                }
+            });
+            saveDialog.show();
+            saveDialog.toFront();
+        } else {
+            // save exisiting file here...
+        }
+    }
+
+    @Override
+    public boolean isDirty() {
+        return isClean(jso);
     }
 }

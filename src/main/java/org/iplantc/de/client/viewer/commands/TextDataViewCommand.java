@@ -3,6 +3,8 @@ package org.iplantc.de.client.viewer.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.viewer.views.StrcturedTextViewerImpl;
@@ -27,6 +29,9 @@ public class TextDataViewCommand implements ViewCommand {
             viewers = getViewerByInfoType(file, infoType, editing);
         } else {
             viewers = getViewerByInfoType(file, infoType, false);
+            ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(
+                    "Editing is not supported for this type of file or for file sizes > 8Kb.");
+            IplantAnnouncer.getInstance().schedule(config);
         }
         return viewers;
     }
