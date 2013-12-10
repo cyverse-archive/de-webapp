@@ -9,7 +9,7 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
  * @author sriram
  * 
  */
-public interface TreeUrl {
+public interface VizUrl {
 
     @PropertyName("label")
     void setLabel(String label);

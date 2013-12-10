@@ -8,7 +8,7 @@ import org.iplantc.de.client.viewer.commands.ImageDataViewCommand;
 import org.iplantc.de.client.viewer.commands.PdfDataViewCommand;
 import org.iplantc.de.client.viewer.commands.ShellScriptViewCommand;
 import org.iplantc.de.client.viewer.commands.TextDataViewCommand;
-import org.iplantc.de.client.viewer.commands.TreeViewerCommand;
+import org.iplantc.de.client.viewer.commands.VizURLViewerCommand;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
 import org.iplantc.de.client.viewer.models.MimeType;
 
@@ -60,8 +60,8 @@ public class MimeTypeViewerResolverFactory {
                 cmd = new TextDataViewCommand();
                 break;
 
-            case TREE:
-                cmd = new TreeViewerCommand();
+            case VIZ:
+                cmd = new VizURLViewerCommand();
                 break;
             default:
                 cmd = new TextDataViewCommand();

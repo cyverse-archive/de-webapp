@@ -10,10 +10,10 @@ import com.sencha.gxt.data.shared.PropertyAccess;
  * @author sriram
  * 
  */
-public interface TreeUrlProperties extends PropertyAccess<TreeUrl> {
+public interface VizUrlProperties extends PropertyAccess<VizUrl> {
 
-    ValueProvider<TreeUrl, String> label();
+    ValueProvider<VizUrl, String> label();
 
-    ValueProvider<TreeUrl, String> url();
+    ValueProvider<VizUrl, String> url();
 
 }

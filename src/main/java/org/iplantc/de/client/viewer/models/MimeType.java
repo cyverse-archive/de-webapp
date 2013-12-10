@@ -5,67 +5,66 @@ package org.iplantc.de.client.viewer.models;
 
 /**
  * @author sriram
- *
+ * 
  */
 public enum MimeType {
 
-	PNG("png"),
+    PNG("png"),
 
-	GIF("gif"),
+    GIF("gif"),
 
-	JPEG("jpeg"),
+    JPEG("jpeg"),
 
-	PDF("pdf"),
+    PDF("pdf"),
 
-	PLAIN("plain"),
+    PLAIN("plain"),
 
-	HTML("html"),
+    HTML("html"),
 
-	XHTML_XML("xhtml+xml"),
+    XHTML_XML("xhtml+xml"),
 
-	PREVIEW("preview"),
+    PREVIEW("preview"),
 
-	X_SH("x-sh"),
+    X_SH("x-sh"),
 
-	TREE("tree");
+    VIZ("viz");
 
-	private String type;
+    private String type;
 
-	private MimeType(String type) {
-		this.type = type;
-	}
+    private MimeType(String type) {
+        this.type = type;
+    }
 
-	public String getTypeString() {
-		return toString().toLowerCase();
-	}
+    public String getTypeString() {
+        return toString().toLowerCase();
+    }
 
-	/**
-	 * Null-safe and case insensitive variant of valueOf(String)
-	 *
-	 * @param typeString
-	 *            name of an mime type constant
-	 * @return
-	 */
-	public static MimeType fromTypeString(String typeString) {
-		if (typeString == null || typeString.isEmpty()) {
-			return null;
-		}
+    /**
+     * Null-safe and case insensitive variant of valueOf(String)
+     * 
+     * @param typeString name of an mime type constant
+     * @return
+     */
+    public static MimeType fromTypeString(String typeString) {
+        if (typeString == null || typeString.isEmpty()) {
+            return null;
+        }
 
-		String[] tokens = typeString.split("/");
-		try {
-			if (tokens.length > 1) {
-				return valueOf(tokens[1].toUpperCase().replaceAll("[-.+]", "_"));
-			} else {
-				return valueOf(tokens[0].toUpperCase().replaceAll("[-.+]", "_"));
-			}
-		} catch (Exception e) {
-			return PLAIN;
-		}
-	}
+        String[] tokens = typeString.split("/");
+        try {
+            if (tokens.length > 1) {
+                return valueOf(tokens[1].toUpperCase().replaceAll("[-.+]", "_"));
+            } else {
+                return valueOf(tokens[0].toUpperCase().replaceAll("[-.+]", "_"));
+            }
+        } catch (Exception e) {
+            return PLAIN;
+        }
+    }
 
-	@Override
-	public String toString() {
-		return type;
-	}
+    @Override
+    public String toString() {
+        return type;
+    }
 
 }

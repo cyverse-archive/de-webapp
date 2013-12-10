@@ -4,7 +4,7 @@
 package org.iplantc.de.client.viewer.views.cells;
 
 import org.iplantc.core.uicommons.client.util.WindowUtil;
-import org.iplantc.de.client.viewer.models.TreeUrl;
+import org.iplantc.de.client.viewer.models.VizUrl;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -16,14 +16,14 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * @author sriram
  * 
  */
-public class TreeUrlCell extends AbstractCell<TreeUrl> {
+public class TreeUrlCell extends AbstractCell<VizUrl> {
 
     public TreeUrlCell() {
         super("click");
     }
 
     @Override
-    public void render(com.google.gwt.cell.client.Cell.Context context, TreeUrl model, SafeHtmlBuilder sb) {
+    public void render(com.google.gwt.cell.client.Cell.Context context, VizUrl model, SafeHtmlBuilder sb) {
         // TODO JDS We should use CssResource here
         sb.appendHtmlConstant("<div style=\"cursor:pointer;text-decoration:underline;white-space:pre-wrap;\">" //$NON-NLS-1$
                 + model.getUrl() + "</div>"); //$NON-NLS-1$
@@ -32,7 +32,7 @@ public class TreeUrlCell extends AbstractCell<TreeUrl> {
 
     @Override
     public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context, Element parent,
-            TreeUrl value, NativeEvent event, ValueUpdater<TreeUrl> valueUpdater) {
+            VizUrl value, NativeEvent event, ValueUpdater<VizUrl> valueUpdater) {
 
         if (value == null) {
             return;

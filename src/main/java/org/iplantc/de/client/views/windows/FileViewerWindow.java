@@ -81,27 +81,13 @@ public class FileViewerWindow extends IplantWindowBase {
         return createWindowState(configAB);
     }
 
-    private boolean isTreeTab(JSONObject obj) {
-        if (obj == null) {
-            return false;
-        }
-        String info_type = JsonUtil.getString(obj, "info-type");
-        if (info_type == null || info_type.isEmpty()) {
-            return false;
-        }
-
-        return (info_type.equalsIgnoreCase("nexus") || info_type.equalsIgnoreCase("nexml")
-                || info_type.equalsIgnoreCase("newick") || info_type.equalsIgnoreCase("phyloxml"));
-
-    }
-
     private void getFileManifest() {
         Services.FILE_EDITOR_SERVICE.getManifest(file.getId(), new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 if (result != null) {
                     manifest = JsonUtil.getObject(result);
-                    FileViewer.Presenter p = new FileViewerPresenter(file, manifest, isTreeTab(manifest));
+                    FileViewer.Presenter p = new FileViewerPresenter(file, manifest);
                     p.go(FileViewerWindow.this);
                 } else {
                     onFailure(null);

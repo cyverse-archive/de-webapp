@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.viewer.models.TreeUrl;
-import org.iplantc.de.client.viewer.models.TreeUrlProperties;
+import org.iplantc.de.client.viewer.models.VizUrl;
+import org.iplantc.de.client.viewer.models.VizUrlProperties;
 import org.iplantc.de.client.viewer.views.cells.TreeUrlCell;
 
 import com.google.gwt.core.client.GWT;
@@ -29,31 +29,31 @@ import com.sencha.gxt.widget.core.client.grid.GridView;
  * @author sriram
  * 
  */
-public class TreeViwerImpl extends AbstractFileViewer {
+public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer {
 
     private static TreeViwerUiBinder uiBinder = GWT.create(TreeViwerUiBinder.class);
 
-    @UiTemplate("TreeViewer.ui.xml")
-    interface TreeViwerUiBinder extends UiBinder<Widget, TreeViwerImpl> {
+    @UiTemplate("ExternalVizualizationURLViwer.ui.xml")
+    interface TreeViwerUiBinder extends UiBinder<Widget, ExternalVizualizationURLViwerImpl> {
     }
 
     private final Widget widget;
 
-    Grid<TreeUrl> grid;
+    Grid<VizUrl> grid;
 
     @UiField(provided = true)
-    ListStore<TreeUrl> listStore;
+    ListStore<VizUrl> listStore;
 
     @UiField(provided = true)
-    ColumnModel<TreeUrl> cm;
+    ColumnModel<VizUrl> cm;
 
     @UiField
-    GridView<TreeUrl> gridView;
+    GridView<VizUrl> gridView;
 
-    public TreeViwerImpl(File file) {
+    public ExternalVizualizationURLViwerImpl(File file) {
         super(file, null);
         this.cm = buildColumnModel();
-        this.listStore = new ListStore<TreeUrl>(new TreeUrlKeyProvider());
+        this.listStore = new ListStore<VizUrl>(new TreeUrlKeyProvider());
         this.widget = uiBinder.createAndBindUi(this);
         gridView.setAutoExpandColumn(cm.getColumn(1));
     }
@@ -66,7 +66,7 @@ public class TreeViwerImpl extends AbstractFileViewer {
     @SuppressWarnings("unchecked")
     @Override
     public void setData(Object data) {
-        List<TreeUrl> urls = (List<TreeUrl>)data;
+        List<VizUrl> urls = (List<VizUrl>)data;
         listStore.addAll(urls);
     }
 
@@ -76,26 +76,26 @@ public class TreeViwerImpl extends AbstractFileViewer {
 
     }
 
-    private ColumnModel<TreeUrl> buildColumnModel() {
-        TreeUrlProperties props = GWT.create(TreeUrlProperties.class);
-        List<ColumnConfig<TreeUrl, ?>> configs = new LinkedList<ColumnConfig<TreeUrl, ?>>();
-        ColumnConfig<TreeUrl, String> label = new ColumnConfig<TreeUrl, String>(props.label(), 75);
+    private ColumnModel<VizUrl> buildColumnModel() {
+        VizUrlProperties props = GWT.create(VizUrlProperties.class);
+        List<ColumnConfig<VizUrl, ?>> configs = new LinkedList<ColumnConfig<VizUrl, ?>>();
+        ColumnConfig<VizUrl, String> label = new ColumnConfig<VizUrl, String>(props.label(), 75);
         label.setHeader(I18N.DISPLAY.label());
         configs.add(label);
 
-        ColumnConfig<TreeUrl, TreeUrl> url = new ColumnConfig<TreeUrl, TreeUrl>(
-                new IdentityValueProvider<TreeUrl>(), 280);
-        url.setHeader(I18N.DISPLAY.treeUrl());
+        ColumnConfig<VizUrl, VizUrl> url = new ColumnConfig<VizUrl, VizUrl>(
+                new IdentityValueProvider<VizUrl>(), 280);
+        url.setHeader("URL");
         url.setCell(new TreeUrlCell());
         configs.add(url);
 
-        return new ColumnModel<TreeUrl>(configs);
+        return new ColumnModel<VizUrl>(configs);
 
     }
 
-    private class TreeUrlKeyProvider implements ModelKeyProvider<TreeUrl> {
+    private class TreeUrlKeyProvider implements ModelKeyProvider<VizUrl> {
         @Override
-        public String getKey(TreeUrl item) {
+        public String getKey(VizUrl item) {
             return item.getLabel();
         }
 
@@ -103,7 +103,7 @@ public class TreeViwerImpl extends AbstractFileViewer {
 
     @Override
     public String getViewName() {
-        return "Tree View:" + file.getName();
+        return "Vizualization:" + file.getName();
     }
 
 }

@@ -11,9 +11,9 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
  * @author sriram
  * 
  */
-public interface TreeUrlList {
+public interface VizUrlList {
 
     @PropertyName("tree-urls")
-    List<TreeUrl> getTreeUrls();
+    List<VizUrl> getUrls();
 
 }
