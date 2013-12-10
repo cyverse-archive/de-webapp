@@ -12,7 +12,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  */
 public interface TreeUrlAutoBeanFactory extends AutoBeanFactory {
 
-    AutoBean<TreeUrl> getTreeUrl();
+    AutoBean<VizUrl> getTreeUrl();
 
-    AutoBean<TreeUrlList> getTreeUrlList();
+    AutoBean<VizUrlList> getTreeUrlList();
 }

@@ -80,4 +80,22 @@ public class FileEditorServiceFacadeImpl implements FileEditorServiceFacade {
     private void callService(ServiceCallWrapper wrapper, AsyncCallback<String> callback) {
         SharedServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
+
+    @Override
+    public void getGenomeVizUrl(String idFile, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl()
+                + "get-genomes-viz-url?path=" + idFile;
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+        callService(wrapper, callback);
+
+    }
+
+    @Override
+    public void viewGenomes(JSONObject pathArray, AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "coge/load-genomes";
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
+                pathArray.toString());
+        callService(wrapper, callback);
+
+    }
 }
