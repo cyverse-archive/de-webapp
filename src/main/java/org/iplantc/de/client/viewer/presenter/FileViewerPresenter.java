@@ -133,9 +133,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
          * XXX - SRIRAM 12/10/2013 Disabling Coge integrartion since it not complete yet.
          * 
          */
-        // genomeViewer = isGenomeVizTab(manifest);
-        genomeViewer = false;
-
+        genomeViewer = isGenomeVizTab(manifest);
         if (treeViewer || genomeViewer) {
             cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("viz"));
             List<? extends FileViewer> vizViewers = cmd.execute(file, infoType);
