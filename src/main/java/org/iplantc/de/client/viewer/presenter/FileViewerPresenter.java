@@ -144,7 +144,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
                 if (treeViewer) {
                     callTreeCreateService(vizViewers.get(0));
                 } else if (genomeViewer) {
-                    final ConfirmMessageBox cmb = new ConfirmMessageBox("Vizualization",
+                    final ConfirmMessageBox cmb = new ConfirmMessageBox("Visualization",
                             "Do you like to load this genome in CoGe ?");
                     cmb.addHideHandler(new HideHandler() {
 
@@ -249,13 +249,13 @@ public class FileViewerPresenter implements FileViewer.Presenter {
                 JSONObject resultObj = JsonUtil.getObject(result);
                 String url = JsonUtil.getString(resultObj, "coge_genome_url");
                 if (!Strings.isNullOrEmpty(url)) {
-                    IplantInfoBox iib = new IplantInfoBox("CoGe", "Please visit " + url
-                            + " load and vizualize your genome in CoGe.");
+                    IplantInfoBox iib = new IplantInfoBox("CoGe", "Please click <a href='" + url
+                            + "' target='_blank'>here</a> to load and visualize your genome in CoGe.");
                     iib.show();
                 } else {
                     onFailure(null);
                 }
-
+                container.unmask();
             }
         });
     }
