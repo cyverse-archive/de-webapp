@@ -14,7 +14,7 @@ import org.iplantc.de.client.viewer.views.ExternalVizualizationURLViwerImpl;
 public class VizURLViewerCommand implements ViewCommand {
 
     @Override
-    public List<FileViewer> execute(File file, String infoType) {
+    public List<FileViewer> execute(File file, String infoType, boolean editing) {
         FileViewer viewer = new ExternalVizualizationURLViwerImpl(file);
         return Arrays.asList(viewer);
     }

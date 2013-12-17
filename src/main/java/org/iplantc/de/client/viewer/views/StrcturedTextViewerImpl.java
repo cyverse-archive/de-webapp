@@ -73,7 +73,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     }
 
     private Grid<JSONObject> grid;
-    private TextViewPagingToolBar toolbar;
+    private StructuredTextViewPagingToolBar toolbar;
     private ListStore<JSONObject> store;
     private BorderLayoutContainer container;
     private ContentPanel north;
@@ -108,7 +108,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     }
 
     private void initToolbar() {
-        toolbar = new TextViewPagingToolBar(this, infoType, false);
+        toolbar = new StructuredTextViewPagingToolBar(this);
         north.add(toolbar);
     }
 

@@ -58,12 +58,17 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
     private boolean genomeViewer;
 
+    private final boolean editing;
+
     private final TreeUrlAutoBeanFactory factory = GWT.create(TreeUrlAutoBeanFactory.class);
 
-    public FileViewerPresenter(File file, JSONObject manifest) {
+    private boolean isDirty;
+
+    public FileViewerPresenter(File file, JSONObject manifest, boolean editing) {
         this.manifest = manifest;
         viewers = new ArrayList<FileViewer>();
         this.file = file;
+        this.editing = editing;
     }
 
     /*
@@ -118,11 +123,12 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         ViewCommand cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType
                 .fromTypeString(mimeType));
         String infoType = JsonUtil.getString(manifest, "info-type");
-        List<? extends FileViewer> viewers_list = cmd.execute(file, infoType);
+        List<? extends FileViewer> viewers_list = cmd.execute(file, infoType, editing);
 
         if (viewers_list != null && viewers_list.size() > 0) {
             viewers.addAll(viewers_list);
             for (FileViewer view : viewers) {
+                view.setPresenter(this);
                 container.getWidget().add(view.asWidget(), view.getViewName());
             }
             container.unmask();
@@ -136,7 +142,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         genomeViewer = isGenomeVizTab(manifest);
         if (treeViewer || genomeViewer) {
             cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("viz"));
-            List<? extends FileViewer> vizViewers = cmd.execute(file, infoType);
+            List<? extends FileViewer> vizViewers = cmd.execute(file, infoType, editing);
             List<VizUrl> urls = getManifestVizUrls();
             if (urls != null && urls.size() > 0) {
                 vizViewers.get(0).setData(urls);
@@ -259,4 +265,15 @@ public class FileViewerPresenter implements FileViewer.Presenter {
             }
         });
     }
+
+    @Override
+    public void setVeiwDirtyState(boolean dirty) {
+        this.isDirty = dirty;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return isDirty;
+    }
+
 }

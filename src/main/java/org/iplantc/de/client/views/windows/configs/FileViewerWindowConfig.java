@@ -8,6 +8,10 @@ public interface FileViewerWindowConfig extends WindowConfig {
 
     void setFile(File file);
 
+    boolean isEditing();
+
+    void setEditing(boolean editing);
+
     boolean isShowTreeTab();
 
     void setShowTreeTab(boolean b);
