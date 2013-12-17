@@ -144,8 +144,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
                 if (treeViewer) {
                     callTreeCreateService(vizViewers.get(0));
                 } else if (genomeViewer) {
-                    final ConfirmMessageBox cmb = new ConfirmMessageBox("Visualization",
-                            "Do you like to load this genome in CoGe ?");
+                    final ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.visualization(),
+                            I18N.DISPLAY.cogePrompt());
                     cmb.addHideHandler(new HideHandler() {
 
                         @Override
@@ -240,7 +240,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
             @Override
             public void onFailure(Throwable caught) {
                 container.unmask();
-                ErrorHandler.post("Unable to load genome in CoGe. Please try again later.", caught);
+                ErrorHandler.post(I18N.ERROR.cogeError(), caught);
 
             }
 
@@ -249,8 +249,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
                 JSONObject resultObj = JsonUtil.getObject(result);
                 String url = JsonUtil.getString(resultObj, "coge_genome_url");
                 if (!Strings.isNullOrEmpty(url)) {
-                    IplantInfoBox iib = new IplantInfoBox("CoGe", "Please click <a href='" + url
-                            + "' target='_blank'>here</a> to load and visualize your genome in CoGe.");
+                    IplantInfoBox iib = new IplantInfoBox(I18N.DISPLAY.coge(), I18N.DISPLAY
+                            .cogeResponse(url));
                     iib.show();
                 } else {
                     onFailure(null);
