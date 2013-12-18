@@ -174,7 +174,12 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
     public void setData(Object data) {
         clearDisplay();
         jso = displayData(this, center.getElement(), infoType, (String)data, center.getElement()
-                .getOffsetWidth(), center.getElement().getOffsetHeight(), toolbar.isWrapText(), editing);
+                .getOffsetWidth(), center.getElement().getOffsetHeight(), toolbar.isWrapText(),
+                toolbar.getToltalPages() == 1);
+        toolbar.setEditing(toolbar.getToltalPages() == 1);
+        /**
+         * XXX - SS - support editing for files with only one page
+         */
     }
 
     protected void clearDisplay() {
@@ -184,7 +189,9 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 
     @Override
     public void setDirty(Boolean dirty) {
-        presenter.setVeiwDirtyState(dirty);
+        if (!presenter.isDirty() && dirty) {
+            presenter.setVeiwDirtyState(dirty);
+        }
     }
 
     public static native JavaScriptObject displayData(final TextViewerImpl instance, XElement textArea,
@@ -233,7 +240,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
                     String destination = saveDialog.getSelectedFolder().getPath() + "/"
                             + saveDialog.getFileName();
                     Services.FILE_EDITOR_SERVICE.uploadTextAsFile(destination, getEditorContent(jso),
-                            new FileSaveCallback(destination, con));
+                            true, new FileSaveCallback(destination, true, con));
                 }
             });
             saveDialog.addCancelButtonSelectHandler(new SelectHandler() {
@@ -246,7 +253,8 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
             saveDialog.show();
             saveDialog.toFront();
         } else {
-            // save exisiting file here...
+            Services.FILE_EDITOR_SERVICE.uploadTextAsFile(file.getPath(), getEditorContent(jso), false,
+                    new FileSaveCallback(file.getPath(), false, con));
         }
     }
 

@@ -61,8 +61,11 @@ public class FileEditorServiceFacadeImpl implements FileEditorServiceFacade {
     }
 
     @Override
-    public void uploadTextAsFile(String destination, String fileContents, AsyncCallback<String> callback) {
-        String fullAddress = DEProperties.getInstance().getFileIoBaseUrl() + "saveas"; //$NON-NLS-1$
+    public void uploadTextAsFile(String destination, String fileContents, boolean newFile,
+            AsyncCallback<String> callback) {
+
+        String fullAddress = DEProperties.getInstance().getFileIoBaseUrl()
+                + (newFile ? "saveas" : "save"); //$NON-NLS-1$
         JSONObject obj = new JSONObject();
         obj.put("dest", new JSONString(destination)); //$NON-NLS-1$
         obj.put("content", new JSONString(fileContents));

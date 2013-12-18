@@ -23,11 +23,13 @@ public class FileSaveCallback implements AsyncCallback<String> {
     private final String parentFolder;
     private final String fileName;
     private Component maskingContainer;
+    private boolean newFile;
 
-    public FileSaveCallback(String path, Component container) {
+    public FileSaveCallback(String path, boolean newFile, Component container) {
         this.fileName = DiskResourceUtil.parseNameFromPath(path);
         this.parentFolder = DiskResourceUtil.parseParent(path);
         this.maskingContainer = container;
+        this.newFile = newFile;
     }
 
     @Override
@@ -36,7 +38,9 @@ public class FileSaveCallback implements AsyncCallback<String> {
         JSONObject obj = JSONParser.parseStrict(result).isObject();
         DefaultUploadCompleteHandler uch = new DefaultUploadCompleteHandler(parentFolder);
         String fileJson = JsonUtil.getObject(obj, "file").toString();
-        uch.onCompletion(fileName, fileJson);
+        if (newFile) {
+            uch.onCompletion(fileName, fileJson);
+        }
         DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
         AutoBean<File> fileAB = AutoBeanCodex.decode(factory, File.class, fileJson);
         FileSavedEvent evnt = new FileSavedEvent(fileAB.as());

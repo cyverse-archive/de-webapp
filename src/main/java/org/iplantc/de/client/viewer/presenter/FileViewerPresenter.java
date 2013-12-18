@@ -135,11 +135,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         }
 
         treeViewer = isTreeTab(manifest);
-        /**
-         * XXX - SRIRAM 12/10/2013 Disabling Coge integrartion since it not complete yet.
-         * 
-         */
         genomeViewer = isGenomeVizTab(manifest);
+
         if (treeViewer || genomeViewer) {
             cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("viz"));
             List<? extends FileViewer> vizViewers = cmd.execute(file, infoType, editing);
@@ -269,6 +266,12 @@ public class FileViewerPresenter implements FileViewer.Presenter {
     @Override
     public void setVeiwDirtyState(boolean dirty) {
         this.isDirty = dirty;
+        if (isDirty) {
+            container.setTitle(file.getName()
+                    + "<span style='color:red; vertical-align: super'> * </span>");
+        } else {
+            container.setTitle(file.getName());
+        }
     }
 
     @Override

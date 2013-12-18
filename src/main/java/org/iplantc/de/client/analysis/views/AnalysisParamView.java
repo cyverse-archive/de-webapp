@@ -108,8 +108,8 @@ public class AnalysisParamView implements IsWidget {
 
     private void saveFile(final String path, String fileContents) {
         mask();
-        Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, fileContents,
-                new FileSaveCallback(path, con));
+        Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, fileContents, true, new FileSaveCallback(
+                path, true, con));
     }
 
     private String writeTabFile() {

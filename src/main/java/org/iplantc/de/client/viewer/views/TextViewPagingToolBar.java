@@ -4,18 +4,22 @@ import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.sencha.gxt.widget.core.client.Status;
+import com.sencha.gxt.widget.core.client.Status.BoxStatusAppearance;
+import com.sencha.gxt.widget.core.client.Status.StatusAppearance;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
-import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
 
 public class TextViewPagingToolBar extends AbstractPagingToolbar {
 
     private CheckBox cbxWrap;
     private TextButton saveBtn;
     private boolean editing;
+    private Status editStatus;
     private AbstractFileViewer view;
 
     public TextViewPagingToolBar(AbstractFileViewer view, boolean editing) {
@@ -24,10 +28,8 @@ public class TextViewPagingToolBar extends AbstractPagingToolbar {
         this.editing = editing;
         cbxWrap = new CheckBox();
         cbxWrap.setBoxLabel(I18N.DISPLAY.wrap());
-        add(new FillToolItem());
         add(cbxWrap);
         saveBtn = new TextButton(I18N.DISPLAY.save(), IplantResources.RESOURCES.save());
-        add(new FillToolItem());
         add(saveBtn);
         saveBtn.addSelectHandler(new SelectHandler() {
 
@@ -38,6 +40,24 @@ public class TextViewPagingToolBar extends AbstractPagingToolbar {
             }
         });
         saveBtn.setEnabled(editing);
+        editStatus = new Status(GWT.<StatusAppearance> create(BoxStatusAppearance.class));
+        editStatus.setWidth(100);
+        setEditingStatus(editing);
+        add(editStatus);
+
+    }
+
+    void setEditingStatus(boolean editing) {
+        if (editing) {
+            editStatus.setText("Editable");
+        } else {
+            editStatus.setText("Not Editable");
+        }
+    }
+
+    public void setEditing(boolean editing) {
+        saveBtn.setEnabled(editing);
+        setEditingStatus(editing);
     }
 
     public void addWrapCbxChangeHandler(ValueChangeHandler<Boolean> changeHandler) {
@@ -61,7 +81,6 @@ public class TextViewPagingToolBar extends AbstractPagingToolbar {
     @Override
     public void onLast() {
         view.loadData();
-
     }
 
     @Override
@@ -79,7 +98,6 @@ public class TextViewPagingToolBar extends AbstractPagingToolbar {
     @Override
     public void onPageSizeChange() {
         view.loadData();
-
     }
 
     @Override
@@ -87,4 +105,12 @@ public class TextViewPagingToolBar extends AbstractPagingToolbar {
         view.loadData();
 
     }
+
+    /**
+     * @return the editing
+     */
+    public boolean isEditing() {
+        return editing;
+    }
+
 }
