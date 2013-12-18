@@ -51,10 +51,10 @@ public class FileViewerWindow extends IplantWindowBase {
             public void onFileSaved(FileSavedEvent event) {
                 if (file == null) {
                     file = event.getFile();
+                    tabPanel = null;
+                    getFileManifest();
                 }
                 setTitle(file.getName());
-                tabPanel = null;
-                getFileManifest();
             }
 
         });
