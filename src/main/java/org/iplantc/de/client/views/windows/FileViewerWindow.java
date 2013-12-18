@@ -25,8 +25,9 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
-import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
@@ -55,6 +56,9 @@ public class FileViewerWindow extends IplantWindowBase {
                     getFileManifest();
                 }
                 setTitle(file.getName());
+                if (p != null) {
+                    p.setVeiwDirtyState(false);
+                }
             }
 
         });
@@ -93,8 +97,8 @@ public class FileViewerWindow extends IplantWindowBase {
     @Override
     public void doHide() {
         if (p != null && p.isDirty()) {
-            final ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.save(),
-                    I18N.DISPLAY.unsavedChanges());
+            final MessageBox cmb = new MessageBox(I18N.DISPLAY.save(), I18N.DISPLAY.unsavedChanges());
+            cmb.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
             cmb.addHideHandler(new HideHandler() {
 
                 @Override
@@ -102,7 +106,7 @@ public class FileViewerWindow extends IplantWindowBase {
                     if (cmb.getHideButton().getText().equalsIgnoreCase("yes")) {
                         SaveFileEvent sfe = new SaveFileEvent();
                         EventBus.getInstance().fireEvent(sfe);
-                    } else {
+                    } else if (cmb.getHideButton().getText().equalsIgnoreCase("no")) {
                         FileViewerWindow.super.doHide();
                         doClose();
                     }
