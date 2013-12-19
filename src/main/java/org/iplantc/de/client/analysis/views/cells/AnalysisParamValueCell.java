@@ -98,8 +98,7 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
 						JSONObject pathsObj = JsonUtil.getObject(json, "paths");
 						JSONObject manifest = JsonUtil.getObject(pathsObj,
 								file.getId());
-						file.setSize(JsonUtil.getNumber(manifest, "size")
-								.longValue() + "");
+						file.setSize(JsonUtil.getNumber(manifest, "file-size").longValue());
 						EventBus.getInstance().fireEvent(
 								new ShowFilePreviewEvent(file, this));
 
