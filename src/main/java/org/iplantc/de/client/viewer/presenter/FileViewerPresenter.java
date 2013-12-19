@@ -4,30 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IplantInfoBox;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
+import org.iplantc.de.client.viewer.callbacks.TreeUrlCallback;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
 import org.iplantc.de.client.viewer.factory.MimeTypeViewerResolverFactory;
 import org.iplantc.de.client.viewer.models.MimeType;
-import org.iplantc.de.client.viewer.models.TreeUrlAutoBeanFactory;
-import org.iplantc.de.client.viewer.models.VizUrlList;
 import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.FileViewerWindow;
 
-import com.google.common.base.Strings;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
@@ -59,8 +52,6 @@ public class FileViewerPresenter implements FileViewer.Presenter {
     private boolean genomeViewer;
 
     private final boolean editing;
-
-    private final TreeUrlAutoBeanFactory factory = GWT.create(TreeUrlAutoBeanFactory.class);
 
     private boolean isDirty;
 
@@ -181,17 +172,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
      * @return A json array of at least one tree URL, or null otherwise.
      */
     private List<VizUrl> getManifestVizUrls() {
-        return getTreeUrls(manifest.toString());
+        return TreeUrlCallback.getTreeUrls(manifest.toString());
 
-    }
-
-    private List<VizUrl> getTreeUrls(String urls) {
-        if (urls != null) {
-            AutoBean<VizUrlList> bean = AutoBeanCodex.decode(factory, VizUrlList.class, urls.toString());
-            return bean.as().getUrls();
-        }
-
-        return null;
     }
 
     /**
@@ -199,37 +181,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
      */
     public void callTreeCreateService(final FileViewer viewer) {
         container.mask(I18N.DISPLAY.loadingMask());
-
-        Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), new AsyncCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                if (result != null && !result.isEmpty()) {
-                    List<VizUrl> urlsList = getTreeUrls(result);
-                    if (urlsList != null) {
-                        viewer.setData(urlsList);
-                        container.unmask();
-                    } else {
-                        container.unmask();
-                        // couldn't find any tree URLs in the response, so display an error.
-                        onFailure(new Exception(result));
-                    }
-
-                } else {
-                    // couldn't find any tree URLs in the response, so display an error.
-                    onFailure(new Exception(result));
-                    container.unmask();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                container.unmask();
-
-                String errMsg = I18N.ERROR.unableToRetrieveTreeUrls(file.getName());
-                ErrorHandler.post(errMsg, caught);
-            }
-        });
+        Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), false, new TreeUrlCallback(file,
+                container, viewer));
     }
 
     private void loadInCoge(File file) {
@@ -238,39 +191,25 @@ public class FileViewerPresenter implements FileViewer.Presenter {
         JSONArray pathArr = new JSONArray();
         pathArr.set(0, new JSONString(file.getPath()));
         obj.put("paths", pathArr);
-        Services.FILE_EDITOR_SERVICE.viewGenomes(obj, new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                container.unmask();
-                ErrorHandler.post(I18N.ERROR.cogeError(), caught);
-
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject resultObj = JsonUtil.getObject(result);
-                String url = JsonUtil.getString(resultObj, "coge_genome_url");
-                if (!Strings.isNullOrEmpty(url)) {
-                    IplantInfoBox iib = new IplantInfoBox(I18N.DISPLAY.coge(), I18N.DISPLAY
-                            .cogeResponse(url));
-                    iib.show();
-                } else {
-                    onFailure(null);
-                }
-                container.unmask();
-            }
-        });
+        Services.FILE_EDITOR_SERVICE.viewGenomes(obj, new LoadGenomeInCoGeCallback(container));
     }
 
     @Override
     public void setVeiwDirtyState(boolean dirty) {
         this.isDirty = dirty;
+        updateWindowTitle();
+    }
+
+    private void updateWindowTitle() {
         if (isDirty) {
-            container.setTitle(file.getName()
+            container.setTitle(container.getTitle()
                     + "<span style='color:red; vertical-align: super'> * </span>");
         } else {
-            container.setTitle(file.getName());
+            String temp = container.getTitle();
+            if (temp.endsWith("*")) {
+                temp = temp.substring(0, temp.length() - 1);
+            }
+            container.setTitle(temp);
         }
     }
 

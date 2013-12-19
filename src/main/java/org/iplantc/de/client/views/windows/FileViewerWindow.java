@@ -6,6 +6,7 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.core.uicommons.client.views.IsMaskable;
 import org.iplantc.core.uidiskresource.client.services.errors.DiskResourceErrorAutoBeanFactory;
 import org.iplantc.core.uidiskresource.client.services.errors.ErrorGetManifest;
 import org.iplantc.de.client.Services;
@@ -35,7 +36,7 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
  * @author sriram
  * 
  */
-public class FileViewerWindow extends IplantWindowBase {
+public class FileViewerWindow extends IplantWindowBase implements IsMaskable {
 
     private PlainTabPanel tabPanel;
     protected JSONObject manifest;

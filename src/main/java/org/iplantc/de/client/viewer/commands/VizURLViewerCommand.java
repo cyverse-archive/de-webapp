@@ -15,7 +15,7 @@ public class VizURLViewerCommand implements ViewCommand {
 
     @Override
     public List<FileViewer> execute(File file, String infoType, boolean editing) {
-        FileViewer viewer = new ExternalVizualizationURLViwerImpl(file);
+        FileViewer viewer = new ExternalVizualizationURLViwerImpl(file, infoType);
         return Arrays.asList(viewer);
     }
 
