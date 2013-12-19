@@ -10,7 +10,6 @@ import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uidiskresource.client.events.ShowFilePreviewEvent;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
@@ -78,31 +77,29 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
     }
 
     @SuppressWarnings("deprecation")
-    private void launchViewer(AnalysisParameter value) {
-        DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
-        AutoBean<File> bean = AutoBeanCodex.decode(factory, File.class, "{}");
-        final File file = bean.as();
-        file.setId(value.getDisplayValue());
-        file.setName(DiskResourceUtil.parseNameFromPath(value.getDisplayValue()));
+    private void launchViewer(final AnalysisParameter value) {
+        final DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
         JSONObject obj = new JSONObject();
         JSONArray arr = new JSONArray();
-        arr.set(0, new JSONString(file.getId()));
+        arr.set(0, new JSONString(value.getDisplayValue()));
         obj.put("paths", arr);
         Services.DISK_RESOURCE_SERVICE.getStat(obj.toString(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
-                JSONObject json = JsonUtil.getObject(result);
-                JSONObject pathsObj = JsonUtil.getObject(json, "paths");
-                JSONObject manifest = JsonUtil.getObject(pathsObj, file.getId());
-                file.setSize(JsonUtil.getNumber(manifest, "file-size").longValue());
-                EventBus.getInstance().fireEvent(new ShowFilePreviewEvent(file, this));
+                JSONObject obj = JsonUtil.getObject(result);
+                JSONObject json = obj.get("paths").isObject();
+                JSONObject fileObj = json.get(value.getDisplayValue()).isObject();
+                AutoBean<File> bean = AutoBeanCodex.decode(factory, File.class, fileObj.toString());
+                File file = bean.as();
+                EventBus.getInstance().fireEvent(
+                        new ShowFilePreviewEvent(file, AnalysisParamValueCell.this));
 
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.diskResourceDoesNotExist(file.getId()));
+                ErrorHandler.post(I18N.ERROR.diskResourceDoesNotExist(value.getDisplayValue()));
             }
         });
 
