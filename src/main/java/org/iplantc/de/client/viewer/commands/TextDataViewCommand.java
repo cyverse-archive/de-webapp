@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.client.viewer.models.InfoType;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.viewer.views.StrcturedTextViewerImpl;
 import org.iplantc.de.client.viewer.views.TextViewerImpl;
@@ -25,8 +26,9 @@ public class TextDataViewCommand implements ViewCommand {
     private List<FileViewer> getViewerByInfoType(final File file, String infoType, boolean editing) {
         List<FileViewer> viewers = new ArrayList<FileViewer>();
         if (!Strings.isNullOrEmpty(infoType)) {
-            if (infoType.equals("csv") || infoType.equals("tsv") || infoType.equals("vcf")
-                    || infoType.equals("gff")) {
+            if (infoType.equals(InfoType.CSV.toString()) || infoType.equals(InfoType.TSV.toString())
+                    || infoType.equals(InfoType.VCF.toString())
+                    || infoType.equals(InfoType.GFF.toString())) {
                 viewers.add(new StrcturedTextViewerImpl(file, infoType));
 
             }

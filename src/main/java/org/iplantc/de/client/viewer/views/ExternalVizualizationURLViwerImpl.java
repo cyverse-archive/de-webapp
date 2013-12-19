@@ -6,12 +6,14 @@ package org.iplantc.de.client.viewer.views;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.iplantc.core.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.views.IsMaskable;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
 import org.iplantc.de.client.viewer.callbacks.TreeUrlCallback;
+import org.iplantc.de.client.viewer.models.InfoType;
 import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.models.VizUrlProperties;
 import org.iplantc.de.client.viewer.views.cells.TreeUrlCell;
@@ -85,6 +87,7 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
     @SuppressWarnings("unchecked")
     @Override
     public void setData(Object data) {
+        listStore.clear();
         List<VizUrl> urls = (List<VizUrl>)data;
         listStore.addAll(urls);
     }
@@ -96,9 +99,11 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
     }
 
     private void buildToolBar(String infoType) {
-        if (infoType.equalsIgnoreCase("nexus") || infoType.equalsIgnoreCase("nexml")
-                || infoType.equalsIgnoreCase("newick") || infoType.equalsIgnoreCase("phyloxml")) {
-            TextButton button = new TextButton("Refresh Tree");
+        if (infoType.equals(InfoType.NEXUS.toString()) || infoType.equals(InfoType.NEXML.toString())
+                || infoType.equals(InfoType.NEWICK.toString())
+                || infoType.equals(InfoType.PHYLOXML.toString())) {
+            TextButton button = new TextButton(I18N.DISPLAY.refresh(),
+                    IplantResources.RESOURCES.refresh());
             button.addSelectHandler(new SelectHandler() {
 
                 @Override
@@ -112,8 +117,9 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
             });
             toolbar.add(button);
 
-        } else if (infoType.equalsIgnoreCase("fasta")) {
-            TextButton button = new TextButton("Load Genome in CoGe");
+        } else if (infoType.equals(InfoType.FASTA.toString())) {
+            TextButton button = new TextButton("Load Genome in CoGe",
+                    IplantResources.RESOURCES.arrowUp());
             button.addSelectHandler(new SelectHandler() {
 
                 @Override
@@ -150,9 +156,11 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
     }
 
     private class TreeUrlKeyProvider implements ModelKeyProvider<VizUrl> {
+        private int index;
+
         @Override
         public String getKey(VizUrl item) {
-            return item.getLabel();
+            return index++ + "";
         }
 
     }

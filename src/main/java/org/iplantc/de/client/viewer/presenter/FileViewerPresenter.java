@@ -11,6 +11,7 @@ import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
 import org.iplantc.de.client.viewer.callbacks.TreeUrlCallback;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
 import org.iplantc.de.client.viewer.factory.MimeTypeViewerResolverFactory;
+import org.iplantc.de.client.viewer.models.InfoType;
 import org.iplantc.de.client.viewer.models.MimeType;
 import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.views.FileViewer;
@@ -89,9 +90,11 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
     private boolean isTreeTab(JSONObject obj) {
         if (checkManifest(obj)) {
-            String info_type = JsonUtil.getString(obj, "info-type");
-            return (info_type.equalsIgnoreCase("nexus") || info_type.equalsIgnoreCase("nexml")
-                    || info_type.equalsIgnoreCase("newick") || info_type.equalsIgnoreCase("phyloxml"));
+            String infoType = JsonUtil.getString(obj, "info-type");
+            return (infoType.equals(InfoType.NEXUS.toString())
+                    || infoType.equals(InfoType.NEXML.toString())
+                    || infoType.equals(InfoType.NEWICK.toString()) || infoType.equals(InfoType.PHYLOXML
+                    .toString()));
         }
 
         return false;
@@ -101,7 +104,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
     private boolean isGenomeVizTab(JSONObject obj) {
         if (checkManifest(obj)) {
             String info_type = JsonUtil.getString(obj, "info-type");
-            return (info_type.equals("fasta"));
+            return (info_type.equals(InfoType.FASTA.toString()));
         }
 
         return false;
