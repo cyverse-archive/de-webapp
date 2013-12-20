@@ -10,8 +10,8 @@ import org.iplantc.de.client.viewer.views.ShellScriptViewerImpl;
 public class ShellScriptViewCommand implements ViewCommand {
 
     @Override
-    public List<FileViewer> execute(File file, String infoType) {
-        FileViewer view = new ShellScriptViewerImpl(file);
+    public List<FileViewer> execute(File file, String infoType, boolean editing) {
+        FileViewer view = new ShellScriptViewerImpl(file, editing);
         return Arrays.asList(view);
     }
 

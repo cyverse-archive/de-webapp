@@ -24,6 +24,7 @@ public abstract class AbstractFileViewer implements FileViewer {
         this.infoType = infoType;
     }
 
+    @Override
     public abstract Widget asWidget();
 
     /*
@@ -39,8 +40,10 @@ public abstract class AbstractFileViewer implements FileViewer {
 
     }
 
+    @Override
     public abstract void setData(Object data);
 
+    @Override
     public abstract void loadData();
 
     /*
@@ -51,7 +54,7 @@ public abstract class AbstractFileViewer implements FileViewer {
     @Override
     public long getFileSize() {
         if (file != null) {
-            return Long.parseLong(file.getSize());
+            return file.getSize();
         }
 
         return 0;
@@ -69,7 +72,10 @@ public abstract class AbstractFileViewer implements FileViewer {
 
     @Override
     public String getViewName() {
-        return file.getName();
+        if (file != null) {
+            return file.getName();
+        } else {
+            return "Untitled-" + Math.random();
+        }
     }
-
 }

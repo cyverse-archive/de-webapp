@@ -43,7 +43,7 @@ public class PreferencesDialog extends IPlantDialog {
     public PreferencesDialog() {
         super(true);
         setHeadingText(I18N.DISPLAY.preferences());
-        setPixelSize(450, 380);
+        setPixelSize(450, 400);
         setButtons();
         addHelp(contructHelpView());
         PreferencesView view = new PreferencesViewImpl();

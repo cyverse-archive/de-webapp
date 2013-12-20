@@ -15,6 +15,7 @@ import org.iplantc.core.uiapps.client.events.EditWorkflowEvent;
 import org.iplantc.core.uiapps.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.core.uidiskresource.client.events.CreateNewFileEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkDownloadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestBulkUploadEvent;
 import org.iplantc.core.uidiskresource.client.events.RequestImportFromUrlEvent;
@@ -145,7 +146,7 @@ public class Desktop implements IsWidget {
 
         // Launching File Preview windows
         eventHandlers.add(eventbus.addHandler(ShowFilePreviewEvent.TYPE, showWindowHandler));
-
+        eventHandlers.add(eventbus.addHandler(CreateNewFileEvent.TYPE, showWindowHandler));
         eventHandlers.add(eventbus.addHandler(ShowAboutWindowEvent.TYPE, showWindowHandler));
         eventHandlers.add(eventbus.addHandler(WindowShowRequestEvent.TYPE, showWindowHandler));
         eventHandlers.add(eventbus.addHandler(RunAppEvent.TYPE, showWindowHandler));

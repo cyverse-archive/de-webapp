@@ -123,6 +123,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
             idlwc.setResourcesToDownload(resources);
             idlwc.setTypeMap(buildTypeMap(resources));
             idlwc.setCurrentFolder(event.getCurrentFolder());
+            idlwc.setSelectAll(event.isSelectAll());
             desktop.showWindow(idlwc);
         } else {
             showErrorMsg();

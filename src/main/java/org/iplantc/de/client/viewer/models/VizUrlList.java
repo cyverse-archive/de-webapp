@@ -13,7 +13,7 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
  */
 public interface VizUrlList {
 
-    @PropertyName("tree-urls")
+    @PropertyName("urls")
     List<VizUrl> getUrls();
 
 }

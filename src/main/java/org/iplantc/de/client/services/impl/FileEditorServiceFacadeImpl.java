@@ -53,16 +53,19 @@ public class FileEditorServiceFacadeImpl implements FileEditorServiceFacade {
     }
 
     @Override
-    public void getTreeUrl(String idFile, AsyncCallback<String> callback) {
-        String address = "org.iplantc.services.buggalo.baseUrl?path=" + URL.encodeQueryString(idFile); //$NON-NLS-1$
+    public void getTreeUrl(String idFile, boolean refresh, AsyncCallback<String> callback) {
+        String address = "org.iplantc.services.buggalo.baseUrl?refresh=" + refresh + "&path=" + URL.encodeQueryString(idFile); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
         callService(wrapper, callback);
     }
 
     @Override
-    public void uploadTextAsFile(String destination, String fileContents, AsyncCallback<String> callback) {
-        String fullAddress = DEProperties.getInstance().getFileIoBaseUrl() + "saveas"; //$NON-NLS-1$
+    public void uploadTextAsFile(String destination, String fileContents, boolean newFile,
+            AsyncCallback<String> callback) {
+
+        String fullAddress = DEProperties.getInstance().getFileIoBaseUrl()
+                + (newFile ? "saveas" : "save"); //$NON-NLS-1$
         JSONObject obj = new JSONObject();
         obj.put("dest", new JSONString(destination)); //$NON-NLS-1$
         obj.put("content", new JSONString(fileContents));

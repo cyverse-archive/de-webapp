@@ -28,4 +28,8 @@ public interface IDropLiteWindowConfig extends WindowConfig {
 
     Map<String, String> getTypeMap();
 
+    boolean isSelectAll();
+
+    void setSelectAll(boolean selectAll);
+
 }

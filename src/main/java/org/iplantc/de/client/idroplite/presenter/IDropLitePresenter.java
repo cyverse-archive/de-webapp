@@ -65,18 +65,33 @@ public class IDropLitePresenter implements Presenter {
     public void buildDownloadApplet() {
         view.mask();
 
-        HasPaths request = drFactory.pathsList().as();
-        request.setPaths(DiskResourceUtil.asStringIdList(idlwc.getResourcesToDownload()));
+        if (idlwc.isSelectAll()) {
+            Services.DISK_RESOURCE_SERVICE.downloadContents(idlwc.getCurrentFolder().getPath(),
+                    new IDropLiteServiceCallback() {
+                        @Override
+                        protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
+                            int adjustSize = CONTENT_PADDING * 3;
 
-        Services.DISK_RESOURCE_SERVICE.download(request, new IDropLiteServiceCallback() {
-            @Override
-            protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
-                int adjustSize = CONTENT_PADDING * 3;
+                            return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth(),
+                                    view.getViewHeight() - adjustSize);
+                        }
+                    });
 
-                return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth(),
-                        view.getViewHeight() - adjustSize);
-            }
-        });
+        } else {
+            HasPaths request = drFactory.pathsList().as();
+            request.setPaths(DiskResourceUtil.asStringIdList(idlwc.getResourcesToDownload()));
+
+            Services.DISK_RESOURCE_SERVICE.download(request, new IDropLiteServiceCallback() {
+                @Override
+                protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
+                    int adjustSize = CONTENT_PADDING * 3;
+
+                    return IDropLiteUtil.getAppletForDownload(appletData, view.getViewWidth(),
+                            view.getViewHeight() - adjustSize);
+                }
+            });
+
+        }
 
     }
 
