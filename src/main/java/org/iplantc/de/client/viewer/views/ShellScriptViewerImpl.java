@@ -15,11 +15,11 @@ public class ShellScriptViewerImpl extends TextViewerImpl {
     public void setData(Object data) {
         clearDisplay();
         jso = displayData(center.getElement(), (String)data, center.getElement().getOffsetWidth(),
-                center.getElement().getOffsetHeight(), toolbar.isWrapText());
+                center.getElement().getOffsetHeight(), toolbar.isWrapText(), editing);
     }
 
     public static native JavaScriptObject displayData(XElement textArea, String val, int width,
-            int height, boolean wrap) /*-{
+            int height, boolean wrap, boolean editing) /*-{
 		var myCodeMirror = $wnd.CodeMirror(textArea, {
 			value : val,
 			mode : 'shell',

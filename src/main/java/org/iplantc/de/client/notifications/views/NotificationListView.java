@@ -32,6 +32,8 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -57,8 +59,6 @@ import com.sencha.gxt.data.shared.Store.StoreSortInfo;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 /**
  * New notifications as list
@@ -396,21 +396,18 @@ public class NotificationListView implements IsWidget {
         view = new ListView<NotificationMessage, NotificationMessage>(store,
                 new IdentityValueProvider<NotificationMessage>(), appearance);
 
-        view.getSelectionModel().addSelectionChangedHandler(
-                new SelectionChangedHandler<NotificationMessage>() {
+        view.getSelectionModel().addSelectionHandler(new SelectionHandler<NotificationMessage>() {
 
-                    @Override
-                    public void onSelectionChanged(SelectionChangedEvent<NotificationMessage> event) {
-                        List<NotificationMessage> selected = event.getSelection();
-                        if (selected != null && !selected.isEmpty()) {
-                            NotificationMessage msg = selected.get(0);
-                            if (msg != null) {
-                                NotificationHelper.getInstance().view(msg);
-                            }
-                        }
-                    }
+            @Override
+            public void onSelection(SelectionEvent<NotificationMessage> event) {
+                NotificationMessage selected = event.getSelectedItem();
+                if (selected != null) {
+                    NotificationHelper.getInstance().view(selected);
+                    view.getSelectionModel().deselect(selected);
+                }
+            }
 
-                });
+        });
 
         view.setCell(new SimpleSafeHtmlCell<NotificationMessage>(
                 new AbstractSafeHtmlRenderer<NotificationMessage>() {
