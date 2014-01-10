@@ -9,7 +9,6 @@
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.json.JSON" />
-	<inherits name='com.google.gwt.junit.JUnit'/>
     <inherits name="com.google.gwt.http.HTTP"/>
     <inherits name="com.google.gwt.logging.Logging"/>
     <inherits name="com.google.common.collect.Collect"/>
@@ -99,8 +98,4 @@
 	
 	<source path="client"/>
     <source path="de"/>
-
-	<add-linker name="xsiframe" />
-	<set-configuration-property name="devModeRedirectEnabled" value="false" /><!-- Set to false for production -->
-	<set-property name="compiler.useSourceMaps" value="false" /><!-- Set to false for production -->
 </module>
