@@ -1,5 +1,6 @@
 package org.iplantc.de.client.idroplite.views;
 
+import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 
@@ -13,6 +14,9 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
+import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
+import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 public class IDropLiteViewImpl implements IDropLiteView {
@@ -43,6 +47,8 @@ public class IDropLiteViewImpl implements IDropLiteView {
 
     public IDropLiteViewImpl() {
         widget = uiBinder.createAndBindUi(this);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(new LabelToolItem(I18N.DISPLAY.idropJavaInfo(Constants.CLIENT.idropUrl())));
     }
 
     @Override
