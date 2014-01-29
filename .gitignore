@@ -48,3 +48,6 @@ clavin-*-standalone.jar
 # ignore compiled classes
 *.class
 /target
+
+# ignore gradle build directory
+build/

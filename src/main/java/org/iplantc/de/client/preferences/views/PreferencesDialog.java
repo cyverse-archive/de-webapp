@@ -83,8 +83,8 @@ public class PreferencesDialog extends IPlantDialog {
                     PreferencesUpdatedEvent pue = new PreferencesUpdatedEvent();
                     EventBus.getInstance().fireEvent(pue);
                 } else {
-                    ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(
-                            "Please complete all required fields to save preferences!");
+                    ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(I18N.DISPLAY
+                            .publicSubmitTip());
                     IplantAnnouncer.getInstance().schedule(config);
                 }
             }

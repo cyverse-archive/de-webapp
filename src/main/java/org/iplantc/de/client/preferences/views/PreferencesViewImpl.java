@@ -30,9 +30,9 @@ import com.sencha.gxt.widget.core.client.form.validator.MaxLengthValidator;
 
 /**
  * A view imple for preferences screen
- *
+ * 
  * @author sriram
- *
+ * 
  */
 public class PreferencesViewImpl implements PreferencesView {
 
@@ -170,7 +170,7 @@ public class PreferencesViewImpl implements PreferencesView {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.google.gwt.user.client.ui.IsWidget#asWidget()
      */
     @Override
@@ -234,7 +234,7 @@ public class PreferencesViewImpl implements PreferencesView {
 
     @Override
     public boolean isValid() {
-        boolean valid = defaultOpFolder.isValid(false) && appKbSc.isValid() && dataKbSc.isValid()
+        boolean valid = defaultOpFolder.validate(false) && appKbSc.isValid() && dataKbSc.isValid()
                 && anaKbSc.isValid() && notKbSc.isValid() && closeKbSc.isValid();
 
         if (valid) {

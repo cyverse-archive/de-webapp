@@ -2,6 +2,7 @@ package org.iplantc.de.client.preferences.presenter;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.core.uicommons.client.info.SuccessAnnouncementConfig;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.preferences.views.PreferencesView;
@@ -42,7 +43,8 @@ public class PreferencesPresenterImpl implements Presenter {
 
                 @Override
                 public void onSuccess(String result) {
-                    IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.saveSettings());
+                    IplantAnnouncer.getInstance().schedule(
+                            new SuccessAnnouncementConfig(I18N.DISPLAY.saveSettings()));
                 }
 
                 @Override
