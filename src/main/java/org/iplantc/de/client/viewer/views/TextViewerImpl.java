@@ -193,10 +193,11 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
     @Override
     public void setData(Object data) {
         clearDisplay();
-        jso = displayData(this, center.getElement(), infoType, (String)data, center.getElement()
+        boolean allowEditing = toolbar.getToltalPages() == 1 &&  editing;
+		jso = displayData(this, center.getElement(), infoType, (String)data, center.getElement()
                 .getOffsetWidth(), center.getElement().getOffsetHeight(), toolbar.isWrapText(),
-                toolbar.getToltalPages() == 1);
-        toolbar.setEditing(toolbar.getToltalPages() == 1 && editing);
+                allowEditing);
+        toolbar.setEditing(allowEditing);
         /**
          * XXX - SS - support editing for files with only one page
          */
@@ -223,16 +224,14 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 		});
 		myCodeMirror.setOption("lineWrapping", wrap);
 		myCodeMirror.setSize(width, height);
+		myCodeMirror.setOption("readOnly", !editing);
 		if (editing) {
-			myCodeMirror.setOption("readOnly", false);
 			myCodeMirror
 					.on(
 							"change",
 							$entry(function() {
 								instance.@org.iplantc.de.client.viewer.views.TextViewerImpl::setDirty(Ljava/lang/Boolean;)(@java.lang.Boolean::TRUE);
 							}));
-		} else {
-			myCodeMirror.setOption("readOnly", true);
 		}
 		return myCodeMirror;
     }-*/;
