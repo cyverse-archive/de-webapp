@@ -54,6 +54,7 @@ public class FileViewerWindow extends IplantWindowBase implements IsMaskable {
                 if (file == null) {
                     file = event.getFile();
                     tabPanel = null;
+                    p.cleanUp();
                     getFileManifest();
                 }
                 setTitle(file.getName());
@@ -108,6 +109,7 @@ public class FileViewerWindow extends IplantWindowBase implements IsMaskable {
                         SaveFileEvent sfe = new SaveFileEvent();
                         EventBus.getInstance().fireEvent(sfe);
                     } else if (cmb.getHideButton().getText().equalsIgnoreCase("no")) {
+                    	p.cleanUp();
                         FileViewerWindow.super.doHide();
                         doClose();
                     }
@@ -115,6 +117,7 @@ public class FileViewerWindow extends IplantWindowBase implements IsMaskable {
             });
             cmb.show();
         } else {
+        	p.cleanUp();
             super.doHide();
             doClose();
         }

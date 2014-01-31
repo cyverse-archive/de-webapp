@@ -22,6 +22,8 @@ public interface FileViewer extends IsWidget {
         void setVeiwDirtyState(boolean dirty);
 
         boolean isDirty();
+        
+        void cleanUp();
     }
 
     void setPresenter(Presenter p);
@@ -35,5 +37,7 @@ public interface FileViewer extends IsWidget {
     String getInfoType();
 
     String getViewName();
+    
+    void cleanUp();
 
 }

@@ -33,192 +33,213 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
  */
 public class FileViewerPresenter implements FileViewer.Presenter {
 
-    // A presenter can handle more than one view of the same data at a time
-    private final List<FileViewer> viewers;
+	// A presenter can handle more than one view of the same data at a time
+	private List<FileViewer> viewers;
 
-    private FileViewerWindow container;
+	private FileViewerWindow container;
 
-    /**
-     * The file shown in the window.
-     */
-    private final File file;
+	/**
+	 * The file shown in the window.
+	 */
+	private File file;
 
-    /**
-     * The manifest of file contents
-     */
-    private final JSONObject manifest;
+	/**
+	 * The manifest of file contents
+	 */
+	private JSONObject manifest;
 
-    private boolean treeViewer;
+	private boolean treeViewer;
 
-    private boolean genomeViewer;
+	private boolean genomeViewer;
 
-    private final boolean editing;
+	private final boolean editing;
 
-    private boolean isDirty;
+	private boolean isDirty;
 
-    public FileViewerPresenter(File file, JSONObject manifest, boolean editing) {
-        this.manifest = manifest;
-        viewers = new ArrayList<FileViewer>();
-        this.file = file;
-        this.editing = editing;
-    }
+	public FileViewerPresenter(File file, JSONObject manifest, boolean editing) {
+		this.manifest = manifest;
+		viewers = new ArrayList<FileViewer>();
+		this.file = file;
+		this.editing = editing;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.iplantc.core.uicommons.client.presenter.Presenter#go(com.google.gwt.user.client.ui.HasOneWidget
-     * )
-     */
-    @Override
-    public void go(HasOneWidget container) {
-        this.container = (FileViewerWindow)container;
-        composeView(manifest);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.iplantc.core.uicommons.client.presenter.Presenter#go(com.google.gwt
+	 * .user.client.ui.HasOneWidget )
+	 */
+	@Override
+	public void go(HasOneWidget container) {
+		this.container = (FileViewerWindow) container;
+		composeView(manifest);
+	}
 
-    private boolean checkManifest(JSONObject obj) {
-        if (obj == null) {
-            return false;
-        }
-        String info_type = JsonUtil.getString(obj, "info-type");
-        if (info_type == null || info_type.isEmpty()) {
-            return false;
-        }
+	private boolean checkManifest(JSONObject obj) {
+		if (obj == null) {
+			return false;
+		}
+		String info_type = JsonUtil.getString(obj, "info-type");
+		if (info_type == null || info_type.isEmpty()) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    private boolean isTreeTab(JSONObject obj) {
-        if (checkManifest(obj)) {
-            String infoType = JsonUtil.getString(obj, "info-type");
-            return (infoType.equals(InfoType.NEXUS.toString())
-                    || infoType.equals(InfoType.NEXML.toString())
-                    || infoType.equals(InfoType.NEWICK.toString()) || infoType.equals(InfoType.PHYLOXML
-                    .toString()));
-        }
+	private boolean isTreeTab(JSONObject obj) {
+		if (checkManifest(obj)) {
+			String infoType = JsonUtil.getString(obj, "info-type");
+			return (infoType.equals(InfoType.NEXUS.toString())
+					|| infoType.equals(InfoType.NEXML.toString())
+					|| infoType.equals(InfoType.NEWICK.toString()) || infoType
+						.equals(InfoType.PHYLOXML.toString()));
+		}
 
-        return false;
+		return false;
 
-    }
+	}
 
-    private boolean isGenomeVizTab(JSONObject obj) {
-        if (checkManifest(obj)) {
-            String info_type = JsonUtil.getString(obj, "info-type");
-            return (info_type.equals(InfoType.FASTA.toString()));
-        }
+	private boolean isGenomeVizTab(JSONObject obj) {
+		if (checkManifest(obj)) {
+			String info_type = JsonUtil.getString(obj, "info-type");
+			return (info_type.equals(InfoType.FASTA.toString()));
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public void composeView(JSONObject manifest) {
-        container.mask(I18N.DISPLAY.loadingMask());
-        String mimeType = JsonUtil.getString(manifest, "content-type");
-        ViewCommand cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType
-                .fromTypeString(mimeType));
-        String infoType = JsonUtil.getString(manifest, "info-type");
-        List<? extends FileViewer> viewers_list = cmd.execute(file, infoType, editing);
+	@Override
+	public void composeView(JSONObject manifest) {
+		container.mask(I18N.DISPLAY.loadingMask());
+		String mimeType = JsonUtil.getString(manifest, "content-type");
+		ViewCommand cmd = MimeTypeViewerResolverFactory
+				.getViewerCommand(MimeType.fromTypeString(mimeType));
+		String infoType = JsonUtil.getString(manifest, "info-type");
+		List<? extends FileViewer> viewers_list = cmd.execute(file, infoType,
+				editing);
 
-        if (viewers_list != null && viewers_list.size() > 0) {
-            viewers.addAll(viewers_list);
-            for (FileViewer view : viewers) {
-                view.setPresenter(this);
-                container.getWidget().add(view.asWidget(), view.getViewName());
-            }
-            container.unmask();
-        }
+		if (viewers_list != null && viewers_list.size() > 0) {
+			viewers.addAll(viewers_list);
+			for (FileViewer view : viewers) {
+				view.setPresenter(this);
+				container.getWidget().add(view.asWidget(), view.getViewName());
+			}
+			container.unmask();
+		}
 
-        treeViewer = isTreeTab(manifest);
-        genomeViewer = isGenomeVizTab(manifest);
+		treeViewer = isTreeTab(manifest);
+		genomeViewer = isGenomeVizTab(manifest);
 
-        if (treeViewer || genomeViewer) {
-            cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType.fromTypeString("viz"));
-            List<? extends FileViewer> vizViewers = cmd.execute(file, infoType, editing);
-            List<VizUrl> urls = getManifestVizUrls();
-            if (urls != null && urls.size() > 0) {
-                vizViewers.get(0).setData(urls);
-            } else {
-                if (treeViewer) {
-                    callTreeCreateService(vizViewers.get(0));
-                } else if (genomeViewer) {
-                    final ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.visualization(),
-                            I18N.DISPLAY.cogePrompt());
-                    cmb.addHideHandler(new HideHandler() {
+		if (treeViewer || genomeViewer) {
+			cmd = MimeTypeViewerResolverFactory.getViewerCommand(MimeType
+					.fromTypeString("viz"));
+			List<? extends FileViewer> vizViewers = cmd.execute(file, infoType,
+					editing);
+			List<VizUrl> urls = getManifestVizUrls();
+			if (urls != null && urls.size() > 0) {
+				vizViewers.get(0).setData(urls);
+			} else {
+				if (treeViewer) {
+					callTreeCreateService(vizViewers.get(0));
+				} else if (genomeViewer) {
+					final ConfirmMessageBox cmb = new ConfirmMessageBox(
+							I18N.DISPLAY.visualization(),
+							I18N.DISPLAY.cogePrompt());
+					cmb.addHideHandler(new HideHandler() {
 
-                        @Override
-                        public void onHide(HideEvent event) {
-                            if (cmb.getHideButton() == cmb.getButtonById(PredefinedButton.YES.name())) {
-                                loadInCoge(file);
-                            }
-                            // else do nothing
+						@Override
+						public void onHide(HideEvent event) {
+							if (cmb.getHideButton() == cmb
+									.getButtonById(PredefinedButton.YES.name())) {
+								loadInCoge(file);
+							}
+							// else do nothing
 
-                        }
-                    });
-                    cmb.show();
-                }
-            }
+						}
+					});
+					cmb.show();
+				}
+			}
 
-            viewers.add(vizViewers.get(0));
-            container.getWidget().add(vizViewers.get(0).asWidget(), vizViewers.get(0).getViewName());
-        }
+			viewers.add(vizViewers.get(0));
+			container.getWidget().add(vizViewers.get(0).asWidget(),
+					vizViewers.get(0).getViewName());
+		}
 
-        if (viewers.size() == 0) {
-            container.unmask();
-            container.add(new HTML(I18N.DISPLAY.fileOpenMsg()));
-        }
+		if (viewers.size() == 0) {
+			container.unmask();
+			container.add(new HTML(I18N.DISPLAY.fileOpenMsg()));
+		}
 
-    }
+	}
 
-    /**
-     * Gets the tree-urls json array from the manifest.
-     * 
-     * @return A json array of at least one tree URL, or null otherwise.
-     */
-    private List<VizUrl> getManifestVizUrls() {
-        return TreeUrlCallback.getTreeUrls(manifest.toString());
+	/**
+	 * Gets the tree-urls json array from the manifest.
+	 * 
+	 * @return A json array of at least one tree URL, or null otherwise.
+	 */
+	private List<VizUrl> getManifestVizUrls() {
+		return TreeUrlCallback.getTreeUrls(manifest.toString());
 
-    }
+	}
 
-    /**
-     * Calls the tree URL service to fetch the URLs to display in the grid.
-     */
-    public void callTreeCreateService(final FileViewer viewer) {
-        container.mask(I18N.DISPLAY.loadingMask());
-        Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), false, new TreeUrlCallback(file,
-                container, viewer));
-    }
+	/**
+	 * Calls the tree URL service to fetch the URLs to display in the grid.
+	 */
+	public void callTreeCreateService(final FileViewer viewer) {
+		container.mask(I18N.DISPLAY.loadingMask());
+		Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), false,
+				new TreeUrlCallback(file, container, viewer));
+	}
 
-    private void loadInCoge(File file) {
-        container.mask(I18N.DISPLAY.loadingMask());
-        JSONObject obj = new JSONObject();
-        JSONArray pathArr = new JSONArray();
-        pathArr.set(0, new JSONString(file.getPath()));
-        obj.put("paths", pathArr);
-        Services.FILE_EDITOR_SERVICE.viewGenomes(obj, new LoadGenomeInCoGeCallback(container));
-    }
+	private void loadInCoge(File file) {
+		container.mask(I18N.DISPLAY.loadingMask());
+		JSONObject obj = new JSONObject();
+		JSONArray pathArr = new JSONArray();
+		pathArr.set(0, new JSONString(file.getPath()));
+		obj.put("paths", pathArr);
+		Services.FILE_EDITOR_SERVICE.viewGenomes(obj,
+				new LoadGenomeInCoGeCallback(container));
+	}
 
-    @Override
-    public void setVeiwDirtyState(boolean dirty) {
-        this.isDirty = dirty;
-        updateWindowTitle();
-    }
+	@Override
+	public void setVeiwDirtyState(boolean dirty) {
+		this.isDirty = dirty;
+		updateWindowTitle();
+	}
 
-    private void updateWindowTitle() {
-        if (isDirty) {
-            container.setTitle(container.getTitle()
-                    + "<span style='color:red; vertical-align: super'> * </span>");
-        } else {
-            String temp = container.getTitle();
-            if (temp.endsWith("*")) {
-                temp = temp.substring(0, temp.length() - 1);
-            }
-            container.setTitle(temp);
-        }
-    }
+	private void updateWindowTitle() {
+		if (isDirty) {
+			container
+					.setTitle(container.getTitle()
+							+ "<span style='color:red; vertical-align: super'> * </span>");
+		} else {
+			String temp = container.getTitle();
+			if (temp.endsWith("*")) {
+				temp = temp.substring(0, temp.length() - 1);
+			}
+			container.setTitle(temp);
+		}
+	}
 
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
+	@Override
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	@Override
+	public void cleanUp() {
+		if (viewers != null && viewers.size() > 0) {
+			for (FileViewer view : viewers) {
+				view.cleanUp();
+			}
+		}
+		
+		viewers = null;
+		file = null;
+
+	}
 
 }

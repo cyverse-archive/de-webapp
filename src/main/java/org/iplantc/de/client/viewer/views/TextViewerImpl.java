@@ -3,6 +3,9 @@
  */
 package org.iplantc.de.client.viewer.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -20,6 +23,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -67,6 +71,8 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
     private Presenter presenter;
 
     protected JavaScriptObject jso;
+    
+    private final List<HandlerRegistration> eventHandlers = new ArrayList<HandlerRegistration>();
 
     public TextViewerImpl(File file, String infoType, boolean editing) {
         super(file, infoType);
@@ -93,7 +99,8 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
             }
         });
 
-        EventBus.getInstance().addHandler(SaveFileEvent.TYPE, new SaveFileEventHandler() {
+     // handle data events
+        eventHandlers.add(EventBus.getInstance().addHandler(SaveFileEvent.TYPE, new SaveFileEventHandler() {
 
             @Override
             public void onSave(SaveFileEvent event) {
@@ -101,7 +108,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
             }
         }
 
-        );
+        ));
 
     }
 
@@ -117,6 +124,19 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 
         }, SaveFileEvent.TYPE);
         return textViewPagingToolBar;
+    }
+    
+    
+    @Override
+    public void cleanUp() {
+    	 EventBus eventBus = EventBus.getInstance();
+         for (HandlerRegistration hr : eventHandlers) {
+             eventBus.removeHandler(hr);
+         }
+         file = null;
+         jso = null;
+         toolbar = null;
+         data = null;
     }
 
     private void addWrapHandler() {
@@ -176,7 +196,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
         jso = displayData(this, center.getElement(), infoType, (String)data, center.getElement()
                 .getOffsetWidth(), center.getElement().getOffsetHeight(), toolbar.isWrapText(),
                 toolbar.getToltalPages() == 1);
-        toolbar.setEditing(toolbar.getToltalPages() == 1);
+        toolbar.setEditing(toolbar.getToltalPages() == 1 && editing);
         /**
          * XXX - SS - support editing for files with only one page
          */
