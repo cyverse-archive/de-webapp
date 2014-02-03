@@ -17,6 +17,7 @@ import org.iplantc.de.client.services.impl.FileSaveCallback;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
 import org.iplantc.de.client.viewer.events.SaveFileEvent.SaveFileEventHandler;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -85,6 +86,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
         if (file != null) {
             loadData();
         } else {
+        	//when u start editing a new file, data is empty but the new file is yet to be saved.
             setData("");
         }
 
@@ -144,7 +146,11 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                setData(data);
+            	if(isDirty() || Strings.isNullOrEmpty(data)) {
+            		setData(getEditorContent(jso));
+            	} else {
+            		setData(data);
+            	}
             }
         });
     }
