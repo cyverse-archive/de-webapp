@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
+import org.iplantc.de.pipelineBuilder.client.json.autobeans.Pipeline;
 import org.iplantc.de.pipelines.client.presenter.PipelineViewPresenter;
 import org.iplantc.de.pipelines.client.views.PipelineView;
 import org.iplantc.de.pipelines.client.views.PipelineViewImpl;

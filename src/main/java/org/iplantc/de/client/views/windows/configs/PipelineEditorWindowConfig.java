@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
+import org.iplantc.de.pipelineBuilder.client.json.autobeans.Pipeline;
 
 import com.google.web.bindery.autobean.shared.Splittable;
 
