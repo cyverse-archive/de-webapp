@@ -5,17 +5,16 @@
  */
 package org.iplantc.de.client.desktop.widget;
 
-import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.models.ShortcutDesc;
-import org.iplantc.de.client.views.windows.configs.WindowConfig;
-
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import org.iplantc.de.client.DeResources;
+import org.iplantc.de.client.models.ShortcutDesc;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 /**
  * A desktop shortcut.

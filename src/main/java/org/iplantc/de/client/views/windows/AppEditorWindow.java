@@ -21,7 +21,7 @@ import com.sencha.gxt.widget.core.client.event.RestoreEvent.RestoreHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
-import org.iplantc.core.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLabels;
+import org.iplantc.de.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLabels;
 import org.iplantc.core.uiapps.client.events.AppPublishedEvent;
 import org.iplantc.core.uiapps.client.events.AppPublishedEvent.AppPublishedEventHandler;
 import org.iplantc.core.uiapps.client.models.autobeans.App;
@@ -88,7 +88,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
     private final AppTemplateServices templateService;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
     private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
-    private final AppsWidgetsPropertyPanelLabels labels = org.iplantc.core.resources.client.messages.I18N.APPS_LABELS;
+    private final AppsWidgetsPropertyPanelLabels labels = org.iplantc.de.resources.client.messages.I18N.APPS_LABELS;
     private final RenameWindowHeaderCmdImpl renameCmd;
 
     final ContextualHelpToolButton editPublicAppContextHlpTool = new ContextualHelpToolButton(new HTML(I18N.APPS_HELP.editPublicAppHelp()));

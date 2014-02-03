@@ -3,7 +3,7 @@ package org.iplantc.de.client.sysmsgs.view;
 import java.util.Date;
 import java.util.List;
 
-import org.iplantc.core.resources.client.SystemMessagesResources;
+import org.iplantc.de.resources.client.SystemMessagesResources;
 import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 
 import com.google.gwt.core.client.GWT;

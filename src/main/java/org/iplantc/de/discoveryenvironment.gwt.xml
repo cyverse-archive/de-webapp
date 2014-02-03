@@ -35,7 +35,7 @@
 
 	<!-- Other module inherits                                      -->
 	<!-- Include GWTUpload library, used by File Upload Servlet -->
-	<inherits name="gwtupload.GWTUpload" />
+	<!-- <inherits name="gwtupload.GWTUpload" /> -->
 	<inherits name='com.sencha.gxt.ui.GXT' />
 	<stylesheet src="reset.css" />
 	<inherits name='com.sencha.gxt.theme.gray.Gray'/>
@@ -56,7 +56,7 @@
 	<inherits name="org.iplantc.core.uiapps.widgets.Widgets"/>
 	<inherits name="org.iplantc.core.uiapps.integration.AppsIntegration"/>
 	<inherits name="org.iplantc.core.diskresource"/>
-	<inherits name="org.iplantc.core.pipelines"/>
+	<inherits name="org.iplantc.de.pipelines.pipelines"/>
 	<!-- for server push -->
 	<inherits name="com.google.gwt.rpc.RPC" />
 

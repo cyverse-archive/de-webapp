@@ -1,7 +1,7 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import org.iplantc.core.resources.client.SystemMessagesResources;
-import org.iplantc.core.resources.client.SystemMessagesResources.Style;
+import org.iplantc.de.resources.client.SystemMessagesResources;
+import org.iplantc.de.resources.client.SystemMessagesResources.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;

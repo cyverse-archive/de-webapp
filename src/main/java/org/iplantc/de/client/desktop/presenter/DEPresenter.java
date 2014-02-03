@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.resources.client.DEFeedbackStyle;
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.resources.client.DEFeedbackStyle;
+import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -281,7 +281,7 @@ public class DEPresenter implements DEView.Presenter {
         feedbackBtn.getElement().updateZIndex(0);
         RootPanel.get().add(feedbackBtn);
         feedbackBtn.getElement().setAttribute("data-intro",
-                org.iplantc.core.resources.client.messages.I18N.TOUR.introFeedback());
+                org.iplantc.de.resources.client.messages.I18N.TOUR.introFeedback());
         feedbackBtn.getElement().setAttribute("data-position", "top");
         feedbackBtn.getElement().setAttribute("data-step", "6");
     }
@@ -380,7 +380,7 @@ public class DEPresenter implements DEView.Presenter {
             public void execute() {
                 if (UserInfo.getInstance().isNewUser()) {
                     MessageBox box = new MessageBox(I18N.DISPLAY.welcome(),
-                            org.iplantc.core.resources.client.messages.I18N.TOUR.introWelcome());
+                            org.iplantc.de.resources.client.messages.I18N.TOUR.introWelcome());
                     box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
                     box.setIcon(MessageBox.ICONS.question());
                     box.addHideHandler(new HideHandler() {

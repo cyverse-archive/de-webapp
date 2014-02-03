@@ -9,8 +9,8 @@
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
 	xmlns:paging="urn:import:org.iplantc.de.client.desktop.widget">
 
-   <ui:with type="org.iplantc.core.resources.client.IplantResources" field="icons"/>
-   <ui:with type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" field="strings" />
+   <ui:with type="org.iplantc.de.resources.client.IplantResources" field="icons"/>
+   <ui:with type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" field="strings" />
 
 	<!-- Main Panel -->
 	<ui:with field="listStore" type="com.sencha.gxt.data.shared.ListStore" />

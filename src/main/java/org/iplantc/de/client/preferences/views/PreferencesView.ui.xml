@@ -3,7 +3,7 @@
 	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form">
 	<ui:with field="strings"
-		type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
+		type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" />
 
 	<ui:style>
 		.user_pref {

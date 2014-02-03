@@ -5,7 +5,7 @@
 	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar">
   <ui:with
         field="strings"
-        type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
+        type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" />
 
 <container:VerticalLayoutContainer ui:field="contents">
 <toolbar:ToolBar ui:field="toolbar" height="30px">

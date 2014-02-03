@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplantc.core.resources.client.IplantResources;
-import org.iplantc.core.resources.client.theme.window.IPlantWindowAppearance;
+import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.theme.window.IPlantWindowAppearance;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.Constants;

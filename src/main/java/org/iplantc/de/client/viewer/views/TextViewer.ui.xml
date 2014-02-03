@@ -5,7 +5,7 @@
 	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client" xmlns:toolbar="urn:import:org.iplantc.de.client.viewer.views">
 
 	<ui:with field="strings"
-		type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
+		type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" />
 
 	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="outerMargins">
 		<ui:attributes top="10" right="10" bottom="10" left="10" />

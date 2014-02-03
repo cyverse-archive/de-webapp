@@ -6,9 +6,9 @@
 	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
 	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
     xmlns:dialog="urn:import:org.iplantc.core.uicommons.client.views.gxt3.dialogs">
-	<ui:with field="icons" type="org.iplantc.core.resources.client.IplantResources" />
+	<ui:with field="icons" type="org.iplantc.de.resources.client.IplantResources" />
 
-	<ui:with field="strings" type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
+	<ui:with field="strings" type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" />
 
 	<ui:with field="listStore" type="com.sencha.gxt.data.shared.ListStore" />
 	<ui:with field="cm"

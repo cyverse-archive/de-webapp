@@ -23,19 +23,19 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
                 I18N.HELP.iconHomepageDataTip(),
                 Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.diskResourceWindowConfig(),
-                org.iplantc.core.resources.client.messages.I18N.TOUR.introDataWindow());
+                org.iplantc.de.resources.client.messages.I18N.TOUR.introDataWindow());
 
         addShortcut(res.css().iplantcCatalogShortcut(), "idAppsShortCut", res.css()
                 .iplantcCatalogShortcutHover(), "2",
                 I18N.HELP.iconHomepageAppsTip(),
                 Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.appsWindowConfig(),
-                org.iplantc.core.resources.client.messages.I18N.TOUR.introAppsWindow());
+                org.iplantc.de.resources.client.messages.I18N.TOUR.introAppsWindow());
 
         addShortcut(res.css().iplantcMyanalysisShortcut(), "idAnalysisShortCut",
                 res.css().iplantcMyanalysisShortcutHover(),
                 "3", I18N.HELP.iconHomepageAnalysesTip(), Constants.CLIENT.windowTag(), //$NON-NLS-1$
                 ConfigFactory.analysisWindowConfig(),
-                org.iplantc.core.resources.client.messages.I18N.TOUR.introAnalysesWindow());
+                org.iplantc.de.resources.client.messages.I18N.TOUR.introAnalysesWindow());
     }
 }

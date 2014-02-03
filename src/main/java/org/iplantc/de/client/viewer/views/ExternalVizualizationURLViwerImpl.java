@@ -6,7 +6,7 @@ package org.iplantc.de.client.viewer.views;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.views.IsMaskable;
 import org.iplantc.de.client.I18N;

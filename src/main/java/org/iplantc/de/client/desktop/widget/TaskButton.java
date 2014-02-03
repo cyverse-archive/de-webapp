@@ -5,7 +5,7 @@
  */
 package org.iplantc.de.client.desktop.widget;
 
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.common.base.Strings;

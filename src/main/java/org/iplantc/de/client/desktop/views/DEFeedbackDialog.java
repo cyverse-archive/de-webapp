@@ -1,6 +1,6 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.de.client.desktop.presenter.DEFeedbackPresenter;
 import org.iplantc.de.client.desktop.views.DEFeedbackView.Presenter;

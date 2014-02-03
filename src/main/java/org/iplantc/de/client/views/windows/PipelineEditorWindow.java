@@ -1,9 +1,9 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.core.pipelineBuilder.client.json.autobeans.Pipeline;
-import org.iplantc.core.pipelines.client.presenter.PipelineViewPresenter;
-import org.iplantc.core.pipelines.client.views.PipelineView;
-import org.iplantc.core.pipelines.client.views.PipelineViewImpl;
+import org.iplantc.de.pipelines.client.presenter.PipelineViewPresenter;
+import org.iplantc.de.pipelines.client.views.PipelineView;
+import org.iplantc.de.pipelines.client.views.PipelineViewImpl;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.info.SuccessAnnouncementConfig;
 import org.iplantc.core.uicommons.client.models.WindowState;

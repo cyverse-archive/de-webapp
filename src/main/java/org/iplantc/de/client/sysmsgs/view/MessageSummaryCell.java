@@ -2,8 +2,8 @@ package org.iplantc.de.client.sysmsgs.view;
 
 import java.util.Date;
 
-import org.iplantc.core.resources.client.SystemMessagesResources;
-import org.iplantc.core.resources.client.SystemMessagesResources.Style;
+import org.iplantc.de.resources.client.SystemMessagesResources;
+import org.iplantc.de.resources.client.SystemMessagesResources.Style;
 import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
 

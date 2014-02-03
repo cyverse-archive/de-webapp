@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
 

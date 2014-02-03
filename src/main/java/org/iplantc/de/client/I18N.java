@@ -8,7 +8,7 @@ import com.google.gwt.core.client.GWT;
  * @author lenards
  *
  */
-public class I18N extends org.iplantc.core.resources.client.messages.I18N {
+public class I18N extends org.iplantc.de.resources.client.messages.I18N {
     /** Strings displayed in the UI */
     public static final DEDisplayStaticText CONSTANT = (DEDisplayStaticText)GWT
             .create(DEDisplayStaticText.class);

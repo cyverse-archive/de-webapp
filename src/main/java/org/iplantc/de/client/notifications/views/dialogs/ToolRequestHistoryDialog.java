@@ -3,9 +3,9 @@ package org.iplantc.de.client.notifications.views.dialogs;
 import java.util.Date;
 import java.util.List;
 
-import org.iplantc.core.resources.client.IplantResources;
-import org.iplantc.core.resources.client.ToolRequestStatusHelpStyle;
-import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.ToolRequestStatusHelpStyle;
+import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestHistoryProperties;
 import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestStatus;

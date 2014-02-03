@@ -9,11 +9,11 @@
 
     <ui:with
         field="icons"
-        type="org.iplantc.core.resources.client.IplantResources" />
+        type="org.iplantc.de.resources.client.IplantResources" />
 
     <ui:with
         field="strings"
-        type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" />
+        type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" />
 
     <container:SimpleContainer>
         <toolbar:ToolBar ui:field="menuToolBar" >
