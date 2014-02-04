@@ -3,9 +3,9 @@ package org.iplantc.de.client.notifications.services;
 import java.util.Collections;
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.CommonModelUtils;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.models.CommonModelUtils;
+import org.iplantc.de.commons.client.models.diskresources.File;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationList;

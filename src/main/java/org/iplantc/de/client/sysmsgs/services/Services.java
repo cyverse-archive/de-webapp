@@ -1,7 +1,7 @@
 package org.iplantc.de.client.sysmsgs.services;
 
-import org.iplantc.core.uicommons.client.models.sysmsgs.IdList;
-import org.iplantc.core.uicommons.client.models.sysmsgs.MessageList;
+import org.iplantc.de.commons.client.models.sysmsgs.IdList;
+import org.iplantc.de.commons.client.models.sysmsgs.MessageList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

@@ -2,9 +2,9 @@ package org.iplantc.de.client.viewer.callbacks;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.views.IsMaskable;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.models.TreeUrlAutoBeanFactory;
 import org.iplantc.de.client.viewer.models.VizUrl;

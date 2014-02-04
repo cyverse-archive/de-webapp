@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.sysmsgs.presenter.MessagesPresenter;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.SystemMessagesWindowConfig;

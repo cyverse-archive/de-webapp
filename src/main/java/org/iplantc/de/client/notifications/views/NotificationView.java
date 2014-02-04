@@ -13,7 +13,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
 public interface NotificationView extends IsWidget {
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
         /**
          * Filters the list of notifications by a given Category.
          * 

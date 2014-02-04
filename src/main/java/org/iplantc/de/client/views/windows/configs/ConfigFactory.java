@@ -2,9 +2,9 @@ package org.iplantc.de.client.views.windows.configs;
 
 import java.util.Date;
 
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.models.WindowType;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.WindowType;
+import org.iplantc.de.commons.client.models.diskresources.File;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
 import com.google.gwt.core.client.GWT;

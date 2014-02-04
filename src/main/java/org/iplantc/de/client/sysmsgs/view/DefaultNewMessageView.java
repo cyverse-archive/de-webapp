@@ -1,8 +1,8 @@
 package org.iplantc.de.client.sysmsgs.view;
 
 import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.core.uicommons.client.appearance.widgets.InternalAnchorDefaultAppearance;
-import org.iplantc.core.uicommons.client.widgets.InternalAnchor;
+import org.iplantc.de.commons.client.appearance.widgets.InternalAnchorDefaultAppearance;
+import org.iplantc.de.commons.client.widgets.InternalAnchor;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;

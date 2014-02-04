@@ -2,9 +2,9 @@ package org.iplantc.de.client.desktop.presenter;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.UserSession;
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IsHideable;
+import org.iplantc.de.commons.client.models.UserSession;
+import org.iplantc.de.commons.client.models.WindowState;
+import org.iplantc.de.commons.client.views.gxt3.dialogs.IsHideable;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;

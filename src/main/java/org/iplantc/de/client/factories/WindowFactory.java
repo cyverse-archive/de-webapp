@@ -1,7 +1,7 @@
 package org.iplantc.de.client.factories;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.util.WindowUtil;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.util.WindowUtil;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.views.windows.AboutApplicationWindow;
 import org.iplantc.de.client.views.windows.AppEditorWindow;

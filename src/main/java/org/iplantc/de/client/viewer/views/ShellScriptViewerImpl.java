@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.models.diskresources.File;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.sencha.gxt.core.client.dom.XElement;

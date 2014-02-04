@@ -1,6 +1,6 @@
 package org.iplantc.de.client;
 
-import org.iplantc.core.uicommons.client.DEClientConstants;
+import org.iplantc.de.commons.client.DEClientConstants;
 
 import com.google.gwt.core.client.GWT;
 

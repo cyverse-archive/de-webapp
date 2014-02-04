@@ -76,12 +76,12 @@
    </replace-with>
    
    <replace-with class="org.iplantc.de.client.services.CollaboratorsServiceFacadeImpl">
-      <when-type-is class="org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade"/>
+      <when-type-is class="org.iplantc.de.commons.client.services.CollaboratorsServiceFacade"/>
    </replace-with>
    
    <replace-with 
-         class="org.iplantc.core.uicommons.client.appearance.widgets.IPlantAnchorDefaultAppearance">
-      <when-type-is class="org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance"/>
+         class="org.iplantc.de.commons.client.appearance.widgets.IPlantAnchorDefaultAppearance">
+      <when-type-is class="org.iplantc.de.commons.client.widgets.IPlantAnchorAppearance"/>
    </replace-with>
    
    <!--  system messages deferred binding rules -->

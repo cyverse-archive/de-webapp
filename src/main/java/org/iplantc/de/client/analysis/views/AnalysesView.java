@@ -22,7 +22,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
  * 
  */
 public interface AnalysesView extends IsWidget {
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
 
         void go(final HasOneWidget container, List<Analysis> selectedAnalyses);
 

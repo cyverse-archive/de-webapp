@@ -1,7 +1,7 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.core.uicommons.client.appearance.widgets.AnchorDefaultResources;
-import org.iplantc.core.uicommons.client.appearance.widgets.IPlantAnchorDefaultAppearance;
+import org.iplantc.de.commons.client.appearance.widgets.AnchorDefaultResources;
+import org.iplantc.de.commons.client.appearance.widgets.IPlantAnchorDefaultAppearance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;

@@ -2,7 +2,7 @@ package org.iplantc.de.client.analysis.widget;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.widgets.SearchField;
+import org.iplantc.de.commons.client.widgets.SearchField;
 import org.iplantc.de.client.analysis.models.Analysis;
 
 import com.sencha.gxt.data.shared.loader.FilterConfig;

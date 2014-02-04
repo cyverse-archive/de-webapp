@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.preferences.views;
 
-import org.iplantc.core.uicommons.client.models.UserSettings;
+import org.iplantc.de.commons.client.models.UserSettings;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface PreferencesView extends IsWidget {
 
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
 
         boolean validateAndSave();
 

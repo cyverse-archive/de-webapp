@@ -1,11 +1,11 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.info.AnnouncementId;
-import org.iplantc.core.uicommons.client.info.AnnouncementRemovedEvent;
-import org.iplantc.core.uicommons.client.info.IplantAnnouncementConfig;
-import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.info.AnnouncementId;
+import org.iplantc.de.commons.client.info.AnnouncementRemovedEvent;
+import org.iplantc.de.commons.client.info.IplantAnnouncementConfig;
+import org.iplantc.de.commons.client.info.IplantAnnouncer;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.ShowSystemMessagesEvent;

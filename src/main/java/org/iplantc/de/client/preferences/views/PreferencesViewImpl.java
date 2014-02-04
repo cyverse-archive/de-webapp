@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplantc.de.apps.widgets.client.view.editors.validation.AnalysisOutputValidator;
-import org.iplantc.core.uicommons.client.Constants;
-import org.iplantc.core.uicommons.client.models.UserSettings;
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.de.commons.client.Constants;
+import org.iplantc.de.commons.client.models.UserSettings;
+import org.iplantc.de.commons.client.models.diskresources.Folder;
 import org.iplantc.de.diskResource.client.views.widgets.FolderSelectorField;
 import org.iplantc.de.client.I18N;
 

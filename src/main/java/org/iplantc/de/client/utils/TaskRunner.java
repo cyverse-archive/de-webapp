@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.de.commons.client.models.DEProperties;
 
 import com.google.gwt.user.client.Timer;
 

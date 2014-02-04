@@ -5,9 +5,9 @@ package org.iplantc.de.client.services;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.DEServiceFacade;
-import org.iplantc.core.uicommons.client.models.DEProperties;
-import org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade;
+import org.iplantc.de.commons.client.DEServiceFacade;
+import org.iplantc.de.commons.client.models.DEProperties;
+import org.iplantc.de.commons.client.services.CollaboratorsServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.http.client.URL;

@@ -16,7 +16,7 @@ public interface FileViewer extends IsWidget {
     public static final int MAX_PAGE_SIZE_KB = 64;
     public static final int PAGE_INCREMENT_SIZE_KB = 8;
 
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
         void composeView(JSONObject manifest);
 
         void setVeiwDirtyState(boolean dirty);

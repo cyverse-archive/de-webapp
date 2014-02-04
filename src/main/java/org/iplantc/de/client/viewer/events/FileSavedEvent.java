@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.events;
 
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.models.diskresources.File;
 import org.iplantc.de.client.viewer.events.FileSavedEvent.FileSavedEventHandler;
 
 import com.google.gwt.event.shared.EventHandler;

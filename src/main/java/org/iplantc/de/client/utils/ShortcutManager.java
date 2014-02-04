@@ -3,7 +3,7 @@ package org.iplantc.de.client.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.desktop.widget.Shortcut;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.ShortcutDesc;

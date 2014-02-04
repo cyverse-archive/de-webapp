@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.views.IsMaskable;
+import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;

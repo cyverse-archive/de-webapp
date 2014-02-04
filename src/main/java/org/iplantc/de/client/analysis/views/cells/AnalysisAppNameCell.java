@@ -5,7 +5,7 @@ import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
 
 import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;

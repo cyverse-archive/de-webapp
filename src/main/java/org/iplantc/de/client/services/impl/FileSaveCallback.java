@@ -1,11 +1,11 @@
 package org.iplantc.de.client.services.impl;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.util.DiskResourceUtil;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.viewer.events.FileSavedEvent;

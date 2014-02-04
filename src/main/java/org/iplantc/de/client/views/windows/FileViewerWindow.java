@@ -2,11 +2,11 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.views.IsMaskable;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.diskResource.client.services.errors.DiskResourceErrorAutoBeanFactory;
 import org.iplantc.de.diskResource.client.services.errors.ErrorGetManifest;
 import org.iplantc.de.client.Services;

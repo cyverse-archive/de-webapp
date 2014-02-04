@@ -9,7 +9,7 @@ public interface DEFeedbackView extends IsWidget {
 
     public JSONObject toJson();
 
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
         void validateAndSubmit();
 
     }

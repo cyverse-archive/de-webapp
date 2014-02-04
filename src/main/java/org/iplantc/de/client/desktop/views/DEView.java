@@ -2,7 +2,7 @@ package org.iplantc.de.client.desktop.views;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.desktop.widget.Desktop;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface DEView extends IsWidget {
 
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
 
         void doLogout();
 

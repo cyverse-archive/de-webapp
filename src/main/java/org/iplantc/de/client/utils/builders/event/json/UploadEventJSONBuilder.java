@@ -1,8 +1,8 @@
 package org.iplantc.de.client.utils.builders.event.json;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.commons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 
 import com.google.gwt.core.client.GWT;

@@ -3,12 +3,12 @@ package org.iplantc.de.client.sysmsgs.presenter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.sysmsgs.IdList;
-import org.iplantc.core.uicommons.client.models.sysmsgs.Message;
-import org.iplantc.core.uicommons.client.models.sysmsgs.MessageFactory;
-import org.iplantc.core.uicommons.client.models.sysmsgs.MessageList;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.models.sysmsgs.IdList;
+import org.iplantc.de.commons.client.models.sysmsgs.Message;
+import org.iplantc.de.commons.client.models.sysmsgs.MessageFactory;
+import org.iplantc.de.commons.client.models.sysmsgs.MessageList;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.sysmsgs.services.Services;

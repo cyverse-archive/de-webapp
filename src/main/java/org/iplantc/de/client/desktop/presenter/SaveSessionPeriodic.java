@@ -2,9 +2,9 @@ package org.iplantc.de.client.desktop.presenter;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.UserSession;
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.UserInfo;
+import org.iplantc.de.commons.client.models.UserSession;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.presenter.UserSessionProgressMessageBox.UserSessionFactory;
 import org.iplantc.de.client.desktop.views.DEView;

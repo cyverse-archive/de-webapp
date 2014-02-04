@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.HasPaths;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.models.HasPaths;
+import org.iplantc.de.commons.client.models.diskresources.DiskResource;
+import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.commons.client.util.DiskResourceUtil;
 import org.iplantc.de.diskResource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.de.diskResource.client.sharing.models.DataSharing.TYPE;

@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.views.IsMinimizable;
+import org.iplantc.de.commons.client.models.WindowState;
+import org.iplantc.de.commons.client.views.IsMinimizable;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 

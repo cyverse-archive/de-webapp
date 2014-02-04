@@ -1,9 +1,8 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent;
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.diskresources.DiskResourceRefreshEvent;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;

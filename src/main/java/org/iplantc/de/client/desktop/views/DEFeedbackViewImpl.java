@@ -1,6 +1,6 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.de.commons.client.models.UserInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;

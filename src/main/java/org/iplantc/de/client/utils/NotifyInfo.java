@@ -1,8 +1,8 @@
 package org.iplantc.de.client.utils;
 
-import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
-import org.iplantc.core.uicommons.client.info.IplantAnnouncement;
-import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.de.commons.client.info.IplantAnnouncement;
+import org.iplantc.de.commons.client.info.IplantAnnouncer;
 
 import com.sencha.gxt.core.client.dom.XDOM;
 

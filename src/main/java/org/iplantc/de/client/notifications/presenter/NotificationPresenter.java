@@ -3,8 +3,8 @@ package org.iplantc.de.client.notifications.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;

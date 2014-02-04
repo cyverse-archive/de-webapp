@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.models.NotificationMessageProperties;

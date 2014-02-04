@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.resources.client.theme.window.IPlantWindowAppearance;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;

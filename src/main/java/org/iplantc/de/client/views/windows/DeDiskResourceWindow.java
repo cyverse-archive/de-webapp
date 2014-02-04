@@ -2,8 +2,8 @@ package org.iplantc.de.client.views.windows;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.HasId;
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.HasId;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.diskResource.client.gin.DiskResourceInjector;
 import org.iplantc.de.diskResource.client.views.DiskResourceView;
 import org.iplantc.de.client.I18N;

@@ -3,8 +3,8 @@ package org.iplantc.de.client.views.windows.configs;
 import java.util.List;
 import java.util.Map;
 
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.de.commons.client.models.diskresources.DiskResource;
+import org.iplantc.de.commons.client.models.diskresources.Folder;
 
 public interface IDropLiteWindowConfig extends WindowConfig {
 

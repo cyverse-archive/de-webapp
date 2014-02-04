@@ -1,6 +1,6 @@
 package org.iplantc.de.client.events.disk.mgmt;
 
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.de.commons.client.models.diskresources.DiskResource;
 
 import com.google.gwt.event.shared.GwtEvent;
 

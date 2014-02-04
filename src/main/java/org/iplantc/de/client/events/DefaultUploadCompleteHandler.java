@@ -1,8 +1,8 @@
 package org.iplantc.de.client.events;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.models.UserInfo;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.factories.EventJSONFactory;

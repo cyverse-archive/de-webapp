@@ -2,7 +2,7 @@ package org.iplantc.de.client.views.windows.configs;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.models.HasId;
+import org.iplantc.de.commons.client.models.HasId;
 
 public interface DiskResourceWindowConfig extends WindowConfig {
 

@@ -6,10 +6,10 @@ package org.iplantc.de.client.notifications.views;
 import java.util.List;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
-import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.info.IplantAnnouncer;
+import org.iplantc.de.commons.client.widgets.IPlantAnchor;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
@@ -220,7 +220,7 @@ public class NotificationListView implements IsWidget {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    org.iplantc.core.uicommons.client.ErrorHandler.post(caught);
+                    org.iplantc.de.commons.client.ErrorHandler.post(caught);
                 }
             });
         }

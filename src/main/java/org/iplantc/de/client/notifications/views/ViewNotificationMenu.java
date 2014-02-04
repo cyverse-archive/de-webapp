@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.notifications.views;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.EventBus;
 
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;

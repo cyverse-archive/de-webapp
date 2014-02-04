@@ -1,6 +1,6 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;

@@ -1,9 +1,9 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
-import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
-import org.iplantc.core.uicommons.client.widgets.IPlantAnchor;
+import org.iplantc.de.commons.client.models.WindowState;
+import org.iplantc.de.commons.client.models.diskresources.DiskResource;
+import org.iplantc.de.commons.client.util.DiskResourceUtil;
+import org.iplantc.de.commons.client.widgets.IPlantAnchor;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;

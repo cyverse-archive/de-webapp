@@ -4,9 +4,9 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
-import org.iplantc.core.uicommons.client.models.CommonModelAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.HasId;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.models.CommonModelAutoBeanFactory;
+import org.iplantc.de.commons.client.models.HasId;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;

@@ -1,6 +1,6 @@
 package org.iplantc.de.client;
 
-import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.desktop.presenter.DEPresenter;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEViewImpl;

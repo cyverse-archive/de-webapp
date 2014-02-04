@@ -1,8 +1,8 @@
 package org.iplantc.de.client.analysis.widget.proxy;
 
 import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.models.UserInfo;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
 import org.iplantc.de.client.analysis.models.AnalysesList;

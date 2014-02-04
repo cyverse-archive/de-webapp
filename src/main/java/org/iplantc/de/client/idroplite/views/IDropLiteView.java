@@ -12,7 +12,7 @@ import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
  */
 public interface IDropLiteView extends IsWidget {
 
-    public interface Presenter extends org.iplantc.core.uicommons.client.presenter.Presenter {
+    public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {
 
         void buildUploadApplet();
 

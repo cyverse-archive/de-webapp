@@ -1,8 +1,8 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.models.WindowState;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.AboutApplicationData;

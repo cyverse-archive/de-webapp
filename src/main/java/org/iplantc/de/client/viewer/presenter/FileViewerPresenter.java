@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.de.jsonutil.client.JsonUtil;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.de.commons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
@@ -67,7 +67,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.iplantc.core.uicommons.client.presenter.Presenter#go(com.google.gwt
+	 * org.iplantc.de.commons.client.presenter.Presenter#go(com.google.gwt
 	 * .user.client.ui.HasOneWidget )
 	 */
 	@Override
