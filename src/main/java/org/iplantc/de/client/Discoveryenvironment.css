@@ -90,28 +90,6 @@ html,body {
 	height: 0px !important;
 }
 
-.x-tool-collapse {
-	background-image: url('./images/accordian/arrow_down_unhover.png');
-	height: 15px;
-	width: 15px;
-	padding-right: 24px;
-}
-
-.x-tool-collapse-hover {
-	background-image: url('./images/accordian/arrow_down_hover.png');
-}
-
-.x-tool-expand {
-	background-image: url('./images/accordian/arrow_left_unhover.png');
-	height: 15px;
-	width: 15px;
-	padding-right: 24px;
-}
-
-.x-tool-expand-hover {
-	background-image: url('./images/accordian/arrow_left_hover.png');
-}
-
 .x-tool-closewindow {
 	background-image: url('./images/button_exit.png');
 	height: 15px;
@@ -182,29 +160,6 @@ html,body {
 	outline: none;
 }
 
-.de_header_menu_hyperlink {
-	cursor: pointer;
-	color: #0098AA;
-	text-decoration: none;
-	font-size: 11px;
-}
-
-.de_header_menu_hyperlink_hover {
-	background-color: #ededed;
-}
-
-.de_header_menu_label_hover {
-	cursor: pointer;
-}
-
-.de_header_menu_button_selected {
-	background-color: #fff;
-	border-style: solid;
-	border-color: #0098AA #0098AA;
-	border-width: 1px 1px 1px;
-	padding: 1px;
-}
-
 .de_header_menu {
 	border-style: solid;
 	border-color: #0098AA #0098AA;
@@ -240,36 +195,6 @@ html,body {
 	background: url('./images/x.png') top no-repeat;
 	position: relative;
 	top: 2px;
-}
-
-.search-item {
-	border-color: #FFFFFF #FFFFFF #EEEEEE;
-	border-style: solid;
-	border-width: 1px;
-	color: #555555;
-	padding: 3px 10px;
-	white-space: normal;
-	cursor: default;
-}
-
-.search-item h3 {
-	color: #222222;
-}
-
-.search-item h3 span {
-	float: right;
-	font-size: 10px;
-	font-weight: normal;
-	margin: 0 0 5px 5px;
-}
-
-.search-item h4 {
-	font-weight: normal;
-	font-size: 11px;
-}
-
-.search-item h4 span {
-	font-style: italic;
 }
 
 .add_button {
@@ -320,15 +245,4 @@ html,body {
 	height: 16px;
 	width: 16px;
 	vertical-align: top;
-}
-
-.feedback_rotate {
-	/* Safari */
-	-webkit-transform: rotate(-90deg);
-	/* Firefox */
-	-moz-transform: rotate(-90deg);
-	/* IE */
-	-ms-transform: rotate(-90deg);
-	/* Opera */
-	-o-transform: rotate(-90deg);
 }
