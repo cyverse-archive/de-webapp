@@ -25,8 +25,8 @@ import org.iplantc.de.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLa
 import org.iplantc.core.uiapps.client.events.AppPublishedEvent;
 import org.iplantc.core.uiapps.client.events.AppPublishedEvent.AppPublishedEventHandler;
 import org.iplantc.core.uiapps.client.models.autobeans.App;
-import org.iplantc.core.uiapps.integration.client.gin.AppsEditorInjector;
-import org.iplantc.core.uiapps.integration.client.view.AppsEditorView;
+import org.iplantc.de.apps.integration.client.gin.AppsEditorInjector;
+import org.iplantc.de.apps.integration.client.view.AppsEditorView;
 import org.iplantc.de.apps.widgets.client.models.AppTemplate;
 import org.iplantc.de.apps.widgets.client.models.AppTemplateAutoBeanFactory;
 import org.iplantc.de.apps.widgets.client.models.Argument;
