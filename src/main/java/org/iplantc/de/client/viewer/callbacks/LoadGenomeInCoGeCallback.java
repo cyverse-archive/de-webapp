@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.callbacks;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.views.IsMaskable;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IplantInfoBox;

@@ -3,7 +3,7 @@ package org.iplantc.de.client.viewer.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;

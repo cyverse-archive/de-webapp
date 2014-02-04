@@ -5,7 +5,7 @@ package org.iplantc.de.client.notifications.views;
 
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;

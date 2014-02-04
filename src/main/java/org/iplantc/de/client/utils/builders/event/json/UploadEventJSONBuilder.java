@@ -1,6 +1,6 @@
 package org.iplantc.de.client.utils.builders.event.json;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
