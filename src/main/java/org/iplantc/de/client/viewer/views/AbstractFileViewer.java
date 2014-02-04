@@ -45,6 +45,11 @@ public abstract class AbstractFileViewer implements FileViewer {
 
     @Override
     public abstract void loadData();
+    
+    @Override
+    public void cleanUp() {
+    	//do nothing
+    }
 
     /*
      * (non-Javadoc)
