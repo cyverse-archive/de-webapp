@@ -10,14 +10,6 @@ public interface DeCssResources extends CssResource {
 
     String de_header_menu();
 
-    String de_header_menu_hyperlink();
-
-    String de_header_menu_hyperlink_hover();
-
-    String de_header_menu_label_hover();
-
-    String de_header_menu_button_selected();
-
     String de_notification_indicator();
 
     String de_notification_indicator_highlight();
@@ -78,9 +70,6 @@ public interface DeCssResources extends CssResource {
 
     String remove_button();
 
-    @ClassName("search-item")
-    String searchItem();
-
     String tag();
 
     @ClassName("tag-remove")
@@ -96,18 +85,6 @@ public interface DeCssResources extends CssResource {
 
     @ClassName("x-tool-closewindow-hover")
     String xToolClosewindowHover();
-
-    @ClassName("x-tool-collapse")
-    String xToolCollapse();
-
-    @ClassName("x-tool-collapse-hover")
-    String xToolCollapseHover();
-
-    @ClassName("x-tool-expand")
-    String xToolExpand();
-
-    @ClassName("x-tool-expand-hover")
-    String xToolExpandHover();
 
     @ClassName("x-tool-maximizewindow")
     String xToolMaximizewindow();
@@ -133,6 +110,4 @@ public interface DeCssResources extends CssResource {
     @ClassName("x-tool-restorewindow-hover")
     String xToolRestorewindowHover();
 
-    @ClassName("feedback_rotate")
-    String rotate90();
 }
