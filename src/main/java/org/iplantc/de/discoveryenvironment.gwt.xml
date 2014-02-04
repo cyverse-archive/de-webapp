@@ -53,7 +53,7 @@
 	<inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
 	<inherits name="org.iplantc.core.JsonUtil"/>
 	<inherits name="org.iplantc.core.uiapps.Apps"/>
-	<inherits name="org.iplantc.core.uiapps.widgets.Widgets"/>
+	<inherits name="org.iplantc.de.apps.widgets.Widgets"/>
 	<inherits name="org.iplantc.core.uiapps.integration.AppsIntegration"/>
 	<inherits name="org.iplantc.de.diskResource.diskresource"/>
 	<inherits name="org.iplantc.de.pipelines.pipelines"/>

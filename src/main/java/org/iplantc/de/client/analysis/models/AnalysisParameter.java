@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.analysis.models;
 
-import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
+import org.iplantc.de.apps.widgets.client.models.ArgumentType;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 import com.google.web.bindery.autobean.shared.Splittable;

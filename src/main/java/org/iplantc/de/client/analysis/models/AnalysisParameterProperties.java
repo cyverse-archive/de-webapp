@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.analysis.models;
 
-import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
+import org.iplantc.de.apps.widgets.client.models.ArgumentType;
 
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;

@@ -3,7 +3,7 @@ package org.iplantc.de.client.preferences.views;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplantc.core.uiapps.widgets.client.view.editors.validation.AnalysisOutputValidator;
+import org.iplantc.de.apps.widgets.client.view.editors.validation.AnalysisOutputValidator;
 import org.iplantc.core.uicommons.client.Constants;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;

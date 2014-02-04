@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.iplantc.core.uiapps.widgets.client.models.ArgumentType;
-import org.iplantc.core.uiapps.widgets.client.models.util.AppTemplateUtils;
+import org.iplantc.de.apps.widgets.client.models.ArgumentType;
+import org.iplantc.de.apps.widgets.client.models.util.AppTemplateUtils;
 import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.analysis.models.SelectionValue;
