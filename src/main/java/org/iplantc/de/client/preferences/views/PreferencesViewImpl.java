@@ -7,7 +7,7 @@ import org.iplantc.core.uiapps.widgets.client.view.editors.validation.AnalysisOu
 import org.iplantc.core.uicommons.client.Constants;
 import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
-import org.iplantc.core.uidiskresource.client.views.widgets.FolderSelectorField;
+import org.iplantc.de.diskResource.client.views.widgets.FolderSelectorField;
 import org.iplantc.de.client.I18N;
 
 import com.google.gwt.core.client.GWT;

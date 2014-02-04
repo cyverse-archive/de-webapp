@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uidiskresource.client.gin.DiskResourceInjector;
-import org.iplantc.core.uidiskresource.client.views.DiskResourceView;
+import org.iplantc.de.diskResource.client.gin.DiskResourceInjector;
+import org.iplantc.de.diskResource.client.views.DiskResourceView;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;

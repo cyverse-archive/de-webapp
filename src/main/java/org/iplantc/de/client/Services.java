@@ -2,7 +2,7 @@ package org.iplantc.de.client;
 
 import org.iplantc.core.uicommons.client.gin.ServicesInjector;
 import org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade;
-import org.iplantc.core.uidiskresource.client.services.FileEditorServiceFacade;
+import org.iplantc.de.diskResource.client.services.FileEditorServiceFacade;
 import org.iplantc.de.client.analysis.services.AnalysisServiceFacade;
 import org.iplantc.de.client.desktop.services.DEFeedbackServiceFacade;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;

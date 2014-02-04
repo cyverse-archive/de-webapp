@@ -10,7 +10,7 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uidiskresource.client.views.dialogs.SaveAsDialog;
+import org.iplantc.de.diskResource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.services.impl.FileSaveCallback;

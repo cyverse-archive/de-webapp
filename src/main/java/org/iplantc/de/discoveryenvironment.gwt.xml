@@ -55,7 +55,7 @@
 	<inherits name="org.iplantc.core.uiapps.Apps"/>
 	<inherits name="org.iplantc.core.uiapps.widgets.Widgets"/>
 	<inherits name="org.iplantc.core.uiapps.integration.AppsIntegration"/>
-	<inherits name="org.iplantc.core.diskresource"/>
+	<inherits name="org.iplantc.de.diskResource.diskresource"/>
 	<inherits name="org.iplantc.de.pipelines.pipelines"/>
 	<!-- for server push -->
 	<inherits name="com.google.gwt.rpc.RPC" />

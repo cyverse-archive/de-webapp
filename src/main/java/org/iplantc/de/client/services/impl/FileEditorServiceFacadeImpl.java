@@ -2,7 +2,7 @@ package org.iplantc.de.client.services.impl;
 
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uidiskresource.client.services.FileEditorServiceFacade;
+import org.iplantc.de.diskResource.client.services.FileEditorServiceFacade;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.shared.SharedServiceFacade;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
