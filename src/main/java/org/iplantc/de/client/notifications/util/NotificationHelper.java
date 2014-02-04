@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestHistory;
+import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.CommonModelAutoBeanFactory;

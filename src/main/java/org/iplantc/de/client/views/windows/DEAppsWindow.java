@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.core.uiapps.client.gin.AppsInjector;
-import org.iplantc.core.uiapps.client.views.AppsView;
+import org.iplantc.de.apps.client.gin.AppsInjector;
+import org.iplantc.de.apps.client.views.AppsView;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.AppsWindowConfig;

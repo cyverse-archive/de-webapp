@@ -1,14 +1,14 @@
 package org.iplantc.de.client.desktop.widget;
 
-import org.iplantc.core.uiapps.client.events.CreateNewAppEvent;
-import org.iplantc.core.uiapps.client.events.CreateNewAppEvent.CreateNewAppEventHandler;
-import org.iplantc.core.uiapps.client.events.EditAppEvent;
-import org.iplantc.core.uiapps.client.events.EditAppEvent.EditAppEventHandler;
-import org.iplantc.core.uiapps.client.events.EditWorkflowEvent;
-import org.iplantc.core.uiapps.client.events.EditWorkflowEvent.EditWorkflowEventHandler;
-import org.iplantc.core.uiapps.client.events.RunAppEvent;
-import org.iplantc.core.uiapps.client.events.RunAppEvent.RunAppEventHandler;
-import org.iplantc.core.uiapps.client.events.handlers.CreateNewWorkflowEventHandler;
+import org.iplantc.de.apps.client.events.CreateNewAppEvent;
+import org.iplantc.de.apps.client.events.CreateNewAppEvent.CreateNewAppEventHandler;
+import org.iplantc.de.apps.client.events.EditAppEvent;
+import org.iplantc.de.apps.client.events.EditAppEvent.EditAppEventHandler;
+import org.iplantc.de.apps.client.events.EditWorkflowEvent;
+import org.iplantc.de.apps.client.events.EditWorkflowEvent.EditWorkflowEventHandler;
+import org.iplantc.de.apps.client.events.RunAppEvent;
+import org.iplantc.de.apps.client.events.RunAppEvent.RunAppEventHandler;
+import org.iplantc.de.apps.client.events.handlers.CreateNewWorkflowEventHandler;
 import org.iplantc.de.diskResource.client.events.CreateNewFileEvent;
 import org.iplantc.de.diskResource.client.events.CreateNewFileEvent.CreateNewFileEventHandler;
 import org.iplantc.de.diskResource.client.events.ShowFilePreviewEvent;

@@ -8,11 +8,11 @@ package org.iplantc.de.client.desktop.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.uiapps.client.events.CreateNewAppEvent;
-import org.iplantc.core.uiapps.client.events.CreateNewWorkflowEvent;
-import org.iplantc.core.uiapps.client.events.EditAppEvent;
-import org.iplantc.core.uiapps.client.events.EditWorkflowEvent;
-import org.iplantc.core.uiapps.client.events.RunAppEvent;
+import org.iplantc.de.apps.client.events.CreateNewAppEvent;
+import org.iplantc.de.apps.client.events.CreateNewWorkflowEvent;
+import org.iplantc.de.apps.client.events.EditAppEvent;
+import org.iplantc.de.apps.client.events.EditWorkflowEvent;
+import org.iplantc.de.apps.client.events.RunAppEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.WindowState;
 import org.iplantc.de.diskResource.client.events.CreateNewFileEvent;

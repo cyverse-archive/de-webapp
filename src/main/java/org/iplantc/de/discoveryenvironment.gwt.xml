@@ -52,7 +52,7 @@
         <!-- Common Service Interfaces -->
 	<inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
 	<inherits name="org.iplantc.core.JsonUtil"/>
-	<inherits name="org.iplantc.core.uiapps.Apps"/>
+	<inherits name="org.iplantc.de.apps.Apps"/>
 	<inherits name="org.iplantc.de.apps.widgets.Widgets"/>
 	<inherits name="org.iplantc.de.apps.integration.AppsIntegration"/>
 	<inherits name="org.iplantc.de.diskResource.diskresource"/>
@@ -69,10 +69,10 @@
     
     <!-- ui-applications deferred binding rules -->
     <replace-with class="org.iplantc.de.client.services.impl.TemplateServiceFacade">
-      <when-type-is class="org.iplantc.core.uiapps.client.services.AppUserServiceFacade"/>
+      <when-type-is class="org.iplantc.de.apps.client.services.AppUserServiceFacade"/>
    </replace-with>
    <replace-with class="org.iplantc.de.client.services.impl.TemplateServiceFacade">
-      <when-type-is class="org.iplantc.core.uiapps.client.services.AppServiceFacade"/>
+      <when-type-is class="org.iplantc.de.apps.client.services.AppServiceFacade"/>
    </replace-with>
    
    <replace-with class="org.iplantc.de.client.services.CollaboratorsServiceFacadeImpl">

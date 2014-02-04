@@ -22,9 +22,9 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
 import org.iplantc.de.resources.client.uiapps.widgets.AppsWidgetsPropertyPanelLabels;
-import org.iplantc.core.uiapps.client.events.AppPublishedEvent;
-import org.iplantc.core.uiapps.client.events.AppPublishedEvent.AppPublishedEventHandler;
-import org.iplantc.core.uiapps.client.models.autobeans.App;
+import org.iplantc.de.apps.client.events.AppPublishedEvent;
+import org.iplantc.de.apps.client.events.AppPublishedEvent.AppPublishedEventHandler;
+import org.iplantc.de.apps.client.models.autobeans.App;
 import org.iplantc.de.apps.integration.client.gin.AppsEditorInjector;
 import org.iplantc.de.apps.integration.client.view.AppsEditorView;
 import org.iplantc.de.apps.widgets.client.models.AppTemplate;

@@ -6,9 +6,9 @@ import java.util.List;
 import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.resources.client.ToolRequestStatusHelpStyle;
 import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestHistory;
-import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestHistoryProperties;
-import org.iplantc.core.uiapps.client.models.toolrequest.ToolRequestStatus;
+import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistory;
+import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistoryProperties;
+import org.iplantc.de.apps.client.models.toolrequest.ToolRequestStatus;
 import org.iplantc.core.uicommons.client.widgets.ContextualHelpPopup;
 import org.iplantc.de.client.notifications.views.cells.ToolRequestStatusCell;
 
