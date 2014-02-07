@@ -3,7 +3,7 @@ package org.iplantc.de.client.notifications.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.events.EventBus;

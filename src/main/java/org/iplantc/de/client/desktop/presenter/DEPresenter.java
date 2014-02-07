@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.resources.client.DEFeedbackStyle;
 import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.commons.client.DEServiceFacade;

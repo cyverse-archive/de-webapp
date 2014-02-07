@@ -3,7 +3,7 @@ package org.iplantc.de.client.idroplite.presenter;
 import java.util.List;
 import java.util.Map;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.models.HasPaths;

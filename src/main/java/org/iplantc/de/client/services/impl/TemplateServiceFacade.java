@@ -2,7 +2,7 @@ package org.iplantc.de.client.services.impl;
 
 import java.util.List;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.apps.client.models.autobeans.AppGroup;
 import org.iplantc.de.apps.client.services.AppGroupListCallbackConverter;
 import org.iplantc.de.apps.client.services.AppUserServiceFacade;

@@ -1,6 +1,6 @@
 package org.iplantc.de.client.idroplite.util;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 

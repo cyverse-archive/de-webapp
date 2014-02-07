@@ -1,6 +1,6 @@
 package org.iplantc.de.client.services.impl;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
