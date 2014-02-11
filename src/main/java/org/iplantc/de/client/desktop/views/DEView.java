@@ -1,11 +1,11 @@
 package org.iplantc.de.client.desktop.views;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.desktop.widget.Desktop;
+import org.iplantc.de.client.models.WindowState;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import java.util.List;
 
 /**
  * DE Main view

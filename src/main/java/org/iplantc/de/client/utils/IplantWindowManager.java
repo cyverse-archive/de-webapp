@@ -5,13 +5,10 @@
  */
 package org.iplantc.de.client.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.core.client.util.AccessStack;
@@ -24,6 +21,10 @@ import com.sencha.gxt.widget.core.client.event.RegisterEvent.RegisterHandler;
 import com.sencha.gxt.widget.core.client.event.UnregisterEvent;
 import com.sencha.gxt.widget.core.client.event.UnregisterEvent.HasUnregisterHandlers;
 import com.sencha.gxt.widget.core.client.event.UnregisterEvent.UnregisterHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * An object that represents a group of {@link Widget} instances and provides z-order management and

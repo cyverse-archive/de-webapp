@@ -1,10 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.models.AnalysisProperties;
@@ -15,14 +10,17 @@ import org.iplantc.de.client.analysis.views.cells.AnalysisAppNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisNameCell;
 import org.iplantc.de.client.analysis.views.cells.EndDateTimeCell;
 import org.iplantc.de.client.analysis.views.cells.StartDateTimeCell;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
+import org.iplantc.de.commons.client.events.EventBus;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -30,6 +28,9 @@ import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.RowExpander;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author sriram

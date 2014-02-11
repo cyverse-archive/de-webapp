@@ -1,15 +1,12 @@
 package org.iplantc.de.client.viewer.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.iplantc.de.commons.client.util.JsonUtil;
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.models.diskresources.File;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.models.StructuredText;
 import org.iplantc.de.client.viewer.models.StructuredTextAutoBeanFactory;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.util.JsonUtil;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.http.client.URL;
@@ -23,6 +20,7 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
@@ -40,6 +38,9 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.grid.filters.StringFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StrcturedTextViewerImpl extends AbstractTextViewer {
 

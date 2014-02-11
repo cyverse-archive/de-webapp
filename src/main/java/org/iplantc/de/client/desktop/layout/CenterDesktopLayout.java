@@ -5,12 +5,13 @@
  */
 package org.iplantc.de.client.desktop.layout;
 
-import java.util.Random;
-
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.user.client.Element;
+
 import com.sencha.gxt.core.client.util.Point;
+
+import java.util.Random;
 
 public class CenterDesktopLayout extends LimitedDesktopLayout implements DesktopLayout {
 

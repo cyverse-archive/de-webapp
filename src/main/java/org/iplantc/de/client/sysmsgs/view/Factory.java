@@ -1,8 +1,8 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import java.util.Date;
-
 import com.google.gwt.text.shared.Renderer;
+
+import java.util.Date;
 
 /**
  * A factory for making MessageView objects

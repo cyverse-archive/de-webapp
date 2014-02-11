@@ -5,9 +5,6 @@
  */
 package org.iplantc.de.client.desktop.widget;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent.WindowHeadingUpdatedEventHandler;
@@ -15,9 +12,13 @@ import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.Padding;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Displays the start menu button followed by a list of open windows.

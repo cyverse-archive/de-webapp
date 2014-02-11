@@ -1,11 +1,9 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import java.util.Date;
-
-import org.iplantc.de.resources.client.SystemMessagesResources;
-import org.iplantc.de.resources.client.SystemMessagesResources.Style;
 import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
 import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
+import org.iplantc.de.resources.client.SystemMessagesResources;
+import org.iplantc.de.resources.client.SystemMessagesResources.Style;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -16,9 +14,12 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.Event;
+
 import com.sencha.gxt.cell.core.client.AbstractEventCell;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.event.XEvent;
+
+import java.util.Date;
 
 /**
  * This is the cell used to render message summaries.

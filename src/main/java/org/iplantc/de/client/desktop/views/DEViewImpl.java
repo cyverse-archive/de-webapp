@@ -3,17 +3,6 @@
  */
 package org.iplantc.de.client.desktop.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.iplantc.de.resources.client.DEHeaderStyle;
-import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
-import org.iplantc.de.commons.client.collaborators.views.ManageCollaboratorsDailog;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.commons.client.util.WindowUtil;
-import org.iplantc.de.commons.client.widgets.IPlantAnchor;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
@@ -22,8 +11,16 @@ import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.ShowSystemMessagesEvent;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.notifications.views.ViewNotificationMenu;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
+import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
+import org.iplantc.de.commons.client.collaborators.views.ManageCollaboratorsDailog;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.util.WindowUtil;
+import org.iplantc.de.commons.client.widgets.IPlantAnchor;
+import org.iplantc.de.resources.client.DEHeaderStyle;
+import org.iplantc.de.resources.client.IplantResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,6 +34,7 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
@@ -53,6 +51,9 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.SeparatorMenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Default DE View as Desktop

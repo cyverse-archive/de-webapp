@@ -3,6 +3,7 @@ package org.iplantc.de.client.notifications.views;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
 /**

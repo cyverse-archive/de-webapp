@@ -1,20 +1,15 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.de.resources.client.theme.window.IPlantWindowAppearance;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.events.WindowLayoutRequestEvent;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.theme.window.IPlantWindowAppearance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -33,6 +28,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.dom.XElement;
 import com.sencha.gxt.core.client.util.Point;
@@ -49,6 +45,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.menu.Item;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author jstroot

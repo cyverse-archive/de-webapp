@@ -1,16 +1,13 @@
 package org.iplantc.de.client.notifications.views.dialogs;
 
-import java.util.Date;
-import java.util.List;
-
-import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.de.resources.client.ToolRequestStatusHelpStyle;
-import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistoryProperties;
 import org.iplantc.de.apps.client.models.toolrequest.ToolRequestStatus;
-import org.iplantc.de.commons.client.widgets.ContextualHelpPopup;
 import org.iplantc.de.client.notifications.views.cells.ToolRequestStatusCell;
+import org.iplantc.de.commons.client.widgets.ContextualHelpPopup;
+import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.ToolRequestStatusHelpStyle;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.DateCell;
@@ -26,6 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.SortDir;
@@ -39,6 +37,9 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridView;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * A Dialog for displaying Tool Request Status history in a grid.

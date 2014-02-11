@@ -8,8 +8,8 @@ import org.iplantc.de.client.viewer.commands.ImageDataViewCommand;
 import org.iplantc.de.client.viewer.commands.PdfDataViewCommand;
 import org.iplantc.de.client.viewer.commands.ShellScriptViewCommand;
 import org.iplantc.de.client.viewer.commands.TextDataViewCommand;
-import org.iplantc.de.client.viewer.commands.VizURLViewerCommand;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
+import org.iplantc.de.client.viewer.commands.VizURLViewerCommand;
 import org.iplantc.de.client.viewer.models.MimeType;
 
 /**

@@ -1,14 +1,15 @@
 package org.iplantc.de.client.services;
 
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.UserSession;
 import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.UserSession;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
 
 /**
  * A service facade to save and retrieve user session
@@ -43,10 +44,9 @@ public class UserSessionServiceFacade {
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
-    public void saveUserPreferences(JSONObject json, AsyncCallback<String> callback) {
+    public void saveUserPreferences(Splittable json, AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "preferences"; //$NON-NLS-1$
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
-                json.toString());
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, json.getPayload());
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 

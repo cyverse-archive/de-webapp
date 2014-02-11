@@ -1,16 +1,17 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.events.diskresources.DiskResourceRefreshEvent;
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.idroplite.views.IDropLiteViewImpl;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.diskresources.DiskResourceRefreshEvent;
 
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.Command;
 
 import com.sencha.gxt.core.client.GXT;

@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.preferences.views;
 
-import org.iplantc.de.commons.client.models.UserSettings;
+import org.iplantc.de.client.models.UserSettings;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

@@ -4,6 +4,7 @@ import org.iplantc.de.apps.client.models.toolrequest.ToolRequestStatus;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 import com.sencha.gxt.core.client.util.Format;
 
 /**

@@ -1,14 +1,15 @@
 package org.iplantc.de.server;
 
-import javax.servlet.ServletException;
+import org.iplantc.de.shared.services.AboutApplicationService;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.iplantc.de.shared.services.AboutApplicationService;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.ServletException;
 
 /**
  * Communicates application information to include as "about" data regarding the current build and client UserAgent.

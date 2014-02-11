@@ -1,15 +1,15 @@
 package org.iplantc.de.client.viewer.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.models.InfoType;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.viewer.views.StrcturedTextViewerImpl;
 import org.iplantc.de.client.viewer.views.TextViewerImpl;
 
 import com.google.common.base.Strings;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author sriram

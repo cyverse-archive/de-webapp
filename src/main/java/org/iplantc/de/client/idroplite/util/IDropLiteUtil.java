@@ -1,10 +1,11 @@
 package org.iplantc.de.client.idroplite.util;
 
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.commons.client.util.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
+
 import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;

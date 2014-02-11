@@ -1,11 +1,7 @@
 package org.iplantc.de.client.notifications.services;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.models.CommonModelUtils;
-import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.client.models.CommonModelUtils;
+import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.notifications.models.Notification;
 import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
 import org.iplantc.de.client.notifications.models.NotificationList;
@@ -13,6 +9,7 @@ import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.models.payload.PayloadAnalysis;
 import org.iplantc.de.client.notifications.models.payload.PayloadData;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.commons.client.ErrorHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -20,6 +17,9 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author jstroot

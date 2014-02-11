@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.client.models.diskResources.File;
 
 public interface FileViewerWindowConfig extends WindowConfig {
 

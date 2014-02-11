@@ -9,10 +9,6 @@ import org.iplantc.de.apps.client.events.EditWorkflowEvent.EditWorkflowEventHand
 import org.iplantc.de.apps.client.events.RunAppEvent;
 import org.iplantc.de.apps.client.events.RunAppEvent.RunAppEventHandler;
 import org.iplantc.de.apps.client.events.handlers.CreateNewWorkflowEventHandler;
-import org.iplantc.de.diskResource.client.events.CreateNewFileEvent;
-import org.iplantc.de.diskResource.client.events.CreateNewFileEvent.CreateNewFileEventHandler;
-import org.iplantc.de.diskResource.client.events.ShowFilePreviewEvent;
-import org.iplantc.de.diskResource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
 import org.iplantc.de.client.events.ShowAboutWindowEvent.ShowAboutWindowEventHandler;
@@ -24,6 +20,10 @@ import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
+import org.iplantc.de.diskResource.client.events.CreateNewFileEvent;
+import org.iplantc.de.diskResource.client.events.CreateNewFileEvent.CreateNewFileEventHandler;
+import org.iplantc.de.diskResource.client.events.ShowFilePreviewEvent;
+import org.iplantc.de.diskResource.client.events.ShowFilePreviewEvent.ShowFilePreviewEventHandler;
 
 import com.google.web.bindery.autobean.shared.Splittable;
 

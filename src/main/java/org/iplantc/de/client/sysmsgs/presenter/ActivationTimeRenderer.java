@@ -1,8 +1,5 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import java.io.IOException;
-import java.util.Date;
-
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.shared.ProvidesTime;
 
@@ -10,6 +7,9 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
+
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * This class renders an activation time.

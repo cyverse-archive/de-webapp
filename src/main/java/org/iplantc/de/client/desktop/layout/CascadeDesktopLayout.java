@@ -9,6 +9,7 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 
 import com.google.gwt.user.client.Element;
+
 import com.sencha.gxt.core.client.util.Point;
 
 public class CascadeDesktopLayout extends LimitedDesktopLayout implements DesktopLayout {

@@ -3,9 +3,9 @@
  */
 package org.iplantc.de.client.analysis.models;
 
-import java.util.List;
-
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+
+import java.util.List;
 
 /**
  * @author sriram

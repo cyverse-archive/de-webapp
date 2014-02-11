@@ -7,6 +7,7 @@ import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;

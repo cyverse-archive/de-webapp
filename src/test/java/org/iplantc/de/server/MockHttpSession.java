@@ -1,13 +1,13 @@
 package org.iplantc.de.server;
 
+import org.apache.commons.fileupload.FileItem;
+
 import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
-
-import org.apache.commons.fileupload.FileItem;
 
 /**
  * A manual mock HTTP session object used for testing.

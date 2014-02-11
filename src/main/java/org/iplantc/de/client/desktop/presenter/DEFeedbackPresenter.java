@@ -1,16 +1,17 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.views.gxt3.dialogs.IplantInfoBox;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackView;
 import org.iplantc.de.client.desktop.views.DEFeedbackView.Presenter;
 import org.iplantc.de.client.desktop.views.DEFeedbackViewImpl;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.views.gxt3.dialogs.IplantInfoBox;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
+
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 public class DEFeedbackPresenter implements Presenter {

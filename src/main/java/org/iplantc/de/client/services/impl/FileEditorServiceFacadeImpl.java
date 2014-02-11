@@ -1,9 +1,9 @@
 package org.iplantc.de.client.services.impl;
 
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.diskResource.client.services.FileEditorServiceFacade;
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.diskResource.client.services.FileEditorServiceFacade;
 import org.iplantc.de.shared.SharedServiceFacade;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
@@ -13,6 +13,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import com.sencha.gxt.core.client.util.Format;
 
 /**

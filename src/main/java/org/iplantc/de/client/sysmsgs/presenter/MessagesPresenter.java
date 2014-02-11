@@ -1,19 +1,16 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.models.sysmsgs.IdList;
-import org.iplantc.de.commons.client.models.sysmsgs.Message;
-import org.iplantc.de.commons.client.models.sysmsgs.MessageFactory;
-import org.iplantc.de.commons.client.models.sysmsgs.MessageList;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
+import org.iplantc.de.client.models.sysMsgs.IdList;
+import org.iplantc.de.client.models.sysMsgs.Message;
+import org.iplantc.de.client.models.sysMsgs.MessageFactory;
+import org.iplantc.de.client.models.sysMsgs.MessageList;
 import org.iplantc.de.client.sysmsgs.services.Services;
 import org.iplantc.de.client.sysmsgs.view.Factory;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -22,7 +19,11 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+
 import com.sencha.gxt.data.shared.ListStore;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The system messages presenter.

@@ -1,13 +1,13 @@
 package org.iplantc.de.client.preferences.presenter;
 
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.info.SuccessAnnouncementConfig;
-import org.iplantc.de.commons.client.models.UserSettings;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.models.UserSettings;
 import org.iplantc.de.client.preferences.views.PreferencesView;
 import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.info.IplantAnnouncer;
+import org.iplantc.de.commons.client.info.SuccessAnnouncementConfig;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
@@ -39,7 +39,7 @@ public class PreferencesPresenterImpl implements Presenter {
         if (view.isValid()) {
             UserSettings us = view.getValues();
             UserSessionServiceFacade facade = new UserSessionServiceFacade();
-            facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
+            facade.saveUserPreferences(us.asSplittable(), new AsyncCallback<String>() {
 
                 @Override
                 public void onSuccess(String result) {

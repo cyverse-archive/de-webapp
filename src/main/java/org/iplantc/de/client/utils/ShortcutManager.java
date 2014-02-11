@@ -1,16 +1,16 @@
 package org.iplantc.de.client.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.desktop.widget.Shortcut;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.ShortcutDesc;
 import org.iplantc.de.client.utils.builders.DesktopBuilder;
+import org.iplantc.de.commons.client.events.EventBus;
 
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains all of the application's desktop shortcuts.

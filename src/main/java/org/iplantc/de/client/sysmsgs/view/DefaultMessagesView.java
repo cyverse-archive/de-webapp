@@ -1,10 +1,7 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import java.util.Date;
-import java.util.List;
-
-import org.iplantc.de.resources.client.SystemMessagesResources;
 import org.iplantc.de.client.sysmsgs.events.DismissMessageEvent;
+import org.iplantc.de.resources.client.SystemMessagesResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -17,6 +14,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -29,6 +27,9 @@ import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * This is the default implementation of the messages view.

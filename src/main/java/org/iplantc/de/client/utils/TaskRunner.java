@@ -1,13 +1,13 @@
 package org.iplantc.de.client.utils;
 
+import org.iplantc.de.client.models.DEProperties;
+
+import com.google.gwt.user.client.Timer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.iplantc.de.commons.client.models.DEProperties;
-
-import com.google.gwt.user.client.Timer;
 
 /**
  * Periodically performs registered tasks.

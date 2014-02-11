@@ -1,10 +1,8 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import java.util.Date;
-
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.commons.client.models.WindowType;
-import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.client.models.WindowType;
+import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
 import com.google.gwt.core.client.GWT;
@@ -14,6 +12,8 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+
+import java.util.Date;
 
 public class ConfigFactory {
     private static ConfigAutoBeanFactory factory = GWT.create(ConfigAutoBeanFactory.class);

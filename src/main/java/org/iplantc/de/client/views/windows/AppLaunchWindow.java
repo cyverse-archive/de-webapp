@@ -1,10 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-
 import org.iplantc.de.apps.widgets.client.events.AnalysisLaunchEvent;
 import org.iplantc.de.apps.widgets.client.events.AnalysisLaunchEvent.AnalysisLaunchEventHandler;
 import org.iplantc.de.apps.widgets.client.gin.AppLaunchInjector;
@@ -14,15 +9,20 @@ import org.iplantc.de.apps.widgets.client.services.AppTemplateServices;
 import org.iplantc.de.apps.widgets.client.services.DeployedComponentServices;
 import org.iplantc.de.apps.widgets.client.services.impl.converters.AppTemplateCallbackConverter;
 import org.iplantc.de.apps.widgets.client.view.AppLaunchView;
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
+import org.iplantc.de.client.models.CommonModelUtils;
+import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.models.CommonModelUtils;
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
-import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
-import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchEventHandler {
 

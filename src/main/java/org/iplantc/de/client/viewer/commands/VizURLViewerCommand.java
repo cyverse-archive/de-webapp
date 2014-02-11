@@ -1,11 +1,11 @@
 package org.iplantc.de.client.viewer.commands;
 
+import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.viewer.views.ExternalVizualizationURLViwerImpl;
+import org.iplantc.de.client.viewer.views.FileViewer;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.iplantc.de.commons.client.models.diskresources.File;
-import org.iplantc.de.client.viewer.views.FileViewer;
-import org.iplantc.de.client.viewer.views.ExternalVizualizationURLViwerImpl;
 
 /**
  * @author sriram

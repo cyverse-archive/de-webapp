@@ -1,15 +1,16 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import java.util.Date;
-
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
+
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
+
+import java.util.Date;
 
 /**
  * This interface describes the needed functionality of something that displays a list of system

@@ -3,12 +3,12 @@
  */
 package org.iplantc.de.client.analysis.views.cells;
 
-import java.util.Date;
-
 import org.iplantc.de.client.analysis.models.Analysis;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * @author sriram

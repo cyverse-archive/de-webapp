@@ -6,6 +6,7 @@ import org.iplantc.de.resources.client.SystemMessagesResources.Style;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 
 /**

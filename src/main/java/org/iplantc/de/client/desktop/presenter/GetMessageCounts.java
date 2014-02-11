@@ -1,11 +1,11 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
 import org.iplantc.de.client.notifications.models.Counts;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
+import org.iplantc.de.commons.client.events.EventBus;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

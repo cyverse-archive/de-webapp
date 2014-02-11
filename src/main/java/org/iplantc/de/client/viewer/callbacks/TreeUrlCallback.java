@@ -1,20 +1,20 @@
 package org.iplantc.de.client.viewer.callbacks;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.models.diskresources.File;
-import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.models.TreeUrlAutoBeanFactory;
 import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.models.VizUrlList;
 import org.iplantc.de.client.viewer.views.FileViewer;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.views.IsMaskable;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+
+import java.util.List;
 
 public class TreeUrlCallback implements AsyncCallback<String> {
 

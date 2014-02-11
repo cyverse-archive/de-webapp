@@ -3,9 +3,9 @@
  */
 package org.iplantc.de.client.notifications.models.payload;
 
-import java.util.Date;
-
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+
+import java.util.Date;
 
 /**
  * @author sriram

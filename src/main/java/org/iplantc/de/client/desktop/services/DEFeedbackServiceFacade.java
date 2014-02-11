@@ -1,7 +1,7 @@
 package org.iplantc.de.client.desktop.services;
 
+import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.models.DEProperties;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;

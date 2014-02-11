@@ -1,6 +1,6 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.de.commons.client.models.UserInfo;
+import org.iplantc.de.client.models.UserInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;

@@ -1,15 +1,15 @@
 package org.iplantc.de.client.analysis.views.cells;
 
-import static com.google.gwt.dom.client.BrowserEvents.CLICK;
-import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
-import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
-
-import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.resources.client.messages.I18N;
+
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
+import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
 
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.AbstractCell;

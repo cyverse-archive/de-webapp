@@ -1,11 +1,12 @@
 package org.iplantc.de.client.desktop.views;
 
-import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.de.commons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.de.client.desktop.presenter.DEFeedbackPresenter;
 import org.iplantc.de.client.desktop.views.DEFeedbackView.Presenter;
+import org.iplantc.de.commons.client.views.gxt3.dialogs.IPlantDialog;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.user.client.Command;
+
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 

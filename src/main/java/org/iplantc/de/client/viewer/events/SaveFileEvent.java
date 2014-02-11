@@ -1,8 +1,9 @@
 package org.iplantc.de.client.viewer.events;
 
+import org.iplantc.de.client.viewer.events.SaveFileEvent.SaveFileEventHandler;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import org.iplantc.de.client.viewer.events.SaveFileEvent.SaveFileEventHandler;
 
 public class SaveFileEvent extends GwtEvent<SaveFileEventHandler> {
 

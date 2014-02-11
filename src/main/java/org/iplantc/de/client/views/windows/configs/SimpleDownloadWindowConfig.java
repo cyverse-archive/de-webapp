@@ -1,8 +1,8 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import java.util.List;
+import org.iplantc.de.client.models.diskResources.DiskResource;
 
-import org.iplantc.de.commons.client.models.diskresources.DiskResource;
+import java.util.List;
 
 public interface SimpleDownloadWindowConfig extends WindowConfig {
 

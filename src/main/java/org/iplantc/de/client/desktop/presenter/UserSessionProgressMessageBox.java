@@ -1,14 +1,12 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.UserSession;
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.commons.client.views.gxt3.dialogs.IsHideable;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEView.Presenter;
+import org.iplantc.de.client.models.UserSession;
+import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.commons.client.views.gxt3.dialogs.IsHideable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -16,8 +14,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
+
 import com.sencha.gxt.widget.core.client.box.AutoProgressMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+
+import java.util.List;
 
 class UserSessionProgressMessageBox extends AutoProgressMessageBox implements IsHideable {
 

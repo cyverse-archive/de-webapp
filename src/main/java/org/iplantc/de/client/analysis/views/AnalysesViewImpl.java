@@ -3,8 +3,6 @@
  */
 package org.iplantc.de.client.analysis.views;
 
-import java.util.List;
-
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
@@ -16,6 +14,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
@@ -33,6 +32,8 @@ import com.sencha.gxt.widget.core.client.grid.GridView;
 import com.sencha.gxt.widget.core.client.grid.RowExpander;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+
+import java.util.List;
 
 /**
  * @author sriram

@@ -5,11 +5,12 @@
  */
 package org.iplantc.de.client.desktop.widget;
 
-import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
+import org.iplantc.de.resources.client.IplantResources;
 
 import com.google.common.base.Strings;
 import com.google.gwt.resources.client.ImageResource;
+
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.WindowManager;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;

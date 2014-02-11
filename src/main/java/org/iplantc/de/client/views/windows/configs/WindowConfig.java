@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.de.commons.client.models.WindowType;
+import org.iplantc.de.client.models.WindowType;
 
 public interface WindowConfig {
     

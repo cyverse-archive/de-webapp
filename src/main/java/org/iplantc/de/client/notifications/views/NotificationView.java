@@ -1,16 +1,17 @@
 package org.iplantc.de.client.notifications.views;
 
-import java.util.List;
-
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+
+import java.util.List;
 
 public interface NotificationView extends IsWidget {
     public interface Presenter extends org.iplantc.de.commons.client.presenter.Presenter {

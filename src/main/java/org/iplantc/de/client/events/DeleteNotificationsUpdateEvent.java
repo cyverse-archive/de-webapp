@@ -3,11 +3,11 @@
  */
 package org.iplantc.de.client.events;
 
-import java.util.List;
-
 import org.iplantc.de.client.notifications.models.Notification;
 
 import com.google.gwt.event.shared.GwtEvent;
+
+import java.util.List;
 
 /**
  * @author sriram

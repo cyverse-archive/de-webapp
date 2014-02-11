@@ -1,19 +1,20 @@
 package org.iplantc.de.client.views.windows;
 
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
+import org.iplantc.de.client.views.windows.configs.WindowConfig;
+import org.iplantc.de.commons.client.info.IplantAnnouncer;
+import org.iplantc.de.commons.client.info.SuccessAnnouncementConfig;
 import org.iplantc.de.pipelineBuilder.client.json.autobeans.Pipeline;
 import org.iplantc.de.pipelines.client.presenter.PipelineViewPresenter;
 import org.iplantc.de.pipelines.client.views.PipelineView;
 import org.iplantc.de.pipelines.client.views.PipelineViewImpl;
-import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.info.SuccessAnnouncementConfig;
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.views.windows.configs.ConfigFactory;
-import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
-import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.gwt.user.client.Command;
 import com.google.web.bindery.autobean.shared.Splittable;
+
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.MessageBox;

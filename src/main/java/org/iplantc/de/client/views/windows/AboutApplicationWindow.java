@@ -1,14 +1,14 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.AboutApplicationData;
 import org.iplantc.de.client.models.DeModelAutoBeanFactory;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
 import com.google.gwt.core.client.GWT;
@@ -17,6 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;

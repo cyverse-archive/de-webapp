@@ -1,14 +1,15 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.de.commons.client.appearance.widgets.InternalAnchorDefaultAppearance;
 import org.iplantc.de.commons.client.widgets.InternalAnchor;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.InlineHTML;
+
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
 

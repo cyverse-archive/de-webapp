@@ -3,12 +3,8 @@
  */
 package org.iplantc.de.client.views.windows;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.models.NotificationMessageProperties;
 import org.iplantc.de.client.notifications.presenter.NotificationPresenter;
@@ -22,6 +18,7 @@ import org.iplantc.de.client.views.windows.configs.NotifyWindowConfig;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -29,6 +26,10 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author sriram

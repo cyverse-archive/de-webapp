@@ -1,15 +1,15 @@
 package org.iplantc.de.client.analysis.widget;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.widgets.SearchField;
 import org.iplantc.de.client.analysis.models.Analysis;
+import org.iplantc.de.commons.client.widgets.SearchField;
 
 import com.sencha.gxt.data.shared.loader.FilterConfig;
 import com.sencha.gxt.data.shared.loader.FilterConfigBean;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
+
+import java.util.List;
 
 /**
  * A SearchField that filters Analyses by Name and App Name simultaneously, or alternatively by Analysis

@@ -1,11 +1,12 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
+import org.iplantc.de.resources.client.IplantResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+
 import com.sencha.gxt.widget.core.client.Status;
 import com.sencha.gxt.widget.core.client.Status.BoxStatusAppearance;
 import com.sencha.gxt.widget.core.client.Status.StatusAppearance;

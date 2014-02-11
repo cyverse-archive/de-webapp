@@ -1,23 +1,24 @@
 package org.iplantc.de.client.views.windows;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.HasId;
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.diskResource.client.gin.DiskResourceInjector;
-import org.iplantc.de.diskResource.client.views.DiskResourceView;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.models.HasId;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
+import org.iplantc.de.diskResource.client.gin.DiskResourceInjector;
+import org.iplantc.de.diskResource.client.views.DiskResourceView;
 
 import com.google.common.collect.Lists;
+
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
-import com.sencha.gxt.widget.core.client.event.RestoreEvent;
-import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
+import com.sencha.gxt.widget.core.client.event.RestoreEvent;
 import com.sencha.gxt.widget.core.client.event.RestoreEvent.RestoreHandler;
+import com.sencha.gxt.widget.core.client.event.ShowEvent;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
+
+import java.util.List;
 
 public class DeDiskResourceWindow extends IplantWindowBase {
 

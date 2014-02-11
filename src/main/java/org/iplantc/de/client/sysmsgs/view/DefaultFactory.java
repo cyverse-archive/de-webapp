@@ -1,10 +1,10 @@
 package org.iplantc.de.client.sysmsgs.view;
 
-import java.util.Date;
-
 import org.iplantc.de.client.sysmsgs.view.MessagesView.MessageProperties;
 
 import com.google.gwt.text.shared.Renderer;
+
+import java.util.Date;
 
 /**
  * This the factory for creating the default system message related views.

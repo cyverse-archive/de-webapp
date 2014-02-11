@@ -1,15 +1,17 @@
 package org.iplantc.de.client.desktop.widget;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.Services;
+import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.diskResources.DiskResource;
+import org.iplantc.de.client.models.diskResources.Folder;
+import org.iplantc.de.client.models.diskResources.TYPE;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
+import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
 import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.commons.client.models.diskresources.DiskResource;
-import org.iplantc.de.commons.client.models.diskresources.Folder;
-import org.iplantc.de.commons.client.models.diskresources.TYPE;
 import org.iplantc.de.commons.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.commons.client.util.DiskResourceUtil;
 import org.iplantc.de.diskResource.client.events.RequestBulkDownloadEvent;
@@ -24,17 +26,16 @@ import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent.RequestSimpleUploadEventHandler;
 import org.iplantc.de.diskResource.client.views.dialogs.FileUploadByUrlDialog;
 import org.iplantc.de.diskResource.client.views.dialogs.SimpleFileUploadDialog;
-import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.Services;
-import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
-import org.iplantc.de.client.views.windows.configs.ConfigFactory;
-import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
-import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.UriUtils;
+
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler,
         RequestBulkUploadEventHandler, RequestImportFromUrlEventHandler,

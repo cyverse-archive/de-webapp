@@ -1,8 +1,9 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.commons.client.models.diskresources.File;
+import org.iplantc.de.client.models.diskResources.File;
 
 import com.google.gwt.core.client.JavaScriptObject;
+
 import com.sencha.gxt.core.client.dom.XElement;
 
 public class ShellScriptViewerImpl extends TextViewerImpl {

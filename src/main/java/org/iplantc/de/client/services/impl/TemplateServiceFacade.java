@@ -1,16 +1,14 @@
 package org.iplantc.de.client.services.impl;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.apps.client.models.autobeans.AppGroup;
 import org.iplantc.de.apps.client.services.AppGroupListCallbackConverter;
 import org.iplantc.de.apps.client.services.AppUserServiceFacade;
+import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.commons.client.DEServiceFacade;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.client.I18N;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.shared.services.ConfluenceServiceFacade;
 import org.iplantc.de.shared.services.EmailServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
@@ -22,7 +20,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import com.sencha.gxt.data.shared.SortDir;
+
+import java.util.List;
 
 /**
  * Provides access to remote services for operations related to analysis

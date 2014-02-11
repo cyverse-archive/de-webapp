@@ -3,20 +3,17 @@
  */
 package org.iplantc.de.client.viewer.views;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.de.commons.client.models.diskresources.File;
-import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
 import org.iplantc.de.client.viewer.callbacks.TreeUrlCallback;
 import org.iplantc.de.client.viewer.models.InfoType;
 import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.models.VizUrlProperties;
 import org.iplantc.de.client.viewer.views.cells.TreeUrlCell;
+import org.iplantc.de.commons.client.views.IsMaskable;
+import org.iplantc.de.resources.client.IplantResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -26,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -38,6 +36,9 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridView;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author sriram

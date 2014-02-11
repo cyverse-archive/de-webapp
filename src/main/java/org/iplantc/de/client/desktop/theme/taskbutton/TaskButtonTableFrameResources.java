@@ -9,6 +9,7 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
+
 import com.sencha.gxt.theme.base.client.frame.TableFrame.TableFrameResources;
 import com.sencha.gxt.theme.base.client.frame.TableFrame.TableFrameStyle;
 

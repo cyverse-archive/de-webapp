@@ -1,12 +1,12 @@
 package org.iplantc.de.client.sysmsgs.services;
 
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.sysMsgs.IdList;
+import org.iplantc.de.client.models.sysMsgs.MessageFactory;
+import org.iplantc.de.client.models.sysMsgs.MessageList;
+import org.iplantc.de.client.models.sysMsgs.User;
 import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.commons.client.models.sysmsgs.IdList;
-import org.iplantc.de.commons.client.models.sysmsgs.MessageFactory;
-import org.iplantc.de.commons.client.models.sysmsgs.MessageList;
-import org.iplantc.de.commons.client.models.sysmsgs.User;
 import org.iplantc.de.commons.client.services.AsyncCallbackConverter;
 import org.iplantc.de.commons.client.services.StringToVoidCallbackConverter;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;

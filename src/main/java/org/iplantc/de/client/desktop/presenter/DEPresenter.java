@@ -1,29 +1,5 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.iplantc.de.commons.client.util.JsonUtil;
-import org.iplantc.de.resources.client.DEFeedbackStyle;
-import org.iplantc.de.resources.client.IplantResources;
-import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.events.UserSettingsUpdatedEvent;
-import org.iplantc.de.commons.client.events.UserSettingsUpdatedEventHandler;
-import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.HasId;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.commons.client.models.UserSettings;
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.de.commons.client.models.diskresources.Folder;
-import org.iplantc.de.commons.client.requests.KeepaliveTimer;
-import org.iplantc.de.diskResource.client.events.FileUploadedEvent;
-import org.iplantc.de.diskResource.client.events.FileUploadedEvent.FileUploadedEventHandler;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
@@ -36,12 +12,31 @@ import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEv
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.HasId;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.UserSettings;
+import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.client.models.diskResources.Folder;
 import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.sysmsgs.presenter.NewMessagePresenter;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
+import org.iplantc.de.commons.client.DEServiceFacade;
+import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.commons.client.events.UserSettingsUpdatedEvent;
+import org.iplantc.de.commons.client.events.UserSettingsUpdatedEventHandler;
+import org.iplantc.de.commons.client.info.IplantAnnouncer;
+import org.iplantc.de.commons.client.requests.KeepaliveTimer;
+import org.iplantc.de.commons.client.util.JsonUtil;
+import org.iplantc.de.diskResource.client.events.FileUploadedEvent;
+import org.iplantc.de.diskResource.client.events.FileUploadedEvent.FileUploadedEventHandler;
+import org.iplantc.de.resources.client.DEFeedbackStyle;
+import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
@@ -63,6 +58,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.util.KeyNav;
 import com.sencha.gxt.core.client.util.Size;
@@ -74,6 +70,11 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Defines the default view of the workspace.
@@ -180,7 +181,7 @@ public class DEPresenter implements DEView.Presenter {
     private void saveSettings() {
         UserSettings us = UserSettings.getInstance();
         UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        facade.saveUserPreferences(us.toJson(), new AsyncCallback<String>() {
+        facade.saveUserPreferences(us.asSplittable(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {

@@ -1,8 +1,8 @@
 package org.iplantc.de.client.periodic;
 
-import java.util.ArrayList;
-
 import org.iplantc.de.client.utils.TaskRunner;
+
+import java.util.ArrayList;
 
 
 /**

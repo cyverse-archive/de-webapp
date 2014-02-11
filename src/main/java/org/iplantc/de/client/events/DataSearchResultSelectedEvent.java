@@ -3,11 +3,11 @@
  */
 package org.iplantc.de.client.events;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.diskresources.DiskResource;
+import org.iplantc.de.client.models.diskResources.DiskResource;
 
 import com.google.gwt.event.shared.GwtEvent;
+
+import java.util.List;
 
 /**
  * @author sriram

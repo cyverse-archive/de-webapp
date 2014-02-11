@@ -1,17 +1,14 @@
 package org.iplantc.de.client.utils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.iplantc.de.commons.client.models.WindowState;
 import org.iplantc.de.client.desktop.widget.TaskButton;
 import org.iplantc.de.client.factories.WindowFactory;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.IPlantWindowInterface;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.Window;
@@ -20,6 +17,10 @@ import com.sencha.gxt.widget.core.client.event.DeactivateEvent.DeactivateHandler
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.MinimizeEvent.MinimizeHandler;
 import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages window widgets in the web "desktop" environment. FIXME JDS There is a lot of unnecessary

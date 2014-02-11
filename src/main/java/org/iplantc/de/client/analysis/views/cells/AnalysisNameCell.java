@@ -1,16 +1,16 @@
 package org.iplantc.de.client.analysis.views.cells;
 
+import org.iplantc.de.client.analysis.models.Analysis;
+import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.models.CommonModelAutoBeanFactory;
+import org.iplantc.de.client.models.HasId;
+import org.iplantc.de.client.views.windows.configs.ConfigFactory;
+import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
+import org.iplantc.de.commons.client.events.EventBus;
+
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
 import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
-
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.models.CommonModelAutoBeanFactory;
-import org.iplantc.de.commons.client.models.HasId;
-import org.iplantc.de.client.analysis.models.Analysis;
-import org.iplantc.de.client.events.WindowShowRequestEvent;
-import org.iplantc.de.client.views.windows.configs.ConfigFactory;
-import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.AbstractCell;

@@ -1,10 +1,10 @@
 package org.iplantc.de.client.utils.builders;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.iplantc.de.client.models.ShortcutDesc;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract class for managing desktop shortcuts.

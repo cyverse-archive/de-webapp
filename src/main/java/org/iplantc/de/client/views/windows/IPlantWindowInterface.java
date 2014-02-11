@@ -1,12 +1,13 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.commons.client.models.WindowState;
-import org.iplantc.de.commons.client.views.IsMinimizable;
+import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.utils.DEWindowManager;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
+import org.iplantc.de.commons.client.views.IsMinimizable;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
+
 import com.sencha.gxt.core.client.Style.AnchorAlignment;
 import com.sencha.gxt.core.client.util.Point;
 import com.sencha.gxt.widget.core.client.Component;
