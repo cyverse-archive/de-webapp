@@ -7,6 +7,7 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.widget.Desktop;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent.NotificationCountUpdateEventHandler;
 import org.iplantc.de.client.events.ShowAboutWindowEvent;
@@ -14,9 +15,9 @@ import org.iplantc.de.client.events.ShowSystemMessagesEvent;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.notifications.views.ViewNotificationMenu;
 import org.iplantc.de.client.preferences.views.PreferencesDialog;
+import org.iplantc.de.commons.client.CommonUiConstants;
 import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.de.commons.client.collaborators.views.ManageCollaboratorsDailog;
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.util.WindowUtil;
 import org.iplantc.de.commons.client.widgets.IPlantAnchor;
 import org.iplantc.de.resources.client.DEHeaderStyle;
@@ -66,6 +67,7 @@ import java.util.List;
 public class DEViewImpl implements DEView {
 
     private static DEViewUiBinder uiBinder = GWT.create(DEViewUiBinder.class);
+    private final CommonUiConstants CONSTANTS = GWT.create(CommonUiConstants.class);
 
     @UiField
     SimpleContainer headerPanel;
@@ -184,7 +186,7 @@ public class DEViewImpl implements DEView {
 
             @Override
             public void onSelect(SelectEvent event) {
-                WindowUtil.open(Constants.CLIENT.forumsUrl());
+                WindowUtil.open(CONSTANTS.forumsUrl());
             }
         });
         help.setToolTip(I18N.DISPLAY.forums());
@@ -332,7 +334,7 @@ public class DEViewImpl implements DEView {
         IPlantAnchor anchor = new IPlantAnchor(I18N.DISPLAY.contactSupport(), -1, new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                WindowUtil.open(Constants.CLIENT.supportUrl());
+                WindowUtil.open(CONSTANTS.supportUrl());
                 userMenu.hide();
             }
         });

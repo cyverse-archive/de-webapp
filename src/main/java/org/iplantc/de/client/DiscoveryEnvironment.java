@@ -3,7 +3,7 @@ package org.iplantc.de.client;
 import org.iplantc.de.client.desktop.presenter.DEPresenter;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEViewImpl;
-import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.client.events.EventBus;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

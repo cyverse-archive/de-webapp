@@ -1,17 +1,17 @@
 package org.iplantc.de.client.idroplite.presenter;
 
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.models.HasPaths;
 import org.iplantc.de.client.models.diskResources.DiskResource;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.client.util.DiskResourceUtil;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.util.DiskResourceUtil;
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.diskResource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.de.diskResource.client.sharing.models.DataSharing.TYPE;

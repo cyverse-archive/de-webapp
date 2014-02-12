@@ -2,7 +2,7 @@ package org.iplantc.de.client.analysis.services;
 
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.HasId;
-import org.iplantc.de.commons.client.DEServiceFacade;
+import org.iplantc.de.client.services.DEServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.common.base.Strings;

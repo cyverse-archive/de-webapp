@@ -1,9 +1,11 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.viewer.events.FileSavedEvent;
 import org.iplantc.de.client.viewer.events.FileSavedEvent.FileSavedEventHandler;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
@@ -11,8 +13,6 @@ import org.iplantc.de.client.viewer.presenter.FileViewerPresenter;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.diskResource.client.services.errors.DiskResourceErrorAutoBeanFactory;
 import org.iplantc.de.diskResource.client.services.errors.ErrorGetManifest;

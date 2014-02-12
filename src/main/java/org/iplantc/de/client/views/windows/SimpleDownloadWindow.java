@@ -5,9 +5,10 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.DiskResource;
+import org.iplantc.de.client.util.DiskResourceUtil;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
-import org.iplantc.de.commons.client.util.DiskResourceUtil;
+import org.iplantc.de.commons.client.util.WindowUtil;
 import org.iplantc.de.commons.client.widgets.IPlantAnchor;
 
 import com.google.gwt.core.client.GWT;
@@ -52,19 +53,10 @@ public class SimpleDownloadWindow extends IplantWindowBase {
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    Services.DISK_RESOURCE_SERVICE.simpleDownload(dr.getId());
-
+                    final String encodedSimpleDownloadURL = Services.DISK_RESOURCE_SERVICE.getEncodedSimpleDownloadURL(dr.getId());
+                    WindowUtil.open(encodedSimpleDownloadURL, "width=100,height=100");
                 }
             });
-            // Hyperlink link = new Hyperlink(DiskResourceUtil.parseNameFromPath(dr.getId()),
-            // res.css().de_hyperlink());
-            //
-            // link.addClickListener(new Listener<ComponentEvent>() {
-            // @Override
-            // public void handleEvent(ComponentEvent be) {
-            // Services.DISK_RESOURCE_SERVICE.simpleDownload(dr.getId());
-            // }
-            // });
 
             vlc.add(link2);
         }

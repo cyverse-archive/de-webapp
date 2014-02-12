@@ -6,9 +6,9 @@ import org.iplantc.de.client.models.sysMsgs.IdList;
 import org.iplantc.de.client.models.sysMsgs.MessageFactory;
 import org.iplantc.de.client.models.sysMsgs.MessageList;
 import org.iplantc.de.client.models.sysMsgs.User;
-import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.services.AsyncCallbackConverter;
-import org.iplantc.de.commons.client.services.StringToVoidCallbackConverter;
+import org.iplantc.de.client.services.AsyncCallbackConverter;
+import org.iplantc.de.client.services.DEServiceFacade;
+import org.iplantc.de.client.services.StringToVoidCallbackConverter;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 

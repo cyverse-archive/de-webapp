@@ -1,8 +1,8 @@
 package org.iplantc.de.client.preferences.views;
 
 import org.iplantc.de.apps.widgets.client.view.editors.validation.AnalysisOutputValidator;
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.KeyBoardShortcutConstants;
 import org.iplantc.de.client.models.UserSettings;
 import org.iplantc.de.client.models.diskResources.Folder;
 import org.iplantc.de.diskResource.client.views.widgets.FolderSelectorField;
@@ -38,6 +38,7 @@ import java.util.Map;
 public class PreferencesViewImpl implements PreferencesView {
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+    private final KeyBoardShortcutConstants KB_CONSTANTS = GWT.create(KeyBoardShortcutConstants.class);
 
     @UiTemplate("PreferencesView.ui.xml")
     interface MyUiBinder extends UiBinder<Widget, PreferencesViewImpl> {
@@ -183,16 +184,17 @@ public class PreferencesViewImpl implements PreferencesView {
     public void setPresenter(Presenter p) {/* Not Used */
     }
 
+
     @Override
     public void setDefaultValues() {
         cboNotifyEmail.setValue(true);
         cboLastPath.setValue(true);
         cboSaveSession.setValue(true);
-        appKbSc.setValue(Constants.CLIENT.appsKeyShortCut());
-        dataKbSc.setValue(Constants.CLIENT.dataKeyShortCut());
-        anaKbSc.setValue(Constants.CLIENT.analysisKeyShortCut());
-        notKbSc.setValue(Constants.CLIENT.notifyKeyShortCut());
-        closeKbSc.setValue(Constants.CLIENT.closeKeyShortCut());
+        appKbSc.setValue(KB_CONSTANTS.appsKeyShortCut());
+        dataKbSc.setValue(KB_CONSTANTS.dataKeyShortCut());
+        anaKbSc.setValue(KB_CONSTANTS.analysisKeyShortCut());
+        notKbSc.setValue(KB_CONSTANTS.notifyKeyShortCut());
+        closeKbSc.setValue(KB_CONSTANTS.closeKeyShortCut());
         defaultOpFolder.setValue(us.getSystemDefaultOutputFolder());
         isValid();
     }

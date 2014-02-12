@@ -4,10 +4,10 @@
 package org.iplantc.de.client.preferences.views;
 
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.preferences.presenter.PreferencesPresenterImpl;
 import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.IPlantDialog;

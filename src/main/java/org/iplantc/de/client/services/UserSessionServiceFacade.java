@@ -2,7 +2,6 @@ package org.iplantc.de.client.services;
 
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.UserSession;
-import org.iplantc.de.commons.client.DEServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.gwt.json.client.JSONObject;

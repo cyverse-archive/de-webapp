@@ -3,6 +3,7 @@ package org.iplantc.de.client.viewer.presenter;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
 import org.iplantc.de.client.viewer.callbacks.TreeUrlCallback;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
@@ -12,7 +13,6 @@ import org.iplantc.de.client.viewer.models.MimeType;
 import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.FileViewerWindow;
-import org.iplantc.de.commons.client.util.JsonUtil;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;

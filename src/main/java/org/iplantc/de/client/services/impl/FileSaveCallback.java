@@ -2,13 +2,13 @@ package org.iplantc.de.client.services.impl;
 
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
 import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.util.DiskResourceUtil;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.viewer.events.FileSavedEvent;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.util.DiskResourceUtil;
-import org.iplantc.de.commons.client.util.JsonUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;

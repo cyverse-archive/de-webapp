@@ -4,10 +4,10 @@ import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowLayoutRequestEvent;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.resources.client.IplantResources;
 import org.iplantc.de.resources.client.theme.window.IPlantWindowAppearance;
 

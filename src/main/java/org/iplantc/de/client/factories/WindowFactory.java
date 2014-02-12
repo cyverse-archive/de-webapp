@@ -1,6 +1,7 @@
 package org.iplantc.de.client.factories;
 
 import org.iplantc.de.client.Constants;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.views.windows.AboutApplicationWindow;
 import org.iplantc.de.client.views.windows.AppEditorWindow;
 import org.iplantc.de.client.views.windows.AppLaunchWindow;
@@ -26,7 +27,6 @@ import org.iplantc.de.client.views.windows.configs.NotifyWindowConfig;
 import org.iplantc.de.client.views.windows.configs.SimpleDownloadWindowConfig;
 import org.iplantc.de.client.views.windows.configs.SystemMessagesWindowConfig;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.util.WindowUtil;
 
 import com.google.common.base.Strings;

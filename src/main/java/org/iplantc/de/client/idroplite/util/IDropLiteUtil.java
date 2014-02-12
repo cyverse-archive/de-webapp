@@ -2,7 +2,7 @@ package org.iplantc.de.client.idroplite.util;
 
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.commons.client.util.JsonUtil;
+import org.iplantc.de.client.util.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
 

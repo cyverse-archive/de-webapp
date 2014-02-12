@@ -1,8 +1,8 @@
 package org.iplantc.de.client.viewer.callbacks;
 
 import org.iplantc.de.client.I18N;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.views.IsMaskable;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.IplantInfoBox;
 

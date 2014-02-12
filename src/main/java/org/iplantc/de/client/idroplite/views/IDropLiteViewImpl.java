@@ -1,8 +1,8 @@
 package org.iplantc.de.client.idroplite.views;
 
-import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
+import org.iplantc.de.commons.client.CommonUiConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -22,6 +22,7 @@ import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 public class IDropLiteViewImpl implements IDropLiteView {
 
     private static IDropLiteViewUiBinder uiBinder = GWT.create(IDropLiteViewUiBinder.class);
+    private final CommonUiConstants CONSTANTS = GWT.create(CommonUiConstants.class);
 
     private final Widget widget;
 
@@ -48,7 +49,7 @@ public class IDropLiteViewImpl implements IDropLiteView {
     public IDropLiteViewImpl() {
         widget = uiBinder.createAndBindUi(this);
         toolbar.add(new SeparatorToolItem());
-        toolbar.add(new LabelToolItem(I18N.DISPLAY.idropJavaInfo(Constants.CLIENT.idropUrl())));
+        toolbar.add(new LabelToolItem(I18N.DISPLAY.idropJavaInfo(CONSTANTS.idropUrl())));
     }
 
     @Override

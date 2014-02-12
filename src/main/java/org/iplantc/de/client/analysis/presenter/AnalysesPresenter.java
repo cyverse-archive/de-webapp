@@ -17,13 +17,13 @@ import org.iplantc.de.client.analysis.views.AnalysisParamView;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisParamValueCell;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;

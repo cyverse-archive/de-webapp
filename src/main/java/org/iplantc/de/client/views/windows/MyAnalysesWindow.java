@@ -10,11 +10,11 @@ import org.iplantc.de.client.analysis.views.cells.AnalysisAppNameCell;
 import org.iplantc.de.client.analysis.views.cells.AnalysisNameCell;
 import org.iplantc.de.client.analysis.views.cells.EndDateTimeCell;
 import org.iplantc.de.client.analysis.views.cells.StartDateTimeCell;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
-import org.iplantc.de.commons.client.events.EventBus;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.AbstractCell;

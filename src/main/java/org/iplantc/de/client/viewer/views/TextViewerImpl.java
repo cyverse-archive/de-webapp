@@ -5,13 +5,13 @@ package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.services.impl.FileSaveCallback;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
 import org.iplantc.de.client.viewer.events.SaveFileEvent.SaveFileEventHandler;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.events.EventBus;
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.diskResource.client.views.dialogs.SaveAsDialog;
 
 import com.google.common.base.Strings;
