@@ -1,6 +1,5 @@
 package org.iplantc.de.client.analysis.presenter;
 
-import org.iplantc.de.apps.widgets.client.models.ArgumentType;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
@@ -20,6 +19,7 @@ import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.apps.ArgumentType;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;

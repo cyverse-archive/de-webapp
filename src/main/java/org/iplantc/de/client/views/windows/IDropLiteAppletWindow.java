@@ -9,9 +9,9 @@ import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.idroplite.views.IDropLiteViewImpl;
 import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.client.models.diskResources.Folder;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 
-import com.google.common.base.Strings;
 import com.google.gwt.user.client.Command;
 
 import com.sencha.gxt.core.client.GXT;

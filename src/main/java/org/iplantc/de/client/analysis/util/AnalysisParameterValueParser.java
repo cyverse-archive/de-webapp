@@ -1,11 +1,11 @@
 package org.iplantc.de.client.analysis.util;
 
-import org.iplantc.de.apps.widgets.client.models.ArgumentType;
-import org.iplantc.de.apps.widgets.client.models.util.AppTemplateUtils;
 import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
 import org.iplantc.de.client.analysis.models.AnalysisParameter;
 import org.iplantc.de.client.analysis.models.SelectionValue;
 import org.iplantc.de.client.analysis.models.SimpleValue;
+import org.iplantc.de.client.models.apps.ArgumentType;
+import org.iplantc.de.client.util.AppTemplateUtils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
