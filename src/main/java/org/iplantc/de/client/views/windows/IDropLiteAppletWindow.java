@@ -3,8 +3,7 @@ package org.iplantc.de.client.views.windows;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent;
 import org.iplantc.core.uicommons.client.models.WindowState;
-import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IplantInfoBox;
-import org.iplantc.de.client.Constants;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
@@ -13,11 +12,8 @@ import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.idroplite.views.IDropLiteViewImpl;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 
-import com.google.common.base.Strings;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Command;
+
 import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.Style.HideMode;
 import com.sencha.gxt.widget.core.client.Window;
@@ -88,9 +84,9 @@ public class IDropLiteAppletWindow extends IplantWindowBase {
         super.doHide();
 
         // refresh manage data window
-        String refreshPath = idlwc.getCurrentFolder().getId();
-        if (!Strings.isNullOrEmpty(refreshPath)) {
-            DiskResourceRefreshEvent event = new DiskResourceRefreshEvent(refreshPath, null);
+        Folder currentFolder = idlwc.getCurrentFolder();
+        if (currentFolder != null) {
+            DiskResourceRefreshEvent event = new DiskResourceRefreshEvent(currentFolder);
             EventBus.getInstance().fireEvent(event);
         }
     }
