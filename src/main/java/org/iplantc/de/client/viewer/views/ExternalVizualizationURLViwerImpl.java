@@ -5,10 +5,10 @@ package org.iplantc.de.client.viewer.views;
 
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.models.viewer.InfoType;
+import org.iplantc.de.client.models.viewer.VizUrl;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
 import org.iplantc.de.client.viewer.callbacks.TreeUrlCallback;
-import org.iplantc.de.client.viewer.models.InfoType;
-import org.iplantc.de.client.viewer.models.VizUrl;
 import org.iplantc.de.client.viewer.models.VizUrlProperties;
 import org.iplantc.de.client.viewer.views.cells.TreeUrlCell;
 import org.iplantc.de.commons.client.views.IsMaskable;

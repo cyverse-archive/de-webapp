@@ -3,6 +3,7 @@
  */
 package org.iplantc.de.client.viewer.factory;
 
+import org.iplantc.de.client.models.viewer.MimeType;
 import org.iplantc.de.client.viewer.commands.HtmlDataViewCommand;
 import org.iplantc.de.client.viewer.commands.ImageDataViewCommand;
 import org.iplantc.de.client.viewer.commands.PdfDataViewCommand;
@@ -10,7 +11,6 @@ import org.iplantc.de.client.viewer.commands.ShellScriptViewCommand;
 import org.iplantc.de.client.viewer.commands.TextDataViewCommand;
 import org.iplantc.de.client.viewer.commands.ViewCommand;
 import org.iplantc.de.client.viewer.commands.VizURLViewerCommand;
-import org.iplantc.de.client.viewer.models.MimeType;
 
 /**
  * @author sriram

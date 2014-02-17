@@ -1,7 +1,7 @@
 package org.iplantc.de.client.viewer.commands;
 
 import org.iplantc.de.client.models.diskResources.File;
-import org.iplantc.de.client.viewer.models.InfoType;
+import org.iplantc.de.client.models.viewer.InfoType;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.viewer.views.StrcturedTextViewerImpl;
 import org.iplantc.de.client.viewer.views.TextViewerImpl;

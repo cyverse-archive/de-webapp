@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.client.viewer.models;
 
+import org.iplantc.de.client.models.viewer.VizUrl;
+
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
