@@ -1,12 +1,12 @@
 package org.iplantc.de.client.viewer.callbacks;
 
+import org.iplantc.de.client.models.IsMaskable;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.models.viewer.TreeUrlAutoBeanFactory;
 import org.iplantc.de.client.models.viewer.VizUrl;
 import org.iplantc.de.client.models.viewer.VizUrlList;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.views.IsMaskable;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;

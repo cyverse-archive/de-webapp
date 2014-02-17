@@ -3,9 +3,9 @@ package org.iplantc.de.client.desktop.presenter;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEView.Presenter;
+import org.iplantc.de.client.models.IsHideable;
 import org.iplantc.de.client.models.UserSession;
 import org.iplantc.de.client.models.WindowState;
-import org.iplantc.de.commons.client.views.gxt3.dialogs.IsHideable;
 import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
