@@ -1,7 +1,6 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.DiskResource;
@@ -31,7 +30,7 @@ public class SimpleDownloadWindow extends IplantWindowBase {
     public SimpleDownloadWindow(SimpleDownloadWindowConfig config) {
         super(null, false, true, true, true);
         res.css().ensureInjected();
-        setHeadingText(I18N.DISPLAY.download());
+        setHeadingText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.download());
         setSize("320", "320");
 
         init(config);
@@ -41,7 +40,7 @@ public class SimpleDownloadWindow extends IplantWindowBase {
         // Add window contents container for the simple download links
         VerticalLayoutContainer contents = new VerticalLayoutContainer();
 
-        contents.add(new Label("" + I18N.DISPLAY.simpleDownloadNotice()));
+        contents.add(new Label("" + org.iplantc.de.resources.client.messages.I18N.DISPLAY.simpleDownloadNotice()));
         buildLinks(config, contents);
         add(contents);
 

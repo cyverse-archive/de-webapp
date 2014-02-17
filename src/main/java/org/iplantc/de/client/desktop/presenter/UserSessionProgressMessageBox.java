@@ -1,12 +1,12 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEView.Presenter;
 import org.iplantc.de.client.models.UserSession;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.IsHideable;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -31,8 +31,7 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox saveSession(DEView.Presenter presenter, String redirectUrl) {
-        UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(),
-                I18N.DISPLAY.savingSessionWaitNotice(),
+        UserSessionProgressMessageBox saveSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.savingSession(), I18N.DISPLAY.savingSessionWaitNotice(),
                 ProgressBoxType.SAVE_SESSION,
                 presenter,
                 redirectUrl);
@@ -42,8 +41,7 @@ class UserSessionProgressMessageBox extends AutoProgressMessageBox implements Is
     }
 
     public static UserSessionProgressMessageBox restoreSession(DEView.Presenter presenter) {
-        UserSessionProgressMessageBox restoreSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.loadingSession(),
-                I18N.DISPLAY.loadingSessionWaitNotice(),
+        UserSessionProgressMessageBox restoreSessionMb = new UserSessionProgressMessageBox(I18N.DISPLAY.loadingSession(), I18N.DISPLAY.loadingSessionWaitNotice(),
                 ProgressBoxType.RESTORE_SESSION,
                 presenter);
         restoreSessionMb.setProgressText(I18N.DISPLAY.loadingMask());

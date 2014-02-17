@@ -1,7 +1,6 @@
 package org.iplantc.de.client.preferences.views;
 
 import org.iplantc.de.apps.widgets.client.view.editors.validation.AnalysisOutputValidator;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.KeyBoardShortcutConstants;
 import org.iplantc.de.client.models.UserSettings;
 import org.iplantc.de.client.models.diskResources.Folder;
@@ -157,7 +156,7 @@ public class PreferencesViewImpl implements PreferencesView {
             }
         });
 
-        prefContainer.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new VerticalLayoutData(.9, -1,
+        prefContainer.add(new HTML(org.iplantc.de.resources.client.messages.I18N.DISPLAY.defaultOutputFolder()), new VerticalLayoutData(.9, -1,
                 new Margins(5)));
         prefContainer.add(defaultOpFolder.asWidget(), new VerticalLayoutData(.9, -1, new Margins(5)));
     }
@@ -247,8 +246,8 @@ public class PreferencesViewImpl implements PreferencesView {
                 for (TextField sc : kbMap.keySet()) {
                     if (ks != sc) {
                         if (kbMap.get(ks).equals(kbMap.get(sc))) {
-                            ks.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
-                            sc.markInvalid(I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
+                            ks.markInvalid(org.iplantc.de.resources.client.messages.I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
+                            sc.markInvalid(org.iplantc.de.resources.client.messages.I18N.DISPLAY.duplicateShortCutKey(kbMap.get(ks)));
                             valid = false;
                         }
                     }

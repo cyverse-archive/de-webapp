@@ -2,7 +2,6 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.layout.DesktopLayoutType;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowLayoutRequestEvent;
@@ -294,7 +293,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         maxBtn = new ToolButton(res.css().xToolMaximizewindow());
         maxBtn.setId("idmaximize"); //$NON-NLS-1$
         maxBtn.sinkEvents(Event.ONMOUSEOUT);
-        maxBtn.setToolTip(I18N.DISPLAY.maximize());
+        maxBtn.setToolTip(org.iplantc.de.resources.client.messages.I18N.DISPLAY.maximize());
 
         ArrayList<HandlerRegistration> hrList = new ArrayList<HandlerRegistration>();
         HandlerRegistration reg;
@@ -331,7 +330,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         btnRestore = new ToolButton(res.css().xToolRestorewindow());
         btnRestore.setId("idrestore"); //$NON-NLS-1$
         btnRestore.sinkEvents(Event.ONMOUSEOUT);
-        btnRestore.setToolTip(I18N.DISPLAY.restore());
+        btnRestore.setToolTip(org.iplantc.de.resources.client.messages.I18N.DISPLAY.restore());
 
         ArrayList<HandlerRegistration> hrList = new ArrayList<HandlerRegistration>();
         HandlerRegistration reg;
@@ -367,7 +366,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         final ToolButton newMinBtn = new ToolButton(res.css().xToolMinimizewindow());
         newMinBtn.setId("idminimize"); //$NON-NLS-1$
         newMinBtn.sinkEvents(Event.ONMOUSEOUT);
-        newMinBtn.setToolTip(I18N.DISPLAY.minimize());
+        newMinBtn.setToolTip(org.iplantc.de.resources.client.messages.I18N.DISPLAY.minimize());
 
         newMinBtn.addSelectHandler(new SelectHandler() {
             @Override
@@ -399,7 +398,7 @@ public abstract class IplantWindowBase extends Window implements IPlantWindowInt
         final ToolButton newCloseBtn = new ToolButton(res.css().xToolClosewindow());
         newCloseBtn.setId("idclose"); //$NON-NLS-1$
         newCloseBtn.sinkEvents(Event.ONMOUSEOUT);
-        newCloseBtn.setToolTip(I18N.DISPLAY.close());
+        newCloseBtn.setToolTip(org.iplantc.de.resources.client.messages.I18N.DISPLAY.close());
 
         newCloseBtn.addSelectHandler(new SelectHandler() {
             @Override

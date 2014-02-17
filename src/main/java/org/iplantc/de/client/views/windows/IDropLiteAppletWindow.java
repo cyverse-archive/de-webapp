@@ -1,6 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.diskResources.DiskResourceRefreshEvent;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
@@ -70,10 +69,10 @@ public class IDropLiteAppletWindow extends IplantWindowBase {
         // Set the heading and add the correct simple mode button based on the applet display mode.
         int displayMode = idlwc.getDisplayMode();
         if (displayMode == IDropLiteUtil.DISPLAY_MODE_UPLOAD) {
-            setTitle(I18N.DISPLAY.upload());
+            setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.upload());
 
         } else if (displayMode == IDropLiteUtil.DISPLAY_MODE_DOWNLOAD) {
-            setTitle(I18N.DISPLAY.download());
+            setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.download());
         }
 
         return displayMode;
@@ -108,8 +107,8 @@ public class IDropLiteAppletWindow extends IplantWindowBase {
             minimize();
         }
 
-        final ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.idropLiteCloseConfirmTitle(),
-                I18N.DISPLAY.idropLiteCloseConfirmMessage());
+        final ConfirmMessageBox cmb = new ConfirmMessageBox(org.iplantc.de.resources.client.messages.I18N.DISPLAY.idropLiteCloseConfirmTitle(),
+                org.iplantc.de.resources.client.messages.I18N.DISPLAY.idropLiteCloseConfirmMessage());
 
         cmb.addHideHandler(new HideHandler() {
 

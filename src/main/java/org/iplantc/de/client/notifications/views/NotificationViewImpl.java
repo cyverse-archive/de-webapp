@@ -3,9 +3,9 @@
  */
 package org.iplantc.de.client.notifications.views;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
 import org.iplantc.de.client.models.notifications.NotificationMessage;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

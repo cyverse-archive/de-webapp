@@ -1,6 +1,5 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.models.sysMsgs.IdList;
@@ -132,7 +131,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             }
             @Override
             public void onFailure(final Throwable cause) {
-                ErrorHandler.post(I18N.ERROR.loadMessagesFailed(), cause);
+                ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.loadMessagesFailed(), cause);
             }
         });
     }
@@ -162,7 +161,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             public void onSuccess(Void unused) {}
             @Override
             public void onFailure(final Throwable cause) {
-                ErrorHandler.post(I18N.ERROR.markMessageReceivedFailed(), cause);
+                ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.markMessageReceivedFailed(), cause);
             }
         });
     }
@@ -177,7 +176,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             }
             @Override
             public void onFailure(final Throwable cause) {
-                ErrorHandler.post(I18N.ERROR.markMessageSeenFailed(), cause);
+                ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.markMessageSeenFailed(), cause);
             }
         });
     }
@@ -188,7 +187,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
         }
         final IdList idsDTO = MessageFactory.INSTANCE.makeIdList().as();
         idsDTO.setIds(Arrays.asList(selectedMsgId));
-        view.mask(I18N.DISPLAY.messageDismissing());
+        view.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.messageDismissing());
         services.hideMessages(idsDTO, new AsyncCallback<Void>() {
             @Override
             public void onSuccess(final Void unused) {
@@ -198,7 +197,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
             @Override
             public void onFailure(final Throwable cause) {
                 view.unmask();
-                ErrorHandler.post(I18N.ERROR.dismissMessageFailed(), cause);
+                ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.dismissMessageFailed(), cause);
             }
         });
     }
@@ -269,7 +268,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     private void showExpiryOf(final Message message) {
         final DateTimeFormat expiryFmt = DateTimeFormat.getFormat("dd MMMM yyyy");
         final String expiryStr = expiryFmt.format(message.getDeactivationTime());
-        view.setExpiryMessage(I18N.DISPLAY.expirationMessage(expiryStr));
+        view.setExpiryMessage(org.iplantc.de.resources.client.messages.I18N.DISPLAY.expirationMessage(expiryStr));
 
     }
 

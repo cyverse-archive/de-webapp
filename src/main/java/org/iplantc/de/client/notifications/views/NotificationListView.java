@@ -4,7 +4,6 @@
 package org.iplantc.de.client.notifications.views;
 
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
@@ -25,6 +24,7 @@ import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
 import org.iplantc.de.commons.client.widgets.IPlantAnchor;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
@@ -381,7 +381,7 @@ public class NotificationListView implements IsWidget {
         emptyTextPnl = new HorizontalPanel();
         if (store != null && store.getAll().size() == 0) {
             emptyTextPnl.add(new HTML("<span style='font-size:11px;'>"
-                    + I18N.DISPLAY.noNewNotifications() + "</span>"));
+ + I18N.DISPLAY.noNewNotifications() + "</span>"));
         }
         emptyTextPnl.setHeight("30px");
         return emptyTextPnl;

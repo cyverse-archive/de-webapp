@@ -1,6 +1,5 @@
 package org.iplantc.de.client.viewer.callbacks;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.models.TreeUrlAutoBeanFactory;
 import org.iplantc.de.client.viewer.models.VizUrl;
@@ -34,7 +33,7 @@ public class TreeUrlCallback implements AsyncCallback<String> {
     public void onFailure(Throwable caught) {
         container.unmask();
 
-        String errMsg = I18N.ERROR.unableToRetrieveTreeUrls(file.getName());
+        String errMsg = org.iplantc.de.resources.client.messages.I18N.ERROR.unableToRetrieveTreeUrls(file.getName());
         ErrorHandler.post(errMsg, caught);
 
     }

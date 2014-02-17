@@ -2,7 +2,6 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.apps.client.gin.AppsInjector;
 import org.iplantc.de.apps.client.views.AppsView;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.AppsWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -17,7 +16,7 @@ public class DEAppsWindow extends IplantWindowBase {
 
         setSize("600", "375");
         presenter.go(this, config.getSelectedAppGroup(), config.getSelectedApp());
-        setHeadingText(I18N.DISPLAY.applications());
+        setHeadingText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.applications());
     }
 
     @Override

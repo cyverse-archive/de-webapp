@@ -1,6 +1,5 @@
 package org.iplantc.de.client.analysis.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.models.AnalysisParameterProperties;
 import org.iplantc.de.client.analysis.util.AnalysisParameterValueParser;
@@ -24,6 +23,7 @@ import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
@@ -105,7 +105,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
         if (view.getSelectedAnalyses().size() > 0) {
             final List<Analysis> execs = view.getSelectedAnalyses();
 
-            ConfirmMessageBox cmb = new ConfirmMessageBox(I18N.DISPLAY.warning(),
+            ConfirmMessageBox cmb = new ConfirmMessageBox(org.iplantc.de.resources.client.messages.I18N.DISPLAY.warning(),
                     I18N.DISPLAY.analysesExecDeleteWarning());
             cmb.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
             cmb.addHideHandler(new DeleteMessageBoxHandler(execs));
@@ -138,7 +138,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
                 }
             });
-            apv.setHeading(I18N.DISPLAY.viewParameters(ana.getName()));
+            apv.setHeading(org.iplantc.de.resources.client.messages.I18N.DISPLAY.viewParameters(ana.getName()));
             apv.show();
         }
     }
@@ -244,7 +244,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     @Override
     public void setRefreshButton(TextButton refreshBtn) {
         if (refreshBtn != null) {
-            refreshBtn.setText(I18N.DISPLAY.refresh());
+            refreshBtn.setText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.refresh());
             toolbar.setRefreshButton(refreshBtn);
         }
     }
@@ -254,16 +254,16 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
         AnalysisParameterProperties props = GWT.create(AnalysisParameterProperties.class);
         ColumnConfig<AnalysisParameter, AnalysisParameter> param_name = new ColumnConfig<AnalysisParameter, AnalysisParameter>(
                 new IdentityValueProvider<AnalysisParameter>(), 175);
-        param_name.setHeader(I18N.DISPLAY.paramName());
+        param_name.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.paramName());
         param_name.setCell(new AnalysisParamNameCell());
 
         ColumnConfig<AnalysisParameter, ArgumentType> param_type = new ColumnConfig<AnalysisParameter, ArgumentType>(
                 props.type(), 75);
-        param_type.setHeader(I18N.DISPLAY.paramType());
+        param_type.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.paramType());
 
         ColumnConfig<AnalysisParameter, AnalysisParameter> param_value = new ColumnConfig<AnalysisParameter, AnalysisParameter>(
                 new IdentityValueProvider<AnalysisParameter>(), 325);
-        param_value.setHeader(I18N.DISPLAY.paramValue());
+        param_value.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.paramValue());
         param_value.setCell(new AnalysisParamValueCell());
 
         List<ColumnConfig<AnalysisParameter, ?>> columns = new ArrayList<ColumnConfig<AnalysisParameter, ?>>();
@@ -307,15 +307,15 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
         @Override
         public void onFailure(Throwable caught) {
-            ErrorHandler.post(I18N.ERROR.deleteAnalysisError(), caught);
+            ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.deleteAnalysisError(), caught);
         }
 
         private void updateGrid() {
             view.removeFromStore(items_to_delete);
 
             if (items_to_delete == null || execs.size() != items_to_delete.size()) {
-                AlertMessageBox amb = new AlertMessageBox(I18N.DISPLAY.warning(),
-                        I18N.DISPLAY.analysesNotDeleted());
+                AlertMessageBox amb = new AlertMessageBox(org.iplantc.de.resources.client.messages.I18N.DISPLAY.warning(),
+                        org.iplantc.de.resources.client.messages.I18N.DISPLAY.analysesNotDeleted());
                 amb.show();
             }
         }
@@ -331,7 +331,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
 
         @Override
         public void onSuccess(String result) {
-            NotifyInfo.displayWarning(I18N.DISPLAY.analysisStopSuccess(ae.getName()));
+            NotifyInfo.displayWarning(org.iplantc.de.resources.client.messages.I18N.DISPLAY.analysisStopSuccess(ae.getName()));
         }
 
         @Override
@@ -340,7 +340,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
              * JDS Send generic error message. In the future, the "error_code" string should be parsed
              * from the JSON to provide more detailed user feedback.
              */
-            ErrorHandler.post(I18N.ERROR.stopAnalysisError(ae.getName()), caught);
+            ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.stopAnalysisError(ae.getName()), caught);
         }
 
     }

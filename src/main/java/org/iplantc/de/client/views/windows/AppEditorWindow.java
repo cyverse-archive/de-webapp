@@ -7,7 +7,6 @@ import org.iplantc.de.apps.integration.client.gin.AppsEditorInjector;
 import org.iplantc.de.apps.integration.client.view.AppsEditorView;
 import org.iplantc.de.apps.widgets.client.view.AppLaunchView.RenameWindowHeaderCommand;
 import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.models.CommonModelUtils;
@@ -91,7 +90,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
     private final AppsWidgetsPropertyPanelLabels labels = org.iplantc.de.resources.client.messages.I18N.APPS_LABELS;
     private final RenameWindowHeaderCmdImpl renameCmd;
 
-    final ContextualHelpToolButton editPublicAppContextHlpTool = new ContextualHelpToolButton(new HTML(I18N.APPS_HELP.editPublicAppHelp()));
+    final ContextualHelpToolButton editPublicAppContextHlpTool = new ContextualHelpToolButton(new HTML(org.iplantc.de.resources.client.messages.I18N.APPS_HELP.editPublicAppHelp()));
     final Resources res = GWT.create(Resources.class);
 
     public AppEditorWindow(AppsIntegrationWindowConfig config, final EventBus eventBus) {
@@ -103,7 +102,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
 //        presenter = new AppsEditorPresenterImpl(view, eventBus, templateService, I18N.ERROR,
 //                I18N.DISPLAY, uuidService);
         presenter = AppsEditorInjector.INSTANCE.getAppEditorPresenter();
-        setTitle(I18N.DISPLAY.createApps());
+        setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.createApps());
         setSize("800", "480");
         setMinWidth(725);
         setMinHeight(375);
@@ -149,7 +148,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
                     });
             at.onSuccess(config.getAppTemplate().getPayload());
         } else if (Strings.isNullOrEmpty(config.getAppId()) || config.getAppId().equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
-            setTitle(I18N.DISPLAY.createApps());
+            setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.createApps());
             // Create empty AppTemplate
             AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
 
@@ -172,7 +171,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
             presenter.go(this, newAppTemplate, renameCmd);
             AppEditorWindow.this.forceLayout();
         } else {
-            mask(I18N.DISPLAY.loadingMask());
+            mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
             templateService.getAppTemplateForEdit(
                     CommonModelUtils.createHasIdFromString(config.getAppId()),
                     new AsyncCallback<AppTemplate>() {
@@ -181,11 +180,11 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
                             SimpleServiceError serviceError = AutoBeanCodex.decode(factory,
                                     SimpleServiceError.class, caught.getMessage()).as();
                             IplantAnnouncer.getInstance().schedule(
-                                    new ErrorAnnouncementConfig(I18N.ERROR
+                                    new ErrorAnnouncementConfig(org.iplantc.de.resources.client.messages.I18N.ERROR
                                             .unableToRetrieveWorkflowGuide()
                                             + ": "
                                             + serviceError.getReason()));
-                            ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
+                            ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
                             AppEditorWindow.this.hide();
                         }
 
@@ -206,7 +205,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
 
     private void setEditPublicAppHeader(String appName) {
         setHeadingHtml(templates.editPublicAppWarningTitle(SafeHtmlUtils.fromString(appName), res.titleStyles().title(), 
-                I18N.APPS_MESSAGES.editPublicAppWarning(), res.titleStyles().warning()));
+                org.iplantc.de.resources.client.messages.I18N.APPS_MESSAGES.editPublicAppWarning(), res.titleStyles().warning()));
 
         // JDS Only insert if not there.
         if (getHeader().getTool(0) != editPublicAppContextHlpTool) {
@@ -294,7 +293,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
             if (Strings.nullToEmpty(appTemplate.getId()).equalsIgnoreCase(Constants.CLIENT.newAppTemplate())) {
                 return;
             }
-            final String name = !Strings.isNullOrEmpty(appTemplate.getName()) ? appTemplate.getName() : I18N.DISPLAY.createApps();
+            final String name = !Strings.isNullOrEmpty(appTemplate.getName()) ? appTemplate.getName() : org.iplantc.de.resources.client.messages.I18N.DISPLAY.createApps();
             if (appTemplate.isPublic()) {
                 window.setEditPublicAppHeader(name);
             } else {

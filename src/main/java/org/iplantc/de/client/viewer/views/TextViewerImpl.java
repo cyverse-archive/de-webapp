@@ -3,7 +3,6 @@
  */
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.diskResources.File;
@@ -168,7 +167,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
     @Override
     public void loadData() {
         String url = "read-chunk";
-        con.mask(I18N.DISPLAY.loadingMask());
+        con.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
         Services.FILE_EDITOR_SERVICE.getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
 
             @Override
@@ -180,7 +179,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
 
             @Override
             public void onFailure(Throwable caught) {
-                ErrorHandler.post(I18N.ERROR.unableToRetrieveFileData(file.getName()), caught);
+                ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.unableToRetrieveFileData(file.getName()), caught);
                 con.unmask();
             }
         });

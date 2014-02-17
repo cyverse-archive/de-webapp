@@ -3,7 +3,6 @@
  */
 package org.iplantc.de.client.preferences.views;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.preferences.presenter.PreferencesPresenterImpl;
@@ -43,7 +42,7 @@ public class PreferencesDialog extends IPlantDialog {
 
     public PreferencesDialog() {
         super(true);
-        setHeadingText(I18N.DISPLAY.preferences());
+        setHeadingText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.preferences());
         setPixelSize(450, 400);
         setButtons();
         addHelp(contructHelpView());
@@ -62,19 +61,19 @@ public class PreferencesDialog extends IPlantDialog {
     private Widget contructHelpView() {
         HtmlLayoutContainerTemplate templates = GWT.create(HtmlLayoutContainerTemplate.class);
         HtmlLayoutContainer c = new HtmlLayoutContainer(templates.getTemplate());
-        c.add(new HTML(I18N.DISPLAY.notifyemail()), new HtmlData(".emailHeader"));
-        c.add(new HTML(I18N.HELP.notifyemailHelp()), new HtmlData(".emailHelp"));
-        c.add(new HTML(I18N.DISPLAY.rememberFileSectorPath()), new HtmlData(".filePathHeader"));
-        c.add(new HTML(I18N.HELP.rememberFileSectorPathHelp()), new HtmlData(".filePathHelp"));
-        c.add(new HTML(I18N.DISPLAY.saveSession()), new HtmlData(".saveSessionHeader"));
-        c.add(new HTML(I18N.HELP.saveSessionHelp()), new HtmlData(".saveSessionHelp"));
-        c.add(new HTML(I18N.DISPLAY.defaultOutputFolder()), new HtmlData(".defaultOp"));
-        c.add(new HTML(I18N.HELP.defaultOutputFolderHelp()), new HtmlData(".defaultOpHelp"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.DISPLAY.notifyemail()), new HtmlData(".emailHeader"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.HELP.notifyemailHelp()), new HtmlData(".emailHelp"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.DISPLAY.rememberFileSectorPath()), new HtmlData(".filePathHeader"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.HELP.rememberFileSectorPathHelp()), new HtmlData(".filePathHelp"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.DISPLAY.saveSession()), new HtmlData(".saveSessionHeader"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.HELP.saveSessionHelp()), new HtmlData(".saveSessionHelp"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.DISPLAY.defaultOutputFolder()), new HtmlData(".defaultOp"));
+        c.add(new HTML(org.iplantc.de.resources.client.messages.I18N.HELP.defaultOutputFolderHelp()), new HtmlData(".defaultOpHelp"));
         return c.asWidget();
     }
 
     private void setOkButton() {
-        TextButton ok = new TextButton(I18N.DISPLAY.done());
+        TextButton ok = new TextButton(org.iplantc.de.resources.client.messages.I18N.DISPLAY.done());
         ok.addSelectHandler(new SelectHandler() {
 
             @Override
@@ -84,7 +83,7 @@ public class PreferencesDialog extends IPlantDialog {
                     PreferencesUpdatedEvent pue = new PreferencesUpdatedEvent();
                     EventBus.getInstance().fireEvent(pue);
                 } else {
-                    ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(I18N.DISPLAY
+                    ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(org.iplantc.de.resources.client.messages.I18N.DISPLAY
                             .publicSubmitTip());
                     IplantAnnouncer.getInstance().schedule(config);
                 }
@@ -96,7 +95,7 @@ public class PreferencesDialog extends IPlantDialog {
     }
 
     private void setDefaultsButton() {
-        TextButton def = new TextButton(I18N.DISPLAY.restoreDefaults());
+        TextButton def = new TextButton(org.iplantc.de.resources.client.messages.I18N.DISPLAY.restoreDefaults());
 
         def.addSelectHandler(new SelectHandler() {
 

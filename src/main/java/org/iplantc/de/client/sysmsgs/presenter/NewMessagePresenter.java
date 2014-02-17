@@ -1,6 +1,5 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.ShowSystemMessagesEvent;
@@ -108,7 +107,7 @@ public final class NewMessagePresenter implements NewMessageView.Presenter {
                 SERVICES.markAllReceived(new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(final Throwable cause) {
-                        ErrorHandler.post(I18N.ERROR.markMessageReceivedFailed(), cause);
+                        ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.markMessageReceivedFailed(), cause);
                         finishRemoval();
                     }
                     @Override

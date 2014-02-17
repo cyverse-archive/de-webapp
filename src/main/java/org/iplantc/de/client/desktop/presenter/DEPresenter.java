@@ -2,14 +2,13 @@ package org.iplantc.de.client.desktop.presenter;
 
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent;
 import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEventHandler;
-import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
@@ -37,6 +36,7 @@ import org.iplantc.de.diskResource.client.events.FileUploadedEvent;
 import org.iplantc.de.diskResource.client.events.FileUploadedEvent.FileUploadedEventHandler;
 import org.iplantc.de.resources.client.DEFeedbackStyle;
 import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.de.shared.services.PropertyServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
@@ -282,7 +282,7 @@ public class DEPresenter implements DEView.Presenter {
         feedbackBtn.getElement().updateZIndex(0);
         RootPanel.get().add(feedbackBtn);
         feedbackBtn.getElement().setAttribute("data-intro",
-                org.iplantc.de.resources.client.messages.I18N.TOUR.introFeedback());
+ I18N.TOUR.introFeedback());
         feedbackBtn.getElement().setAttribute("data-position", "top");
         feedbackBtn.getElement().setAttribute("data-step", "6");
     }
@@ -381,7 +381,7 @@ public class DEPresenter implements DEView.Presenter {
             public void execute() {
                 if (UserInfo.getInstance().isNewUser()) {
                     MessageBox box = new MessageBox(I18N.DISPLAY.welcome(),
-                            org.iplantc.de.resources.client.messages.I18N.TOUR.introWelcome());
+ I18N.TOUR.introWelcome());
                     box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO);
                     box.setIcon(MessageBox.ICONS.question());
                     box.addHideHandler(new HideHandler() {

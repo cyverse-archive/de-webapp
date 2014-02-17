@@ -3,7 +3,6 @@ package org.iplantc.de.client.services.impl;
 import org.iplantc.de.apps.client.models.autobeans.AppGroup;
 import org.iplantc.de.apps.client.services.AppGroupListCallbackConverter;
 import org.iplantc.de.apps.client.services.AppUserServiceFacade;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.services.DEServiceFacade;
@@ -205,8 +204,8 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 
 	private void sendRatingEmail(final String appName, final String emailAddress) {
 		EmailServiceFacade.getInstance().sendEmail(
-				I18N.DISPLAY.ratingEmailSubject(appName),
-				I18N.DISPLAY.ratingEmailText(appName),
+				org.iplantc.de.resources.client.messages.I18N.DISPLAY.ratingEmailSubject(appName),
+				org.iplantc.de.resources.client.messages.I18N.DISPLAY.ratingEmailText(appName),
 				"noreply@iplantcollaborative.org", emailAddress, //$NON-NLS-1$
 				new AsyncCallback<Void>() {
 					@Override
@@ -230,7 +229,7 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 
                         @Override
                         public void onFailure(Throwable caught) {
-                            ErrorHandler.post(I18N.ERROR.confluenceError(), caught);
+                            ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.confluenceError(), caught);
                         }
 
                         @Override
@@ -305,7 +304,7 @@ public class TemplateServiceFacade implements AppUserServiceFacade {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        ErrorHandler.post(I18N.ERROR.confluenceError(), caught);
+                        ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.confluenceError(), caught);
                     }
 
                     @Override

@@ -1,8 +1,8 @@
 package org.iplantc.de.client.idroplite.views;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.commons.client.CommonUiConstants;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

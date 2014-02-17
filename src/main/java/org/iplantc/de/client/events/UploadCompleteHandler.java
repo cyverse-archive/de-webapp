@@ -1,6 +1,6 @@
 package org.iplantc.de.client.events;
 
-import org.iplantc.de.client.I18N;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.event.shared.EventHandler;
 

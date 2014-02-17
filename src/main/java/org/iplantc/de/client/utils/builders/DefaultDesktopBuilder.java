@@ -1,7 +1,6 @@
 package org.iplantc.de.client.utils.builders;
 
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.CommonUiConstants;
 
@@ -21,21 +20,21 @@ public class DefaultDesktopBuilder extends DesktopBuilder {
         res.css().ensureInjected();
         addShortcut(res.css().iplantcMydataShortcut(), "idMydataShortCut", res.css()
                 .iplantcMydataShortcutHover(), "1",
-                I18N.HELP.iconHomepageDataTip(),
+                org.iplantc.de.resources.client.messages.I18N.HELP.iconHomepageDataTip(),
  uiConstants.windowTag(), //$NON-NLS-1$
                 ConfigFactory.diskResourceWindowConfig(),
                 org.iplantc.de.resources.client.messages.I18N.TOUR.introDataWindow());
 
         addShortcut(res.css().iplantcCatalogShortcut(), "idAppsShortCut", res.css()
                 .iplantcCatalogShortcutHover(), "2",
-                I18N.HELP.iconHomepageAppsTip(),
+                org.iplantc.de.resources.client.messages.I18N.HELP.iconHomepageAppsTip(),
  uiConstants.windowTag(), //$NON-NLS-1$
                 ConfigFactory.appsWindowConfig(),
                 org.iplantc.de.resources.client.messages.I18N.TOUR.introAppsWindow());
 
         addShortcut(res.css().iplantcMyanalysisShortcut(), "idAnalysisShortCut",
                 res.css().iplantcMyanalysisShortcutHover(),
- "3", I18N.HELP.iconHomepageAnalysesTip(), uiConstants.windowTag(), //$NON-NLS-1$
+ "3", org.iplantc.de.resources.client.messages.I18N.HELP.iconHomepageAnalysesTip(), uiConstants.windowTag(), //$NON-NLS-1$
                 ConfigFactory.analysisWindowConfig(),
                 org.iplantc.de.resources.client.messages.I18N.TOUR.introAnalysesWindow());
     }

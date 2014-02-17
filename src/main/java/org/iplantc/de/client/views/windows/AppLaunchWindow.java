@@ -4,7 +4,6 @@ import org.iplantc.de.apps.widgets.client.events.AnalysisLaunchEvent;
 import org.iplantc.de.apps.widgets.client.events.AnalysisLaunchEvent.AnalysisLaunchEventHandler;
 import org.iplantc.de.apps.widgets.client.gin.AppLaunchInjector;
 import org.iplantc.de.apps.widgets.client.view.AppLaunchView;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
 import org.iplantc.de.client.models.CommonModelUtils;
 import org.iplantc.de.client.models.WindowState;
@@ -37,7 +36,7 @@ public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchE
         public void onSuccess(AppTemplate result) {
             if (result.isAppDisabled()) {
                 ErrorAnnouncementConfig config = new ErrorAnnouncementConfig(
-                        I18N.DISPLAY.appUnavailable());
+                        org.iplantc.de.resources.client.messages.I18N.DISPLAY.appUnavailable());
                 IplantAnnouncer.getInstance().schedule(config);
                 AppLaunchWindow.this.hide();
                 return;
@@ -53,7 +52,7 @@ public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchE
         @Override
         public void onFailure(Throwable caught) {
             AppLaunchWindow.this.unmask();
-            ErrorHandler.post(I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
+            ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.unableToRetrieveWorkflowGuide(), caught);
         }
     }
 
@@ -77,7 +76,7 @@ public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchE
     }
 
     private void init(final AppLaunchView.Presenter presenter, AppWizardConfig config) {
-        mask(I18N.DISPLAY.loadingMask());
+        mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
         if (config.getAppTemplate() != null) {
             AppTemplateCallbackConverter cnvt = new AppTemplateCallbackConverter(factory, dcServices,
                     new AsyncCallback<AppTemplate>() {

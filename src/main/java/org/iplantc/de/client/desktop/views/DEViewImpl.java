@@ -5,7 +5,6 @@ package org.iplantc.de.client.desktop.views;
 
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.widget.Desktop;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
@@ -22,6 +21,7 @@ import org.iplantc.de.commons.client.util.WindowUtil;
 import org.iplantc.de.commons.client.widgets.IPlantAnchor;
 import org.iplantc.de.resources.client.DEHeaderStyle;
 import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -192,7 +192,7 @@ public class DEViewImpl implements DEView {
         help.setToolTip(I18N.DISPLAY.forums());
         help.setIcon(IplantResources.RESOURCES.forums());
         help.getElement().setAttribute("data-intro",
-                org.iplantc.de.resources.client.messages.I18N.TOUR.introAsk());
+ I18N.TOUR.introAsk());
         help.getElement().setAttribute("data-position", "left");
         help.getElement().setAttribute("data-step", "7");
         ToolBar helpbar = new ToolBar();
@@ -217,7 +217,7 @@ public class DEViewImpl implements DEView {
         button.ensureDebugId("id" + menuHeaderText);
         button.setMenu(notificationsView);
         button.getElement().setAttribute("data-intro",
-                org.iplantc.de.resources.client.messages.I18N.TOUR.introNotifications());
+ I18N.TOUR.introNotifications());
         button.getElement().setAttribute("data-position", "left");
         button.getElement().setAttribute("data-step", "4");
         ToolBar bar = new ToolBar();
@@ -271,7 +271,7 @@ public class DEViewImpl implements DEView {
         });
 
         button.getElement().setAttribute("data-intro",
-                org.iplantc.de.resources.client.messages.I18N.TOUR.introSettings());
+ I18N.TOUR.introSettings());
         button.getElement().setAttribute("data-position", "left");
         button.getElement().setAttribute("data-step", "5");
 

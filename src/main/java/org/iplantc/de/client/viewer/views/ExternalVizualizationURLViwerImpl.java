@@ -3,7 +3,6 @@
  */
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.callbacks.LoadGenomeInCoGeCallback;
@@ -103,13 +102,13 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
         if (infoType.equals(InfoType.NEXUS.toString()) || infoType.equals(InfoType.NEXML.toString())
                 || infoType.equals(InfoType.NEWICK.toString())
                 || infoType.equals(InfoType.PHYLOXML.toString())) {
-            TextButton button = new TextButton(I18N.DISPLAY.refresh(),
+            TextButton button = new TextButton(org.iplantc.de.resources.client.messages.I18N.DISPLAY.refresh(),
                     IplantResources.RESOURCES.refresh());
             button.addSelectHandler(new SelectHandler() {
 
                 @Override
                 public void onSelect(SelectEvent event) {
-                    mask(I18N.DISPLAY.loadingMask());
+                    mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
                     Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), true, new TreeUrlCallback(
                             file, ExternalVizualizationURLViwerImpl.this,
                             ExternalVizualizationURLViwerImpl.this));
@@ -125,7 +124,7 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
 
                 @Override
                 public void onSelect(SelectEvent event) {
-                    mask(I18N.DISPLAY.loadingMask());
+                    mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
                     JSONObject obj = new JSONObject();
                     JSONArray pathArr = new JSONArray();
                     pathArr.set(0, new JSONString(file.getPath()));
@@ -143,7 +142,7 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
         VizUrlProperties props = GWT.create(VizUrlProperties.class);
         List<ColumnConfig<VizUrl, ?>> configs = new LinkedList<ColumnConfig<VizUrl, ?>>();
         ColumnConfig<VizUrl, String> label = new ColumnConfig<VizUrl, String>(props.label(), 75);
-        label.setHeader(I18N.DISPLAY.label());
+        label.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.label());
         configs.add(label);
 
         ColumnConfig<VizUrl, VizUrl> url = new ColumnConfig<VizUrl, VizUrl>(
@@ -168,7 +167,7 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
 
     @Override
     public String getViewName() {
-        return I18N.DISPLAY.visualization() + ":" + file.getName();
+        return org.iplantc.de.resources.client.messages.I18N.DISPLAY.visualization() + ":" + file.getName();
     }
 
     @Override

@@ -1,11 +1,11 @@
 package org.iplantc.de.client.events;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.factories.EventJSONFactory;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;

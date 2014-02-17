@@ -1,6 +1,5 @@
 package org.iplantc.de.client.services.impl;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
@@ -51,7 +50,7 @@ public class FileSaveCallback implements AsyncCallback<String> {
     @Override
     public void onFailure(Throwable caught) {
         maskingContainer.unmask();
-        ErrorHandler.post(I18N.ERROR.fileUploadFailed(fileName), caught);
+        ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.fileUploadFailed(fileName), caught);
     }
 
 }

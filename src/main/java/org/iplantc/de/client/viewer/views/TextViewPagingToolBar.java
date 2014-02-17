@@ -1,6 +1,5 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
 import org.iplantc.de.resources.client.IplantResources;
 
@@ -28,9 +27,9 @@ public class TextViewPagingToolBar extends AbstractPagingToolbar {
         this.view = view;
         this.editing = editing;
         cbxWrap = new CheckBox();
-        cbxWrap.setBoxLabel(I18N.DISPLAY.wrap());
+        cbxWrap.setBoxLabel(org.iplantc.de.resources.client.messages.I18N.DISPLAY.wrap());
         add(cbxWrap);
-        saveBtn = new TextButton(I18N.DISPLAY.save(), IplantResources.RESOURCES.save());
+        saveBtn = new TextButton(org.iplantc.de.resources.client.messages.I18N.DISPLAY.save(), IplantResources.RESOURCES.save());
         add(saveBtn);
         saveBtn.addSelectHandler(new SelectHandler() {
 

@@ -1,6 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.analysis.models.AnalysisProperties;
 import org.iplantc.de.client.analysis.presenter.AnalysesPresenter;
 import org.iplantc.de.client.analysis.views.AnalysesView;
@@ -48,7 +47,7 @@ public class MyAnalysesWindow extends IplantWindowBase {
 
         this.eventBus = eventBus;
 
-        setTitle(I18N.DISPLAY.analyses());
+        setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.analyses());
         setSize("670", "375");
 
         AnalysisKeyProvider provider = new AnalysisKeyProvider();
@@ -85,13 +84,13 @@ public class MyAnalysesWindow extends IplantWindowBase {
         configs.add(expander);
 
         ColumnConfig<Analysis, Analysis> name = new ColumnConfig<Analysis, Analysis>(valueProvider, 100);
-        name.setHeader(I18N.DISPLAY.name());
+        name.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.name());
         configs.add(name);
         name.setMenuDisabled(true);
         name.setCell(new AnalysisNameCell(eventBus));
 
         ColumnConfig<Analysis, Analysis> app = new ColumnConfig<Analysis, Analysis>(valueProvider, 100);
-        app.setHeader(I18N.DISPLAY.appName());
+        app.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.appName());
         configs.add(app);
         app.setMenuDisabled(true);
         app.setCell(new AnalysisAppNameCell(eventBus));
@@ -99,17 +98,17 @@ public class MyAnalysesWindow extends IplantWindowBase {
         ColumnConfig<Analysis, Analysis> startdate = new ColumnConfig<Analysis, Analysis>(valueProvider,
                 150);
         startdate.setCell(new StartDateTimeCell());
-        startdate.setHeader(I18N.DISPLAY.startDate());
+        startdate.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.startDate());
         configs.add(startdate);
 
         ColumnConfig<Analysis, Analysis> enddate = new ColumnConfig<Analysis, Analysis>(valueProvider,
                 150);
         enddate.setCell(new EndDateTimeCell());
-        enddate.setHeader(I18N.DISPLAY.endDate());
+        enddate.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.endDate());
         configs.add(enddate);
 
         ColumnConfig<Analysis, String> status = new ColumnConfig<Analysis, String>(props.status(), 100);
-        status.setHeader(I18N.DISPLAY.status());
+        status.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.status());
         configs.add(status);
         status.setMenuDisabled(true);
 

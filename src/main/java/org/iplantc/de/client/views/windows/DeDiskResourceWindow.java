@@ -1,6 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.HasId;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -28,7 +27,7 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         super(null, null);
         presenter = DiskResourceInjector.INSTANCE.getDiskResourceViewPresenter();
 
-        setHeadingText(I18N.DISPLAY.data());
+        setHeadingText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.data());
         setSize("700", "375");
 
         // Create an empty

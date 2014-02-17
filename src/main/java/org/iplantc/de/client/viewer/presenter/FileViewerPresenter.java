@@ -1,6 +1,5 @@
 package org.iplantc.de.client.viewer.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.util.JsonUtil;
@@ -113,7 +112,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
 	@Override
 	public void composeView(JSONObject manifest) {
-		container.mask(I18N.DISPLAY.loadingMask());
+		container.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
 		String mimeType = JsonUtil.getString(manifest, "content-type");
 		ViewCommand cmd = MimeTypeViewerResolverFactory
 				.getViewerCommand(MimeType.fromTypeString(mimeType));
@@ -146,8 +145,8 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 					callTreeCreateService(vizViewers.get(0));
 				} else if (genomeViewer) {
 					final ConfirmMessageBox cmb = new ConfirmMessageBox(
-							I18N.DISPLAY.visualization(),
-							I18N.DISPLAY.cogePrompt());
+							org.iplantc.de.resources.client.messages.I18N.DISPLAY.visualization(),
+							org.iplantc.de.resources.client.messages.I18N.DISPLAY.cogePrompt());
 					cmb.addHideHandler(new HideHandler() {
 
 						@Override
@@ -171,7 +170,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 
 		if (viewers.size() == 0) {
 			container.unmask();
-			container.add(new HTML(I18N.DISPLAY.fileOpenMsg()));
+			container.add(new HTML(org.iplantc.de.resources.client.messages.I18N.DISPLAY.fileOpenMsg()));
 		}
 
 	}
@@ -190,13 +189,13 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 	 * Calls the tree URL service to fetch the URLs to display in the grid.
 	 */
 	public void callTreeCreateService(final FileViewer viewer) {
-		container.mask(I18N.DISPLAY.loadingMask());
+		container.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
 		Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), false,
 				new TreeUrlCallback(file, container, viewer));
 	}
 
 	private void loadInCoge(File file) {
-		container.mask(I18N.DISPLAY.loadingMask());
+		container.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
 		JSONObject obj = new JSONObject();
 		JSONArray pathArr = new JSONArray();
 		pathArr.set(0, new JSONString(file.getPath()));

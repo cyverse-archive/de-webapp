@@ -1,6 +1,5 @@
 package org.iplantc.de.client.viewer.callbacks;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.views.IsMaskable;
@@ -21,7 +20,7 @@ public class LoadGenomeInCoGeCallback implements AsyncCallback<String> {
     @Override
     public void onFailure(Throwable caught) {
         container.unmask();
-        ErrorHandler.post(I18N.ERROR.cogeError(), caught);
+        ErrorHandler.post(org.iplantc.de.resources.client.messages.I18N.ERROR.cogeError(), caught);
     }
 
     @Override
@@ -29,7 +28,7 @@ public class LoadGenomeInCoGeCallback implements AsyncCallback<String> {
         JSONObject resultObj = JsonUtil.getObject(result);
         String url = JsonUtil.getString(resultObj, "coge_genome_url");
         if (!Strings.isNullOrEmpty(url)) {
-            IplantInfoBox iib = new IplantInfoBox(I18N.DISPLAY.coge(), I18N.DISPLAY.cogeResponse(url));
+            IplantInfoBox iib = new IplantInfoBox(org.iplantc.de.resources.client.messages.I18N.DISPLAY.coge(), org.iplantc.de.resources.client.messages.I18N.DISPLAY.cogeResponse(url));
             iib.show();
         } else {
             onFailure(null);

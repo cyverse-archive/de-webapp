@@ -1,6 +1,5 @@
 package org.iplantc.de.client.sysmsgs.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.shared.ProvidesTime;
 
 import com.google.gwt.core.shared.GWT;
@@ -34,7 +33,7 @@ final class ActivationTimeRenderer implements Renderer<Date> {
         final Date now = CLOCK.now();
         String actMsg = "";
         if (CalendarUtil.isSameDate(now, activationTime)) {
-            actMsg = I18N.DISPLAY.today();
+            actMsg = org.iplantc.de.resources.client.messages.I18N.DISPLAY.today();
         } else if (withinPreviousWeek(now, activationTime)) {
             actMsg = DateTimeFormat.getFormat("cccc").format(activationTime);
         } else {

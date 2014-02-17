@@ -1,7 +1,6 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.AboutApplicationData;
 import org.iplantc.de.client.models.DeModelAutoBeanFactory;
 import org.iplantc.de.client.models.WindowState;
@@ -35,7 +34,7 @@ public class AboutApplicationWindow extends IplantWindowBase {
         super("");
         setSize("320", "260");
         setResizable(false);
-        setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
+        setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.aboutDiscoveryEnvironment());
         executeServiceCall();
         res = GWT.create(DeResources.class);
     }
@@ -80,7 +79,7 @@ public class AboutApplicationWindow extends IplantWindowBase {
 
         HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
                 model.getBuildNumber(), Window.Navigator.getUserAgent(), 
-                I18N.DISPLAY.projectCopyrightStatement().asString(), I18N.DISPLAY.nsfProjectText().asString()));
+                org.iplantc.de.resources.client.messages.I18N.DISPLAY.projectCopyrightStatement().asString(), org.iplantc.de.resources.client.messages.I18N.DISPLAY.nsfProjectText().asString()));
         pnlDetails.add(txt);
 
         return pnlDetails;

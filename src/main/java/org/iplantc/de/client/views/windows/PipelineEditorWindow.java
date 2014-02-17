@@ -1,6 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.PipelineEditorWindowConfig;
@@ -29,7 +28,7 @@ public class PipelineEditorWindow extends IplantWindowBase {
     public PipelineEditorWindow(WindowConfig config) {
         super(null, null);
 
-        setHeadingText(I18N.DISPLAY.pipeline());
+        setHeadingText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.pipeline());
         setSize("900", "500"); //$NON-NLS-1$ //$NON-NLS-2$
         setMinWidth(640);
         setMinHeight(440);
@@ -61,7 +60,7 @@ public class PipelineEditorWindow extends IplantWindowBase {
     class PublishCallbackCommand implements Command {
         @Override
         public void execute() {
-            IplantAnnouncer.getInstance().schedule(new SuccessAnnouncementConfig(I18N.DISPLAY.publishWorkflowSuccess()));
+            IplantAnnouncer.getInstance().schedule(new SuccessAnnouncementConfig(org.iplantc.de.resources.client.messages.I18N.DISPLAY.publishWorkflowSuccess()));
             if (close_after_save) {
                 close_after_save = false;
                 PipelineEditorWindow.super.hide();
@@ -89,10 +88,10 @@ public class PipelineEditorWindow extends IplantWindowBase {
     }
 
     private void checkForSave() {
-        MessageBox box = new MessageBox(I18N.DISPLAY.save(), "");
+        MessageBox box = new MessageBox(org.iplantc.de.resources.client.messages.I18N.DISPLAY.save(), "");
         box.setPredefinedButtons(PredefinedButton.YES, PredefinedButton.NO, PredefinedButton.CANCEL);
         box.setIcon(MessageBox.ICONS.question());
-        box.setMessage(I18N.DISPLAY.unsavedChanges());
+        box.setMessage(org.iplantc.de.resources.client.messages.I18N.DISPLAY.unsavedChanges());
         box.addHideHandler(new HideHandler() {
 
             @Override

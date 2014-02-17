@@ -3,7 +3,6 @@
  */
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.notifications.NotificationCategory;
 import org.iplantc.de.client.models.notifications.NotificationMessage;
@@ -41,7 +40,7 @@ public class NotificationWindow extends IplantWindowBase {
 
     public NotificationWindow(NotifyWindowConfig config) {
         super(null, null);
-        setTitle(I18N.DISPLAY.notifications());
+        setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.notifications());
         NotificationKeyProvider keyProvider = new NotificationKeyProvider();
         ListStore<NotificationMessage> store = new ListStore<NotificationMessage>(keyProvider);
         ColumnModel<NotificationMessage> cm = buildNotificationColumnModel();
@@ -67,14 +66,14 @@ public class NotificationWindow extends IplantWindowBase {
 
         ColumnConfig<NotificationMessage, NotificationCategory> colCategory = new ColumnConfig<NotificationMessage, NotificationCategory>(
                 props.category(), 100);
-        colCategory.setHeader(I18N.DISPLAY.category());
+        colCategory.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.category());
         configs.add(colCategory);
         colCategory.setMenuDisabled(true);
         colCategory.setSortable(false);
 
         ColumnConfig<NotificationMessage, NotificationMessage> colMessage = new ColumnConfig<NotificationMessage, NotificationMessage>(
                 new IdentityValueProvider<NotificationMessage>(), 420);
-        colMessage.setHeader(I18N.DISPLAY.messagesGridHeader());
+        colMessage.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.messagesGridHeader());
         colMessage.setCell(new NotificationMessageCell());
         configs.add(colMessage);
         colMessage.setSortable(false);
@@ -100,7 +99,7 @@ public class NotificationWindow extends IplantWindowBase {
                 }, 170);
         colTimestamp.setCell(new DateCell(DateTimeFormat
                 .getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM)));
-        colTimestamp.setHeader(I18N.DISPLAY.createdDateGridHeader());
+        colTimestamp.setHeader(org.iplantc.de.resources.client.messages.I18N.DISPLAY.createdDateGridHeader());
 
         configs.add(colTimestamp);
         ColumnModel<NotificationMessage> columnModel = new ColumnModel<NotificationMessage>(configs);

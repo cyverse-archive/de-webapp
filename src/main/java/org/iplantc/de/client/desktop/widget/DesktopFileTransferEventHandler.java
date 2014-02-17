@@ -1,7 +1,6 @@
 package org.iplantc.de.client.desktop.widget;
 
 import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
@@ -27,6 +26,7 @@ import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent;
 import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent.RequestSimpleUploadEventHandler;
 import org.iplantc.de.diskResource.client.views.dialogs.FileUploadByUrlDialog;
 import org.iplantc.de.diskResource.client.views.dialogs.SimpleFileUploadDialog;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.UriUtils;

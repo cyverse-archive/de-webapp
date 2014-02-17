@@ -1,6 +1,5 @@
 package org.iplantc.de.client.preferences.presenter;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.UserSettings;
 import org.iplantc.de.client.preferences.views.PreferencesView;
 import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
@@ -8,6 +7,7 @@ import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
 import org.iplantc.de.commons.client.info.SuccessAnnouncementConfig;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
@@ -44,7 +44,7 @@ public class PreferencesPresenterImpl implements Presenter {
                 @Override
                 public void onSuccess(String result) {
                     IplantAnnouncer.getInstance().schedule(
-                            new SuccessAnnouncementConfig(I18N.DISPLAY.saveSettings()));
+new SuccessAnnouncementConfig(I18N.DISPLAY.saveSettings()));
                 }
 
                 @Override

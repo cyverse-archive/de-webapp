@@ -1,6 +1,5 @@
 package org.iplantc.de.client.utils.builders.event.json;
 
-import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.util.JsonUtil;
@@ -33,12 +32,12 @@ public class UploadEventJSONBuilder extends AbstractEventJSONBuilder {
         String filename = file.as().getName();
 
         if (!filename.isEmpty()) {
-            return I18N.DISPLAY.fileUploadSuccess(filename);
+            return org.iplantc.de.resources.client.messages.I18N.DISPLAY.fileUploadSuccess(filename);
         }
 
         String sourceUrl = JsonUtil.getString(jsonObj, "sourceUrl"); //$NON-NLS-1$
 
-        return I18N.ERROR.importFailed(sourceUrl);
+        return org.iplantc.de.resources.client.messages.I18N.ERROR.importFailed(sourceUrl);
     }
 
     @Override
