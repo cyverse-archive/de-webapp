@@ -6,7 +6,7 @@ package org.iplantc.de.client.analysis.views.cells;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.analysis.AnalysisParameter;
-import org.iplantc.de.client.models.apps.ArgumentType;
+import org.iplantc.de.client.models.apps.integration.ArgumentType;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.util.JsonUtil;

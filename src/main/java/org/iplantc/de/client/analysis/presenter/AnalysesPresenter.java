@@ -18,7 +18,7 @@ import org.iplantc.de.client.models.analysis.Analysis;
 import org.iplantc.de.client.models.analysis.AnalysisExecutionStatus;
 import org.iplantc.de.client.models.analysis.AnalysisParameter;
 import org.iplantc.de.client.models.analysis.AnalysisParametersList;
-import org.iplantc.de.client.models.apps.ArgumentType;
+import org.iplantc.de.client.models.apps.integration.ArgumentType;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;

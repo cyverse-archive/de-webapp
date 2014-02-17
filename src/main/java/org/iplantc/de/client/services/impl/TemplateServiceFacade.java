@@ -1,10 +1,10 @@
 package org.iplantc.de.client.services.impl;
 
-import org.iplantc.de.apps.client.models.autobeans.AppGroup;
 import org.iplantc.de.apps.client.services.AppGroupListCallbackConverter;
 import org.iplantc.de.apps.client.services.AppUserServiceFacade;
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.apps.AppGroup;
 import org.iplantc.de.client.services.DEServiceFacade;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;

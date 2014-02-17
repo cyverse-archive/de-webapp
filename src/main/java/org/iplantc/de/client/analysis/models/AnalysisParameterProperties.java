@@ -4,7 +4,7 @@
 package org.iplantc.de.client.analysis.models;
 
 import org.iplantc.de.client.models.analysis.AnalysisParameter;
-import org.iplantc.de.client.models.apps.ArgumentType;
+import org.iplantc.de.client.models.apps.integration.ArgumentType;
 
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
