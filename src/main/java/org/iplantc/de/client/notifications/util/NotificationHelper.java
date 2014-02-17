@@ -1,21 +1,22 @@
 package org.iplantc.de.client.notifications.util;
 
-import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.CommonModelAutoBeanFactory;
 import org.iplantc.de.client.models.HasId;
+import org.iplantc.de.client.models.analysis.AnalysesAutoBeanFactory;
+import org.iplantc.de.client.models.analysis.Analysis;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
 import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.models.notifications.NotificationAutoBeanFactory;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
+import org.iplantc.de.client.models.notifications.payload.PayloadToolRequest;
+import org.iplantc.de.client.models.toolRequest.ToolRequestHistory;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
-import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
-import org.iplantc.de.client.notifications.models.NotificationMessage;
-import org.iplantc.de.client.notifications.models.payload.PayloadToolRequest;
 import org.iplantc.de.client.notifications.views.dialogs.ToolRequestHistoryDialog;
 import org.iplantc.de.client.util.DiskResourceUtil;
 import org.iplantc.de.client.util.JsonUtil;
@@ -45,54 +46,6 @@ import java.util.List;
  *
  */
 public class NotificationHelper {
-    /**
-     * Represents a notification category.
-     *
-     * XXX JDS If these enum fields were the same name as what comes in (e.g. ANALYSIS could be
-     * Analysis), then they could be deserialized directly into the autobean.
-     */
-    public enum Category {
-        /** All notification categories */
-        ALL(I18N.CONSTANT.notificationCategoryAll()),
-        /** System notifications */
-        SYSTEM(I18N.CONSTANT.notificationCategorySystem()),
-        /** Data notifications */
-        DATA(I18N.CONSTANT.notificationCategoryData()),
-        /** Analysis notifications */
-        ANALYSIS(I18N.CONSTANT.notificationCategoryAnalysis()),
-
-        /** tool rquest status update notification */
-        TOOLREQUEST(I18N.CONSTANT.toolRequest()),
-
-        /** unseen notifications */
-        NEW(I18N.CONSTANT.notificationCategoryUnseen());
-
-        private String displayText;
-
-        private Category(String displayText) {
-            this.displayText = displayText;
-        }
-
-        /**
-         * Null-safe and case insensitive variant of valueOf(String)
-         *
-         * @param typeString
-         * @return
-         */
-        public static Category fromTypeString(String typeString) {
-            if (typeString == null || typeString.isEmpty()) {
-                return null;
-            }
-            String temp = typeString.replaceAll("\\s", "");
-            return valueOf(temp.toUpperCase());
-        }
-
-        @Override
-        public String toString() {
-            return displayText;
-        }
-    }
-
     private static NotificationHelper instance = null;
 
     private int total;
@@ -114,7 +67,7 @@ public class NotificationHelper {
         }
 
         // did we get a category?
-        NotificationHelper.Category category = msg.getCategory();
+        NotificationCategory category = msg.getCategory();
         if (category == null) {
             return;
         }

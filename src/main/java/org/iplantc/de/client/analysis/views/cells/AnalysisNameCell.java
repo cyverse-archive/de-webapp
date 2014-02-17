@@ -1,10 +1,10 @@
 package org.iplantc.de.client.analysis.views.cells;
 
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
 import org.iplantc.de.client.models.CommonModelAutoBeanFactory;
 import org.iplantc.de.client.models.HasId;
+import org.iplantc.de.client.models.analysis.Analysis;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.DiskResourceWindowConfig;
 

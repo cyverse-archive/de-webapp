@@ -20,7 +20,7 @@ import org.iplantc.de.client.models.UserSettings;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
 import org.iplantc.de.client.models.diskResources.Folder;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.services.DEServiceFacade;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
@@ -554,7 +554,7 @@ public class DEPresenter implements DEView.Presenter {
 
         @Override
         public void execute() {
-            eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(Category.ALL)));
+            eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(NotificationCategory.ALL)));
 
         }
 

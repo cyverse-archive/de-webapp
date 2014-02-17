@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.analysis.views.cells;
 
-import org.iplantc.de.client.analysis.models.AnalysisParameter;
+import org.iplantc.de.client.models.analysis.AnalysisParameter;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;

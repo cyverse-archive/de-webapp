@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.events;
 
-import org.iplantc.de.client.notifications.models.Notification;
+import org.iplantc.de.client.models.notifications.Notification;
 
 import com.google.gwt.event.shared.GwtEvent;
 

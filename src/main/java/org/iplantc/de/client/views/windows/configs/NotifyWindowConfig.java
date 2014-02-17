@@ -1,10 +1,10 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
 
 public interface NotifyWindowConfig extends WindowConfig {
 
-    Category getSortCategory();
+    NotificationCategory getSortCategory();
 
-    void setSortCategory(Category category);
+    void setSortCategory(NotificationCategory category);
 }

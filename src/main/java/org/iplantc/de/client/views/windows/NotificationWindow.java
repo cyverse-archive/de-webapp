@@ -5,10 +5,10 @@ package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.models.WindowState;
-import org.iplantc.de.client.notifications.models.NotificationMessage;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
 import org.iplantc.de.client.notifications.models.NotificationMessageProperties;
 import org.iplantc.de.client.notifications.presenter.NotificationPresenter;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.notifications.views.NotificationView;
 import org.iplantc.de.client.notifications.views.NotificationViewImpl;
 import org.iplantc.de.client.notifications.views.cells.NotificationMessageCell;
@@ -65,9 +65,9 @@ public class NotificationWindow extends IplantWindowBase {
         ColumnConfig colCheckBox = checkBoxModel.getColumn();
         configs.add(colCheckBox);
 
-        ColumnConfig<NotificationMessage, Category> colCategory = new ColumnConfig<NotificationMessage, Category>(
+        ColumnConfig<NotificationMessage, NotificationCategory> colCategory = new ColumnConfig<NotificationMessage, NotificationCategory>(
                 props.category(), 100);
-        colCategory.setHeader(I18N.CONSTANT.category());
+        colCategory.setHeader(I18N.DISPLAY.category());
         configs.add(colCategory);
         colCategory.setMenuDisabled(true);
         colCategory.setSortable(false);

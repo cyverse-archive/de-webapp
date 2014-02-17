@@ -1,6 +1,6 @@
 package org.iplantc.de.client.notifications.views.cells;
 
-import org.iplantc.de.apps.client.models.toolrequest.ToolRequestStatus;
+import org.iplantc.de.client.models.toolRequest.ToolRequestStatus;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;

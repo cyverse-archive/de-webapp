@@ -1,7 +1,7 @@
 package org.iplantc.de.client.notifications.views;
 
-import org.iplantc.de.client.notifications.models.NotificationMessage;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -20,7 +20,7 @@ public interface NotificationView extends IsWidget {
          * 
          * @param category
          */
-        public void filterBy(Category category);
+        public void filterBy(NotificationCategory category);
 
         /**
          * get default paging config
@@ -37,7 +37,7 @@ public interface NotificationView extends IsWidget {
 
         void setRefreshButton(TextButton refreshBtn);
 
-        Category getCurrentCategory();
+        NotificationCategory getCurrentCategory();
     }
 
     /**

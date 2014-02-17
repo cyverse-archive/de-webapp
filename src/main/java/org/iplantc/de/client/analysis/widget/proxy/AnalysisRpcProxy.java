@@ -1,12 +1,12 @@
 package org.iplantc.de.client.analysis.widget.proxy;
 
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
-import org.iplantc.de.client.analysis.models.AnalysesList;
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.views.AnalysesView;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
 import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.analysis.AnalysesAutoBeanFactory;
+import org.iplantc.de.client.models.analysis.AnalysesList;
+import org.iplantc.de.client.models.analysis.Analysis;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.resources.client.messages.I18N;
 

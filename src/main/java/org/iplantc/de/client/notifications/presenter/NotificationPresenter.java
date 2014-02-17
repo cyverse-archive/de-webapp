@@ -3,13 +3,13 @@ package org.iplantc.de.client.notifications.presenter;
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.models.notifications.Notification;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
-import org.iplantc.de.client.notifications.models.Notification;
-import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.notifications.views.NotificationToolbarView;
 import org.iplantc.de.client.notifications.views.NotificationToolbarViewImpl;
 import org.iplantc.de.client.notifications.views.NotificationView;
@@ -55,7 +55,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     private final NotificationToolbarView toolbar;
 
     private PagingLoadResult<NotificationMessage> callbackResult;
-    private Category currentCategory;
+    private NotificationCategory currentCategory;
 
     public NotificationPresenter(NotificationView view) {
         this.view = view;
@@ -65,7 +65,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
         this.view.setPresenter(this);
         setRefreshButton(view.getRefreshButton());
         // set default cat
-        currentCategory = Category.ALL;
+        currentCategory = NotificationCategory.ALL;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
                     String cat = (fc_list.get(0).getField() != null ? fc_list.get(0).getField()
                             .toLowerCase() : null);
                     if ((!Strings.isNullOrEmpty(cat))) {
-                        if (cat.equalsIgnoreCase(Category.NEW.toString())) {
+                        if (cat.equalsIgnoreCase(NotificationCategory.NEW.toString())) {
                             loadConfig.setOffset(0);
                         }
                     }
@@ -112,7 +112,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     }
 
     @Override
-    public void filterBy(Category category) {
+    public void filterBy(NotificationCategory category) {
         currentCategory = category;
         toolbar.setCurrentCategory(category);
         FilterPagingLoadConfig config = view.getCurrentLoadConfig();
@@ -194,7 +194,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     }
 
     @Override
-    public void onFilterSelection(Category cat) {
+    public void onFilterSelection(NotificationCategory cat) {
         filterBy(cat);
     }
 
@@ -241,7 +241,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     }
 
     @Override
-    public Category getCurrentCategory() {
+    public NotificationCategory getCurrentCategory() {
         return currentCategory;
     }
 }

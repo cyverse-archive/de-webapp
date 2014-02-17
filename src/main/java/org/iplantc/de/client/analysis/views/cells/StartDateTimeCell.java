@@ -1,6 +1,6 @@
 package org.iplantc.de.client.analysis.views.cells;
 
-import org.iplantc.de.client.analysis.models.Analysis;
+import org.iplantc.de.client.models.analysis.Analysis;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;

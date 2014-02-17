@@ -5,7 +5,7 @@ package org.iplantc.de.client.notifications.views;
 
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
-import org.iplantc.de.client.notifications.models.NotificationMessage;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

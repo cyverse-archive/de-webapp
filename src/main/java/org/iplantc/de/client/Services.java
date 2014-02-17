@@ -4,10 +4,10 @@ import org.iplantc.de.client.analysis.services.AnalysisServiceFacade;
 import org.iplantc.de.client.desktop.services.DEFeedbackServiceFacade;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.services.FileEditorServiceFacade;
 import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.services.impl.FileEditorServiceFacadeImpl;
 import org.iplantc.de.commons.client.gin.ServicesInjector;
-import org.iplantc.de.diskResource.client.services.FileEditorServiceFacade;
 
 public class Services {
 

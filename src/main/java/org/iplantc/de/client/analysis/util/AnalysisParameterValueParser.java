@@ -1,9 +1,9 @@
 package org.iplantc.de.client.analysis.util;
 
-import org.iplantc.de.client.analysis.models.AnalysesAutoBeanFactory;
-import org.iplantc.de.client.analysis.models.AnalysisParameter;
-import org.iplantc.de.client.analysis.models.SelectionValue;
-import org.iplantc.de.client.analysis.models.SimpleValue;
+import org.iplantc.de.client.models.analysis.AnalysesAutoBeanFactory;
+import org.iplantc.de.client.models.analysis.AnalysisParameter;
+import org.iplantc.de.client.models.analysis.SelectionValue;
+import org.iplantc.de.client.models.analysis.SimpleValue;
 import org.iplantc.de.client.models.apps.ArgumentType;
 import org.iplantc.de.client.util.AppTemplateUtils;
 

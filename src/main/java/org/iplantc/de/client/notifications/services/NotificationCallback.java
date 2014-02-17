@@ -2,13 +2,13 @@ package org.iplantc.de.client.notifications.services;
 
 import org.iplantc.de.client.models.CommonModelUtils;
 import org.iplantc.de.client.models.diskResources.File;
-import org.iplantc.de.client.notifications.models.Notification;
-import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
-import org.iplantc.de.client.notifications.models.NotificationList;
-import org.iplantc.de.client.notifications.models.NotificationMessage;
-import org.iplantc.de.client.notifications.models.payload.PayloadAnalysis;
-import org.iplantc.de.client.notifications.models.payload.PayloadData;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.Notification;
+import org.iplantc.de.client.models.notifications.NotificationAutoBeanFactory;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
+import org.iplantc.de.client.models.notifications.NotificationList;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
+import org.iplantc.de.client.models.notifications.payload.PayloadAnalysis;
+import org.iplantc.de.client.models.notifications.payload.PayloadData;
 import org.iplantc.de.commons.client.ErrorHandler;
 
 import com.google.gwt.core.client.GWT;
@@ -36,7 +36,7 @@ public class NotificationCallback implements AsyncCallback<String> {
         List<Notification> notifications = bean.as().getNotifications();
         for (Notification n : notifications) {
             NotificationMessage msg = n.getMessage();
-            msg.setCategory(Category.fromTypeString(n.getCategory()));
+            msg.setCategory(NotificationCategory.fromTypeString(n.getCategory()));
             Splittable payload = n.getNotificationPayload();
 
             if (payload == null) {

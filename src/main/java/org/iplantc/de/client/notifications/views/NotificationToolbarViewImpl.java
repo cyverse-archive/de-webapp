@@ -3,8 +3,7 @@
  */
 package org.iplantc.de.client.notifications.views;
 
-import org.iplantc.de.client.notifications.util.NotificationHelper;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -46,8 +45,8 @@ public class NotificationToolbarViewImpl implements NotificationToolbarView {
     ToolBar menuToolBar;
 
     @UiField(provided = true)
-    SimpleComboBox<Category> cboFilter = new SimpleComboBox<Category>(
-            new StringLabelProvider<Category>());
+    SimpleComboBox<NotificationCategory> cboFilter = new SimpleComboBox<NotificationCategory>(
+            new StringLabelProvider<NotificationCategory>());
 
     public NotificationToolbarViewImpl() {
         widget = uiBinder.createAndBindUi(this);
@@ -56,15 +55,15 @@ public class NotificationToolbarViewImpl implements NotificationToolbarView {
     }
 
     private void initFilters() {
-        cboFilter.add(Category.NEW);
-        cboFilter.add(Category.ALL);
-        cboFilter.add(Category.ANALYSIS);
-        cboFilter.add(Category.DATA);
-        cboFilter.add(Category.TOOLREQUEST);
-        cboFilter.setValue(Category.ALL);
-        cboFilter.addSelectionHandler(new SelectionHandler<NotificationHelper.Category>() {
+        cboFilter.add(NotificationCategory.NEW);
+        cboFilter.add(NotificationCategory.ALL);
+        cboFilter.add(NotificationCategory.ANALYSIS);
+        cboFilter.add(NotificationCategory.DATA);
+        cboFilter.add(NotificationCategory.TOOLREQUEST);
+        cboFilter.setValue(NotificationCategory.ALL);
+        cboFilter.addSelectionHandler(new SelectionHandler<NotificationCategory>() {
             @Override
-            public void onSelection(SelectionEvent<Category> event) {
+            public void onSelection(SelectionEvent<NotificationCategory> event) {
                 presenter.onFilterSelection(event.getSelectedItem());
             }
         });
@@ -104,7 +103,7 @@ public class NotificationToolbarViewImpl implements NotificationToolbarView {
     }
 
     @Override
-    public void setCurrentCategory(Category category) {
+    public void setCurrentCategory(NotificationCategory category) {
         cboFilter.setValue(category);
     }
 }

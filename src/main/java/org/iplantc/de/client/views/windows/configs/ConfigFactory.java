@@ -3,7 +3,7 @@ package org.iplantc.de.client.views.windows.configs;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.WindowType;
 import org.iplantc.de.client.models.diskResources.File;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -85,7 +85,7 @@ public class ConfigFactory {
         return idlwc;
     }
 
-    public static NotifyWindowConfig notifyWindowConfig(Category category) {
+    public static NotifyWindowConfig notifyWindowConfig(NotificationCategory category) {
         NotifyWindowConfig nwc = applyWindowType(WindowType.NOTIFICATIONS, factory.notifyWindowConfig())
                 .as();
         nwc.setSortCategory(category);

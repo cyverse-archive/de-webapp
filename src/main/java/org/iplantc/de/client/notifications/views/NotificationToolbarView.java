@@ -1,6 +1,6 @@
 package org.iplantc.de.client.notifications.views;
 
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -16,7 +16,7 @@ public interface NotificationToolbarView extends IsWidget {
 
     public interface Presenter {
 
-        void onFilterSelection(Category cat);
+        void onFilterSelection(NotificationCategory cat);
 
         void onDeleteClicked();
 
@@ -30,6 +30,6 @@ public interface NotificationToolbarView extends IsWidget {
 
     void setRefreshButton(TextButton refreshBtn);
 
-    void setCurrentCategory(Category category);
+    void setCurrentCategory(NotificationCategory category);
 
 }

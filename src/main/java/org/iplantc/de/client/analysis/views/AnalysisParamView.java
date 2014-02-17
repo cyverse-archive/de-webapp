@@ -2,7 +2,7 @@ package org.iplantc.de.client.analysis.views;
 
 import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.analysis.models.AnalysisParameter;
+import org.iplantc.de.client.models.analysis.AnalysisParameter;
 import org.iplantc.de.client.services.impl.FileSaveCallback;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.de.diskResource.client.views.dialogs.SaveAsDialog;

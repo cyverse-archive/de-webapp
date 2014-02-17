@@ -3,6 +3,7 @@
  */
 package org.iplantc.de.client.analysis.models;
 
+import org.iplantc.de.client.models.analysis.AnalysisParameter;
 import org.iplantc.de.client.models.apps.ArgumentType;
 
 import com.sencha.gxt.core.client.ValueProvider;

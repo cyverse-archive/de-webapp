@@ -3,9 +3,9 @@
  */
 package org.iplantc.de.client.analysis.views;
 
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
 import org.iplantc.de.client.analysis.widget.proxy.AnalysisRpcProxy;
+import org.iplantc.de.client.models.analysis.Analysis;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

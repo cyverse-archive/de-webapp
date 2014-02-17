@@ -2,8 +2,8 @@ package org.iplantc.de.client.notifications.services;
 
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.UserInfo;
-import org.iplantc.de.client.notifications.models.Counts;
-import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
+import org.iplantc.de.client.models.notifications.Counts;
+import org.iplantc.de.client.models.notifications.NotificationAutoBeanFactory;
 import org.iplantc.de.client.services.AsyncCallbackConverter;
 import org.iplantc.de.client.services.DEServiceFacade;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;

@@ -3,7 +3,7 @@ package org.iplantc.de.client.services.impl;
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.UserInfo;
-import org.iplantc.de.diskResource.client.services.FileEditorServiceFacade;
+import org.iplantc.de.client.services.FileEditorServiceFacade;
 import org.iplantc.de.shared.SharedServiceFacade;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;

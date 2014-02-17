@@ -8,17 +8,17 @@ import org.iplantc.de.client.I18N;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.models.notifications.Notification;
+import org.iplantc.de.client.models.notifications.NotificationAutoBeanFactory;
+import org.iplantc.de.client.models.notifications.NotificationCategory;
+import org.iplantc.de.client.models.notifications.NotificationMessage;
+import org.iplantc.de.client.models.notifications.payload.PayloadAnalysis;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
-import org.iplantc.de.client.notifications.models.Notification;
-import org.iplantc.de.client.notifications.models.NotificationAutoBeanFactory;
-import org.iplantc.de.client.notifications.models.NotificationMessage;
 import org.iplantc.de.client.notifications.models.NotificationMessageProperties;
-import org.iplantc.de.client.notifications.models.payload.PayloadAnalysis;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
-import org.iplantc.de.client.notifications.util.NotificationHelper.Category;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -285,7 +285,7 @@ public class NotificationListView implements IsWidget {
     }
 
     private void displayNotificationPopup(NotificationMessage msg) {
-        if (Category.ANALYSIS.equals(msg.getCategory())) {
+        if (NotificationCategory.ANALYSIS.equals(msg.getCategory())) {
             PayloadAnalysis analysisPayload = AutoBeanCodex.decode(notificationFactory,
                     PayloadAnalysis.class, msg.getContext()).as();
 
@@ -362,9 +362,9 @@ public class NotificationListView implements IsWidget {
             @Override
             public void onClick(ClickEvent event) {
                 if (total_unseen > 0) {
-                    showNotificationWindow(NotificationHelper.Category.NEW);
+                    showNotificationWindow(NotificationCategory.NEW);
                 } else {
-                    showNotificationWindow(NotificationHelper.Category.ALL);
+                    showNotificationWindow(NotificationCategory.ALL);
                 }
 
             }
@@ -373,7 +373,7 @@ public class NotificationListView implements IsWidget {
     }
 
     /** Makes the notification window visible and filters by a category */
-    private void showNotificationWindow(final Category category) {
+    private void showNotificationWindow(final NotificationCategory category) {
         eventBus.fireEvent(new WindowShowRequestEvent(ConfigFactory.notifyWindowConfig(category)));
     }
 

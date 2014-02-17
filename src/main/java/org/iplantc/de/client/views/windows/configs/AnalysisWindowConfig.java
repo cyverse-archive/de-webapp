@@ -1,6 +1,6 @@
 package org.iplantc.de.client.views.windows.configs;
 
-import org.iplantc.de.client.analysis.models.Analysis;
+import org.iplantc.de.client.models.analysis.Analysis;
 
 import java.util.List;
 

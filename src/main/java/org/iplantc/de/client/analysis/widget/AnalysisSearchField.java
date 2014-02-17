@@ -1,6 +1,6 @@
 package org.iplantc.de.client.analysis.widget;
 
-import org.iplantc.de.client.analysis.models.Analysis;
+import org.iplantc.de.client.models.analysis.Analysis;
 import org.iplantc.de.commons.client.widgets.SearchField;
 
 import com.sencha.gxt.data.shared.loader.FilterConfig;

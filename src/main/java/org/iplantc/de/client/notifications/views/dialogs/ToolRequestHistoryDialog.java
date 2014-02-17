@@ -1,8 +1,8 @@
 package org.iplantc.de.client.notifications.views.dialogs;
 
-import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistory;
 import org.iplantc.de.apps.client.models.toolrequest.ToolRequestHistoryProperties;
-import org.iplantc.de.apps.client.models.toolrequest.ToolRequestStatus;
+import org.iplantc.de.client.models.toolRequest.ToolRequestHistory;
+import org.iplantc.de.client.models.toolRequest.ToolRequestStatus;
 import org.iplantc.de.client.notifications.views.cells.ToolRequestStatusCell;
 import org.iplantc.de.commons.client.widgets.ContextualHelpPopup;
 import org.iplantc.de.resources.client.IplantResources;

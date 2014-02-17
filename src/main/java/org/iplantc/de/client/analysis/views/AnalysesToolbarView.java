@@ -3,8 +3,8 @@
  */
 package org.iplantc.de.client.analysis.views;
 
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
+import org.iplantc.de.client.models.analysis.Analysis;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

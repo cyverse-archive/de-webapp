@@ -4,8 +4,8 @@
 package org.iplantc.de.client.analysis.views;
 
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.desktop.widget.DEPagingToolbar;
+import org.iplantc.de.client.models.analysis.Analysis;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;

@@ -1,7 +1,6 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.I18N;
-import org.iplantc.de.client.analysis.models.Analysis;
 import org.iplantc.de.client.analysis.models.AnalysisProperties;
 import org.iplantc.de.client.analysis.presenter.AnalysesPresenter;
 import org.iplantc.de.client.analysis.views.AnalysesView;
@@ -12,6 +11,7 @@ import org.iplantc.de.client.analysis.views.cells.EndDateTimeCell;
 import org.iplantc.de.client.analysis.views.cells.StartDateTimeCell;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.WindowState;
+import org.iplantc.de.client.models.analysis.Analysis;
 import org.iplantc.de.client.views.windows.configs.AnalysisWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;
