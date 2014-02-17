@@ -5,13 +5,13 @@ import org.iplantc.de.apps.widgets.client.events.AnalysisLaunchEvent.AnalysisLau
 import org.iplantc.de.apps.widgets.client.gin.AppLaunchInjector;
 import org.iplantc.de.apps.widgets.client.view.AppLaunchView;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
-import org.iplantc.de.client.models.CommonModelUtils;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.apps.integration.AppTemplate;
 import org.iplantc.de.client.models.apps.integration.AppTemplateAutoBeanFactory;
 import org.iplantc.de.client.services.AppTemplateServices;
 import org.iplantc.de.client.services.DeployedComponentServices;
 import org.iplantc.de.client.services.converters.AppTemplateCallbackConverter;
+import org.iplantc.de.client.util.CommonModelUtils;
 import org.iplantc.de.client.views.windows.configs.AppWizardConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.ErrorHandler;

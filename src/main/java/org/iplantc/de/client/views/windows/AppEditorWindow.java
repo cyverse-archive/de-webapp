@@ -8,7 +8,6 @@ import org.iplantc.de.apps.widgets.client.view.AppLaunchView.RenameWindowHeaderC
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
-import org.iplantc.de.client.models.CommonModelUtils;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.apps.App;
 import org.iplantc.de.client.models.apps.integration.AppTemplate;
@@ -20,6 +19,7 @@ import org.iplantc.de.client.services.AppTemplateServices;
 import org.iplantc.de.client.services.DeployedComponentServices;
 import org.iplantc.de.client.services.converters.AppTemplateCallbackConverter;
 import org.iplantc.de.client.util.AppTemplateUtils;
+import org.iplantc.de.client.util.CommonModelUtils;
 import org.iplantc.de.client.views.windows.configs.AppsIntegrationWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.client.views.windows.configs.WindowConfig;

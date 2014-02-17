@@ -1,6 +1,5 @@
 package org.iplantc.de.client.notifications.services;
 
-import org.iplantc.de.client.models.CommonModelUtils;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.models.notifications.Notification;
 import org.iplantc.de.client.models.notifications.NotificationAutoBeanFactory;
@@ -9,6 +8,7 @@ import org.iplantc.de.client.models.notifications.NotificationList;
 import org.iplantc.de.client.models.notifications.NotificationMessage;
 import org.iplantc.de.client.models.notifications.payload.PayloadAnalysis;
 import org.iplantc.de.client.models.notifications.payload.PayloadData;
+import org.iplantc.de.client.util.CommonModelUtils;
 import org.iplantc.de.commons.client.ErrorHandler;
 
 import com.google.gwt.core.client.GWT;
