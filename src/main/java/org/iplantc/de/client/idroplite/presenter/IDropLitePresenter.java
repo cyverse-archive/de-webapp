@@ -1,7 +1,7 @@
 package org.iplantc.de.client.idroplite.presenter;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
 import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
@@ -48,7 +48,7 @@ public class IDropLitePresenter implements Presenter {
     @Override
     public void buildUploadApplet() {
         view.mask();
-        Services.DISK_RESOURCE_SERVICE.upload(new IDropLiteServiceCallback() {
+        ServicesInjector.INSTANCE.getDiskResourceServiceFacade().upload(new IDropLiteServiceCallback() {
             @Override
             protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
                 int adjustSize = CONTENT_PADDING * 2;
@@ -67,7 +67,7 @@ public class IDropLitePresenter implements Presenter {
         view.mask();
 
         if (idlwc.isSelectAll()) {
-            Services.DISK_RESOURCE_SERVICE.downloadContents(idlwc.getCurrentFolder().getPath(),
+            ServicesInjector.INSTANCE.getDiskResourceServiceFacade().downloadContents(idlwc.getCurrentFolder().getPath(),
                     new IDropLiteServiceCallback() {
                         @Override
                         protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
@@ -82,7 +82,7 @@ public class IDropLitePresenter implements Presenter {
             HasPaths request = drFactory.pathsList().as();
             request.setPaths(DiskResourceUtil.asStringIdList(idlwc.getResourcesToDownload()));
 
-            Services.DISK_RESOURCE_SERVICE.download(request, new IDropLiteServiceCallback() {
+            ServicesInjector.INSTANCE.getDiskResourceServiceFacade().download(request, new IDropLiteServiceCallback() {
                 @Override
                 protected HtmlLayoutContainer buildAppletHtml(JSONObject appletData) {
                     int adjustSize = CONTENT_PADDING * 3;

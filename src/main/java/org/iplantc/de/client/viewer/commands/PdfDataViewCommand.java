@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.commands;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
@@ -25,8 +25,7 @@ public class PdfDataViewCommand implements ViewCommand {
         }
         if (fileId != null && !fileId.isEmpty()) {
             // // we got the url of the PDF file, so open it in a new window
-            WindowUtil
-                    .open(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(fileId) + "&attachment=0"); //$NON-NLS-1$
+            WindowUtil.open(ServicesInjector.INSTANCE.getFileEditorServiceFacade().getServletDownloadUrl(fileId) + "&attachment=0"); //$NON-NLS-1$
         }
 
         return null;

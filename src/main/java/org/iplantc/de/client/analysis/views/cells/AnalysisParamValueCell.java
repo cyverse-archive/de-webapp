@@ -3,8 +3,8 @@
  */
 package org.iplantc.de.client.analysis.views.cells;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.analysis.AnalysisParameter;
 import org.iplantc.de.client.models.apps.integration.ArgumentType;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
@@ -83,7 +83,7 @@ public class AnalysisParamValueCell extends AbstractCell<AnalysisParameter> {
         JSONArray arr = new JSONArray();
         arr.set(0, new JSONString(value.getDisplayValue()));
         obj.put("paths", arr);
-        Services.DISK_RESOURCE_SERVICE.getStat(obj.toString(), new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getDiskResourceServiceFacade().getStat(obj.toString(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {

@@ -5,6 +5,7 @@ import org.iplantc.de.apps.widgets.client.events.AnalysisLaunchEvent.AnalysisLau
 import org.iplantc.de.apps.widgets.client.gin.AppLaunchInjector;
 import org.iplantc.de.apps.widgets.client.view.AppLaunchView;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.apps.integration.AppTemplate;
 import org.iplantc.de.client.models.apps.integration.AppTemplateAutoBeanFactory;
@@ -57,10 +58,10 @@ public class AppLaunchWindow extends IplantWindowBase implements AnalysisLaunchE
     }
 
     private final AppLaunchView.Presenter presenter;
-    private final AppTemplateServices templateService = GWT.create(AppTemplateServices.class);
+    private final AppTemplateServices templateService = ServicesInjector.INSTANCE.getAppTemplateServices();
     private final String appId;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
-    private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
+    private final DeployedComponentServices dcServices = ServicesInjector.INSTANCE.getDeployedComponentServices();
 
     public AppLaunchWindow(AppWizardConfig config) {
         super(null, null);

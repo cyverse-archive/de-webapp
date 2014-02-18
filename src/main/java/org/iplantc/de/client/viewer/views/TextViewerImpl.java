@@ -3,10 +3,10 @@
  */
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.callbacks.FileSaveCallback;
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.diskResources.File;
-import org.iplantc.de.client.services.impl.FileSaveCallback;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.viewer.events.SaveFileEvent;
 import org.iplantc.de.client.viewer.events.SaveFileEvent.SaveFileEventHandler;
@@ -168,7 +168,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
     public void loadData() {
         String url = "read-chunk";
         con.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
-        Services.FILE_EDITOR_SERVICE.getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getFileEditorServiceFacade().getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
@@ -265,7 +265,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
                 public void onSelect(SelectEvent event) {
                     String destination = saveDialog.getSelectedFolder().getPath() + "/"
                             + saveDialog.getFileName();
-                    Services.FILE_EDITOR_SERVICE.uploadTextAsFile(destination, getEditorContent(jso),
+                    ServicesInjector.INSTANCE.getFileEditorServiceFacade().uploadTextAsFile(destination, getEditorContent(jso),
                             true, new FileSaveCallback(destination, true, con));
                 }
             });
@@ -279,7 +279,7 @@ public class TextViewerImpl extends AbstractFileViewer implements EditingSupport
             saveDialog.show();
             saveDialog.toFront();
         } else {
-            Services.FILE_EDITOR_SERVICE.uploadTextAsFile(file.getPath(), getEditorContent(jso), false,
+            ServicesInjector.INSTANCE.getFileEditorServiceFacade().uploadTextAsFile(file.getPath(), getEditorContent(jso), false,
                     new FileSaveCallback(file.getPath(), false, con));
         }
     }

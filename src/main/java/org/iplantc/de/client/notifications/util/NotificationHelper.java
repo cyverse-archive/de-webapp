@@ -1,9 +1,9 @@
 package org.iplantc.de.client.notifications.util;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.CommonModelAutoBeanFactory;
 import org.iplantc.de.client.models.HasId;
 import org.iplantc.de.client.models.analysis.AnalysesAutoBeanFactory;
@@ -135,7 +135,7 @@ public class NotificationHelper {
     private void doDelete(final List<NotificationMessage> notifications, final JSONObject json,
             final Command callback) {
         if (json != null) {
-            Services.MESSAGE_SERVICE.deleteMessages(json, new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getMessageServiceFacade().deleteMessages(json, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     ErrorHandler.post(I18N.ERROR.notificationDeletFail(), caught);
@@ -166,7 +166,7 @@ public class NotificationHelper {
             if (arr.size() > 0) {
                 JSONObject obj = new JSONObject();
                 obj.put("uuids", arr);
-                Services.MESSAGE_SERVICE.markAsSeen(obj, new AsyncCallback<String>() {
+                ServicesInjector.INSTANCE.getMessageServiceFacade().markAsSeen(obj, new AsyncCallback<String>() {
 
                     @Override
                     public void onSuccess(String result) {

@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.presenter;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.models.viewer.InfoType;
 import org.iplantc.de.client.models.viewer.MimeType;
@@ -46,7 +46,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 	/**
 	 * The manifest of file contents
 	 */
-	private JSONObject manifest;
+	private final JSONObject manifest;
 
 	private boolean treeViewer;
 
@@ -190,7 +190,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 	 */
 	public void callTreeCreateService(final FileViewer viewer) {
 		container.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
-		Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), false,
+        ServicesInjector.INSTANCE.getFileEditorServiceFacade().getTreeUrl(file.getId(), false,
 				new TreeUrlCallback(file, container, viewer));
 	}
 
@@ -200,7 +200,7 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 		JSONArray pathArr = new JSONArray();
 		pathArr.set(0, new JSONString(file.getPath()));
 		obj.put("paths", pathArr);
-		Services.FILE_EDITOR_SERVICE.viewGenomes(obj,
+        ServicesInjector.INSTANCE.getFileEditorServiceFacade().viewGenomes(obj,
 				new LoadGenomeInCoGeCallback(container));
 	}
 

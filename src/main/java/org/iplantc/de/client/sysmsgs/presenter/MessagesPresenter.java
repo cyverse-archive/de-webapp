@@ -2,11 +2,12 @@ package org.iplantc.de.client.sysmsgs.presenter;
 
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.sysMsgs.IdList;
 import org.iplantc.de.client.models.sysMsgs.Message;
 import org.iplantc.de.client.models.sysMsgs.MessageFactory;
 import org.iplantc.de.client.models.sysMsgs.MessageList;
-import org.iplantc.de.client.sysmsgs.services.Services;
+import org.iplantc.de.client.services.SystemMessageServiceFacade;
 import org.iplantc.de.client.sysmsgs.view.Factory;
 import org.iplantc.de.client.sysmsgs.view.MessagesView;
 import org.iplantc.de.commons.client.ErrorHandler;
@@ -33,7 +34,7 @@ public final class MessagesPresenter implements MessagesView.Presenter<Message> 
     }
 
     private static final MessageProperties MSG_PROPS = GWT.create(MessageProperties.class);
-    private static final Services services = GWT.create(Services.class);
+    private static final SystemMessageServiceFacade services = ServicesInjector.INSTANCE.getSystemMessageServiceFacade();
     private static final Factory VIEW_FACTORY = GWT.create(Factory.class);
     
     private final MessagesView<Message> view;

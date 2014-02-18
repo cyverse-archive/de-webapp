@@ -3,7 +3,7 @@
  */
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.IsMaskable;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.models.viewer.InfoType;
@@ -108,7 +108,8 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
                 @Override
                 public void onSelect(SelectEvent event) {
                     mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
-                    Services.FILE_EDITOR_SERVICE.getTreeUrl(file.getId(), true, new TreeUrlCallback(
+                    ServicesInjector.INSTANCE.getFileEditorServiceFacade().getTreeUrl(file.getId(), true,
+                            new TreeUrlCallback(
                             file, ExternalVizualizationURLViwerImpl.this,
                             ExternalVizualizationURLViwerImpl.this));
 
@@ -128,7 +129,7 @@ public class ExternalVizualizationURLViwerImpl extends AbstractFileViewer implem
                     JSONArray pathArr = new JSONArray();
                     pathArr.set(0, new JSONString(file.getPath()));
                     obj.put("paths", pathArr);
-                    Services.FILE_EDITOR_SERVICE.viewGenomes(obj, new LoadGenomeInCoGeCallback(
+                    ServicesInjector.INSTANCE.getFileEditorServiceFacade().viewGenomes(obj, new LoadGenomeInCoGeCallback(
                             ExternalVizualizationURLViwerImpl.this));
 
                 }

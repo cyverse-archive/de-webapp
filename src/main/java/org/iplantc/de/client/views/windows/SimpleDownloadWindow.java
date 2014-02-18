@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.DiskResource;
 import org.iplantc.de.client.util.DiskResourceUtil;
@@ -52,7 +52,7 @@ public class SimpleDownloadWindow extends IplantWindowBase {
 
                 @Override
                 public void onClick(ClickEvent event) {
-                    final String encodedSimpleDownloadURL = Services.DISK_RESOURCE_SERVICE.getEncodedSimpleDownloadURL(dr.getId());
+                    final String encodedSimpleDownloadURL = ServicesInjector.INSTANCE.getDiskResourceServiceFacade().getEncodedSimpleDownloadURL(dr.getId());
                     WindowUtil.open(encodedSimpleDownloadURL, "width=100,height=100");
                 }
             });

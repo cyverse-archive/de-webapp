@@ -3,7 +3,8 @@ package org.iplantc.de.client.sysmsgs.presenter;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.ShowSystemMessagesEvent;
-import org.iplantc.de.client.sysmsgs.services.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
+import org.iplantc.de.client.services.SystemMessageServiceFacade;
 import org.iplantc.de.client.sysmsgs.view.Factory;
 import org.iplantc.de.client.sysmsgs.view.NewMessageView;
 import org.iplantc.de.commons.client.ErrorHandler;
@@ -25,7 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public final class NewMessagePresenter implements NewMessageView.Presenter {
 
-    private static final Services SERVICES = GWT.create(Services.class);
+    private static final SystemMessageServiceFacade SERVICES = ServicesInjector.INSTANCE.getSystemMessageServiceFacade();
     private static final Factory VIEW_FACTORY = GWT.create(Factory.class);
     
     private final NewMessageView view;

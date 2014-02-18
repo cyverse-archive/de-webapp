@@ -1,4 +1,4 @@
-package org.iplantc.de.client.services.impl;
+package org.iplantc.de.client.callbacks;
 
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
 import org.iplantc.de.client.events.EventBus;

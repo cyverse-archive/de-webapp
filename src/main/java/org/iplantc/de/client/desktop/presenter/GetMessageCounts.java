@@ -4,8 +4,8 @@ import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NewSystemMessagesEvent;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.notifications.Counts;
-import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -19,7 +19,7 @@ final class GetMessageCounts implements Runnable {
      */
     @Override
     public void run() {
-        new MessageServiceFacade().getMessageCounts(new AsyncCallback<Counts>() {
+        ServicesInjector.INSTANCE.getMessageServiceFacade().getMessageCounts(new AsyncCallback<Counts>() {
             @Override
             public void onFailure(final Throwable caught) {
             }

@@ -1,9 +1,9 @@
 package org.iplantc.de.client.preferences.presenter;
 
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.UserSettings;
 import org.iplantc.de.client.preferences.views.PreferencesView;
 import org.iplantc.de.client.preferences.views.PreferencesView.Presenter;
-import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
 import org.iplantc.de.commons.client.info.SuccessAnnouncementConfig;
@@ -38,13 +38,11 @@ public class PreferencesPresenterImpl implements Presenter {
     public boolean validateAndSave() {
         if (view.isValid()) {
             UserSettings us = view.getValues();
-            UserSessionServiceFacade facade = new UserSessionServiceFacade();
-            facade.saveUserPreferences(us.asSplittable(), new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getUserSessionServiceFacade().saveUserPreferences(us.asSplittable(), new AsyncCallback<String>() {
 
                 @Override
                 public void onSuccess(String result) {
-                    IplantAnnouncer.getInstance().schedule(
-new SuccessAnnouncementConfig(I18N.DISPLAY.saveSettings()));
+                    IplantAnnouncer.getInstance().schedule(new SuccessAnnouncementConfig(I18N.DISPLAY.saveSettings()));
                 }
 
                 @Override

@@ -1,8 +1,8 @@
 package org.iplantc.de.client.analysis.widget.proxy;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.views.AnalysesView;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.models.analysis.AnalysesAutoBeanFactory;
 import org.iplantc.de.client.models.analysis.AnalysesList;
@@ -31,7 +31,7 @@ public class AnalysisRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoa
     @Override
     public void load(final FilterPagingLoadConfig loadConfig,
             final AsyncCallback<PagingLoadResult<Analysis>> callback) {
-        Services.ANALYSIS_SERVICE.getAnalyses(UserInfo.getInstance().getWorkspaceId(), loadConfig,
+        ServicesInjector.INSTANCE.getAnalysisServiceFacade().getAnalyses(UserInfo.getInstance().getWorkspaceId(), loadConfig,
                 new AsyncCallback<String>() {
                     @Override
                     public void onSuccess(String response) {

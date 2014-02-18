@@ -1,7 +1,7 @@
 package org.iplantc.de.client.events;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.factories.EventJSONFactory;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
@@ -64,7 +64,7 @@ public class DefaultUploadCompleteHandler extends UploadCompleteHandler {
             json.put("user", new JSONString(UserInfo.getInstance().getUsername()));
             json.put("email", JSONBoolean.getInstance(false));
 
-            Services.USER_SESSION_SERVICE.postClientNotification(json, new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getUserSessionServiceFacade().postClientNotification(json, new AsyncCallback<String>() {
 
                 @Override
                 public void onSuccess(String result) {

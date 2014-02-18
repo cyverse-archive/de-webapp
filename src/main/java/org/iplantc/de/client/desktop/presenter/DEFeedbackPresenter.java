@@ -1,9 +1,9 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackView;
 import org.iplantc.de.client.desktop.views.DEFeedbackView.Presenter;
 import org.iplantc.de.client.desktop.views.DEFeedbackViewImpl;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.IplantInfoBox;
 import org.iplantc.de.resources.client.messages.I18N;
@@ -17,7 +17,7 @@ import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 public class DEFeedbackPresenter implements Presenter {
 
     DEFeedbackView view;
-    private Command callbackCommand;
+    private final Command callbackCommand;
 
     public DEFeedbackPresenter(Command callbackCommand) {
         this.callbackCommand = callbackCommand;
@@ -34,7 +34,7 @@ public class DEFeedbackPresenter implements Presenter {
         // System.out.println("-->" + view.validate());
         if (view.validate()) {
             // System.out.println("-->" + view.toJson());
-            Services.DE_FEEDBACK_SERVICE.submitFeedback(view.toJson().toString(), new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getDeFeedbackServiceFacade().submitFeedback(view.toJson().toString(), new AsyncCallback<String>() {
 
                 @Override
                 public void onSuccess(String result) {

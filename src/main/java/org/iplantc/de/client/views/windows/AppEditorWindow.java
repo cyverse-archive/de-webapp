@@ -8,6 +8,7 @@ import org.iplantc.de.apps.widgets.client.view.AppLaunchView.RenameWindowHeaderC
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowHeadingUpdatedEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.apps.App;
 import org.iplantc.de.client.models.apps.integration.AppTemplate;
@@ -86,7 +87,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
     protected List<HandlerRegistration> handlers;
     private final AppTemplateServices templateService;
     private final AppTemplateAutoBeanFactory factory = GWT.create(AppTemplateAutoBeanFactory.class);
-    private final DeployedComponentServices dcServices = GWT.create(DeployedComponentServices.class);
+    private final DeployedComponentServices dcServices = ServicesInjector.INSTANCE.getDeployedComponentServices();
     private final AppsWidgetsPropertyPanelLabels labels = org.iplantc.de.resources.client.messages.I18N.APPS_LABELS;
     private final RenameWindowHeaderCmdImpl renameCmd;
 
@@ -98,7 +99,7 @@ public class AppEditorWindow extends IplantWindowBase implements AppPublishedEve
         res.titleStyles().ensureInjected();
 
 //        AppsEditorView view = new AppsEditorViewImpl(uuidService, appMetadataService);
-        templateService = GWT.create(AppTemplateServices.class);
+        templateService = ServicesInjector.INSTANCE.getAppTemplateServices();
 //        presenter = new AppsEditorPresenterImpl(view, eventBus, templateService, I18N.ERROR,
 //                I18N.DISPLAY, uuidService);
         presenter = AppsEditorInjector.INSTANCE.getAppEditorPresenter();

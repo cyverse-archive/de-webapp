@@ -1,8 +1,8 @@
 package org.iplantc.de.client.desktop.widget;
 
 import org.iplantc.de.client.Constants;
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.models.diskResources.DiskResource;
@@ -43,7 +43,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         RequestSimpleDownloadEventHandler, RequestSimpleUploadEventHandler {
 
     private final Desktop desktop;
-    private final DiskResourceServiceFacade drService = Services.DISK_RESOURCE_SERVICE;
+    private final DiskResourceServiceFacade drService = ServicesInjector.INSTANCE.getDiskResourceServiceFacade();
 
     DesktopFileTransferEventHandler(Desktop desktop) {
         this.desktop = desktop;
@@ -90,7 +90,7 @@ class DesktopFileTransferEventHandler implements RequestBulkDownloadEventHandler
         if (isDownloadable(resources)) {
             if (resources.size() == 1) {
                 // Download now. No folders possible here....
-                final String encodedSimpleDownloadURL = Services.DISK_RESOURCE_SERVICE.getEncodedSimpleDownloadURL(resources.get(0).getId());
+                final String encodedSimpleDownloadURL = ServicesInjector.INSTANCE.getDiskResourceServiceFacade().getEncodedSimpleDownloadURL(resources.get(0).getId());
                 WindowUtil.open(encodedSimpleDownloadURL, "width=100,height=100");
             } else {
                 SimpleDownloadWindowConfig sdwc = ConfigFactory.simpleDownloadWindowConfig();

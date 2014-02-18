@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.diskResources.File;
 import org.iplantc.de.client.models.viewer.StructuredText;
 import org.iplantc.de.client.models.viewer.StructuredTextAutoBeanFactory;
@@ -128,7 +128,7 @@ public class StrcturedTextViewerImpl extends AbstractTextViewer {
     public void loadData() {
         String url = "read-csv-chunk";
         container.mask(org.iplantc.de.resources.client.messages.I18N.DISPLAY.loadingMask());
-        Services.FILE_EDITOR_SERVICE.getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getFileEditorServiceFacade().getDataChunk(url, getRequestBody(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {

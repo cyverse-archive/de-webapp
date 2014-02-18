@@ -1,8 +1,8 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.IsMaskable;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.File;
@@ -145,7 +145,7 @@ public class FileViewerWindow extends IplantWindowBase implements IsMaskable {
     private void getFileManifest() {
         mask(I18N.DISPLAY.loadingMask());
         if (file != null) {
-            Services.FILE_EDITOR_SERVICE.getManifest(file.getId(), new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getFileEditorServiceFacade().getManifest(file.getId(), new AsyncCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
                     if (result != null) {

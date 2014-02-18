@@ -2,7 +2,6 @@ package org.iplantc.de.client.desktop.presenter;
 
 import org.iplantc.de.client.Constants;
 import org.iplantc.de.client.DeResources;
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.views.DEFeedbackDialog;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.events.DefaultUploadCompleteHandler;
@@ -12,6 +11,7 @@ import org.iplantc.de.client.events.PreferencesUpdatedEvent.PreferencesUpdatedEv
 import org.iplantc.de.client.events.SystemMessageCountUpdateEvent;
 import org.iplantc.de.client.events.WindowCloseRequestEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.DEProperties;
 import org.iplantc.de.client.models.HasId;
 import org.iplantc.de.client.models.UserInfo;
@@ -22,7 +22,6 @@ import org.iplantc.de.client.models.diskResources.Folder;
 import org.iplantc.de.client.models.notifications.NotificationCategory;
 import org.iplantc.de.client.periodic.MessagePoller;
 import org.iplantc.de.client.services.DEServiceFacade;
-import org.iplantc.de.client.services.UserSessionServiceFacade;
 import org.iplantc.de.client.sysmsgs.presenter.NewMessagePresenter;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -180,8 +179,7 @@ public class DEPresenter implements DEView.Presenter {
 
     private void saveSettings() {
         UserSettings us = UserSettings.getInstance();
-        UserSessionServiceFacade facade = new UserSessionServiceFacade();
-        facade.saveUserPreferences(us.asSplittable(), new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getUserSessionServiceFacade().saveUserPreferences(us.asSplittable(), new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
@@ -223,7 +221,7 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void getUserPreferences() {
-        Services.USER_SESSION_SERVICE.getUserPreferences(new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getUserSessionServiceFacade().getUserPreferences(new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -437,7 +435,7 @@ public class DEPresenter implements DEView.Presenter {
     }
 
     private void initUserHomeDir() {
-        Services.DISK_RESOURCE_SERVICE.getHomeFolder(new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getDiskResourceServiceFacade().getHomeFolder(new AsyncCallback<String>() {
 
             @Override
             public void onSuccess(String result) {

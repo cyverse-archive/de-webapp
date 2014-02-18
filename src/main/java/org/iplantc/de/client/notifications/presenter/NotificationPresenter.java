@@ -1,18 +1,17 @@
 package org.iplantc.de.client.notifications.presenter;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.notifications.Notification;
 import org.iplantc.de.client.models.notifications.NotificationCategory;
 import org.iplantc.de.client.models.notifications.NotificationMessage;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
-import org.iplantc.de.client.notifications.services.MessageServiceFacade;
-import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
 import org.iplantc.de.client.notifications.views.NotificationToolbarView;
 import org.iplantc.de.client.notifications.views.NotificationToolbarViewImpl;
 import org.iplantc.de.client.notifications.views.NotificationView;
 import org.iplantc.de.client.notifications.views.NotificationView.Presenter;
+import org.iplantc.de.client.services.callbacks.NotificationCallback;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.resources.client.messages.I18N;
 
@@ -91,7 +90,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
                         }
                     }
                 }
-                Services.MESSAGE_SERVICE.getNotifications(loadConfig.getLimit(), loadConfig.getOffset(),
+                ServicesInjector.INSTANCE.getMessageServiceFacade().getNotifications(loadConfig.getLimit(), loadConfig.getOffset(),
                         (loadConfig.getFilters().get(0).getField()) == null ? "" : loadConfig
                                 .getFilters().get(0).getField().toLowerCase(), loadConfig.getSortInfo()
                                 .get(0).getSortDir().toString(), new NotificationServiceCallback(
@@ -220,8 +219,7 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
     @Override
     public void onDeleteAllClicked() {
         view.mask();
-        MessageServiceFacade facade = new MessageServiceFacade();
-        facade.deleteAll(new AsyncCallback<String>() {
+        ServicesInjector.INSTANCE.getMessageServiceFacade().deleteAll(new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {

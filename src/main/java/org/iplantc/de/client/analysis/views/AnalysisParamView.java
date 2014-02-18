@@ -1,8 +1,8 @@
 package org.iplantc.de.client.analysis.views;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.callbacks.FileSaveCallback;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.analysis.AnalysisParameter;
-import org.iplantc.de.client.services.impl.FileSaveCallback;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.IPlantDialog;
 import org.iplantc.de.diskResource.client.views.dialogs.SaveAsDialog;
 import org.iplantc.de.resources.client.messages.I18N;
@@ -109,7 +109,7 @@ public class AnalysisParamView implements IsWidget {
 
     private void saveFile(final String path, String fileContents) {
         mask();
-        Services.FILE_EDITOR_SERVICE.uploadTextAsFile(path, fileContents, true, new FileSaveCallback(
+        ServicesInjector.INSTANCE.getFileEditorServiceFacade().uploadTextAsFile(path, fileContents, true, new FileSaveCallback(
                 path, true, con));
     }
 

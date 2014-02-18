@@ -1,9 +1,9 @@
 package org.iplantc.de.client.desktop.presenter;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.desktop.presenter.UserSessionProgressMessageBox.UserSessionFactory;
 import org.iplantc.de.client.desktop.views.DEView;
 import org.iplantc.de.client.desktop.views.DEView.Presenter;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.models.UserSession;
 import org.iplantc.de.client.models.WindowState;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SaveSessionPeriodic implements Runnable {
 
-    private Presenter presenter;
+    private final Presenter presenter;
     private final UserSessionFactory factory = GWT.create(UserSessionFactory.class);
 
     public SaveSessionPeriodic(DEView.Presenter presenter) {
@@ -33,7 +33,7 @@ public class SaveSessionPeriodic implements Runnable {
         Splittable spl = AutoBeanCodex.encode(userSession);
         if (isStateChanged(orderedWindowStates, spl)) {
             GWT.log("saving periodic...");
-            Services.USER_SESSION_SERVICE.saveUserSession(userSession.as(), new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getUserSessionServiceFacade().saveUserSession(userSession.as(), new AsyncCallback<String>() {
 
                 @Override
                 public void onSuccess(String result) {

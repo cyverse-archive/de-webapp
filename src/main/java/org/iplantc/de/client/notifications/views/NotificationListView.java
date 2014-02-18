@@ -7,6 +7,7 @@ import org.iplantc.de.client.DeResources;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.NotificationCountUpdateEvent;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.notifications.Notification;
 import org.iplantc.de.client.models.notifications.NotificationAutoBeanFactory;
 import org.iplantc.de.client.models.notifications.NotificationCategory;
@@ -14,9 +15,8 @@ import org.iplantc.de.client.models.notifications.NotificationMessage;
 import org.iplantc.de.client.models.notifications.payload.PayloadAnalysis;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
-import org.iplantc.de.client.notifications.services.MessageServiceFacade;
-import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;
+import org.iplantc.de.client.services.callbacks.NotificationCallback;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.utils.NotifyInfo;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
@@ -206,8 +206,7 @@ public class NotificationListView implements IsWidget {
             JSONObject obj = new JSONObject();
             obj.put("uuids", arr);
 
-            org.iplantc.de.client.notifications.services.MessageServiceFacade facade = new org.iplantc.de.client.notifications.services.MessageServiceFacade();
-            facade.markAsSeen(obj, new AsyncCallback<String>() {
+            ServicesInjector.INSTANCE.getMessageServiceFacade().markAsSeen(obj, new AsyncCallback<String>() {
 
                 @Override
                 public void onSuccess(String result) {
@@ -228,8 +227,8 @@ public class NotificationListView implements IsWidget {
     }
 
     public void fetchUnseenNotifications() {
-        MessageServiceFacade facadeMessageService = new MessageServiceFacade();
-        facadeMessageService.getRecentMessages(new NotificationCallback() {
+
+        ServicesInjector.INSTANCE.getMessageServiceFacade().getRecentMessages(new NotificationCallback() {
 
             @Override
             public void onSuccess(String result) {
@@ -326,8 +325,7 @@ public class NotificationListView implements IsWidget {
 
             @Override
             public void onClick(ClickEvent event) {
-                MessageServiceFacade facade = new MessageServiceFacade();
-                facade.acknowledgeAll(new AsyncCallback<String>() {
+                ServicesInjector.INSTANCE.getMessageServiceFacade().acknowledgeAll(new AsyncCallback<String>() {
 
                     @Override
                     public void onFailure(Throwable caught) {

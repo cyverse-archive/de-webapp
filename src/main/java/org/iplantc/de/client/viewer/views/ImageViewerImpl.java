@@ -1,6 +1,6 @@
 package org.iplantc.de.client.viewer.views;
 
-import org.iplantc.de.client.Services;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.diskResources.File;
 
 import com.google.gwt.core.client.GWT;
@@ -33,7 +33,7 @@ public class ImageViewerImpl extends AbstractFileViewer {
 
     public ImageViewerImpl(File file) {
         super(file, null);
-        img = new Image(Services.FILE_EDITOR_SERVICE.getServletDownloadUrl(this.file.getId()));
+        img = new Image(ServicesInjector.INSTANCE.getFileEditorServiceFacade().getServletDownloadUrl(this.file.getId()));
         widget = uiBinder.createAndBindUi(this);
         con.setScrollMode(ScrollMode.AUTO);
     }

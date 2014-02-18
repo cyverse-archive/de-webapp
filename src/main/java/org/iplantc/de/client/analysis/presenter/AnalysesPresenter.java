@@ -1,6 +1,5 @@
 package org.iplantc.de.client.analysis.presenter;
 
-import org.iplantc.de.client.Services;
 import org.iplantc.de.client.analysis.util.AnalysisParameterValueParser;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarView;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarViewImpl;
@@ -11,6 +10,7 @@ import org.iplantc.de.client.analysis.views.cells.AnalysisParamValueCell;
 import org.iplantc.de.client.analysis.widget.AnalysisSearchField;
 import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.events.WindowShowRequestEvent;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.models.analysis.AnalysesAutoBeanFactory;
 import org.iplantc.de.client.models.analysis.Analysis;
@@ -216,7 +216,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
     }
 
     private void retrieveParameterData(final String analysisId, final AsyncCallback<String> callback) {
-        Services.ANALYSIS_SERVICE.getAnalysisParams(analysisId, callback);
+        ServicesInjector.INSTANCE.getAnalysisServiceFacade().getAnalysisParams(analysisId, callback);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
                 if (ae.getStatus().equalsIgnoreCase((AnalysisExecutionStatus.SUBMITTED.toString()))
                         || ae.getStatus().equalsIgnoreCase((AnalysisExecutionStatus.IDLE.toString()))
                         || ae.getStatus().equalsIgnoreCase((AnalysisExecutionStatus.RUNNING.toString()))) {
-                    Services.ANALYSIS_SERVICE.stopAnalysis(ae.getId(),
+                    ServicesInjector.INSTANCE.getAnalysisServiceFacade().stopAnalysis(ae.getId(),
                             new CancelAnalysisServiceCallback(ae));
                 }
             }
@@ -374,7 +374,7 @@ public class AnalysesPresenter implements AnalysesView.Presenter, AnalysesToolba
             ConfirmMessageBox cmb = (ConfirmMessageBox)event.getSource();
             if (cmb.getHideButton() == cmb.getButtonById(PredefinedButton.OK.name())) {
                 String body = buildDeleteRequestBody(execs);
-                Services.ANALYSIS_SERVICE.deleteAnalysis(UserInfo.getInstance().getWorkspaceId(), body,
+                ServicesInjector.INSTANCE.getAnalysisServiceFacade().deleteAnalysis(UserInfo.getInstance().getWorkspaceId(), body,
                         new DeleteSeviceCallback(items_to_delete, execs));
             }
 
