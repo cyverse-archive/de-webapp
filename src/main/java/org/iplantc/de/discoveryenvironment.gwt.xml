@@ -55,14 +55,6 @@
        <when-type-is class="org.iplantc.de.client.desktop.widget.TaskButtonCell.TaskButtonCellAppearance" />
     </replace-with>
     
-    <!-- ui-applications deferred binding rules -->
-    <replace-with class="org.iplantc.de.client.services.impl.TemplateServiceFacade">
-      <when-type-is class="org.iplantc.de.apps.client.services.AppUserServiceFacade"/>
-   </replace-with>
-   <replace-with class="org.iplantc.de.client.services.impl.TemplateServiceFacade">
-      <when-type-is class="org.iplantc.de.apps.client.services.AppServiceFacade"/>
-   </replace-with>
-   
    <replace-with 
          class="org.iplantc.de.commons.client.appearance.widgets.IPlantAnchorDefaultAppearance">
       <when-type-is class="org.iplantc.de.commons.client.widgets.IPlantAnchorAppearance"/>
