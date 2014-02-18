@@ -8,13 +8,13 @@ import org.iplantc.de.client.idroplite.views.IDropLiteView.Presenter;
 import org.iplantc.de.client.models.HasPaths;
 import org.iplantc.de.client.models.diskResources.DiskResource;
 import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.client.models.sharing.DataSharing.TYPE;
 import org.iplantc.de.client.util.DiskResourceUtil;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.views.windows.configs.IDropLiteWindowConfig;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.diskResource.client.events.RequestSimpleDownloadEvent;
 import org.iplantc.de.diskResource.client.events.RequestSimpleUploadEvent;
-import org.iplantc.de.diskResource.client.sharing.models.DataSharing.TYPE;
 
 import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;

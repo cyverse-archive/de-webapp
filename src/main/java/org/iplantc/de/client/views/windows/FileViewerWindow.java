@@ -6,6 +6,8 @@ import org.iplantc.de.client.events.FileEditorWindowClosedEvent;
 import org.iplantc.de.client.models.IsMaskable;
 import org.iplantc.de.client.models.WindowState;
 import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.models.errors.diskResources.DiskResourceErrorAutoBeanFactory;
+import org.iplantc.de.client.models.errors.diskResources.ErrorGetManifest;
 import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.client.viewer.events.FileSavedEvent;
 import org.iplantc.de.client.viewer.events.FileSavedEvent.FileSavedEventHandler;
@@ -14,8 +16,6 @@ import org.iplantc.de.client.viewer.presenter.FileViewerPresenter;
 import org.iplantc.de.client.viewer.views.FileViewer;
 import org.iplantc.de.client.views.windows.configs.FileViewerWindowConfig;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.diskResource.client.services.errors.DiskResourceErrorAutoBeanFactory;
-import org.iplantc.de.diskResource.client.services.errors.ErrorGetManifest;
 import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
