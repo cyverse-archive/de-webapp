@@ -14,7 +14,6 @@ import org.iplantc.de.client.models.notifications.NotificationMessage;
 import org.iplantc.de.client.models.notifications.payload.PayloadAnalysis;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEvent;
 import org.iplantc.de.client.notifications.events.DeleteNotificationsUpdateEventHandler;
-import org.iplantc.de.client.notifications.models.NotificationMessageProperties;
 import org.iplantc.de.client.notifications.services.MessageServiceFacade;
 import org.iplantc.de.client.notifications.services.NotificationCallback;
 import org.iplantc.de.client.notifications.util.NotificationHelper;

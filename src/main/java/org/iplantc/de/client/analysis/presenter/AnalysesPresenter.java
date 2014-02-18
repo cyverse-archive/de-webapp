@@ -1,7 +1,6 @@
 package org.iplantc.de.client.analysis.presenter;
 
 import org.iplantc.de.client.Services;
-import org.iplantc.de.client.analysis.models.AnalysisParameterProperties;
 import org.iplantc.de.client.analysis.util.AnalysisParameterValueParser;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarView;
 import org.iplantc.de.client.analysis.views.AnalysesToolbarViewImpl;

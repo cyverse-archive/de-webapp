@@ -1,6 +1,5 @@
 package org.iplantc.de.client.views.windows;
 
-import org.iplantc.de.client.analysis.models.AnalysisProperties;
 import org.iplantc.de.client.analysis.presenter.AnalysesPresenter;
 import org.iplantc.de.client.analysis.views.AnalysesView;
 import org.iplantc.de.client.analysis.views.AnalysesViewImpl;

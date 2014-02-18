@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.iplantc.de.client.analysis.models;
+package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.models.analysis.Analysis;
 

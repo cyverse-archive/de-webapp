@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.iplantc.de.client.notifications.models;
+package org.iplantc.de.client.notifications.views;
 
 import org.iplantc.de.client.models.notifications.NotificationCategory;
 import org.iplantc.de.client.models.notifications.NotificationMessage;
