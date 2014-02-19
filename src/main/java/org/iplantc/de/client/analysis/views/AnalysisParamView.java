@@ -90,11 +90,22 @@ public class AnalysisParamView implements IsWidget {
 
             @Override
             public void onSelect(SelectEvent event) {
+            	if(saveDialog.isVaild()) {
                 String fileContents = writeTabFile();
                 saveFile(saveDialog.getSelectedFolder().getPath() + "/" + saveDialog.getFileName(),
                         fileContents);
+                saveDialog.hide();
+            	}
             }
         });
+        
+        saveDialog.addCancelButtonSelectHandler(new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
+				saveDialog.hide();
+			}
+		});
         saveDialog.show();
         saveDialog.toFront();
     }
