@@ -64,27 +64,27 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-resources</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-apps-widgets</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-applications</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-pipelines</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-diskresource</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -99,17 +99,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
-            <artifactId>jsonutil</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.iplantc.core</groupId>
+            <groupId>org.iplantc.de</groupId>
             <artifactId>ui-apps-integration</artifactId>
             <version>${project.version}</version>
         </dependency>
