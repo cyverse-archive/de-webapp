@@ -9,40 +9,44 @@
 
 <body>
 
-<img src="http://iplantc.org/sites/all/themes/iplant/images/iplant_logo.png" border="0" alt="" style="margin-left: 10px;" /> 
+<img src="http://iplantc.org/sites/all/themes/iplant/images/iplant_logo.png" border="0" alt="Log in to iPlant" style="margin-left: 10px;" /> 
 
 <div style="width: 60%; margin-left: 10px;">
-<h2>Welcome!</h2>
-You've reached the landing page for the Discovery Environment. The Discovery Environment integrates powerful, community-recommended software tools into a system that:
+<h2>Discovery Environment</h2>
+The Discovery Environment integrates powerful, community-recommended software tools into a system that:
 <ul type="square">
-<li> Can handle terabytes of data</li>
-<li> Utilizes high-performance supercomputing resources as needed</li>
+<li> Makes big data management easy. Upload, organize, edit, view and search with ease!</li>
+<li> Has 500+ scientific apps that utilizes compute clusters and HPC resources as needed.</li>
 <li> Hides the complexity needed to do these tasks.</li>
 </ul>
 </div>
 
 <div class="login-wrapper">
-<a href="discoveryenvironment/login">Log In</a>
+	<input type="submit" value="Log in with your iPlant ID" class="submitButton">
+	<a href="https://user.iplantcollaborative.org/reset/request">Forgot Password?</a> <a href="https://user.iplantcollaborative.org/register/">Register Now</a>
 </div>
 
-<div class="project_text">&copy;2011 iPlant Collaborative. The
+<div class="project_text">&copy;2014 iPlant Collaborative. The
 iPlant Collaborative is funded by a grant from the National Science
 Foundation (#DBI-0735191).</div>
 <div class="footer">
 
-<table align="center"><tr><td class="whiteline" width="10%">Useful Links:</td>
-<td class="whiteline" width="22%" style="vertical-align: text-top"><a href="https://pods.iplantcollaborative.org/wiki/display/DEman1p0/Table+of+Contents">The Discovery Environment Manual</a><br />
+<table align="center"><tr>
+<td class="whiteline" width="20%" style="vertical-align: text-top"><a href="https://pods.iplantcollaborative.org/wiki/display/DEmanual/Table+of+Contents">The Discovery Environment Manual</a><br />
 A useful resource for new users.</td>
 
-<td class="whiteline" width="25%" style="vertical-align: text-top"><a href="https://pods.iplantcollaborative.org/wiki/display/start/Getting+Started+with+iPlant">Getting Started with iPlant</a><br />
+<td class="whiteline" width="20%" style="vertical-align: text-top"><a href="https://pods.iplantcollaborative.org/wiki/display/start/Getting+Started+with+iPlant">Getting Started with iPlant</a><br />
 Helps you discover what other iPlant services you can 
 use and ways to collaborate with iPlant.</td>
 
-<td class="whiteline" width="23%" style="vertical-align: text-top"><a href="http://www.iplantcollaborative.org/">The Main iPlant Homepage</a><br />
+<td class="whiteline" width="20%" style="vertical-align: text-top"><a href="http://www.iplantcollaborative.org/">The Main iPlant Homepage</a><br />
 The place where you can find the most complete introduction to iPlant.</td>
 
+<td class="whiteline" width="20%" style="vertical-align: text-top"><a href="http://ask.iplantcollaborative.org">Ask iPlant</a><br />
+Questions? Please visit our forums.</td>
+
 <td class="noline" width="20%" style="vertical-align: text-top"><a href="http://www.iplantcollaborative.org/forms/support">Need Help?</a><br />
-Contact support if you need assistance</td>
+Contact support if you need assistance.</td>
 
 </tr></table>
 
