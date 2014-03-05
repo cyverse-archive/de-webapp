@@ -28,7 +28,7 @@ public class DeDiskResourceWindow extends IplantWindowBase {
         presenter = DiskResourceInjector.INSTANCE.getDiskResourceViewPresenter();
 
         setHeadingText(org.iplantc.de.resources.client.messages.I18N.DISPLAY.data());
-        setSize("700", "375");
+        setSize("800", "480");
 
         // Create an empty
         List<HasId> resourcesToSelect = Lists.newArrayList();
