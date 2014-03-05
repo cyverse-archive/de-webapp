@@ -21,10 +21,8 @@ The Discovery Environment integrates powerful, community-recommended software to
 </ul>
 </div>
 
-<div class="login-wrapper">
-	<input type="submit" value="Log in with your iPlant ID" class="submitButton">
-	<a href="https://user.iplantcollaborative.org/reset/request">Forgot Password?</a> <a href="https://user.iplantcollaborative.org/register/">Register Now</a>
-	<div class="label"> Minimum screen resolution supported: 1024 x 768 </div>
+<div class="maintenance_wrapper">
+	Discovery Environment is under maintenance from <time> to <time>.
 </div>
 
 <div class="project_text">&copy;2014 iPlant Collaborative. The
@@ -40,8 +38,8 @@ A useful resource for new users.</td>
 Helps you discover what other iPlant services you can 
 use and ways to collaborate with iPlant.</td>
 
-<td class="whiteline" width="20%" style="vertical-align: text-top"><a href="http://www.iplantcollaborative.org/">The Main iPlant Homepage</a><br />
-Learn more about iPlant.</td>
+<td class="whiteline" width="20%" style="vertical-align: text-top"><a href="http://www.iplantcollaborative.org/">iPlant Collaborative</a><br />
+ Learn more about iPlant.</td>
 
 <td class="whiteline" width="20%" style="vertical-align: text-top"><a href="http://ask.iplantcollaborative.org">Ask iPlant</a><br />
 Questions? Please visit our forums.</td>
