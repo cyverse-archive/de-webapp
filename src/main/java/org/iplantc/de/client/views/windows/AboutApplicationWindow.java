@@ -8,6 +8,7 @@ import org.iplantc.de.client.views.windows.configs.AboutWindowConfig;
 import org.iplantc.de.client.views.windows.configs.ConfigFactory;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.resources.client.IplantResources;
+import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.de.shared.services.AboutApplicationServiceFacade;
 
 import com.google.gwt.core.client.GWT;
@@ -17,7 +18,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
-import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
@@ -27,16 +27,18 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
  * @author lenards
  */
 public class AboutApplicationWindow extends IplantWindowBase {
+
     private AboutApplicationData model;
     private final DeResources res;
+    private final AboutApplicationAppearance appearance;
 
     public AboutApplicationWindow(AboutWindowConfig config) {
         super("");
         setSize("320", "260");
-        setResizable(false);
-        setTitle(org.iplantc.de.resources.client.messages.I18N.DISPLAY.aboutDiscoveryEnvironment());
+        setTitle(I18N.DISPLAY.aboutDiscoveryEnvironment());
         executeServiceCall();
         res = GWT.create(DeResources.class);
+        appearance = GWT.create(AboutApplicationAppearance.class);
     }
 
     private void executeServiceCall() {
@@ -77,16 +79,10 @@ public class AboutApplicationWindow extends IplantWindowBase {
         ContentPanel pnlDetails = new ContentPanel();
         pnlDetails.setHeaderVisible(false);
 
-        HTML txt = new HTML(Format.substitute(getAboutTemplate(), model.getReleaseVersion(),
-                model.getBuildNumber(), Window.Navigator.getUserAgent(), 
-                org.iplantc.de.resources.client.messages.I18N.DISPLAY.projectCopyrightStatement().asString(), org.iplantc.de.resources.client.messages.I18N.DISPLAY.nsfProjectText().asString()));
-        pnlDetails.add(txt);
+        pnlDetails.add(new HTML(appearance.about(model, Window.Navigator.getUserAgent(),
+                I18N.DISPLAY.projectCopyrightStatement(), I18N.DISPLAY.nsfProjectText())));
 
         return pnlDetails;
-    }
-
-    private String getAboutTemplate() {
-        return "<p style='font-style:italic;'> {4} </p><p>Release: {0}</p><p> Build #: {1}</p><p>User Agent: {2}</p> <p style='font-weight:700'> {3}</p>"; //$NON-NLS-1$
     }
 
     @Override

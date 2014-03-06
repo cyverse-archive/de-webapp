@@ -273,7 +273,6 @@
                     <webappDirectory>${basedir}/war</webappDirectory>
                     <mode>htmlunit</mode>
                     <gen>${basedir}/gwt-gen</gen>
-                    <module>org.iplantc.de.discoveryenvironment</module>
                     <compileReport>true</compileReport>
                     <compilerMetrics>true</compilerMetrics>
                     <XsoycDetailed>true</XsoycDetailed>
