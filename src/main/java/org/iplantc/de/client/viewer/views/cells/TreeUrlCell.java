@@ -39,7 +39,7 @@ public class TreeUrlCell extends AbstractCell<VizUrl> {
         }
         // Call the super handler, which handlers the enter key.
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
-        WindowUtil.open(value.getUrl(), "width=100,height=100"); //$NON-NLS-1$
+        WindowUtil.open(value.getUrl(), "width=800,height=600"); //$NON-NLS-1$
     }
 
 }
