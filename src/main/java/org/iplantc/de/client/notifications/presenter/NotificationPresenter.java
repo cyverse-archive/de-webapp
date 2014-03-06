@@ -188,8 +188,13 @@ public class NotificationPresenter implements Presenter, NotificationToolbarView
                     loadConfig.getOffset());
             callback.onSuccess(callbackResult);
             NotificationHelper.getInstance().markAsSeen(messages);
-
         }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            ErrorHandler.post(caught);
+        }
+
     }
 
     @Override

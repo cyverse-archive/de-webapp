@@ -236,6 +236,12 @@ public class NotificationListView implements IsWidget {
                 processMessages(this.getNotifications());
                 unseenNotificationsFetchedOnce = true;
             }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ErrorHandler.post(caught);
+            }
+
         });
     }
 
