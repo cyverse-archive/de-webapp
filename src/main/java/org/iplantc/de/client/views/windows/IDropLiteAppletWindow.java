@@ -1,7 +1,7 @@
 package org.iplantc.de.client.views.windows;
 
 import org.iplantc.de.client.events.EventBus;
-import org.iplantc.de.client.events.diskResources.DiskResourceRefreshEvent;
+import org.iplantc.de.client.events.diskResources.FolderRefreshEvent;
 import org.iplantc.de.client.idroplite.presenter.IDropLitePresenter;
 import org.iplantc.de.client.idroplite.util.IDropLiteUtil;
 import org.iplantc.de.client.idroplite.views.IDropLiteView;
@@ -85,7 +85,7 @@ public class IDropLiteAppletWindow extends IplantWindowBase {
         // refresh manage data window
         Folder currentFolder = idlwc.getCurrentFolder();
         if (currentFolder != null) {
-            DiskResourceRefreshEvent event = new DiskResourceRefreshEvent(currentFolder);
+            FolderRefreshEvent event = new FolderRefreshEvent(currentFolder);
             EventBus.getInstance().fireEvent(event);
         }
     }
