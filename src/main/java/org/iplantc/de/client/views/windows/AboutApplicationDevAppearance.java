@@ -40,8 +40,8 @@ public class AboutApplicationDevAppearance implements AboutApplicationAppearance
             SafeHtml nsfProject) {
         return template.about(Strings.nullToEmpty(data.getReleaseVersion()),
                 Strings.nullToEmpty(data.getBuild()), Strings.nullToEmpty(data.getBuildNumber()),
-                Strings.nullToEmpty(data.getBuildId()), Strings.nullToEmpty(data.getBuildCommit()),
-                Strings.nullToEmpty(data.getBuildBranch()), Strings.nullToEmpty(data.getBuildJdk()),
+                Strings.nullToEmpty(data.getBuildId()), Strings.nullToEmpty(data.getBuildBranch()),
+                Strings.nullToEmpty(data.getBuildCommit()), Strings.nullToEmpty(data.getBuildJdk()),
                 Window.Navigator.getUserAgent(), I18N.DISPLAY.projectCopyrightStatement(),
                 I18N.DISPLAY.nsfProjectText());
     }
