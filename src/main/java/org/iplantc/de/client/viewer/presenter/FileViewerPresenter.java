@@ -19,11 +19,6 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasOneWidget;
 
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,24 +138,25 @@ public class FileViewerPresenter implements FileViewer.Presenter {
 			} else {
 				if (treeViewer) {
 					callTreeCreateService(vizViewers.get(0));
-				} else if (genomeViewer) {
-					final ConfirmMessageBox cmb = new ConfirmMessageBox(
-							org.iplantc.de.resources.client.messages.I18N.DISPLAY.visualization(),
-							org.iplantc.de.resources.client.messages.I18N.DISPLAY.cogePrompt());
-					cmb.addHideHandler(new HideHandler() {
-
-						@Override
-						public void onHide(HideEvent event) {
-							if (cmb.getHideButton() == cmb
-									.getButtonById(PredefinedButton.YES.name())) {
-								loadInCoge(file);
-							}
-							// else do nothing
-
-						}
-					});
-					cmb.show();
 				}
+                // else if (genomeViewer) {
+                // final ConfirmMessageBox cmb = new ConfirmMessageBox(
+                // org.iplantc.de.resources.client.messages.I18N.DISPLAY.visualization(),
+                // org.iplantc.de.resources.client.messages.I18N.DISPLAY.cogePrompt());
+                // cmb.addHideHandler(new HideHandler() {
+                //
+                // @Override
+                // public void onHide(HideEvent event) {
+                // if (cmb.getHideButton() == cmb
+                // .getButtonById(PredefinedButton.YES.name())) {
+                // loadInCoge(file);
+                // }
+                // // else do nothing
+                //
+                // }
+                // });
+                // cmb.show();
+                // }
 			}
 
 			viewers.add(vizViewers.get(0));
