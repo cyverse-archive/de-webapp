@@ -1,9 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="org.iplantc.de.server.DiscoveryEnvironmentMaintenance"%>
 <%@page import="org.iplantc.de.server.DiscoveryEnvironmentProperties"%>
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
+
+// Redirect the user to the maintenance page if the DE is under maintenance.
+DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance();
+if (deMaintenance.isUnderMaintenance()) {
+    response.sendRedirect("index.jsp");
+}
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->

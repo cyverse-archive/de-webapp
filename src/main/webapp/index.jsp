@@ -1,4 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<%@ page import="org.iplantc.de.server.DiscoveryEnvironmentMaintenance" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head> 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
@@ -21,11 +23,34 @@ The Discovery Environment integrates powerful, community-recommended software to
 </ul>
 </div>
 
-<div class="login-wrapper">
-	<input type="submit" value="Log in with your iPlant ID" class="submitButton">
-	<a href="https://user.iplantcollaborative.org/reset/request">Forgot Password?</a> <a href="https://user.iplantcollaborative.org/register/">Register Now</a>
-	<div class="label"> Minimum screen resolution supported: 1024 x 768 </div>
-</div>
+<%
+DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance();
+if (deMaintenance.isUnderMaintenance()) {
+    if (deMaintenance.hasMaintenanceTimes()) {
+        String startTime = deMaintenance.getStartTime();
+        String endTime = deMaintenance.getEndTime();
+%>
+        <div class="maintenance_wrapper">
+            Discovery Environment is under maintenance from <%=startTime%> to <%=endTime%>.
+        </div>
+<%
+    } else {
+%>
+        <div class="maintenance_wrapper">
+            Discovery Environment is under maintenance.
+        </div>
+<%
+    }
+} else {
+%>
+    <div class="login-wrapper">
+        <input type="submit" value="Log in with your iPlant ID" class="submitButton">
+        <a href="https://user.iplantcollaborative.org/reset/request">Forgot Password?</a> <a href="https://user.iplantcollaborative.org/register/">Register Now</a>
+        <div class="label"> Minimum screen resolution supported: 1024 x 768 </div>
+    </div>
+<%
+}
+%>
 
 <div class="project_text">&copy;2014 iPlant Collaborative. The
 iPlant Collaborative is funded by a grant from the National Science
