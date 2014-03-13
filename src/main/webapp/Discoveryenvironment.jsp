@@ -1,9 +1,20 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="org.iplantc.de.server.DiscoveryEnvironmentMaintenance"%>
 <%@page import="org.iplantc.de.server.DiscoveryEnvironmentProperties"%>
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
+
+// Fetch the DE configuration settings.
+ServletContext ctx = getServletConfig().getServletContext();
+DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
+
+// Redirect the user to the maintenance page if the DE is under maintenance.
+DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance(props.getMaintenanceFile());
+if (deMaintenance.isUnderMaintenance()) {
+    response.sendRedirect("index.jsp");
+}
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <!-- The HTML 4.01 Transitional DOCTYPE declaration-->
@@ -47,12 +58,9 @@ response.setDateHeader("Expires", 0);
 	src="scripts/shell.js"></script>
 <script type="text/javascript" language="javascript"
 	src="scripts/nexus.js"></script>
-	
 
 <%
 	out.println("<p style='position:absolute;top:45%; left:48%  margin-top: 45%; margin-left: 48%;'>Loading...Please wait!</p><img style='position:absolute;top:50%; left:50%  margin-top: 50%; margin-left: 50%;' src='./images/loading_spinner.gif'/>");
-    ServletContext ctx = getServletConfig().getServletContext();
-    DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
     if (props.isProduction()) {
 %>
     <!-- Google analytics -->

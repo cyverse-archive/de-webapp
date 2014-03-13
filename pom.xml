@@ -28,11 +28,6 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.safehaus.jug</groupId>
-            <artifactId>jug.osgi</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
@@ -173,12 +168,6 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons.fileupload</groupId>
-            <artifactId>fileupload-test</artifactId>
-            <version>dev-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -193,11 +182,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.santuario</groupId>
-            <artifactId>xmlsec.osgi</artifactId>
-            <version>1.4.0</version>
-        </dependency>
         <!-- iDrop Lite Applet, provided by iRODS team -->
         <dependency>
             <groupId>org.irods.idrop</groupId>
@@ -432,9 +416,14 @@
     </reporting>
     <repositories>
         <repository>
+            <id>renci.repository.snapshots</id>
+            <name>Renci Snapshot Repository</name>
+            <url>http://ci-dev.renci.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
             <id>iplantCollaborative</id>
             <name>iPlant Collaborative local repository</name>
-            <url>http://projects.iplantcollaborative.org/archiva/repository/internal/</url>
+            <url>http://katic.iplantcollaborative.org/archiva/repository/internal/</url>
         </repository>
         <repository>
             <id>sencha-commercial-release</id>
