@@ -26,13 +26,14 @@ public class DiscoveryEnvironmentProperties {
     private static final String DE_RELEASE_VERSION = PREFIX + ".about.releaseVersion";                 // $NON-NLS$
     private static final String MULE_SERVICE_BASE_URL = PREFIX + ".muleServiceBaseUrl";                // $NON-NLS$
     private static final String PRODUCTION_DEPLOYMENT = PREFIX + ".environment.prod-deployment";       // $NON-NLS$
+    private static final String MAINTENANCE_FILE = PREFIX + ".maintenance-file";                       // $NON-NLS$
 
     /**
      * The list of required properties.
      */
     private static final String[] REQUIRED_PROPERTIES = {MULE_SERVICE_BASE_URL,
             DATA_MGMT_SERVICE_BASE_URL, FILE_IO_BASE_URL, UNPROTECTED_FILE_IO_BASE_URL,
-            PRODUCTION_DEPLOYMENT};
+            PRODUCTION_DEPLOYMENT, MAINTENANCE_FILE};
 
     /**
      * The configuration properties.
@@ -158,5 +159,12 @@ public class DiscoveryEnvironmentProperties {
      */
     public boolean isProduction() {
         return Boolean.parseBoolean(props.getProperty(PRODUCTION_DEPLOYMENT));
+    }
+
+    /**
+     * @return the path to the maintenance file.
+     */
+    public String getMaintenanceFile() {
+        return props.getProperty(MAINTENANCE_FILE);
     }
 }

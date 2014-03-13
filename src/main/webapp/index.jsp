@@ -1,4 +1,5 @@
 <%@ page import="org.iplantc.de.server.DiscoveryEnvironmentMaintenance" %>
+<%@page import="org.iplantc.de.server.DiscoveryEnvironmentProperties"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"> 
@@ -24,7 +25,9 @@ The Discovery Environment integrates powerful, community-recommended software to
 </div>
 
 <%
-DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance();
+ServletContext ctx = getServletConfig().getServletContext();
+DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
+DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance(props.getMaintenanceFile());
 if (deMaintenance.isUnderMaintenance()) {
     if (deMaintenance.hasMaintenanceTimes()) {
         String startTime = deMaintenance.getStartTime();
@@ -44,7 +47,7 @@ if (deMaintenance.isUnderMaintenance()) {
 } else {
 %>
     <div class="login-wrapper">
-        <input type="submit" value="Log in with your iPlant ID" class="submitButton">
+        <input type="submit" value="Log in with your iPlant ID" class="submitButton" onclick="window.location.replace('discoveryenvironment/login')">
         <a href="https://user.iplantcollaborative.org/reset/request">Forgot Password?</a> <a href="https://user.iplantcollaborative.org/register/">Register Now</a>
         <div class="label"> Minimum screen resolution supported: 1024 x 768 </div>
     </div>

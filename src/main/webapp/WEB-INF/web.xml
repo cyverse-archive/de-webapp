@@ -17,7 +17,7 @@
 		<servlet-class>org.iplantc.de.server.CasSessionInitializationServlet</servlet-class>
 		<init-param>
 			<param-name>initialPage</param-name>
-			<param-value>#workspace</param-value>
+			<param-value>Discoveryenvironment.jsp#workspace</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -178,6 +178,6 @@
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>Discoveryenvironment.jsp</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

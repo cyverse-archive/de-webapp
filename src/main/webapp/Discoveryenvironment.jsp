@@ -6,8 +6,12 @@ response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
 response.setDateHeader("Expires", 0);
 
+// Fetch the DE configuration settings.
+ServletContext ctx = getServletConfig().getServletContext();
+DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
+
 // Redirect the user to the maintenance page if the DE is under maintenance.
-DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance();
+DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance(props.getMaintenanceFile());
 if (deMaintenance.isUnderMaintenance()) {
     response.sendRedirect("index.jsp");
 }
@@ -54,12 +58,9 @@ if (deMaintenance.isUnderMaintenance()) {
 	src="scripts/shell.js"></script>
 <script type="text/javascript" language="javascript"
 	src="scripts/nexus.js"></script>
-	
 
 <%
 	out.println("<p style='position:absolute;top:45%; left:48%  margin-top: 45%; margin-left: 48%;'>Loading...Please wait!</p><img style='position:absolute;top:50%; left:50%  margin-top: 50%; margin-left: 50%;' src='./images/loading_spinner.gif'/>");
-    ServletContext ctx = getServletConfig().getServletContext();
-    DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscoveryEnvironmentProperties(ctx);
     if (props.isProduction()) {
 %>
     <!-- Google analytics -->

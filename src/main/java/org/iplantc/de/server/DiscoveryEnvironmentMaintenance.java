@@ -35,8 +35,8 @@ public class DiscoveryEnvironmentMaintenance {
         return !(Strings.isNullOrEmpty(startTime) || Strings.isNullOrEmpty(endTime));
     }
 
-    public DiscoveryEnvironmentMaintenance() {
-        File maintenanceFile = new File("/etc/de-maintenance");
+    public DiscoveryEnvironmentMaintenance(String maintenanceFileName) {
+        File maintenanceFile = new File(maintenanceFileName);
         if (maintenanceFile.exists()) {
             String[] maintenanceTimes = loadMaintenanceTimes(maintenanceFile);
             startTime = maintenanceTimes[0];
