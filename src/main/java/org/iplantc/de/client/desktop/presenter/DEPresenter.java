@@ -211,7 +211,6 @@ public class DEPresenter implements DEView.Presenter {
             public void onSuccess(String result) {
                 parseWorkspaceInfo(result);
                 initKeepaliveTimer();
-                initUserHomeDir();
                 doWorkspaceDisplay();
                 getUserPreferences();
                 processQueryStrings();
@@ -432,24 +431,6 @@ public class DEPresenter implements DEView.Presenter {
         if (target != null && !target.equals("") && interval > 0) {
             KeepaliveTimer.getInstance().start(target, interval);
         }
-    }
-
-    private void initUserHomeDir() {
-        ServicesInjector.INSTANCE.getDiskResourceServiceFacade().getHomeFolder(new AsyncCallback<String>() {
-
-            @Override
-            public void onSuccess(String result) {
-                JSONObject obj = JsonUtil.getObject(result);
-                UserInfo.getInstance().setHomePath(obj.get("path").isString().toString());
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // best guess with username. this is horrible...
-                UserInfo userInfo = UserInfo.getInstance();
-                userInfo.setHomePath("/iplant/home/" + userInfo.getUsername());
-            }
-        });
     }
 
     /**

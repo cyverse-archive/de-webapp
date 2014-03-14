@@ -183,7 +183,7 @@ public class DEFeedbackViewImpl implements DEFeedbackView {
     @Override
     public JSONObject toJson() {
         JSONObject obj = new JSONObject();
-        obj.put(UserInfo.ATTR_USERNAME, new JSONString(UserInfo.getInstance().getUsername()));
+        obj.put("username", new JSONString(UserInfo.getInstance().getUsername()));
         obj.put("User-agent", new JSONString(Navigator.getUserAgent()));
         obj.put(reasonField.getText(), getAnswer1());
         obj.put(compelteField.getText(), getAnswer2());
