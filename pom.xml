@@ -182,6 +182,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>stringtemplate</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
         <!-- iDrop Lite Applet, provided by iRODS team -->
         <dependency>
             <groupId>org.irods.idrop</groupId>

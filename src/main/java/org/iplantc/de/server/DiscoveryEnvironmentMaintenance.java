@@ -54,8 +54,8 @@ public class DiscoveryEnvironmentMaintenance {
         BufferedReader in = null;
         try {
             in = new BufferedReader(new FileReader(maintenanceFile));
-            result[0] = in.readLine().trim();
-            result[1] = in.readLine().trim();
+            result[0] = Strings.nullToEmpty(in.readLine()).trim();
+            result[1] = Strings.nullToEmpty(in.readLine()).trim();
         } catch (IOException e) {
             result[0] = "";
             result[1] = "";

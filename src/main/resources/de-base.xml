@@ -38,9 +38,14 @@
         <property name="service" value="${org.iplantc.discoveryenvironment.cas.server-name}${org.iplantc.discoveryenvironment.cas.validation}" />
     </bean>
 
-    <bean id="casAuthEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+    <bean id="deLandingPage" class="org.iplantc.de.server.DeLandingPage">
+        <property name="deMaintenanceFile" value="${org.iplantc.discoveryenvironment.maintenance-file}" />
         <property name="loginUrl" value="${org.iplantc.discoveryenvironment.cas.base-url}/login" />
-        <property name="serviceProperties" ref="casService" />
+        <property name="casService" ref="casService" />
+    </bean>
+
+    <bean id="casAuthEntryPoint" class="org.iplantc.de.server.DeCasAuthenticationEntryPoint">
+        <property name="landingPage" ref="deLandingPage" />
     </bean>
 
     <bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">

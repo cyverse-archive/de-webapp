@@ -13,7 +13,8 @@ DiscoveryEnvironmentProperties props = DiscoveryEnvironmentProperties.getDiscove
 // Redirect the user to the maintenance page if the DE is under maintenance.
 DiscoveryEnvironmentMaintenance deMaintenance = new DiscoveryEnvironmentMaintenance(props.getMaintenanceFile());
 if (deMaintenance.isUnderMaintenance()) {
-    response.sendRedirect("index.jsp");
+    session.invalidate();
+    response.sendRedirect("");
 }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
